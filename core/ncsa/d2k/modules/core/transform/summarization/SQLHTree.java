@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.transform.summarization;
  /**
  * <p>Title: SQLHTree </p>
- * <p>Description: Calculate a Cube based on HTree algorithm </p>
+ * <p>Description: Calculate a Cube from a database table based on HTree algorithm </p>
  * <p>Copyright: Copyright (c) 2001</p>
  * <p>Company: NCSA ALG </p>
  * @author Dora Cai
@@ -46,8 +46,8 @@ public class SQLHTree extends ComputeModule
   // ArrayList of Head for base header table.
   ArrayList baseHeadTbl;
 
-  // ArrayList of Node for SQLHTree.
-  ArrayList SQLHTree;
+  // ArrayList of Node for hTree.
+  ArrayList hTree;
 
   // ArrayList of ArrayList for local head tables
   ArrayList localHeadTbls;
@@ -60,16 +60,15 @@ public class SQLHTree extends ComputeModule
 
   // class for items in ArrayList columnList
   public class Column {
-    String columnName;
-    int uniqCnt;
-    int startIdx;
-    String dataType;
-    boolean isBinned;
+    String columnName; // column name
+    int uniqCnt; // the count of unique values in the column
+    int startIdx; // the starting index in the baseHeadTbl
+    String dataType; // the data type of the column
+    boolean isBinned; // is the column binned?
   }
   // class for items in ArrayList baseHeadTbl
   public class Head {
     String value;
-    // int headIdx;
     int valueCnt;
     int columnOrder;
     int firstNode;
@@ -82,7 +81,7 @@ public class SQLHTree extends ComputeModule
     int valueCnt;
     int columnOrder;
   }
-  //class for items in ArrayList SQLHTree
+  //class for items in ArrayList HTree
   public class Node {
     int headIdx;
     int nodeCnt;
@@ -156,14 +155,15 @@ public class SQLHTree extends ComputeModule
         }
     }
 
-  /** this property is the min acceptable support score. */
+  // this property is the min acceptable support score.
   public void setMinimumSupport (double i) {
     support = i;
   }
   public double getMinimumSupport () {
     return support;
   }
-  /** this property is the maximum acceptable rule size. */
+
+  // this property is the maximum acceptable rule size.
   public void setMaxRuleSize (int yy) {
     maxRuleSize = yy;
   }
@@ -186,6 +186,13 @@ public class SQLHTree extends ComputeModule
     return in;
   }
 
+  public PropertyDescription [] getPropertiesDescriptions () {
+    PropertyDescription [] pds = new PropertyDescription [2];
+    pds[0] = new PropertyDescription ("maxRuleSize", "Maximum Rule Size", "The maximum number of components in each rule is restricted by Maximum Rule Size.");
+    pds[1] = new PropertyDescription ("minimumSupport", "Minimum Support", "If the occurrence ratio of a rule is below Minimum Support, it is pruned.");
+    return pds;
+  }
+
   protected String[] getFieldNameMapping () {
     return null;
   }
@@ -199,13 +206,18 @@ public class SQLHTree extends ComputeModule
     bins = (BinDescriptor[])pullInput(4);
     columnList = new ArrayList();
     baseHeadTbl = new ArrayList();
-    SQLHTree = new ArrayList();
+    hTree = new ArrayList();
 
     totalRow = getRowCount();
     cutOff = totalRow * support;
 
     setColumnList();
     sortColumnList();
+
+    // to avoid exponential computation, the maxRuleSize is only allowed up to 5
+    if (maxRuleSize > 5) {
+      maxRuleSize = 5;
+    }
 
     // if number of selected columns <= maxruleSize, ruleSize = # of selected column - 1,
     // otherwise, ruleSize = maxRuleSize
@@ -217,10 +229,10 @@ public class SQLHTree extends ComputeModule
     }
 
     initBaseHeadTbl();
-    buildSQLHTree();
+    buildHTree();
     //printColumnList();  // for debugging
     //printBaseHeadTbl();  // for debugging
-    //printSQLHTree();  // for debugging
+    //printHTree();  // for debugging
 
     createCubeTable();
     saveBaseHeadTbl();
@@ -232,7 +244,9 @@ public class SQLHTree extends ComputeModule
     this.pushOutput(cubeTableName, 1);
   }
 
-  /** get the count of rows from the database table */
+  /** get the count of rows from the database table
+   *  @return the number of rows in the table.
+   */
   protected int getRowCount() {
     try {
       con = cw.getConnection();
@@ -254,7 +268,9 @@ public class SQLHTree extends ComputeModule
     }
   }
 
-  /** create columnList.
+  /** create the object columnList that keeps the information for each column:
+   *  column name, the count of uniq values, the starting index in head table,
+   *  the data type, binned or not.
    */
   protected void setColumnList() {
     Column aColumn;
@@ -285,7 +301,10 @@ public class SQLHTree extends ComputeModule
     }
   }
 
-  /** Get the number of unique values in the column */
+  /** Get the number of unique values in the column
+   *  @param col the column to get the count
+   *  @return count of the unique values
+  */
   protected int getUniqCount(int col) {
     int uniqCount = 0;
     // check whether this is a binned column
@@ -318,7 +337,10 @@ public class SQLHTree extends ComputeModule
     }
   }
 
-  /** Determine the data type of the column */
+  /** Determine the data type of the column
+   *  @param col the column to determine the data type
+   *  @return true if the column's data type is numeric, false otherwise.
+   */
   protected boolean isColumnNumeric(int col) {
     DatabaseMetaData metadata = null;
     try {
@@ -356,7 +378,10 @@ public class SQLHTree extends ComputeModule
     }
   }
 
-  /** determine whether the column needs binning */
+  /** determine whether the column needs binning
+   *  @param col the column to check
+   *  @return true if the column has been binned, false otherwise
+   */
   protected boolean isBinnedColumn(int col) {
     for (int binIdx = 0; binIdx < bins.length; binIdx++) {
       if (bins[binIdx].column_number == col)
@@ -365,7 +390,10 @@ public class SQLHTree extends ComputeModule
     return (false);
   }
 
-  /** order the columns based on cardinality */
+  /** order the columns based on cardinality. This will put the column with
+   *  less unique values to the higher level in the HTree. This is important for
+   *  the efficiency.
+   */
   protected void sortColumnList() {
     for (int i=0; i<columnList.size(); i++) {
       for (int j=columnList.size()-1; j>i; j--) {
@@ -377,7 +405,7 @@ public class SQLHTree extends ComputeModule
         }
       }
     }
-    // set the starting index in baseHeadTbl for each column
+    // set the starting index in baseHeadTbl for each column to speed up search
     int startIdx = 1; // first record is for root
     for (int colIdx=0; colIdx<columnList.size(); colIdx++) {
       Column aColumn = (Column)columnList.get(colIdx);
@@ -463,9 +491,9 @@ public class SQLHTree extends ComputeModule
     }
   }
 
-  /** Build a SQLHTree.
+  /** Build a HTree.
   */
-  protected void buildSQLHTree() {
+  protected void buildHTree() {
     // The record for root
     Node aNode;
     aNode = new Node();
@@ -474,7 +502,7 @@ public class SQLHTree extends ComputeModule
     aNode.parentIdx = 0;
     aNode.firstChildIdx = -1;
     aNode.sameValueIdx = -1;
-    SQLHTree.add((Object) aNode);
+    hTree.add((Object) aNode);
     try {
       con = cw.getConnection();
       Statement treeStmt;
@@ -542,10 +570,15 @@ public class SQLHTree extends ComputeModule
       JOptionPane.showMessageDialog(msgBoard,
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
-        System.out.println("Error occoured in buildSQLHTree.");
+        System.out.println("Error occoured in buildHTree.");
     }
   }
 
+  /** get a binned value for a string value
+   *  @param col the column to get the value
+   *  @param val the original string value
+   *  @return a binned value for the original value
+   */
   protected String binValue(int col, String val) {
     String colName = ((Column)columnList.get(col)).columnName;
     for (int binIdx = 0; binIdx < bins.length; binIdx++) {
@@ -558,6 +591,11 @@ public class SQLHTree extends ComputeModule
     return (val);
   }
 
+  /** get a binned value for a numeric value
+   *  @param col the column to get the value
+   *  @param val the original numeric value
+   *  @return a binned string value for the original numeric value
+   */
   protected String binValue(int col, double val) {
     String colName = ((Column)columnList.get(col)).columnName;
     for (int binIdx = 0; binIdx < bins.length; binIdx++) {
@@ -570,6 +608,13 @@ public class SQLHTree extends ComputeModule
     return (Double.toString(val));
   }
 
+  /** find the index in base head table for a giving string value
+   *  @param first the starting index in baseHeadTbl for the column
+   *  @param last the ending index in baseHeadTbl for the column
+   *  @param val the string value
+   *  @param isBinned the flag for binning
+   *  @return the index in baseHeadTbl for this string value
+   */
   protected int getIndex(int first, int last, String val, boolean isBinned) {
     Head aHead;
     // use binary search to find the value's index for non binned column
@@ -616,17 +661,21 @@ public class SQLHTree extends ComputeModule
     }
   }
 
-  /** update baseHeadTbl and insert a new node into SQLHTree */
+  /** update baseHeadTbl and insert a new node into hTree
+   *  @param hdIdx current node's index in baseHeadTbl
+   *  @param pIdx parent node's index in baseHeadTbl
+   *  @return index in hTree
+   */
   protected int updLinks(int hdIdx, int pIdx) {
     int treeIdx = 0;
     int firstNodeIdx;
     boolean isFirst;
     Head aHead = (Head)baseHeadTbl.get(hdIdx);
     aHead.valueCnt++;
-    // If the index of first-node = -1, then create a new record in SQLHTree,
+    // If the index of first-node = -1, then create a new record in hTree,
     // and update the index of first-node and the index of current-node.
     firstNodeIdx = aHead.firstNode;
-    treeIdx = SQLHTree.size();
+    treeIdx = hTree.size();
     if (firstNodeIdx == -1) {
       createNode(hdIdx, pIdx);
       aHead.firstNode = treeIdx; // index for first-node
@@ -636,13 +685,13 @@ public class SQLHTree extends ComputeModule
       return(treeIdx);
     }
     // If the index of first-node >= 0, then follow the index of first-node
-    // to SQLHTree. Check the index of parent-node for every node following the
-    // chain of same-value-node. If parent is same, update count in SQLHTree. If no
-    // same parent found, create a new record in SQLHTree.
+    // to hTree. Check the index of parent-node for every node following the
+    // chain of same-value-node. If parent is same, update count in hTree. If no
+    // same parent found, create a new record in hTree.
     else if (firstNodeIdx >= 0) {
       while (firstNodeIdx >= 0) {
         // parent is same
-        Node aNode = (Node)SQLHTree.get(firstNodeIdx);
+        Node aNode = (Node)hTree.get(firstNodeIdx);
         if (aNode.parentIdx == pIdx){
           aNode.nodeCnt ++;
           return(firstNodeIdx);
@@ -667,13 +716,16 @@ public class SQLHTree extends ComputeModule
     return (-1); // should never reach here
   }
 
-  /**  update the first child index. 3 parameters: SQLHTree index, baseHeadTbl index, parent's SQLHTree index) */
+  /**  update the first child index.
+   *   @param treeIdx the current node's index in hTree.
+   *   @param parentIdx the parent node's index in hTree.
+   */
   protected void updFirstChild(int treeIdx, int parentIdx) {
     int firstChildIdx;
     int currNodeIdx;
-    /* update index of first-child in SQLHTree */
-    // find the firstChildIdx from SQLHTree for the current parent node
-    Node aNode = (Node)SQLHTree.get(parentIdx);
+    /* update index of first-child in hTree */
+    // find the firstChildIdx from hTree for the current parent node
+    Node aNode = (Node)hTree.get(parentIdx);
     // if parent has no first-child, update the index of first-child for the parent node
     if (aNode.firstChildIdx == -1) {
       aNode.firstChildIdx = treeIdx;
@@ -681,27 +733,30 @@ public class SQLHTree extends ComputeModule
   }
 
   /** Find the first node in baseHeadTbl, then follow the same value link in
-  * SQLHTree to update the Same Value index for the immediate previous node of same value
+  *   hTree to update the Same Value index for the immediate previous node of same value
+  *   @param treeIdx the current node's index in hTree
+  *   @param headIdx the current node's index in baseHeadTbl
   */
   protected void updSameValue(int treeIdx, int headIdx) {
     int firstNodeIdx;
     int sameValIdx;
     firstNodeIdx = ((Head)baseHeadTbl.get(headIdx)).firstNode;
-    sameValIdx = ((Node)SQLHTree.get(firstNodeIdx)).sameValueIdx;
+    sameValIdx = ((Node)hTree.get(firstNodeIdx)).sameValueIdx;
     while (sameValIdx != -1) {
       if (firstNodeIdx != treeIdx) {
-        firstNodeIdx = ((Node)SQLHTree.get(firstNodeIdx)).sameValueIdx;
-        sameValIdx = ((Node)SQLHTree.get(firstNodeIdx)).sameValueIdx;
+        firstNodeIdx = ((Node)hTree.get(firstNodeIdx)).sameValueIdx;
+        sameValIdx = ((Node)hTree.get(firstNodeIdx)).sameValueIdx;
       }
       else break;
     }
     if (sameValIdx == -1 && firstNodeIdx != treeIdx) {
-      ((Node)SQLHTree.get(firstNodeIdx)).sameValueIdx = treeIdx;
+      ((Node)hTree.get(firstNodeIdx)).sameValueIdx = treeIdx;
     }
   }
 
-  /** Create a new node in SQLHTree
-   *
+  /** Create a new node in hTree
+   *  @param headIdx the current node's index in baseHeadTbl
+   *  @param parentIdx the parent node's index in baseHeadTbl
    */
   protected void createNode(int headIdx, int parentIdx) {
     Node aNode = new Node();
@@ -710,7 +765,7 @@ public class SQLHTree extends ComputeModule
     aNode.parentIdx = parentIdx;
     aNode.firstChildIdx = -1;
     aNode.sameValueIdx = -1;
-    SQLHTree.add((Object) aNode);
+    hTree.add((Object) aNode);
   }
 
   /** create a database table to save the cube data
@@ -846,7 +901,7 @@ public class SQLHTree extends ComputeModule
     }
   }
 
-  /** Create an ArrayList to held all local header tables
+  /** Create an ArrayList to hold all local header tables
    *  Each localHeadTbl for an item set: [0] for 2-item set, [1] for 3-item set, ..., etc
    */
   protected void createLocalHeadTbls () {
@@ -879,7 +934,7 @@ public class SQLHTree extends ComputeModule
     }
   }
 
-  /** Computer every node in the SQLHTree, starting from level 2 to max level
+  /** Computer every node in the hTree, starting from level 2 to max level
    */
   protected void computeTree() {
     // start from level 2
@@ -891,9 +946,6 @@ public class SQLHTree extends ComputeModule
       int headIdx = startIdx;
       while (headIdx < endIdx) {
         if (((Head)baseHeadTbl.get(headIdx)).valueCnt >= cutOff) {
-          // param1: index in baseHeadTbl.
-          // param2: index of the column, also same as the level of SQLHTree
-          // param3: which localHeadTbl to go. 0 for 2-item set , 1 for 3-item set, ..., etc
           computeItemSet(headIdx, colIdx, 0);
         }
         headIdx ++;
@@ -901,10 +953,14 @@ public class SQLHTree extends ComputeModule
     }
   }
 
-  /** compute the localHeadTbl against a value in the level with SQLHTreeLevel.
-   *  The SQLHTreeLevel is equivalent to the column index, because one column goes to one level in the tree.
+  /** compute the localHeadTbl against a value in the level with hTreeLevel.
+   *  The hTreeLevel is equivalent to the column index, because one column goes to one level in the tree.
+   *  @param headIdx the index in baseHeadTbl
+   *  @param hTreeLevel the index of the column, also the level of hTree
+   *  @param localHeadTblsIdx the index of localHeadTblsIdx. This determine which localHeadTbl to go.
+   *         0 for 2-item set, 1 for 3-item set, ..., etc
    */
-  protected void computeItemSet(int headIdx, int SQLHTreeLevel, int localHeadTblsIdx) {
+  protected void computeItemSet(int headIdx, int hTreeLevel, int localHeadTblsIdx) {
     int firstNode;
     int newNode;
     int parentTreeIdx;
@@ -912,18 +968,18 @@ public class SQLHTree extends ComputeModule
     int nodeCnt;
     ArrayList localHeadTbl = null;
 
-    resetSQLHTreeCnt(SQLHTreeLevel);
+    resetHTreeCnt(hTreeLevel);
     updPrefixList(headIdx, localHeadTblsIdx);
     initLocalHeadTbl(localHeadTblsIdx);
     firstNode = ((Head)baseHeadTbl.get(headIdx)).firstNode;
     while (firstNode != -1) {
       // get the count for the current node
-      nodeCnt = ((Node)SQLHTree.get(firstNode)).nodeCnt;
+      nodeCnt = ((Node)hTree.get(firstNode)).nodeCnt;
       // find the parent index
-      parentTreeIdx = ((Node)SQLHTree.get(firstNode)).parentIdx;
+      parentTreeIdx = ((Node)hTree.get(firstNode)).parentIdx;
       while (parentTreeIdx > 0) {  // 0 is the root
         // find the index in the baseHeadTbl for the parent node
-        parentHeadIdx = ((Node)SQLHTree.get(parentTreeIdx)).headIdx;
+        parentHeadIdx = ((Node)hTree.get(parentTreeIdx)).headIdx;
         //Update localHeadTbls.
         localHeadTbl = (ArrayList) localHeadTbls.get(localHeadTblsIdx);
         for (int localIdx=0; localIdx < localHeadTbl.size(); localIdx++) {
@@ -933,22 +989,22 @@ public class SQLHTree extends ComputeModule
               break;
           }
         }
-        // propagate the current count to the parent node in SQLHTree
-        ((Node)SQLHTree.get(parentTreeIdx)).nodeCnt =
-          ((Node)SQLHTree.get(parentTreeIdx)).nodeCnt + nodeCnt;
+        // propagate the current count to the parent node in hTree
+        ((Node)hTree.get(parentTreeIdx)).nodeCnt =
+          ((Node)hTree.get(parentTreeIdx)).nodeCnt + nodeCnt;
         // go to the grand parents
-        parentTreeIdx = ((Node)SQLHTree.get(parentTreeIdx)).parentIdx;
+        parentTreeIdx = ((Node)hTree.get(parentTreeIdx)).parentIdx;
       }
       //following the sameValue link to go to the next node
-      firstNode = ((Node)SQLHTree.get(firstNode)).sameValueIdx;
+      firstNode = ((Node)hTree.get(firstNode)).sameValueIdx;
     }
     //printLocalHeadTbl(localHeadTbl); // for debugging
-    //printSQLHTree(); // for debugging
+    //printHTree(); // for debugging
 
     saveLocalHeadTbl(localHeadTblsIdx);
 
-    if (SQLHTreeLevel > 1 && localHeadTblsIdx < (ruleSize-2)) {
-      for (int colIdx = 1; colIdx < (SQLHTreeLevel); colIdx++) {
+    if (hTreeLevel > 1 && localHeadTblsIdx < (ruleSize-2)) {
+      for (int colIdx = 1; colIdx < (hTreeLevel); colIdx++) {
         Column aColumn = (Column)columnList.get(colIdx);
         int startIdx = aColumn.startIdx;
         int endIdx = startIdx + aColumn.uniqCnt + 1;
@@ -971,12 +1027,13 @@ public class SQLHTree extends ComputeModule
     }
   }
 
-  /** reset counts in SQLHTree for the nodes they are in columns < columnIdx
+  /** reset counts in hTree for the nodes which are in columns less than columnIdx
+   *  @param columnIdx the index of the column
    */
-  protected void resetSQLHTreeCnt(int columnIdx) {
+  protected void resetHTreeCnt(int columnIdx) {
     int headIdx;
-    for (int nodeIdx = 0; nodeIdx < SQLHTree.size(); nodeIdx++) {
-      Node aNode = (Node)SQLHTree.get(nodeIdx);
+    for (int nodeIdx = 0; nodeIdx < hTree.size(); nodeIdx++) {
+      Node aNode = (Node)hTree.get(nodeIdx);
       headIdx = aNode.headIdx;
       if (((Head)baseHeadTbl.get(headIdx)).columnOrder < columnIdx) {
         aNode.nodeCnt = 0;
@@ -985,6 +1042,8 @@ public class SQLHTree extends ComputeModule
   }
 
   /** Initialized the local header table
+   *  @param localTblIdx the index in localHeadTbls. This is the local header
+   *         table that needs to reinitialize
    */
   protected void initLocalHeadTbl (int localTblIdx) {
     ArrayList aLocalTbl = (ArrayList)localHeadTbls.get(localTblIdx);
@@ -997,7 +1056,7 @@ public class SQLHTree extends ComputeModule
       aLocalHead.columnOrder = -1;
     }
     // find the smallest columnIndex in prefixList
-    int minCol = 1000;
+    int minCol = Integer.MAX_VALUE;
     for (int prefixIdx = 0; prefixIdx < prefixList.length; prefixIdx++) {
       if (prefixList[prefixIdx] >= 0) {
         int columnIndex = ((Head)baseHeadTbl.get(prefixList[prefixIdx])).columnOrder;
@@ -1022,6 +1081,12 @@ public class SQLHTree extends ComputeModule
     //printLocalHeadTbl(aLocalTbl);  // for debugging
   }
 
+  /** add the index of the head node to the prefix list after the computation
+   *  of a level is completed
+   *  @param newHeadIdx the new head node index to add
+   *  @param newLocalTblIdx the index in localHeadTbls. This index is equal to
+   *         the index in prefixList.
+   */
   protected void updPrefixList (int newHeadIdx, int newLocalTblIdx) {
     if (newLocalTblIdx == 0) {
       initPrefixList();
@@ -1093,14 +1158,14 @@ public class SQLHTree extends ComputeModule
     }
   }
 
-  protected void printSQLHTree() {
-    System.out.println("SQLHTree: ");
-    for (int i=0; i<SQLHTree.size(); i++) {
-          System.out.print(i + " item in SQLHTree is " + ((Node)SQLHTree.get(i)).headIdx + ", ");
-          System.out.print(((Node)SQLHTree.get(i)).nodeCnt + ", ");
-          System.out.print(((Node)SQLHTree.get(i)).parentIdx + ", ");
-          System.out.print(((Node)SQLHTree.get(i)).firstChildIdx + ", ");
-          System.out.println(((Node)SQLHTree.get(i)).sameValueIdx);
+  protected void printHTree() {
+    System.out.println("hTree: ");
+    for (int i=0; i<hTree.size(); i++) {
+          System.out.print(i + " item in hTree is " + ((Node)hTree.get(i)).headIdx + ", ");
+          System.out.print(((Node)hTree.get(i)).nodeCnt + ", ");
+          System.out.print(((Node)hTree.get(i)).parentIdx + ", ");
+          System.out.print(((Node)hTree.get(i)).firstChildIdx + ", ");
+          System.out.println(((Node)hTree.get(i)).sameValueIdx);
     }
   }
 
