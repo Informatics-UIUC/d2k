@@ -80,7 +80,6 @@ public class SQLGetRuleAssocFromCube extends UIModule
   JTextField bookName;
   JLabel bookLabel;
   Checkbox useCodeBook;
-  //JButton tableBrowseBtn;
   JButton bookBrowseBtn;
   JButton cancelBtn;
   JButton ruleBtn;
@@ -398,7 +397,7 @@ public class SQLGetRuleAssocFromCube extends UIModule
       if (useCodeBook.getState() && bookName.getText().length()<=0) {
         // The user has not chosen a code book yet
         JOptionPane.showMessageDialog(msgBoard,
-          "You must choose a code book.", "Error",
+          "You must choose a code book or deselect 'Use Code Book'.", "Error",
           JOptionPane.ERROR_MESSAGE);
         System.out.println("There is no code book selected.");
       }
@@ -499,18 +498,26 @@ public class SQLGetRuleAssocFromCube extends UIModule
         String aTable = tableNames.getString("TABLE_NAME");
         v.addElement(aTable);
       }
-      bt = new BrowseTables(cw, v);
-      btw = new BrowseTablesView(bt, v);
-      btw.setSize(250,200);
-      btw.setTitle("Available Code Book Tables");
-      btw.setLocation(200,250);
-      btw.setVisible(true);
-      btw.addWindowListener(new WindowAdapter() {
-        public void windowClosed(WindowEvent e)
-        {
-          bookName.setText(btw.getChosenRow());
-         }
-      });
+      if (v.size()<=0) {
+        JOptionPane.showMessageDialog(msgBoard,
+          "There is no any code book in the database", "Error",
+          JOptionPane.ERROR_MESSAGE);
+        System.out.println("There is no any code books in the database.");
+      }
+      else {
+        bt = new BrowseTables(cw, v);
+        btw = new BrowseTablesView(bt, v);
+        btw.setSize(250,200);
+        btw.setTitle("Available Code Book Tables");
+        btw.setLocation(200,250);
+        btw.setVisible(true);
+        btw.addWindowListener(new WindowAdapter() {
+          public void windowClosed(WindowEvent e)
+          {
+            bookName.setText(btw.getChosenRow());
+          }
+        });
+      }
     }
     catch (Exception e){
       JOptionPane.showMessageDialog(msgBoard,
