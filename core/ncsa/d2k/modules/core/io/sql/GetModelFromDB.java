@@ -8,19 +8,13 @@ package ncsa.d2k.modules.core.io.sql;
  * @author Dora Cai
  * @version 1.0
  */
-//import ncsa.d2k.infrastructure.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.PredictionModelModule;
-//import ncsa.d2k.controller.classloading.*;
 import ncsa.d2k.core.modules.UserView;
-//import ncsa.d2k.io.*;
 import ncsa.d2k.userviews.swing.*;
-//import ncsa.d2k.modules.core.datatype.table.*;
-
 import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.gui.Constrain;
 import ncsa.gui.JOutlinePanel;
-
 import java.sql.*;
 import java.util.*;
 import java.text.*;
@@ -85,7 +79,7 @@ public class GetModelFromDB extends UIModule
   protected String[] getFieldNameMapping () {
     return null;
   }
-/**
+  /**
     Create the UserView object for this module-view combination.
     @return The UserView associated with this module.
   */
@@ -95,8 +89,6 @@ public class GetModelFromDB extends UIModule
 
   public class GetModelView extends JUserInputPane
     implements ActionListener {
-    /* The module that creates this view.  We need a
-       reference to it so we can get and set its properties. */
     JButton browseBtn;
     JButton cancelBtn;
     JButton getModelBtn;
@@ -220,7 +212,7 @@ public class GetModelFromDB extends UIModule
       else if (src == getModelBtn) {
         try {
           // user may manually enter the model name and click this button right way (without hit enter key)
-          if (getTrainSet()) {
+          if (getAttribute()) {
             if (getClassLabel()) {
               getMasterInfo();
               doAction();
@@ -242,7 +234,7 @@ public class GetModelFromDB extends UIModule
           trainSet.fireTableDataChanged();
           classLabel.initTableModel(100,1);
           classLabel.fireTableDataChanged();
-          if (getTrainSet()) {
+          if (getAttribute()) {
             if (getClassLabel()) {
               getMasterInfo();
             }
@@ -251,7 +243,9 @@ public class GetModelFromDB extends UIModule
       }
     }
   }
-  /** connect to a database and retrieve the list of available tables */
+  /**
+   * connect to a database and retrieve the list of available models
+   */
   protected void doBrowse() {
     String query = "select model_name from model_master";
     try {
@@ -270,7 +264,7 @@ public class GetModelFromDB extends UIModule
           trainSet.fireTableDataChanged();
           classLabel.initTableModel(100,1);
           classLabel.fireTableDataChanged();
-          if (getTrainSet()) {
+          if (getAttribute()) {
             if (getClassLabel()) {
               getMasterInfo();
             }
@@ -286,6 +280,9 @@ public class GetModelFromDB extends UIModule
     }
   }
 
+  /**
+   * get the master information of the selected model
+   */
   protected void getMasterInfo() {
     try {
       Connection con = cw.getConnection();
@@ -309,7 +306,10 @@ public class GetModelFromDB extends UIModule
     }
   }
 
-  protected boolean getTrainSet() {
+  /** get the information on data attributes
+   *  @return true if the information is found, false otherwise
+   */
+  protected boolean getAttribute() {
     try {
       Connection con = cw.getConnection();
       Statement stmt;
@@ -344,11 +344,14 @@ public class GetModelFromDB extends UIModule
       JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occoured in getTrainSet.");
+      System.out.println("Error occoured in getAttribute.");
       return (false);
     }
   }
 
+  /** get the information on class labels
+   *  @return true if the information is found, false otherwise
+   */
   protected boolean getClassLabel() {
     try {
       Connection con = cw.getConnection();
