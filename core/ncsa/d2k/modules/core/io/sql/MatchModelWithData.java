@@ -15,6 +15,8 @@ import javax.swing.*;
 
 public class MatchModelWithData extends ComputeModule {
   JOptionPane msgBoard = new JOptionPane();
+  private static final int DATABASE = 1; // model is built using database data
+  private static final int FLATFILE = 2; // model is built using flat file data
   public MatchModelWithData() {
   }
 
@@ -107,6 +109,9 @@ public class MatchModelWithData extends ComputeModule {
   public void doit() {
     ExampleTable et = (ExampleTable)pullInput(0);
     PredictionModelModule mdl = (PredictionModelModule)pullInput(1);
+    // determine the model is built using database data or flatfile
+    int modelSource = getModelSource(mdl);
+    System.out.println("in Match, modelSource is " + modelSource);
     System.out.println("rows in the testing data set is " + et.getNumRows());
     // check the first row in the example table. If the first row contains
     // the strings of data type, the user has not set the property "typeRow"
@@ -115,24 +120,34 @@ public class MatchModelWithData extends ComputeModule {
       if (et.getString(0,colIdx).equals("double") ||
           et.getString(0,colIdx).equals("string")) {
         JOptionPane.showMessageDialog(msgBoard,
-          "The data table has problems. You did not set the property 'typeRow' correctly when loading data.",
+          "The first record in the testing data is invalid. " +
+          "You did not set the property 'typeRow' correctly when loading data. " +
+          "Please reload data and try again.",
           "Information", JOptionPane.INFORMATION_MESSAGE);
         return;
       }
     }
-    int etOutColumn = (et.getOutputFeatures())[0];
-    String etOutLabel = et.getColumnLabel(etOutColumn).toUpperCase();
     // database does not allow column name containing "-", therefore in the
     // database table, if the column name contains "-", it has been converted
-    // to "_". We have to make the convertion here before compare the column names.
-    etOutLabel = etOutLabel.replace('-','_');
-    // database does not allow column name containing spaces, therefore in the
-    // database table, if the column name contains spaces, the spaces must have been
-    // squeezed out. We have to make the convertion here before compare the column names.
-    etOutLabel = squeezeSpace(etOutLabel);
-    String mdlOutLabel = (mdl.getOutputColumnLabels())[0].toUpperCase();
-    mdlOutLabel = mdlOutLabel.replace('-','_');
-    mdlOutLabel = squeezeSpace(mdlOutLabel);
+    // to "_". database also does not allow a column name contains spaces, the
+    // spaces must have been squeezed out. We have to make the convertion here before compare the column names.
+    for (int colIdx = 0; colIdx < et.getNumColumns(); colIdx++) {
+      String tmpLabel = et.getColumnLabel(colIdx).toLowerCase();
+      if (modelSource == DATABASE) {
+        tmpLabel = tmpLabel.replace('-','_');
+        tmpLabel = squeezeSpace(tmpLabel);
+      }
+      et.setColumnLabel(tmpLabel,colIdx);
+    }
+    int etOutColumn = (et.getOutputFeatures())[0];
+    String etOutLabel = et.getColumnLabel(etOutColumn);
+    System.out.println("in matchmodel, etOutLabel is " + etOutLabel);
+    System.out.println("there are " + mdl.getOutputColumnLabels().length + " output");
+    for (int i=0; i<mdl.getOutputColumnLabels().length; i++) {
+      System.out.println("output " + i + " is " + (mdl.getOutputColumnLabels())[i]);
+    }
+    String mdlOutLabel = (mdl.getOutputColumnLabels())[0].toLowerCase();
+    System.out.println("in matchmodel, mdlOutLabel is " + mdlOutLabel);
     // Model does not match to data if output labels are different.
     if (!etOutLabel.equals(mdlOutLabel)) {
       JOptionPane.showMessageDialog(msgBoard,
@@ -151,12 +166,8 @@ public class MatchModelWithData extends ComputeModule {
     else {
       for (int col=0; col<et.getInputFeatures().length; col++) {
         int index = (et.getInputFeatures())[col];
-        String etInLabel = et.getColumnLabel(index).toUpperCase();
-        etInLabel = etInLabel.replace('-','_');
-        etInLabel = squeezeSpace(etInLabel);
-        String mdlInLabel = (mdl.getInputColumnLabels())[col].toUpperCase();
-        mdlInLabel = mdlInLabel.replace('-','_');
-        mdlInLabel = squeezeSpace(mdlInLabel);
+        String etInLabel = et.getColumnLabel(index);
+        String mdlInLabel = (mdl.getInputColumnLabels())[col].toLowerCase();
         if (!etInLabel.equals(mdlInLabel)) {
           System.out.println("et is " + etInLabel);
           System.out.println("mdl is " + mdlInLabel);
@@ -171,7 +182,36 @@ public class MatchModelWithData extends ComputeModule {
     pushOutput(mdl,1);
   }
 
-    /**
+  /** Determine whether the model is built using database data or flat file data.
+   *  If the data is built using database data, "-" in column labels has been
+   *  converted to "_", spaces in column labels have been squeezed out. In order
+   *  to match the model with testing data, conversion on testing data must be done.
+   *  @param aModel the model to use
+   *  @return DATABASE for model from database data, FLATFILE for others.
+   */
+
+  private int getModelSource(PredictionModelModule aModel) {
+    for (int idx=0; idx<aModel.getNumInputs(); idx++) {
+      String aLabel = (aModel.getInputColumnLabels())[idx];
+      if (aLabel.indexOf(" ")>=0)
+        return FLATFILE;
+      if (aLabel.indexOf("_")>=0)
+        return DATABASE;
+      if (aLabel.indexOf("-")>=0)
+        return FLATFILE;
+    }
+    for (int idx=0; idx<aModel.getNumOutputs(); idx++) {
+      String aLabel = (aModel.getOutputColumnLabels())[idx];
+      if (aLabel.indexOf(" ")>=0)
+        return FLATFILE;
+      if (aLabel.indexOf("_")>=0)
+        return DATABASE;
+      if (aLabel.indexOf("-")>=0)
+        return FLATFILE;
+    }
+    return FLATFILE;
+  }
+  /**
    * Squeeze out spaces from the string value
    * @param value The string to edit
    * @return The string after spaces are squeezed out
