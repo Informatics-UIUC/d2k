@@ -71,7 +71,7 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
 	* @param set
 	*/
    private StringColumn(int[] rows, String[] vals, HashMap set,
-						boolean[] missing, boolean[] empty, String lbl, String comm) {
+						boolean[] missingV, boolean[] emptyV, String lbl, String comm) {
 		setOfValues = (HashMap)set.clone();
 		values = new String[vals.length];
 		for(int i = 0; i < vals.length; i++)
@@ -84,10 +84,11 @@ public class StringColumn extends AbstractColumn implements TextualColumn {
 		missing = new boolean[rowIndicies.length];
 		empty = new boolean[rowIndicies.length];
 		for(int i = 0; i < rowIndicies.length; i++) {
-			missing[i] = false;
-			empty[i] = false;
+			missing[i] = missingV[i];
+			empty[i] = emptyV[i];
 		}
 		setLabel(lbl);
+                this.setComment(comm);
    }
 
    private int addValue(String newVal) {
