@@ -13,12 +13,12 @@ public final class NumericDecisionTreeNode extends DecisionTreeNode
 	implements Serializable {
 
 	/** everything less than the split value goes left */
-	final static int LEFT = 0;
+	private final static int LEFT = 0;
 	/** everything greater than the split value goes right */
-	final static int RIGHT = 1;
+	private final static int RIGHT = 1;
 
 	/** the value used to compare whether to go left or right */
-	double splitValue;
+	private double splitValue;
 
 	/*public NumericDecisionTreeNode() {
 		super();
@@ -86,7 +86,7 @@ public final class NumericDecisionTreeNode extends DecisionTreeNode
 	public final Object evaluate(VerticalTable vt, int row) {
 
 		if(isLeaf()) {
-			parent.incrementOutputTally(label);
+			incrementOutputTally(label);
 			return label;
 		}
 

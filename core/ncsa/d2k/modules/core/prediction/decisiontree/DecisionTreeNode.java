@@ -10,22 +10,22 @@ import ncsa.d2k.util.datatype.VerticalTable;
 public abstract class DecisionTreeNode
 	implements ViewableDTNode, Serializable {
 
-	DecisionTreeNode parent = null;
+	protected DecisionTreeNode parent = null;
 
-	static String UNKNOWN = "Unknown";
+	protected static final String UNKNOWN = "Unknown";
 
 	/** The list of children of this node */
-	ArrayList children;
+	protected ArrayList children;
 	/** The labels for the branches for the children */
-	ArrayList branchLabels;
+	protected ArrayList branchLabels;
 
 	/** The label of this node.  If this is a leaf, this is the
 		value of the class that this leaf represents.  Otherwise
 		this is the name of the attribute that this node splits on */
-	String label;
+	protected String label;
 
 	/** The tallies for the records that pass through this node */
-	HashMap outputValueTallies;
+	protected HashMap outputValueTallies;
 
 	/**
 		Create a new DecisionTreeNode.
@@ -256,4 +256,13 @@ public abstract class DecisionTreeNode
 		for(int i = 0; i < getNumChildren(); i++)
 			getChild(i).print();
 	}
+
+    /**
+     * Clear the values from this node and its children.
+     */
+    public void clear() {
+        outputValueTallies.clear();
+        for(int i = 0; i < children.size(); i++)
+            ((DecisionTreeNode)children.get(i)).clear();
+    }
 }
