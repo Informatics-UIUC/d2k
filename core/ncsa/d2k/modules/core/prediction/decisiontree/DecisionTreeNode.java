@@ -96,6 +96,8 @@ public abstract class DecisionTreeNode
 			tal++;
 			outputValueTallies.put(outputVal, new Integer(tal));
 		}
+		if(parent != null)
+			parent.incrementOutputTally(outputVal);
 	}
 
 	public ViewableDTNode getViewableParent() {
@@ -175,7 +177,7 @@ public abstract class DecisionTreeNode
 		@param row the row of the table to evaluate
 		@return the result of evaluating the record
 	*/
-	abstract public Object evaluate(VerticalTable vt, int row, int outputCol);
+	abstract public Object evaluate(VerticalTable vt, int row/*, int outputCol*/);
 
 	/**
 		Add a branch to this node, given the label of the branch and

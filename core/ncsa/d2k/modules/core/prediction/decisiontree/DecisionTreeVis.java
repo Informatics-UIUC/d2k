@@ -74,6 +74,10 @@ class DecisionTreeUserView extends ncsa.d2k.controller.userviews.swing.JUserPane
 	JMenuItem miPrintWindow;
 	JMenuItem miPrintCanvas;
 
+	public Dimension getPreferredSize() {
+		return new Dimension(600, 400);
+	}
+
 	public void initView(ViewModule module) {
 	}
 

@@ -606,6 +606,12 @@ public class NaiveBayesModel extends PredictionModelModule implements Serializab
 		int [] outs = pt.getOutputFeatures();
 		int [] preds = pt.getPredictionSet();
 
+		if(preds.length == 0) {
+			StringColumn sc = new StringColumn(pt.getNumRows());
+			pt.addPredictionColumn(sc);
+			preds = pt.getPredictionSet();
+		}
+
         int numRows = pt.getNumRows();
 		for(int row = 0; row < numRows; row++) {
 			double []currentEv = null;

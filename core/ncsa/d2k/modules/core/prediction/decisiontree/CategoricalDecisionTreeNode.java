@@ -52,7 +52,7 @@ public class CategoricalDecisionTreeNode extends DecisionTreeNode
 		@param child the child node
 	*/
 	public void addBranch(String val, DecisionTreeNode child) {
-		child.setLabel(val);
+		//child.setLabel(val);
 		outputToChildMap.put(val, child);
 		children.add(child);
 		branchLabels.add(val);
@@ -78,11 +78,10 @@ public class CategoricalDecisionTreeNode extends DecisionTreeNode
 		@param row the row of the table to evaluate
 		@return the result of evaluating the record
 	*/
-	public Object evaluate(VerticalTable vt, int row, int outputCol) {
-		String output = vt.getString(row, outputCol);
+	public Object evaluate(VerticalTable vt, int row) {
 
 		if(isLeaf()) {
-			incrementOutputTally(output);
+			incrementOutputTally(label);
 			return label;
 		}
 
@@ -108,8 +107,7 @@ public class CategoricalDecisionTreeNode extends DecisionTreeNode
 		if(outputToChildMap.containsKey(s)) {
 			DecisionTreeNode dtn = (DecisionTreeNode)outputToChildMap.get(s);
 			// recurse on the child subtree
-			incrementOutputTally(output);
-			return dtn.evaluate(vt, row, outputCol);
+			return dtn.evaluate(vt, row);
 		}
 
 		incrementOutputTally(UNKNOWN);

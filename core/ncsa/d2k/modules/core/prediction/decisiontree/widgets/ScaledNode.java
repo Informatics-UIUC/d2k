@@ -65,6 +65,10 @@ public class ScaledNode {
 		}
 	}
 
+	public ScaledNode(ViewableDTModel model, ViewableDTNode node, ScaledNode snode) {
+		this(model, node, snode, null);
+	}
+
 	public void addChild(ScaledNode snode) {
 		children.add(snode);
 	}
@@ -104,12 +108,17 @@ public class ScaledNode {
 	}
 
 	public double getWidth() {
-		//return xspace + gwidth + xspace;
+		//if(blabel == null)
+		//	return xspace + gwidth + xspace;
 		Graphics g = null;
 		while(g == null)
 			g = frame.getGraphics();
 		FontMetrics fm = g.getFontMetrics();
-		int strwid1 = fm.stringWidth(blabel);
+		int strwid1;
+		if(blabel != null)
+			strwid1 = fm.stringWidth(blabel);
+		else
+			strwid1 = 0;
 
 		double w1 = xspace+(gwidth/2);
 		double w2 = strwid1+(gwidth/2);

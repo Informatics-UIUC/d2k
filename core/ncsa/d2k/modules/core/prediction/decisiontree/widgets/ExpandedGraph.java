@@ -90,7 +90,10 @@ public class ExpandedGraph extends JPanel {
 		values = new double[outputs.length];
 		for(int index = 0; index < outputs.length; index++){
 			try {
-				values[index] = 100*(double)dnode.getOutputTally(outputs[index])/(double)dnode.getTotal();
+				if(dnode.getTotal() == 0)
+					values[index] = 0;
+				else
+					values[index] = 100*(double)dnode.getOutputTally(outputs[index])/(double)dnode.getTotal();
 			} catch (Exception exception) {
 				System.out.println("Exception from getOutputTally");
 			}

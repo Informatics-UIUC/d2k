@@ -81,6 +81,10 @@ public class ViewNode {
 		}
 	}
 
+	public ViewNode(ViewableDTModel model, ViewableDTNode node, ViewNode vnode) {
+		this(model, node, vnode, null);
+	}
+
 	public void addChild(ViewNode vnode) {
 		children.add(vnode);
 	}
@@ -124,14 +128,19 @@ public class ViewNode {
 	}
 
 	public double getWidth() {
-		//if(!left && !right)
+		//if(blabel == null)
 		//	return xspace + gwidth+ xspace;
 
 		Graphics g = null;
 		while(g == null)
 			g = frame.getGraphics();
 		FontMetrics fm = g.getFontMetrics();
-		int strwid1 = fm.stringWidth(blabel);
+		int strwid1;
+		if(blabel != null)
+			strwid1 = fm.stringWidth(blabel);
+		else
+			strwid1 = 0;
+		//int strwid1 = fm.stringWidth(blabel);
 
 		double w1 = xspace+(gwidth/2);
 		double w2 = strwid1+(gwidth/2);

@@ -83,11 +83,10 @@ public class NumericDecisionTreeNode extends DecisionTreeNode
 		@param row the row of the table to evaluate
 		@return the result of evaluating the record
 	*/
-	public Object evaluate(VerticalTable vt, int row, int outputCol) {
-		String output = vt.getString(row, outputCol);
+	public Object evaluate(VerticalTable vt, int row) {
 
 		if(isLeaf()) {
-			incrementOutputTally(output);
+			parent.incrementOutputTally(label);
 			return label;
 		}
 
@@ -112,14 +111,12 @@ public class NumericDecisionTreeNode extends DecisionTreeNode
 		// go left if d is less than split value
 		if(d < splitValue) {
 			DecisionTreeNode dtn = (DecisionTreeNode)children.get(LEFT);
-			incrementOutputTally(output);
-			return dtn.evaluate(vt, row, outputCol);
+			return dtn.evaluate(vt, row);
 		}
 		// otherwise go right
 		else {
 			DecisionTreeNode dtn = (DecisionTreeNode)children.get(RIGHT);
-			incrementOutputTally(output);
-			return dtn.evaluate(vt, row, outputCol);
+			return dtn.evaluate(vt, row);
 		}
 	}
 }

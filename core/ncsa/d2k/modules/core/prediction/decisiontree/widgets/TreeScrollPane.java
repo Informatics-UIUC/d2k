@@ -84,7 +84,7 @@ public class TreeScrollPane extends JScrollPane {
 
 			dmodel = model;
 			droot = dmodel.getViewableRoot();
-			vroot = new ViewNode(dmodel, droot, null, "");
+			vroot = new ViewNode(dmodel, droot, null);
 
 			findMaximumDepth(droot);
 			buildViewTree(droot, vroot);
@@ -138,10 +138,10 @@ public class TreeScrollPane extends JScrollPane {
 				ViewNode vchild;
 				if( index == 0 )
 					vchild = new ViewNode(dmodel, dchild, vnode, vnode.getBranchLabel(index));
-				else if(index == dnode.getNumChildren())
+				else if(index == dnode.getNumChildren()-1)
 					vchild = new ViewNode(dmodel, dchild, vnode, vnode.getBranchLabel(index));
 				else
-					vchild = new ViewNode(dmodel, dchild, vnode, vnode.getBranchLabel(index));
+					vchild = new ViewNode(dmodel, dchild, vnode);
 				vnode.addChild(vchild);
 				buildViewTree(dchild, vchild);
 			}
