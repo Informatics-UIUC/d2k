@@ -34,6 +34,8 @@ public class DecisionTreeModel extends PredictionModelModule
 	private String[] inputTypes;
 	private String[] outputTypes;
 
+	private String [] classNames;
+
 	/**
 		Constructor
 		@param rt the root of the decision tree
@@ -64,6 +66,8 @@ public class DecisionTreeModel extends PredictionModelModule
 			else
 				outputTypes[i] = "Text";
 		}
+
+		classNames = uniqueValues(table, outputFeatures[0]);
 	}
 
 	public String getModuleInfo() {
@@ -137,6 +141,14 @@ public class DecisionTreeModel extends PredictionModelModule
 
 	public String [] getOutputFeatureTypes() {
 		return outputTypes;
+	}
+
+	/**
+		Get the class names.
+		@return the class names
+	*/
+  	public final String []getClassNames() {
+		return classNames;
 	}
 
 	/**
