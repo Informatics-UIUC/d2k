@@ -130,7 +130,8 @@ public class ExampleTableImpl
     }
     //copy the transformations
     try {
-      transformations = (ArrayList) ( (ArrayList) ( (MutableTable) table).
+      if(table instanceof MutableTable)
+        transformations = (ArrayList) ( (ArrayList) ( (MutableTable) table).
                                      getTransformations()).clone();
     }
     catch (Exception e) {
