@@ -26,6 +26,8 @@ public class ClusterBarChart extends BarChart {
   // Data
   private MutableTable mutable;
 
+  private int longest_font_width_z;
+
   public ClusterBarChart(Table table, DataSet set, GraphSettings settings, int xincrement, int yincrement) throws Exception {
     super(table, set, settings);
 
@@ -59,7 +61,7 @@ public class ClusterBarChart extends BarChart {
     String label = mutable.getString(0, set.x);
     HashSet runset = new HashSet(valueset);
     int rows = mutable.getNumRows();
-    for (int row=0; row < rows; row++) {
+    for (int row=0; row <= rows; row++) {
       String runlabel = mutable.getString(row, set.x);
       String runtime = mutable.getString(row, set.z);
 
@@ -87,6 +89,7 @@ public class ClusterBarChart extends BarChart {
 
     // Include bins for spacing runs
     // Impacts mapping of bins to table values
+    runs--;
     bins = (runsize+1)*runs;
   }
 
@@ -116,6 +119,15 @@ public class ClusterBarChart extends BarChart {
       yvalue += yvalueincrement;
     }
 
+    // Z axis
+    for (int run=0; run < runs; run++) {
+      String value = mutable.getString(run*runsize, set.z);
+
+      int stringwidth = metrics.stringWidth(value);
+      if (stringwidth > longest_font_width_x)
+        longest_font_width_z = stringwidth;
+    }
+
     // Determine offsets
     if (!settings.displaylegend) {
       legendheight = 0;
@@ -129,9 +141,10 @@ public class ClusterBarChart extends BarChart {
         if (stringwidth > legendwidth)
           legendwidth = stringwidth;
       }
+      legendwidth = Math.max(legendwidth, longest_font_width_z);
 
-      legendwidth += 4*smallspace+samplecolorsize;
-      legendheight = (values.length*fontheight)+(fontheight-samplecolorsize);
+      legendwidth += 3*smallspace+samplecolorsize;
+      legendheight = (fontheight+smallspace)+(values.length*fontheight)+(fontheight-samplecolorsize);
     }
 
     // Primary offsets
@@ -209,17 +222,17 @@ public class ClusterBarChart extends BarChart {
     double x = leftoffset+xoffsetincrement/2;
 
     // Map bins to runs
-    int multiplier = 1;
+    int counter = 0;
     int offset = 0;
 
     for (int bin=0; bin < bins; bin++) {
 
-      if (bin != runsize*multiplier+offset)
-        g2.draw(new Line2D.Double(x, graphheight-bottomoffset-tickmarksize, x, graphheight-bottomoffset+tickmarksize));
+      if (counter == runsize)
+        counter = 0;
 
       else {
-        multiplier++;
-        offset++;
+        g2.draw(new Line2D.Double(x, graphheight-bottomoffset-tickmarksize, x, graphheight-bottomoffset+tickmarksize));
+        counter++;
       }
 
       x += xoffsetincrement;
@@ -288,13 +301,17 @@ public class ClusterBarChart extends BarChart {
     double x = legendleftoffset;
     double y = legendtopoffset;
 
+    g2.drawString(mutable.getColumnLabel(set.z), (int) x, (int) y);
+
+    y += smallspace;
+
     g2.draw(new Rectangle.Double(x, y, legendwidth, legendheight));
 
     x += smallspace;
     y += fontheight-samplecolorsize;
 
     String[] values = new String[runsize];
-    table.getSubset(0, runsize).getColumn(values, set.z);
+    mutable.getSubset(0, runsize).getColumn(values, set.z);
     for (int index=0; index < values.length; index++) {
       double gradient = (double) ((double) index)/((double) runsize);
       g2.setColor(new Color((int)(255 - 255*gradient), 25, (int)(255*gradient)));
@@ -308,7 +325,7 @@ public class ClusterBarChart extends BarChart {
     y = legendtopoffset;
 
     x += 2*smallspace+samplecolorsize;
-    y += fontheight;
+    y += fontheight+smallspace;
 
     for (int index=0; index < values.length; index++) {
       String value = values[index];
@@ -322,13 +339,13 @@ public class ClusterBarChart extends BarChart {
     double barwidth = xoffsetincrement;
 
     // Map bins to runs
-    int multiplier = 1;
+    int counter = 0;
     int offset = 0;
 
     for (int bin=0; bin < bins; bin++) {
 
-      if (bin == runsize*multiplier+offset) {
-        multiplier++;
+      if (counter == runsize) {
+        counter = 0;
         offset++;
       }
 
@@ -342,6 +359,8 @@ public class ClusterBarChart extends BarChart {
         g2.fill(new Rectangle2D.Double(x, y, barwidth, barheight));
         g2.setColor(Color.black);
         g2.draw(new Rectangle2D.Double(x, y, barwidth, barheight));
+
+        counter++;
       }
 
       x += xoffsetincrement;
