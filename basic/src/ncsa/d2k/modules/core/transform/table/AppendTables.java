@@ -847,7 +847,19 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 //          column-oriented.
 
 
-//QA comments
-// 10/23/03 - vered started qa process.
-//            the module throws an exception  when trying to load an itinerary
-//            with it.
+
+
+     /**
+       QA comments
+
+       10/23/03 - vered started qa process.
+          the module throws an exception  when trying to load an itinerary
+          with it.
+
+      10/24/03 - line 283 throws array index out of bound exception
+             because the internal of StringColumn is memory saving
+             and alocates a String for each unique value in the column, only.
+             need to send a different parameter to arraycopy or replace it by a special
+             copying method.
+
+       */

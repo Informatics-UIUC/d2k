@@ -598,3 +598,14 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 // WISH - mark filler values as missing values for future support of missing values
 // WISH - support for multiple-column-key
 
+
+           /**
+           * 10-24-03: vered started QA process
+           * an itinerary containing this module cannot be loaded. and classes cannot be
+           * loaded too while said itinerary is open.
+           *
+           * Module does not handle missing values well: the new appended table does
+      *      not "know" that some values are missing, apparently the missing values
+      *      array is not updated. whereas values that were missing are represented by
+      *      default value for missing values (for example 0.0 for doubles).
+            */

@@ -187,4 +187,5 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 //QA Comments
 // 10/23/03 - Vered started QA process.
 //does not handle missing values well. bug in implementation of swapRows.
+//no swapping is done for the missing values array...
 //awaiting fix of tables.
