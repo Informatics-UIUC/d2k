@@ -290,7 +290,14 @@ public class SQLGetBarChartFromCube extends UIModule {
       else if (src == displayBtn) {
         Object[] values = selectedModel.toArray();
         String[] retVal = new String[values.length];
-        if (cubeTableName.getText().length()>0 &&
+        if (useCodeBook.getState() && bookName.getText().length()<=0) {
+          // The user has not chosen a code book yet
+          JOptionPane.showMessageDialog(msgBoard,
+            "You must choose a code book.", "Error",
+            JOptionPane.ERROR_MESSAGE);
+          System.out.println("There is no code book selected.");
+        }
+        else if (cubeTableName.getText().length()>0 &&
             retVal.length > 0 &&
             cubeTableName.getText().toString().indexOf("_CUBE")>=0) {
           if (useCodeBook.getState()) {
