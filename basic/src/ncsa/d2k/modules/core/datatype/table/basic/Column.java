@@ -291,7 +291,12 @@ public interface Column extends java.io.Serializable {
 	*/
 	public Column getSubset( int pos, int len );
 
-        public Column getSubset(int[] rows);
+	/**
+	 * Get a subset indexed by those indices in the int array passed in.
+	 * @param rows the indices of the rows to include
+	 * @return a subset of the column.
+	 */
+    public Column getSubset(int[] rows);
 
 	/**
 		Set the entry at the given position to newEntry.
