@@ -179,11 +179,9 @@ public class SQLCreateBinTree extends DataPrepModule {
 
 						if (bn[k].equals("Unknown")) condition = an[j] + " is null";
 						//else System.out.println("not unknown");
-						//condition = bt.getCondition(cn[i],an[j],bn[k]);
-						//System.out.println("condition1" + condition);
 						//System.out.println("cn, an, bn, BIN Condition: "
-						 //              + cn[i] + " " + an[j] + " "
-						  //            + bn[k] + " " + condition);
+						  //             + cn[i] + " " + an[j] + " "
+						    //          + bn[k] + " " + condition);
 						
 
 						String query =

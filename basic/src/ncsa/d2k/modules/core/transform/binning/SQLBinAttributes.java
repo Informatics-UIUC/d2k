@@ -42,7 +42,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
     private BinDescriptor[] savedBins;
     public Object[] getSavedBins() { return savedBins; }
     public void setSavedBins(Object[] value) { savedBins = (BinDescriptor[])value; }
-
+	public ExampleTable etbl= null;
 
     /**
      * get the name of the module
@@ -108,6 +108,8 @@ public class SQLBinAttributes extends HeadlessUIModule {
                 return "Selected Table";
             case 2:
                 return "Selected Attributes";
+                case 3:
+                 return "Meta Data Example Table";
             default:
                 return  "No such input";
         }
@@ -125,6 +127,8 @@ public class SQLBinAttributes extends HeadlessUIModule {
                 return "The selected table from the database.";
             case 2:
                 return "The attributes selected from the specified table.";
+                case 3:
+                 return "An ExampleTable containing metadata about the database table";
             default:
                 return  "No such input";
         }
@@ -138,7 +142,8 @@ public class SQLBinAttributes extends HeadlessUIModule {
         String[] types =  {
             "ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
             "java.lang.String",
-            "[Ljava.lang.String;"
+            "[Ljava.lang.String;",
+            "ncsa.d2k.modules.core.datatype.table.ExampleTable"
         };
         return  types;
     }
@@ -375,17 +380,26 @@ public class SQLBinAttributes extends HeadlessUIModule {
             if(id == 0) {
                 connectionWrapper = (ConnectionWrapper)o;
                 numArrived = 1;
+               // System.out.println("input one ");
             }
             if(id == 1) {
                 tableName = (String)o;
                 numArrived++;
+				//System.out.println("input two ");
             }
             if(id == 2) {
                 fieldNames = (String[])o;
                 numArrived++;
+				//System.out.println("input three ");
             }
 
-            if(numArrived == 3) {
+			if (isInputPipeConnected(3) && id ==3) {
+				//System.out.println("input 3 connected id = " + id);
+							 etbl = (ExampleTable)o;
+			numArrived ++;
+			}
+
+            if(numArrived == 3 ) {
                 binCounts = new SQLBinCounts(tableName, fieldNames, connectionWrapper);
 
                 // clear all text fields and lists...
@@ -1094,7 +1108,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
                     for (int i = 0; i < bins.length; i++)
                        savedBins[i] = bins[i];
 
-                    BinTransform bt = new BinTransform(null, bins, createInNewColumn.isSelected());
+                    BinTransform bt = new BinTransform(etbl, bins, createInNewColumn.isSelected());
                               pushOutput(bt, 0);
                     viewDone("Done");
                   // }
@@ -1374,10 +1388,11 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                 if (i == colIdx[j]) {
                   // the number of bins is (max - min) / (bin width)
                   int num = (int)Math.ceil((maxes[i] - mins[i])/intrval);
-                  double[] binMaxes = new double[num-1];
+                  //Anca replaced num-1 with num to fix bug  175
+                  double[] binMaxes = new double[num];
                  //Anca replaced: binMaxes[0] = mins[i] + intrval;
-                 //System.out.println("interval " + intrval);
-                 //System.out.println("binMaxes[0] " + binMaxes[0] + " mins[i]" + mins[i]);
+                 //System.out.println("interval " + intrval + " i " + i + " num " + num);
+                 //System.out.println("binMaxes[0]  " + binMaxes[0] + " mins[i]" + mins[i]);
                   binMaxes[0] = mins[i];
                   // add the first bin manually
                   BinDescriptor nbd = createMinNumericBinDescriptor(i, binMaxes[0]);
@@ -1439,7 +1454,8 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                            tableName + " group by " + colName;
                 stmt = con.createStatement();
                 ResultSet groupSet = stmt.executeQuery(queryStr);
-                int itemCnt = 0;
+                //ANCA changed int itemCnt = 0; to the line below to fix bug 154
+                int itemCnt = -1;
                 while (groupSet.next()) {
                   itemCnt += groupSet.getInt(2);
                   db1 = new Double(groupSet.getDouble(1));
@@ -1447,7 +1463,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                     // itemCnt >= specified weight, add the value to the list
                     list.add(db1);
                     // reset itemCnt
-                    itemCnt = 0;
+                    itemCnt = -1;
                   }
                 }
                 // put anything left in a bin
@@ -1507,9 +1523,11 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                 double max) {
             StringBuffer nameBuffer = new StringBuffer();
             nameBuffer.append(OPEN_PAREN);
-            nameBuffer.append(nf.format(min));
+            //nameBuffer.append(nf.format(min));
+			nameBuffer.append(min);
             nameBuffer.append(COLON);
-            nameBuffer.append(nf.format(max));
+            //nameBuffer.append(nf.format(max));
+			nameBuffer.append(max);
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
                     min, max, (String)fieldNames[col]);
@@ -1529,7 +1547,8 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
             nameBuffer.append(OPEN_BRACKET);
             nameBuffer.append(DOTS);
             nameBuffer.append(COLON);
-            nameBuffer.append(nf.format(max));
+            //nameBuffer.append(nf.format(max));
+			nameBuffer.append(max);
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
                     Double.NEGATIVE_INFINITY, max, (String)fieldNames[col]);
@@ -1546,7 +1565,8 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
         private BinDescriptor createMaxNumericBinDescriptor (int col, double min) {
             StringBuffer nameBuffer = new StringBuffer();
             nameBuffer.append(OPEN_PAREN);
-            nameBuffer.append(nf.format(min));
+            //nameBuffer.append(nf.format(min));
+			nameBuffer.append(min);
             nameBuffer.append(COLON);
             nameBuffer.append(DOTS);
             nameBuffer.append(CLOSE_BRACKET);
@@ -1691,6 +1711,11 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
       wrapper = (ConnectionWrapper) pullInput(0);
       String tableName = (String)pullInput(1);
       String[] fieldNames = (String[]) pullInput(2);
+     ExampleTable etbl = null; 
+	  if (isInputPipeConnected(3)) {
+				etbl = (ExampleTable)pullInput(3);
+		 }
+
 
       //verifying that tableName is in the data base
     if(!StaticMethods.getAvailableTables(wrapper).containsKey(tableName.toUpperCase()))
@@ -1738,7 +1763,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
         */
 
 
-      pushOutput(new BinTransform(null, savedBins, newColumn), 0);
+      pushOutput(new BinTransform(etbl, savedBins, newColumn), 0);
 
     }//doit
     //headless conversion support
