@@ -267,6 +267,14 @@ public class TableUtilities
     return set;
   }
 
+  public static int getNumOfValues(Table table, int colNum) {
+  	String[] values = TableUtilities.uniqueValues(table,colNum);
+  	if (values != null)
+  		return values.length;
+  	else
+  		return 0;
+  }
+  
   public static boolean isKeyColumn (Table table, int colNum)
   {
     int numRows = table.getNumRows ();
@@ -469,6 +477,41 @@ public class TableUtilities
     return sample_median;
   }
 
+  /**
+   * Get the mode of a column of a Table.
+   * @param table
+   * @param colNum
+   * @return
+   */
+  public static String mode(Table table, int colNum) {
+
+  	HashMap uniques = TableUtilities.uniqueValuesWithCounts(table,colNum);
+  	Iterator ii = uniques.keySet().iterator();
+  	int [] counts = new int[uniques.size()];
+  	String [] values = new String[uniques.size()];
+  	int idx =0;
+  	while(ii.hasNext()) {
+  		values[idx] = (String)ii.next();
+  		counts[idx] = ((Integer)uniques.get(values[idx])).intValue();
+  		idx++;
+  	}
+
+  	// return 0 if all values are missing
+  	if (idx == 1 && table.isValueMissing(0,colNum) )
+  		return new String("0");
+
+  	int maximum = 0;
+  	int maxIndex = 0;
+
+  	for (int i = 0; i < counts.length; i++) {
+  		if ((i == 0) || (counts[i] > maximum)) {
+  			maxIndex = i;
+  			maximum = counts[i];
+  		}
+  	}
+
+  	return values[maxIndex];
+  }
   /**
    * Get the standard deviation of a column of a table.
    * Returns 0 if no entries in column.
