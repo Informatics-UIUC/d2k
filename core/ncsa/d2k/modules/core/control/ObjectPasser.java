@@ -13,6 +13,7 @@ public class ObjectPasser extends DataPrepModule
 	//////////////////////
 	//d2k Props
 	////////////////////
+	boolean debug=false;
 	String inputName="Object In";
 
 	String outputName="Object Out";
@@ -44,6 +45,8 @@ public class ObjectPasser extends DataPrepModule
 		does it
 	*/
 	public void doit() throws Exception{
+		if(debug)
+			System.out.println(getAlias()+": Firing.");
 		pushOutput(pullInput(0), 0);
 	}
 		
@@ -117,6 +120,12 @@ public class ObjectPasser extends DataPrepModule
 	}
 	public String getOutput_Name(){
 		return outputName;
+	}
+	public boolean getDebug(){
+		return debug;
+	}
+	public void setDebug(boolean b){
+		debug=b;
 	}
 
 	/*
