@@ -34,4 +34,13 @@ First Table,  ncsa.d2k.modules.core.datatype.table.Table,      Input,  First tab
 Second Table, ncsa.d2k.modules.core.datatype.table.Table,      Input,  Second table to combine,            AppendTables (Append Tables)
 Result Table, ncsa.d2k.modules.core.datatype.table.eTable,     Output, Table resulting from combination,   AppendTables (Append Tables)
 Table,        ncsa.d2k.modules.core.datatype.table.Table,      Input,  Table to write, 		           WriteTableToFile (Write Table To File)
+Table,	      ncsa.d2k.modules.core.datatype.table.Table,      Input,  A Table with columns to bin,        BinColumns (Bin Columns)
+
+Example Table, ncsa.d2k.modules.core.datatype.table.ExampleTable, Input, Example Table containing the names of the input/output features, CreateBinTree (Create Bin Tree)
+
+Binning Transformation, ncsa.d2k.modules.core.datatype.table.transformations.BinTransform, Output, A Binning Transformation...,  BinColumns (Bin Columns)
+Binning Transformation, ncsa.d2k.modules.core.datatype.table.transformations.BinTransform, Input, Binning Transformation containing..., CreateBinTree (Create Bin Tree)
+
+Bin Tree, ncsa.d2k.modules.core.transform.binning.BinTree, Output, Bin Tree structure without counts, CreateBinTree (Create Bin Tree)
+
 
