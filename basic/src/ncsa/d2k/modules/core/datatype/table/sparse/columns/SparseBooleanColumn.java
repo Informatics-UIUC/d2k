@@ -119,7 +119,8 @@ public class SparseBooleanColumn
       return 0;
     }
     else {
-      return 1;
+      if(b1)       return 1;
+      else return -1;
     }
   }
 
@@ -559,8 +560,8 @@ public class SparseBooleanColumn
     if (val <= 1) {
       return val;
     }
-
-    return compareBooleans(getBoolean(r1), getBoolean(r2));
+//VERED - changed this so that true is greater than false.
+    return (getInt(r1) - getInt(r2));
   }
 
 

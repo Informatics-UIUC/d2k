@@ -61,8 +61,11 @@ public class SparseExample extends SparseRow implements Example {
    * @param i
    */
   final public void setIndex(int i) {
-          this.index = this.subset[i];
+          this.redirection = this.subset[i];
+          index = i;
   }
+
+  protected int redirection;
 
   /**
    * Get the ith input as a double.
@@ -70,7 +73,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the ith input as a double
    */
   final public double getInputDouble(int i) {
-          return inputColumns [i].getDouble(index);
+          return inputColumns [i].getDouble(redirection);
   }
 
   /**
@@ -79,7 +82,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the oth output as a double
    */
   final public double getOutputDouble(int o) {
-          return outputColumns [o].getDouble(index);
+          return outputColumns [o].getDouble(redirection);
   }
 
   /**
@@ -88,7 +91,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the ith input as a String
    */
   final public String getInputString(int i) {
-          return inputColumns [i].getString(index);
+          return inputColumns [i].getString(redirection);
   }
 
   /**
@@ -97,7 +100,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the oth output as a String
    */
   final public String getOutputString(int o) {
-          return outputColumns [o].getString(index);
+          return outputColumns [o].getString(redirection);
   }
 
   /**
@@ -106,7 +109,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the ith input as an int
    */
   final public int getInputInt(int i) {
-          return inputColumns [i].getInt(index);
+          return inputColumns [i].getInt(redirection);
   }
 
   /**
@@ -115,7 +118,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the oth output as an int
    */
   final public int getOutputInt(int o) {
-          return outputColumns [o].getInt(index);
+          return outputColumns [o].getInt(redirection);
   }
 
   /**
@@ -124,7 +127,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the ith input as a float
    */
   final public float getInputFloat(int i) {
-          return inputColumns [i].getFloat(index);
+          return inputColumns [i].getFloat(redirection);
   }
 
   /**
@@ -133,7 +136,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the oth output as a float
    */
   final public float getOutputFloat(int o) {
-          return outputColumns [o].getFloat(index);
+          return outputColumns [o].getFloat(redirection);
   }
 
   /**
@@ -142,7 +145,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the ith input as a short
    */
   final public short getInputShort(int i) {
-          return inputColumns [i].getShort(index);
+          return inputColumns [i].getShort(redirection);
   }
 
   /**
@@ -151,7 +154,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the oth output as a short
    */
   final public short getOutputShort(int o) {
-          return outputColumns [o].getShort(index);
+          return outputColumns [o].getShort(redirection);
   }
 
   /**
@@ -160,7 +163,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the ith input as a long
    */
   final public long getInputLong(int i) {
-          return inputColumns [i].getLong(index);
+          return inputColumns [i].getLong(redirection);
   }
 
   /**
@@ -169,7 +172,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the ith output as a long
    */
   final public long getOutputLong(int o) {
-          return outputColumns [o].getLong(index);
+          return outputColumns [o].getLong(redirection);
   }
 
   /**
@@ -178,7 +181,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the ith input as a byte
    */
   final public byte getInputByte(int i) {
-          return inputColumns [i].getByte(index);
+          return inputColumns [i].getByte(redirection);
   }
 
   /**
@@ -187,7 +190,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the oth output as a byte
    */
   final public byte getOutputByte(int o) {
-          return outputColumns [o].getByte(index);
+          return outputColumns [o].getByte(redirection);
   }
 
   /**
@@ -196,7 +199,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the ith input as an Object.
    */
   final public Object getInputObject(int i) {
-          return inputColumns [i].getObject(index);
+          return inputColumns [i].getObject(redirection);
   }
 
   /**
@@ -205,7 +208,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the oth output as an Object
    */
   final public Object getOutputObject(int o) {
-          return outputColumns [o].getObject(index);
+          return outputColumns [o].getObject(redirection);
   }
 
   /**
@@ -214,7 +217,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the ith input as a char
    */
   final public char getInputChar(int i) {
-          return inputColumns [i].getChar(index);
+          return inputColumns [i].getChar(redirection);
   }
 
   /**
@@ -223,7 +226,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the oth output as a char
    */
   final public char getOutputChar(int o) {
-          return outputColumns [o].getChar(index);
+          return outputColumns [o].getChar(redirection);
   }
 
   /**
@@ -232,7 +235,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the ith input as chars
    */
   final public char[] getInputChars(int i) {
-          return inputColumns [i].getChars(index);
+          return inputColumns [i].getChars(redirection);
   }
 
   /**
@@ -241,7 +244,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the oth output as chars
    */
   final public char[] getOutputChars(int o) {
-          return outputColumns [o].getChars(index);
+          return outputColumns [o].getChars(redirection);
   }
 
   /**
@@ -250,7 +253,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the ith input as bytes.
    */
   final public byte[] getInputBytes(int i) {
-          return inputColumns [i].getBytes(index);
+          return inputColumns [i].getBytes(redirection);
   }
 
   /**
@@ -259,7 +262,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the oth output as bytes.
    */
   final public byte[] getOutputBytes(int o) {
-          return outputColumns [o].getBytes(index);
+          return outputColumns [o].getBytes(redirection);
   }
 
   /**
@@ -268,7 +271,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the ith input as a boolean
    */
   final public boolean getInputBoolean(int i) {
-          return inputColumns [i].getBoolean(index);
+          return inputColumns [i].getBoolean(redirection);
   }
 
   /**
@@ -277,7 +280,7 @@ public class SparseExample extends SparseRow implements Example {
    * @return the oth output as a boolean
    */
   final public boolean getOutputBoolean(int o) {
-          return outputColumns [o].getBoolean(index);
+          return outputColumns [o].getBoolean(redirection);
   }
 
   //ANCA: method for comparing two ExampleImpl objects.
@@ -486,3 +489,11 @@ public class SparseExample extends SparseRow implements Example {
 
 
 }//SparseExample
+
+
+/**
+ * VERED: changes to this file made June first:
+ * added a data member redirection, which is subset[index].
+ * this way, inherited methods use index, which is not redirected.
+ * and this object methods use redirection.
+*/

@@ -60,6 +60,8 @@ public class SparseSubsetTable extends SparseMutableTable {
       for (int i = 0; i < this.subset.length; i++) {
         this.subset[i] = i;
       }
+
+
   }
 
 
@@ -292,6 +294,15 @@ public class SparseSubsetTable extends SparseMutableTable {
     this.subset[pos2] = swap;
   }
 
+  public Table reorderRows(int[] newOrder) {
+    SparseSubsetTable retVal = new SparseSubsetTable(this);
+    retVal.setSubset(resubset(newOrder));
+    return retVal;
+
+    }
+
+
+
 
   /**
    * Get a Column from the table. The columns must be compressed to provide
@@ -357,10 +368,12 @@ public class SparseSubsetTable extends SparseMutableTable {
 
   /**
    * Sets the reference to the internal representation of this Table.
+   * any columns that were in this Table are trashed.
    * @param newColumns a new internal representation for this Table
    */
   public void setColumns (Column[] newColumns) {
-     for (int i = 0 ; i < this.getNumColumns() ; i++){
+    this.removeColumns(0, getNumColumns());
+     for (int i = 0 ; i < newColumns.length; i++){
        this.setColumn(newColumns[i], i);
      }
   }
@@ -557,7 +570,7 @@ public class SparseSubsetTable extends SparseMutableTable {
     SparseSubsetTable sst = new SparseSubsetTable(smt, newsubset);
     sst.setLabel(getLabel());
     sst.setComment(getComment());
-    return smt;
+    return sst;
   }
 
   /**
@@ -1079,8 +1092,9 @@ public class SparseSubsetTable extends SparseMutableTable {
 
 //VERED: added this method, for testing purposes
   public boolean equals(Object st) {
+
    SparseSubsetTable _st = (SparseSubsetTable) st;
-   super.equals(_st);
+   if (!super.equals(_st)) return false;
    int[] _subset = _st.getSubset();
 
    if(_subset.length != subset.length) return false;

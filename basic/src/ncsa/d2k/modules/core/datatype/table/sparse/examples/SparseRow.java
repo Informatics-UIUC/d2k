@@ -7,7 +7,17 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.*;
 
 import java.io.Serializable;
+/**
+ *
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2004</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ *
 
+ */
 public class SparseRow implements Row, Serializable {
 
         /** this is the index of the row to access. */
@@ -55,9 +65,13 @@ public class SparseRow implements Row, Serializable {
          * Get the ith input as a String.
          * @param i the input index
          * @return the ith input as a String
+         *
+         *
          */
         final public String getString(int i) {
                 return table.getColumn(i).getString(index);
+                //return table.getString(i,index);
+
         }
 
         /**

@@ -262,11 +262,11 @@ public class VHashService {
         int retVal = -1;
         if(!map.containsValue(val)) return retVal;
 
-        TIntIntIterator it = map.iterator();
-        while(it.hasNext() && retVal == -1){
-          int currKey = it.key();
-          int currVal = map.get(currKey);
-          if(currVal == val) retVal = currKey;
+        int[] keys = map.keys();
+
+        for (int i=0; i<keys.length; i++){
+          int currVal = map.get(keys[i]);
+          if(currVal == val) retVal = keys[i];
         }
         return retVal;
 
@@ -282,12 +282,9 @@ public class VHashService {
        public static int[] getKeys(int[] values, VIntIntHashMap map){
          int[] retVal = new int[values.length];
          VIntIntHashMap tempMap = new VIntIntHashMap (map.size());
-
-         TIntIntIterator it = map.iterator();
-         while(it.hasNext()){
-           int key = it.key();
-           tempMap.put(map.get(key), key);
-         }
+         int[] allKeys = map.keys();
+         for (int i=0; i<allKeys.length; i++)
+            tempMap.put(map.get(allKeys[i]), allKeys[i]);
 
          for(int i=0; i<values.length; i++){
            retVal[i] = tempMap.get(values[i]);

@@ -562,6 +562,7 @@ public class SparseExampleTable
 
   /**
    * Return a copy of this Table.
+   * @todo handle case of an empty example table
    * @return A new Table with a copy of the contents of this table.
    */
   public Table copy() {
@@ -1350,6 +1351,11 @@ public class SparseExampleTable
     }
 
     VIntHashSet temp = (VIntHashSet) rows.get(row);
+    int[] allIdx = temp.toArray();
+   for (int i=0; i<allIdx.length; i++){
+     allIdx[i] = columnRef.get(allIdx[i]);
+   }
+   temp = new VIntHashSet(allIdx);
     int[] tempArr = new int[outputColumns.length];
     int j = 0;
     for (int i = 0; i < outputColumns.length; i++) {
@@ -1380,8 +1386,17 @@ public class SparseExampleTable
     if (!rows.containsKey(row)) {
       return retVal;
     }
+
     VIntHashSet temp = (VIntHashSet) rows.get(row);
-    int[] tempArr = new int[temp.size()];
+    int[] allIdx = temp.toArray();
+    for (int i=0; i<allIdx.length; i++){
+      allIdx[i] = columnRef.get(allIdx[i]);
+    }
+    //now allIdx holds the real indices of the columns.
+    temp = new VIntHashSet(allIdx);
+
+    int[] tempArr =    new int[inputColumns.length];
+
     int j = 0;
     for (int i = 0; i < inputColumns.length; i++) {
       if (temp.contains(inputColumns[i])) {
@@ -1817,7 +1832,7 @@ public class SparseExampleTable
    @param len the number to remove-the length of the range
    */
   public void removeRows(int start, int len) {
-    for (int i = start; i < len; i++) {
+    for (int i = 0; i < len; i++) {
       removeRow(start);
     }
   }
