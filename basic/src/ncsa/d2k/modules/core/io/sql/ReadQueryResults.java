@@ -8,9 +8,14 @@ import java.sql.*;
 /*&%^2 Do not modify this section. */
 /**
 	ReadQueryResults.java
+
+        @todo: [11-21-03] after a decision is made regarding the default values
+               for missing values - change the arguments int he calls for the
+               setter commands in the module.
 */
 //  Modified by Dora Cai on 02/13/03: correct SQL syntax error, add codes to
 //  handle null value in Varchar fields.
+//  Vered added a conditional setting missing value flag to true.
 
 
 public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
@@ -196,6 +201,13 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
                 if (whereClause != null && whereClause.length() > 0)
 			query += " WHERE "+whereClause;
 
+/**
+* @todo: [11-21-03] after a decision is made regarding the default values
+for missing values - change the arguments int he calls for the
+setter commands in the module. (vered)
+*/
+
+
 		// Now populate the table.
 		for (int where = 0; rs.next (); where++)
 			for (int i = 0 ; i < numColumns ; i++) {
@@ -239,8 +251,15 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
                                         default:
                                                 vt.setString(rs.getString (i+1), where, i);
                                                 break;
-				}
-                              }
+				}//switch
+
+                                //vered - added this setting to missing, so that
+                                //the output table would be "aware" of its missing values.
+                                if (rs.getString(i+1) == null) {
+                                 vt.setValueToMissing(true, where, i);
+                               }
+
+                              }//for i
 		this.pushOutput (vt, 0);
 	}
 /*&%^8 Do not modify this section. */
