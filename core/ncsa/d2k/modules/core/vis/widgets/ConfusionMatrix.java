@@ -105,7 +105,15 @@ public class ConfusionMatrix extends JScrollPane {
 					break;
 				}
 			}
+			//try {
 			d[predicted][actual]++;
+			/*}
+			catch(Exception e) {
+				System.out.println("pred: "+predicted);
+				System.out.println("act: "+actual);
+				System.out.println(preds.length);
+				System.out.println(outs.length);
+			}*/
 		}
 
 		correct = 0;

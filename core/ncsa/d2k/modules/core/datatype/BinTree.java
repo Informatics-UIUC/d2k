@@ -13,34 +13,34 @@ import java.io.Serializable;
 	a default tally is incremented.  The number of unknown class names and
 	attribute names are both kept as well.
 */
-public class BinTree extends HashMap implements Serializable, Cloneable {
-	public static String EQUAL_TO = "=";
-	public static String LESS_THAN = "<";
-	public static String GREATER_THAN = ">";
-	public static String LESS_THAN_EQUAL_TO = "<=";
-	public static String GREATER_THAN_EQUAL_TO = ">=";
+public final class BinTree extends HashMap implements Serializable, Cloneable {
+	public static final String EQUAL_TO = "=";
+	public static final String LESS_THAN = "<";
+	public static final String GREATER_THAN = ">";
+	public static final String LESS_THAN_EQUAL_TO = "<=";
+	public static final String GREATER_THAN_EQUAL_TO = ">=";
 
 	/** A lookup table for DefaultTrees */
-	HashMap defaultTree;
+	private HashMap defaultTree;
 	/** The number of unknown classes */
-	int unknownClasses;
+	private int unknownClasses;
 
 	/** The class names */
-	String []classNames;
+	private String []classNames;
 	/** The attribute names */
-	String []attributeNames;
+	private String []attributeNames;
 	/** A quick lookup table for attributes,
 		just contains each item in attributeNames */
-	HashMap attributeList;
+	private HashMap attributeList;
 
 	// the class totals are incremented each time classify() is called.
 	// Since it is called once for each attribute, we must divide the
 	// total by the number of attributes to get the real class total
-	HashMap classTotals;
+	private HashMap classTotals;
 	// the total classified is incremented each time classify() is called.
 	// since it is called once for each attribute, it must be divided
 	// by the number of attributes to get the real totalClassified
-	int totalClassified;
+	private int totalClassified;
 
 	public BinTree() {}
 
@@ -280,8 +280,6 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 		return (int) (totalClassified/attributeNames.length);
 	}
 
-
-
     /**
        Set the total number of items classified.
        @return the total number of items classified
@@ -296,11 +294,11 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
        @return the number of items in class cn
     */
     public int getClassTotal(String cn) {
-	Integer i = (Integer)classTotals.get(cn);
-	if(i == null)
-	    return 0;
-	int tot = i.intValue();
-	return (int)Math.ceil((tot/attributeNames.length));
+		Integer i = (Integer)classTotals.get(cn);
+		if(i == null)
+	 	   return 0;
+		int tot = i.intValue();
+		return (int)Math.ceil((tot/attributeNames.length));
     }
 
     /**
@@ -309,16 +307,8 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
                 @param total the number of items in class cn
     */
     public void setClassTotal(String cn, int total) {
-	classTotals.put(cn, new Integer(total));
+		classTotals.put(cn, new Integer(total));
     }
-
-
-
-
-
-
-
-
 
 	/**
 		Add a default bin for a class and attribute pair.
@@ -436,7 +426,7 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 		return ct.getNumUnknownAttributes();
 	}
 
-    String getCondition (String cn, String an, String bn) {
+    private final String getCondition (String cn, String an, String bn) {
         ClassTree ct = (ClassTree)get(cn);
         if (ct == null)
             return null;
@@ -447,9 +437,7 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
         return b.getCondition(an);
     }
 
-
-
-	void printAll() {
+	private final void printAll() {
 		System.out.println("UNKNOWN CLASSES: "+unknownClasses);
 		Iterator i = keySet().iterator();
 		while(i.hasNext()) {
@@ -472,7 +460,7 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 	/**
 	*/
 	public class ClassTree extends HashMap implements Serializable {
-		int unknownAttributes;
+		private int unknownAttributes;
 
 		ClassTree() {}
 
@@ -650,7 +638,7 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 			return unknownAttributes;
 		}
 
-		void printAll() {
+		private void printAll() {
 			Iterator i = keySet().iterator();
 			while(i.hasNext()) {
 				String key = (String)i.next();
@@ -672,7 +660,7 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 
 			// base case: we make a Numeric or StringEval
 			// we hit the base case if there are no && or || in S
-			if((s.indexOf("&&") == -1) && (s.indexOf("||") == -1)) {
+			if((s.indexOf(AND) == -1) && (s.indexOf(OR) == -1)) {
 				// return a Numeric or StringEval
 				if(numeric) {
 					//System.out.println("create Numeric Eval object: "+s);
@@ -694,11 +682,11 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 			if(pl == null)
 				throw new MalformedEquationException();
 
-			if(pl.conjunction.trim().equals(and)) {
+			if(pl.conjunction.trim().equals(AND)) {
 				//System.out.println(pl.conjunction+": "+s);
 				return new AndList(pl.part1, pl.part2, numeric);
 			}
-			else if(pl.conjunction.trim().equals(or)) {
+			else if(pl.conjunction.trim().equals(OR)) {
 				//System.out.println(pl.conjunction+": "+s);
 				return new OrList(pl.part1, pl.part2, numeric);
 			}
@@ -851,15 +839,11 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 			throw new MalformedEquationException();
 		}
 
-		String []operators = { LESS_THAN_EQUAL_TO, "=<",
+		private String []operators = { LESS_THAN_EQUAL_TO, "=<",
 							GREATER_THAN_EQUAL_TO, "=>",
 							"==", EQUAL_TO, LESS_THAN, GREATER_THAN };
-		String and = "&&";
-		String or = "||";
-		char open = '(';
-		char close = ')';
 
-		String []breakUp(String s, int loc, int len) {
+		private String []breakUp(String s, int loc, int len) {
 			String []retVal = new String[3];
 			retVal[0] = s.substring(0, loc).trim();
 			retVal[1] = s.substring(loc, loc+len).trim();
@@ -867,7 +851,7 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 			return retVal;
 		}
 
-		int countCharacter(String s, char c) {
+		private int countCharacter(String s, char c) {
 			char []str = s.toCharArray();
 			int retVal = 0;
 
@@ -878,11 +862,11 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 			return retVal;
 		}
 
-		PhraseList getPhraseList(String s)
+		private PhraseList getPhraseList(String s)
 			throws MalformedEquationException {
 
 			//System.out.println("getPhraseList: "+s);
-			if( (s.indexOf(and) == -1) && (s.indexOf(or) == -1) )
+			if( (s.indexOf(AND) == -1) && (s.indexOf(OR) == -1) )
 				return null;
 
 			int numOpen = countCharacter(s, open);
@@ -939,10 +923,9 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 				return total;
 			}
 
-                        public void setTotal( int t) {
-			        total = t;
-		        }
-
+            public void setTotal( int t) {
+				total = t;
+		    }
 
 			void decrementTotal(int d) {
 				total = total - d;
@@ -951,10 +934,10 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 
 		/**
 		*/
-		class PhraseList implements Serializable {
-			String part1;
-			String conjunction;
-			String part2;
+		private class PhraseList implements Serializable {
+			private String part1;
+			private String conjunction;
+			private String part2;
 
 			PhraseList() {}
 
@@ -967,7 +950,7 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 
 		/**
 		*/
-		class Evaluate implements Serializable {
+		private class Evaluate implements Serializable {
 			boolean eval(String val) { return false; }
 			boolean eval(double val) { return false; }
 			boolean eval(int val) { return false; }
@@ -980,8 +963,8 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 		/**
 		*/
 		public class Bin extends Evaluate implements Serializable {
-			int tally;
-			Evaluate item;
+			private int tally;
+			private Evaluate item;
 
 			Bin() {}
 
@@ -1034,7 +1017,7 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 
 			void print() {
 				item.print();
-				System.out.println("");
+				System.out.println(EMPTY);
 			}
 
 		    public String getCondition(String an) {
@@ -1052,8 +1035,8 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 		 Loops through the list and only returns true when all items
 		in the list are true.
 		*/
-		class AndList extends Evaluate implements Serializable {
-			LinkedList items;
+		private class AndList extends Evaluate implements Serializable {
+			private LinkedList items;
 
 			AndList() {
 				items = new LinkedList();
@@ -1134,7 +1117,7 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 
 		/**
 		*/
-		class OrList extends Evaluate implements Serializable {
+		private class OrList extends Evaluate implements Serializable {
 			LinkedList items;
 
 			OrList() {
@@ -1210,19 +1193,13 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 			}
 			return cond;
 		    }
-
-
-
-
-
-
 		}
 
 		/**
 		*/
-		class NumericEvaluate extends Evaluate implements Serializable {
-			String operator;
-			double value;
+		private class NumericEvaluate extends Evaluate implements Serializable {
+			private String operator;
+			private double value;
 
 			NumericEvaluate() {}
 
@@ -1266,16 +1243,13 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 
 
 		    String getCondition(String an) {
-			return an + " " + operator + " " + value;
+			return an + SPACE + operator + SPACE + value;
 		    }
-
-
-
 		}
 
 		/**
 		*/
-		class StringEvaluate extends Evaluate implements Serializable {
+		private class StringEvaluate extends Evaluate implements Serializable {
 			String value;
 
 			StringEvaluate() {}
@@ -1301,14 +1275,12 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 			}
 
 
-	               String getCondition(String an) {
-		                 return value + " = " + an; }
-		       }
+	        String getCondition(String an) {
+		    	return value + EQUAL_TO + an; }
+		    }
 	}
 
-
-
-	class DefaultTree extends HashMap implements Serializable {
+	private class DefaultTree extends HashMap implements Serializable {
 
 		DefaultTree() {}
 
@@ -1337,6 +1309,13 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
   public class DuplicateBinNameException extends Exception {}
   public class MalformedEquationException extends Exception {}
   public class AttributeNotFoundException extends Exception {}
+
+  	private static final String AND = "&&";
+  	private static final String OR = "||";
+	private static final char open = '(';
+	private static final char close = ')';
+	private static final String EMPTY = "";
+	private static final String SPACE = " ";
 }
 
 
