@@ -9,10 +9,10 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 /**
  * Read in a file with a single delimiter.
 */
-public class ReadDelimitedFormat extends InputModule
+public class ReadDelimitedFormat extends AbstractDelimitedReader
     implements Serializable, HasNames, HasProperties {
 
-	protected static final String STRING_TYPE = "String";
+	/*protected static final String STRING_TYPE = "String";
 	protected static final String FLOAT_TYPE = "float";
 	protected static final String DOUBLE_TYPE = "double";
 	protected static final String INT_TYPE = "int";
@@ -24,9 +24,10 @@ public class ReadDelimitedFormat extends InputModule
 	protected static final String IN = "in";
 	protected static final String OUT = "out";
 	protected static final String OMIT = "omit";
+	*/
 
 	/** the delimiter identified. */
-	protected char delimiterOne;
+	//protected char delimiterOne;
 
 	/** the datatype for each column. */
 	transient protected ArrayList typesList;
@@ -45,8 +46,6 @@ public class ReadDelimitedFormat extends InputModule
 
 	/** set if the in/out variables are specified */
 	transient protected boolean hasVariables = false;
-
-	private String comment = "%";
 
 	/** create DoubleColumns for numeric values, or StringColumns otherwise */
 	protected boolean useStringAndDouble = false;
@@ -264,7 +263,7 @@ public class ReadDelimitedFormat extends InputModule
 		numerically, return true.  Otherwise return false.
 		@param column the column to test
 		@return true if column contains only numeric data, false otherwise
-	*/
+	/
 	protected boolean isNumericColumn(Column column) {
         int numRows = column.getNumRows();
 		for(int row = 0; row < numRows; row++) {
@@ -276,14 +275,14 @@ public class ReadDelimitedFormat extends InputModule
 			}
 		}
 		return true;
-	}
+	}*/
 
 	/**
 		Create a column given the type and size.
 		@param type the type of column to create
 		@param size the initial size of the column
 		@return a new, empty column
-	*/
+	/
 	protected Column createColumn(String type, int size) {
 		if(type.compareToIgnoreCase(STRING_TYPE) == 0)
 			return new StringColumn(size);
@@ -305,13 +304,13 @@ public class ReadDelimitedFormat extends InputModule
 			return new ShortColumn(size);
 		else
 			return new StringColumn(size);
-	}
+	}*/
 
 	/**
 		Create a DoubleColumn from a ByteArrayPointerColumn
 		@param sc the original column
 		@return a DoubleColumn with the values from sc
-	*/
+	/
 	protected DoubleColumn toDoubleColumn(ContinuousCharArrayColumn sc) {
 		int numRows = sc.getNumRows ();
 		DoubleColumn retVal = new DoubleColumn(numRows);
@@ -321,13 +320,13 @@ public class ReadDelimitedFormat extends InputModule
 		retVal.setLabel(sc.getLabel());
 		retVal.setComment(sc.getComment());
 		return retVal;
-	}
+	}*/
 
 	/**
 		Create a StringColumn from a ByteArrayPointerColumn
 		@param sc the original column
 		@return a StringColumn with the values from sc
-	*/
+	/
 	protected StringColumn toStringColumn(ContinuousCharArrayColumn sc) {
 		int numRows = sc.getNumRows ();
 		StringColumn retVal = new StringColumn(numRows);
@@ -341,14 +340,15 @@ public class ReadDelimitedFormat extends InputModule
 		retVal.setComment(sc.getComment());
 
 		return retVal;
-	}
+	}*/
 
 	/////// Private methods //////////////
 
-	private static final char TAB = '\t';
+	/*private static final char TAB = '\t';
 	private static final char SPACE = ' ';
 	private static final char COMMA = ',';
 	private static final char EQUALS = '=';
+	*/
 
 	/**
 	 * This method will search the document, counting the number of each
@@ -359,7 +359,7 @@ public class ReadDelimitedFormat extends InputModule
 	 * not find the delimiter, we will fail.
 	 * @param f the file to check for delimiters
 	 * @returns one from among the set of delimiters we look for (',', ' ', '\t'), or '=' if the search failed.
-	 */
+	 /
 	protected char findDelimiter (File f) {
 		int counters [] = new int [3];
 		final int tabIndex = 0, spaceIndex = 1, commaIndex = 2;
@@ -474,7 +474,7 @@ public class ReadDelimitedFormat extends InputModule
 			return TAB;
 
 		return EQUALS;
-	}
+	}*/
 
 	/**
 		Read a file and create a Table from the file.  Returns null
@@ -639,7 +639,7 @@ public class ReadDelimitedFormat extends InputModule
 		for the single byte value that delimits the fields.
 		@param row the line from the file
 		@return an ArrayList containing the tokens from the line.
-	*/
+	/
 	protected void createSDRow (String row, TableImpl vt, int curRow) {
 		int current = 0;
 		char [] bytes = row.toCharArray ();
@@ -674,9 +674,9 @@ public class ReadDelimitedFormat extends InputModule
 		for(int i = curCol; i <= vt.getNumColumns()-1; i++) {
 			vt.setChars(new char[0], curRow, i);
 		}
-	}
+	}*/
 
-	protected ArrayList createSDRow (String row) {
+	/*protected ArrayList createSDRow (String row) {
 		int current = 0;
 		ArrayList thisRow = new ArrayList();
 		char [] bytes = row.toCharArray();
@@ -702,11 +702,11 @@ public class ReadDelimitedFormat extends InputModule
 			thisRow.add(newBytes);
 		}
 		return thisRow;
-	}
+	}*/
 
 	/**
 		Count the number of tokens in a row.
-	*/
+	/
 	protected int countSDRow (String row) {
 		int current = 0;
 
@@ -728,42 +728,5 @@ public class ReadDelimitedFormat extends InputModule
 		}
 		//return thisRow;
 		return numToks;
-	}
-
-	public static void main(String []args) {
-		new ReadDelimitedFormat(args[0]);
-	}
-
-	public ReadDelimitedFormat() {
-	}
-
-    public ReadDelimitedFormat( char delimiter, int typesR, int labelsR) {
-        delimiterOne = delimiter;
-        if ( typesR == -1 )
-            hasTypes = false;
-        else 
-            hasTypes = true; 
-        typesRow = typesR;
-	
-        if ( labelsR == -1 )
-            hasLabels = false;
-        else 
-            hasLabels = true; 
-        labelsRow = labelsR;
-	
-    }
-    
-    
-    public ReadDelimitedFormat(String fn) {
-	File f = new File(fn);
-	delimiterOne = this.findDelimiter (f);
-	hasTypes = true;
-	typesRow = 1;
-	hasLabels = true;
-	labelsRow = 0;
-	if(f.exists()) {
-	    Table vtable = readSDFile(f);
-	    //vtable.print();
-	}
-    }
+	}*/
 }
