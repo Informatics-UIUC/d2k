@@ -276,14 +276,17 @@ public class ClusterRefinement {
 
       model = new ClusterModel(initEntities, centers, null);
 
+      int numCenters = centers.size(); // save this value as reset in HAC
+
       //build the rest of the tree and add the cluster row to the model
       HAC hac = new HAC(this.getClusterMethod(), getDistanceMetric(),
                         centers.size(), 0, false, false);
+      hac.setVerbose( getVerbose() );
       model = hac.buildModel(model);
 
       long end = System.currentTimeMillis();
       if (getVerbose()) {
-        System.out.println("\nEND EXEC -- ClusterRefinement -- " + centers.size() +
+        System.out.println("\nEND EXEC -- " + getAlias() + " -- " + numCenters +
                            " built in " + (end - m_start) / 1000 + " seconds\n");
       }
 
