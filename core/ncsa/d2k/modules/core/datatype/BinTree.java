@@ -132,6 +132,29 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 		}
 	}
 
+	public void addNumericBin(String an, String bn, double lower, boolean includeLo,
+		double upper, boolean includeHi)
+		throws DuplicateBinNameException, AttributeNotFoundException {
+
+		Iterator i = values().iterator();
+		while(i.hasNext()) {
+			ClassTree ct = (ClassTree)i.next();
+			if(ct != null)
+				ct.addNumericBin(an, bn, lower, includeLo, upper, includeHi);
+		}
+	}
+
+	public void addStringBin(String an, String bn, String[] items)
+		throws DuplicateBinNameException, AttributeNotFoundException {
+
+		Iterator i = values().iterator();
+		while(i.hasNext()) {
+			ClassTree ct = (ClassTree)i.next();
+			if(ct != null)
+				ct.addStringBin(an, bn, items);
+		}
+	}
+
 	/**
 		Remove a bin
 		@param an the attribute name
@@ -502,6 +525,29 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 			if(bl.containsKey(bn))
 				throw new DuplicateBinNameException();
 			bl.put(bn, new Bin(new NumericEvaluate(op, item)));
+		}
+
+		void addNumericBin(String an, String bn, double lower, boolean includeLo,
+			double upper, boolean includeHi)
+			throws DuplicateBinNameException, AttributeNotFoundException {
+
+			BinList bl = (BinList)get(an);
+			if(bl == null)
+				throw new AttributeNotFoundException();
+			if(bl.containsKey(bn))
+				throw new DuplicateBinNameException();
+			bl.put(bn, new Bin(new BoundedNumericEvaluate(lower, includeLo,
+				upper, includeHi)));
+		}
+
+		void addStringBin(String an, String bn, String[] items)
+			throws DuplicateBinNameException, AttributeNotFoundException {
+			BinList bl = (BinList)get(an);
+			if(bl == null)
+				throw new AttributeNotFoundException();
+			if(bl.containsKey(bn))
+				throw new DuplicateBinNameException();
+			bl.put(bn, new Bin(new MultiStringEvaluate(items)));
 		}
 
 		/**
@@ -1332,7 +1378,7 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 		    String getCondition(String an) {
 		    	return value + EQUAL_TO + an; }
 
-	    
+
 	    ArrayList getAttrValuePair(String an) {
 		HashMap hm = new HashMap();
 		hm.put(an,value);
@@ -1341,9 +1387,119 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
 		return ar;
 	    }
 		}
-	    
+
+		private class MultiStringEvaluate extends Evaluate implements Serializable {
+			HashSet values;
+
+			MultiStringEvaluate() {}
+
+			MultiStringEvaluate(String[] vals) {
+				for(int i = 0; i < vals.length; i++)
+					values.add(vals[i]);
+			}
+
+			boolean eval(String s) {
+				return values.contains(s);
+			}
+
+			boolean eval(double d) {
+				return eval(Double.toString(d));
+			}
+
+			boolean eval(int i) {
+				return eval(Integer.toString(i));
+			}
+
+			// FIX ME
+			void print() {
+				//
+			}
+
+			// FIX ME
+			String getCondition(String an) {
+				return "";
+			}
+
+			ArrayList getAttrValuePair(String an) {
+				Iterator i = values.iterator();
+				ArrayList ar = new ArrayList(values.size());
+				while(i.hasNext()) {
+					HashMap hm = new HashMap();
+					hm.put(an, i.next());
+					ar.add(hm);
+				}
+
+				return ar;
+			}
+		}
+
+
+		private class BoundedNumericEvaluate extends Evaluate {
+			double lower;
+			double upper;
+			boolean includeLower;
+			boolean includeUpper;
+
+			BoundedNumericEvaluate() {}
+
+			BoundedNumericEvaluate(double low, boolean includeLow,
+				double high, boolean includeHi) {
+
+				lower = low;
+				includeLower = includeLow;
+				upper = high;
+				includeUpper = includeHi;
+			}
+
+			boolean eval(String s) {
+				return false;
+			}
+
+			boolean eval(double d) {
+				if(includeLower) {
+					if(includeUpper) {
+						return (d >= lower) && (d <= upper);
+					}
+					else
+						return (d >= lower) && (d < upper);
+				}
+				if(includeUpper)
+					return (d > lower) && (d <= upper);
+				else
+					return (d > lower) && (d < upper);
+			}
+
+			boolean eval(int i) {
+				return eval((double)i);
+			}
+
+			// FIX ME
+			void print() {
+				//
+			}
+
+			// FIX ME
+			String getCondition(String an) {
+				return "";
+			}
+
+			// FIX ME
+			ArrayList getAttrValuePair(String an) {
+			/*	Iterator i = values.iterator();
+				ArrayList ar = new ArrayList(values.size());
+				while(i.hasNext()) {
+					HashMap hm = new HashMap();
+					hm.put(an, i.next());
+					ar.add(hm);
+				}
+
+				return ar;
+				*/
+				return null;
+			}
+		}
 	}
-    
+
     private class DefaultTree extends HashMap implements Serializable {
 
 		DefaultTree() {}

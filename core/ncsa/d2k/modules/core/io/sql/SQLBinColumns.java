@@ -1,4 +1,4 @@
-package  ncsa.d2k.modules.core.transform.attribute;
+package ncsa.d2k.modules.core.io.sql;
 
 import  java.awt.*;
 import  java.awt.event.*;
@@ -14,6 +14,8 @@ import  ncsa.d2k.modules.core.datatype.table.*;
 import  ncsa.d2k.modules.core.vis.widgets.*;
 import  ncsa.d2k.userviews.swing.*;
 import  ncsa.gui.*;
+
+import ncsa.d2k.modules.core.transform.attribute.*;
 import ncsa.d2k.modules.core.datatype.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 
@@ -21,7 +23,7 @@ import ncsa.d2k.modules.core.datatype.table.transformations.*;
 /**
  * put your documentation comment here
  */
-public class BinColumns extends UIModule {
+public class SQLBinColumns extends UIModule {
     private static final String EMPTY = "",
     COLON = " : ", COMMA = ",", DOTS = "...",
     OPEN_PAREN = "(", CLOSE_PAREN = ")", OPEN_BRACKET = "[", CLOSE_BRACKET = "]";
@@ -33,7 +35,7 @@ public class BinColumns extends UIModule {
      * @return
      */
     public String getModuleName () {
-        return  "BinColumns";
+        return  "SQLBinColumns";
     }
 
     /**
@@ -50,7 +52,10 @@ public class BinColumns extends UIModule {
      */
     public String[] getInputTypes () {
         String[] types =  {
-            "ncsa.d2k.modules.core.datatype.table.Table"
+            "ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
+            "[Ljava.lang.String;",
+            "java.lang.String",
+            "java.lang.String"
         };
         return  types;
     }
@@ -61,7 +66,7 @@ public class BinColumns extends UIModule {
      */
     public String[] getOutputTypes () {
         String[] types =  {
-            "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform", "ncsa.d2k.modules.core.datatype.table.Table"
+            "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform"
         };
         return  types;
     }
@@ -74,7 +79,13 @@ public class BinColumns extends UIModule {
     public String getInputInfo (int i) {
         switch (i) {
             case 0:
-                return  "A Table with columns to bin.";
+                return "ConnectionWrapper";
+            case 1:
+                return "Field names.";
+            case 2:
+                return "Table name";
+            case 3:
+                return "Where clause";
             default:
                 return  "No such input";
         }
@@ -88,7 +99,7 @@ public class BinColumns extends UIModule {
     public String getOutputName (int i) {
         switch (i) {
             case 0:
-                return  "The input Table with its columns binned.";
+                return "BinningTransformation";
             default:
                 return  "no such output!";
         }
@@ -100,9 +111,18 @@ public class BinColumns extends UIModule {
      * @return
      */
     public String getInputName (int i) {
-        if (i == 0)
-            return  "Table";
-        return  "BinColumns has no such input.";
+        switch (i) {
+            case 0:
+                return "ConnectionWrapper";
+            case 1:
+                return "FieldName";
+            case 2:
+                return "TableName";
+            case 3:
+                return "WhereClause";
+            default:
+                return  "No such input";
+        }
     }
 
     /**
@@ -124,7 +144,7 @@ public class BinColumns extends UIModule {
      * @return
      */
     protected UserView createUserView () {
-        return  new BinColumnsView();
+        return  new SQLBinColumnsView();
     }
 
     /**
@@ -135,14 +155,49 @@ public class BinColumns extends UIModule {
         return  null;
     }
 
-    private class BinColumnsView extends JUserPane {
+    private class SQLBinCounts implements BinCounts {
+        String[] fieldNames;
+        String tableName;
+        String whereClause;
+        ConnectionWrapper wrapper;
+
+        SQLBinCounts(String tn, String[] fn, String wc, ConnectionWrapper cw) {
+            tableName = tn;
+            fieldNames = fn;
+            whereClause = wc;
+            wrapper = cw;
+        }
+
+        public boolean isColumnNumeric(int i) {
+            return true;
+        }
+
+        public double getMin(int col) {
+            return 0;
+        }
+        public double getMax(int col) {
+            return 0;
+        }
+        public int getNumRows() {
+            return 0;
+        }
+
+        public int[] getCounts(int col, double[] borders) {
+            return null;
+        }
+        public double getTotal(int col) {
+            return 0;
+        }
+    }
+
+    private class SQLBinColumnsView extends JUserPane {
         private boolean setup_complete;
         private BinDescriptor currentSelectedBin;
         private HashMap columnLookup;
         private HashSet[] uniqueColumnValues;
         private JList numericColumnLabels, textualColumnLabels, currentBins;
         private DefaultListModel binListModel;
-        private Table tbl;
+        //private Table tbl;
 
         /* numeric text fields */
         private JTextField uRangeField, specRangeField, intervalField, weightField;
@@ -164,11 +219,18 @@ public class BinColumns extends UIModule {
         /**
          * put your documentation comment here
          */
-        private BinColumnsView () {
+       private SQLBinColumnsView () {
             setup_complete = false;
             nf = NumberFormat.getInstance();
             nf.setMaximumFractionDigits(3);
         }
+
+        private int numArrived = 0;
+        private ConnectionWrapper connectionWrapper;
+        private String[] fieldNames;
+        private String tableName;
+        private String whereClause;
+        private SQLBinCounts binCounts;
 
         /**
          * put your documentation comment here
@@ -176,7 +238,29 @@ public class BinColumns extends UIModule {
          * @param id
          */
         public void setInput (Object o, int id) {
-            tbl = (Table)o;
+            //tbl = (Table)o;
+
+            if(id == 0) {
+                connectionWrapper = (ConnectionWrapper)o;
+                numArrived++;
+            }
+            if(id == 1) {
+                fieldNames = (String[])o;
+                numArrived++;
+            }
+            if(id == 2) {
+                tableName = (String)o;
+                numArrived++;
+            }
+            if(id == 3) {
+                whereClause = (String)o;
+                numArrived++;
+            }
+
+            if(numArrived == 4) {
+
+                binCounts = new SQLBinCounts(tableName, fieldNames, whereClause, connectionWrapper);
+
             // clear all text fields and lists...
             curSelName.setText(EMPTY);
             textBinName.setText(EMPTY);
@@ -185,25 +269,36 @@ public class BinColumns extends UIModule {
             intervalField.setText(EMPTY);
             weightField.setText(EMPTY);
             columnLookup = new HashMap();
-            uniqueColumnValues = new HashSet[tbl.getNumColumns()];
+            //uniqueColumnValues = new HashSet[tbl.getNumColumns()];
+            uniqueColumnValues = new HashSet[fieldNames.length];
             binListModel.removeAllElements();
             DefaultListModel numModel = (DefaultListModel)numericColumnLabels.getModel(),
             txtModel = (DefaultListModel)textualColumnLabels.getModel();
             numModel.removeAllElements();
             txtModel.removeAllElements();
-            for (int i = 0; i < tbl.getNumColumns(); i++) {
-                columnLookup.put(tbl.getColumnLabel(i), new Integer(i));
+            //for (int i = 0; i < tbl.getNumColumns(); i++) {
+            for (int i = 0; i < fieldNames.length; i++) {
+
+                //columnLookup.put(tbl.getColumnLabel(i), new Integer(i));
+                columnLookup.put(fieldNames[i], new Integer(i));
                 //if (table.getColumn(i) instanceof NumericColumn)
-                if (tbl.isColumnScalar(i))
-                    numModel.addElement(tbl.getColumnLabel(i));
+
+                // ????????????????????????
+                if (binCounts.isColumnNumeric(i))
+                    //numModel.addElement(tbl.getColumnLabel(i));
+                    numModel.addElement((String)fieldNames[i]);
                 else {          //if (table.getColumn(i) instanceof TextualColumn) {
-                    txtModel.addElement(tbl.getColumnLabel(i));
-                    uniqueColumnValues[i] = uniqueValues(i);
+                    //txtModel.addElement(tbl.getColumnLabel(i));
+                    txtModel.addElement((String)fieldNames[i]);
+                //!!!!!!!!!!!!!!!!!1
+                //    uniqueColumnValues[i] = uniqueValues(i);
                 }
             }
             // finished...
             setup_complete = true;
+            }
         }
+
 
         /**
          * Create all of the components and add them to the view.
@@ -233,15 +328,15 @@ public class BinColumns extends UIModule {
 
                 public void actionPerformed (ActionEvent e) {
                     HashMap colLook = new HashMap();
-                    for (int i = 0; i < tbl.getNumColumns(); i++) {
-                        if(tbl.isColumnNumeric(i)) {
-                            colLook.put(tbl.getColumnLabel(i), new Integer(i));
+                    for (int i = 0; i < /*tbl.getNumColumns()*/fieldNames.length; i++) {
+                        if(/*tbl.*/binCounts.isColumnNumeric(i)) {
+                            colLook.put(/*tbl.getColumnLabel(i)*/(String)fieldNames[i], new Integer(i));
                         }
                     }
 
                     String txt = uRangeField.getText();
                     if(txt != null && txt.length() != 0) {
-                    final Histogram H = new UniformHistogram(new TableBinCounts(tbl),
+                    final Histogram H = new UniformHistogram(binCounts,
                             uRangeField.getText(), colLook);
                     JD2KFrame frame = new JD2KFrame("Uniform Range");
                     frame.getContentPane().setLayout(new GridBagLayout());
@@ -323,13 +418,13 @@ public class BinColumns extends UIModule {
                     }
 
                     HashMap colLook = new HashMap();
-                    for (int i = 0; i < tbl.getNumColumns(); i++) {
-                        if(tbl.isColumnNumeric(i)) {
-                            colLook.put(tbl.getColumnLabel(i), new Integer(i));
+                    for (int i = 0; i < /*tbl.getNumColumns()*/fieldNames.length; i++) {
+                        if(/*tbl.*/binCounts.isColumnNumeric(i)) {
+                            colLook.put(/*tbl.getColumnLabel(i)*/(String)fieldNames[i], new Integer(i));
                         }
                     }
                     JD2KFrame frame = new JD2KFrame("Specified Range");
-                    frame.getContentPane().add(new RangeHistogram(new TableBinCounts(tbl),
+                    frame.getContentPane().add(new RangeHistogram(binCounts,
                             /*Histogram.HISTOGRAM_RANGE,*/ specRangeField.getText(), colLook));
                              frame.pack();
                              frame.setVisible(true);
@@ -357,14 +452,14 @@ public class BinColumns extends UIModule {
 
                 public void actionPerformed (ActionEvent e) {
                     HashMap colLook = new HashMap();
-                    for (int i = 0; i < tbl.getNumColumns(); i++) {
-                        if(tbl.isColumnNumeric(i)) {
-                            colLook.put(tbl.getColumnLabel(i), new Integer(i));
+                    for (int i = 0; i < /*tbl.getNumColumns()*/fieldNames.length; i++) {
+                        if(/*tbl.*/binCounts.isColumnNumeric(i)) {
+                            colLook.put(/*tbl.getColumnLabel(i)*/(String)fieldNames[i], new Integer(i));
                         }
                     }
                     String txt = intervalField.getText();
                     if(txt != null && txt.length() != 0) {
-                    final Histogram H = new IntervalHistogram(new TableBinCounts(tbl),
+                    final Histogram H = new IntervalHistogram(binCounts,
                             /*Histogram.HISTOGRAM_INTERVAL,*/ intervalField.getText(), colLook);
                              JD2KFrame frame = new JD2KFrame("Bin Interval");
                              frame.getContentPane().setLayout(new GridBagLayout());
@@ -702,17 +797,13 @@ public class BinColumns extends UIModule {
                         bins[i] = (BinDescriptor)tmp[i];
                     BinTransform bt = new BinTransform(bins, createInNewColumn.isSelected());
                     pushOutput(bt, 0);
-                    pushOutput(tbl, 1);
+                    //pushOutput(tbl, 1);
                     viewDone("Done");
                 }
             });
-            JButton showTable = new JButton("Show Table");
+            /*JButton showTable = new JButton("Show Table");
             showTable.addActionListener(new AbstractAction() {
 
-                /**
-                 * put your documentation comment here
-                 * @param e
-                 */
                 public void actionPerformed (ActionEvent e) {
                     JD2KFrame frame = new JD2KFrame("Table");
                     frame.getContentPane().add(new TableMatrix(tbl));
@@ -720,7 +811,7 @@ public class BinColumns extends UIModule {
                     frame.pack();
                     frame.setVisible(true);
                 }
-            });
+            });*/
             JButton helpButton = new JButton("Help");
             helpButton.addActionListener(new AbstractAction() {
 
@@ -735,7 +826,7 @@ public class BinColumns extends UIModule {
             });
             buttonPanel.add(abort);
             buttonPanel.add(done);
-            buttonPanel.add(showTable);
+            //buttonPanel.add(showTable);
             buttonPanel.add(helpButton);
             setLayout(new BorderLayout());
             add(bxl, BorderLayout.CENTER);
@@ -816,11 +907,11 @@ public class BinColumns extends UIModule {
         private HashSet uniqueValues (int col) {
             // count the number of unique items in this column
             HashSet set = new HashSet();
-            for (int i = 0; i < tbl.getNumRows(); i++) {
+            /*for (int i = 0; i < tbl.getNumRows(); i++) {
                 String s = tbl.getString(i, col);
                 if (!set.contains(s))
                     set.add(s);
-            }
+            }*/
             return  set;
         }
 
@@ -848,14 +939,16 @@ public class BinColumns extends UIModule {
          */
         private double getInterval () {
             int colIdx = numericColumnLabels.getSelectedIndex();
-            double max = Double.MIN_VALUE, min = Double.MAX_VALUE;
+            /*double max = Double.MIN_VALUE, min = Double.MAX_VALUE;
             for (int i = 0; i < tbl.getNumRows(); i++) {
                 double d = tbl.getDouble(i, colIdx);
                 if (d < min)
                     min = d;
                 if (d > max)
                     max = d;
-            }
+            }*/
+            double max = binCounts.getMax(colIdx);
+            double min = binCounts.getMin(colIdx);
             return  max - min;
         }
 
@@ -877,19 +970,21 @@ public class BinColumns extends UIModule {
             double[] maxes = new double[colIdx.length];
             double[] mins = new double[colIdx.length];
             for (int i = 0; i < colIdx.length; i++) {
-                maxes[i] = Double.MIN_VALUE;
-                mins[i] = Double.MAX_VALUE;
+                //maxes[i] = Double.MIN_VALUE;
+                //mins[i] = Double.MAX_VALUE;
+                maxes[i] = binCounts.getMax(i);
+                mins[i] = binCounts.getMin(i);
             }
             for (int i = 0; i < colIdx.length; i++) {
                 // find the max and min and make equally spaced bins
                 //NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
-                for (int j = 0; j < tbl.getNumRows(); j++) {
+                /*for (int j = 0; j < tbl.getNumRows(); j++) {
                     double d = tbl.getDouble(j, colIdx[i]);
                     if (d > maxes[i])
                         maxes[i] = d;
                     if (d < mins[i])
                         mins[i] = d;
-                }
+                }*/
                 double[] binMaxes = new double[num - 1];
                 double interval = (maxes[i] - mins[i])/(double)num;
                 // add the first bin manually
@@ -959,23 +1054,27 @@ public class BinColumns extends UIModule {
             } catch (NumberFormatException e) {
                 return;
             }
+
             // find the mins and maxes
             double[] maxes = new double[colIdx.length];
             double[] mins = new double[colIdx.length];
+
             for (int i = 0; i < colIdx.length; i++) {
-                maxes[i] = Double.MIN_VALUE;
-                mins[i] = Double.MAX_VALUE;
+                //maxes[i] = Double.MIN_VALUE;
+                //mins[i] = Double.MAX_VALUE;
+                maxes[i] = binCounts.getMax(i);
+                mins[i] = binCounts.getMin(i);
             }
             for (int i = 0; i < colIdx.length; i++) {
                 // find the max and min
                 //NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
-                for (int j = 0; j < tbl.getNumRows(); j++) {
+                /*for (int j = 0; j < tbl.bc.getNumRows(); j++) {
                     double d = tbl.getDouble(j, colIdx[i]);
                     if (d > maxes[i])
                         maxes[i] = d;
                     if (d < mins[i])
                         mins[i] = d;
-                }
+                }*/
                 // the number of bins is (max - min) / (bin width)
                 int num = (int)Math.ceil((maxes[i] - mins[i])/intrval);
                 double[] binMaxes = new double[num];
@@ -1015,9 +1114,9 @@ public class BinColumns extends UIModule {
             // actual column, so we get a copy of the data
             for (int i = 0; i < colIdx.length; i++) {
                 //NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
-                double[] data = new double[tbl.getNumRows()];
-                for (int j = 0; j < data.length; j++)
-                    data[j] = tbl.getDouble(j, colIdx[i]);
+                double[] data = new double[/*tbl.*/binCounts.getNumRows()];
+                //for (int j = 0; j < data.length; j++)
+                //    data[j] = tbl.getDouble(j, colIdx[i]);
                 // sort it
                 Arrays.sort(data);
                 ArrayList list = new ArrayList();
@@ -1076,7 +1175,7 @@ public class BinColumns extends UIModule {
             String[] vals = new String[sel.length];
             for (int i = 0; i < vals.length; i++)
                 vals[i] = sel[i].toString();
-            return  new TextualBinDescriptor(idx, name, vals, tbl.getColumnLabel(idx));
+            return  new TextualBinDescriptor(idx, name, vals, /*tbl.getColumnLabel(idx)*/(String)fieldNames[idx]);
         }
 
         /**
@@ -1091,7 +1190,7 @@ public class BinColumns extends UIModule {
             nameBuffer.append(nf.format(max));
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                    min, max, tbl.getColumnLabel(col));
+                    min, max, /*tbl.getColumnLabel(col)*/(String)fieldNames[col]);
             return  nb;
         }
 
@@ -1106,7 +1205,7 @@ public class BinColumns extends UIModule {
             nameBuffer.append(nf.format(max));
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                    Double.MIN_VALUE, max, tbl.getColumnLabel(col));
+                    Double.MIN_VALUE, max, /*tbl.getColumnLabel(col)*/(String)fieldNames[col]);
             return  nb;
         }
 
@@ -1121,7 +1220,7 @@ public class BinColumns extends UIModule {
             nameBuffer.append(DOTS);
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-                    min, Double.MAX_VALUE, tbl.getColumnLabel(col));
+                    min, Double.MAX_VALUE, /*tbl.getColumnLabel(col)*/(String)fieldNames[col]);
             return  nb;
         }
 
@@ -1244,84 +1343,4 @@ public class BinColumns extends UIModule {
             return  sb.toString();
         }
     }           // BinColumnsView
-}
-
-
-
-
-
-
-
-
-class TableBinCounts implements BinCounts {
-
-    private Table table;
-    double[][] minMaxes;
-
-    private static final int MIN = 0;
-    private static final int MAX = 1;
-
-    public TableBinCounts(Table t) {
-        table = t;
-        minMaxes = new double[table.getNumColumns()][];
-        for(int i = 0; i < minMaxes.length; i++) {
-            if(table.isColumnNumeric(i)) {
-                minMaxes[i] = new double[2];
-
-                double max = Double.MIN_VALUE;
-                double min = Double.MAX_VALUE;
-
-                // get the max and min
-                for (int j = 0; j < table.getNumRows(); j++) {
-                    if (table.getDouble(j, i) < min)
-                        min = table.getDouble(j, i);
-                    if (table.getDouble(j, i) > max)
-                        max = table.getDouble(j, i);
-                }
-
-                minMaxes[i][MIN] = min;
-                minMaxes[i][MAX] = max;
-            }
-        }
-    }
-
-    public int getNumRows() {
-        return table.getNumRows();
-    }
-
-    public double getMin(int col) {
-        return minMaxes[col][MIN];
-    }
-
-    public double getMax(int col) {
-        return minMaxes[col][MAX];
-    }
-
-    public double getTotal(int col) {
-        double tot = 0;
-        for(int i = 0; i < table.getNumRows(); i++)
-            tot += table.getDouble(i, col);
-        return tot;
-    }
-
-    public int[] getCounts(int col, double[] borders) {
-        int[] counts = new int[borders.length+1];
-
-        // some redundancy here
-        boolean found;
-        for (int i = 0; i < table.getNumRows(); i++) {
-            found = false;
-            for (int j = 0; j < borders.length; j++) {
-                if (table.getDouble(i, col) <= borders[j] && !found) {
-                    counts[j]++;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-                counts[borders.length]++;
-        }
-
-        return counts;
-    }
 }

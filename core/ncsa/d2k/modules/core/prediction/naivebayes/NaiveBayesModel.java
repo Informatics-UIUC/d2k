@@ -636,8 +636,8 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 			}
 			clearEvidence();
 		}
-		System.out.print("Number of correct predictions: "+numCorrect);
-		System.out.println(" out of: "+pt.getNumRows());
+		//System.out.print("Number of correct predictions: "+numCorrect);
+		//System.out.println(" out of: "+pt.getNumRows());
 
 		return pt;
 	}

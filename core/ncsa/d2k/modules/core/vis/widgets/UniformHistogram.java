@@ -18,174 +18,67 @@ import ncsa.d2k.modules.core.transform.attribute.*;
  * @author gpape (from clutter)
  */
 
-public class Histogram extends JPanel {
+public class UniformHistogram extends Histogram {
 
-   /*private static final int
-      HISTOGRAM_MIN = 101,
-      HISTOGRAM_MAX = 103;
-   public static final int
-      HISTOGRAM_UNIFORM  = 101,
-      HISTOGRAM_RANGE    = 102,
-      HISTOGRAM_INTERVAL = 103;
-      */
-
-   private boolean initialized = false;
-   //private int behavior;
-   protected int[] counts;
-   protected double[] heights;
-   protected double[] borders;
-
-   //private Table tbl;
-   //private NumericColumn current;
-   protected int currentColumnIndex;
-   protected String parameter;
-
-   protected HashMap columnLookup;
-   protected JComboBox columnSelect;
-
-   protected JTextField n, mean, median, stddev, variance;
-
-   protected SelectionPanel selection;
-   protected HistogramPanel histogram;
-   protected SliderPanel slider;
-   protected VisualPanel visual;
-   protected StatisticsPanel statistics;
-
-   protected JTextField sliderReporter;
-
-   protected BinCounts binCounts;
-
-   public Histogram(/*Table table,*/BinCounts bc, /*int behavior,*/ String parameter, HashMap lookup)
+   public UniformHistogram(/*Table table,*/BinCounts bc, String parameter, HashMap lookup)
       throws IllegalArgumentException {
 
-      //if (behavior < HISTOGRAM_MIN || behavior > HISTOGRAM_MAX)
-      //   throw new IllegalArgumentException("Invalid histogram behavior.");
-
-      //this.tbl = table;
-      this.binCounts = bc;
-      //this.behavior = behavior;
-      this.parameter = parameter.substring(0);
-
-      //columnLookup = new HashMap();
-      columnSelect = new JComboBox();
-
-      boolean found_numeric = false;
-
-
-      class NameIndex implements Comparable {
-        String name;
-        int index;
-
-        public int compareTo(Object o) {
-            NameIndex other = (NameIndex)o;
-            if(other.index > index)
-                return -1;
-            if(other.index == index)
-                return 0;
-            else
-                return 1;
-        }
-      }
-
-      /*for (int i = 0; i < table.getNumColumns(); i++) {
-         //if (table.getColumn(i) instanceof NumericColumn) {
-       if(table.isColumnNumeric(i)) {
-            if (!found_numeric) {
-               //current = (NumericColumn)table.getColumn(i);
-            currentColumnIndex = i;
-               found_numeric = true;
-            }
-            columnLookup.put(table.getColumnLabel(i), new Integer(i));
-            columnSelect.addItem(table.getColumnLabel(i));
-         }
-      }*/
-
-    ArrayList cols = new ArrayList();
-
-      Iterator iter = lookup.keySet().iterator();
-        while(iter.hasNext()) {
-            String columnLabel = (String)iter.next();
-            Integer columnIndex = (Integer)lookup.get(columnLabel);
-
-            NameIndex ni = new NameIndex();
-            ni.name = columnLabel;
-            ni.index = columnIndex.intValue();
-
-            //columnSelect.addItem(columnLabel);
-            cols.add(ni);
-        }
-        Collections.sort(cols);
-        for(int i = 0; i < cols.size(); i++) {
-            NameIndex ni = (NameIndex)cols.get(i);
-            columnSelect.addItem(ni.name);
-        }
-        columnLookup = lookup;
-
-        currentColumnIndex =  ((Integer)columnLookup.get(columnSelect.getSelectedItem())).intValue();
-
-      sliderReporter = new JTextField(6);
-      sliderReporter.setEditable(false);
-      sliderReporter.setBackground(Color.white);
-      sliderReporter.setHorizontalAlignment(JTextField.RIGHT);
-
-      histogram = new HistogramPanel();  // order is important here!
-      slider = createSliderPanel();
-      //selection = new SelectionPanel();
-      selection = createSelectionPanel();
-      visual = createVisualPanel();
-      //statistics = new StatisticsPanel();
-      statistics = createStatisticsPanel();
-      //columnSelect.addActionListener(new SelectionListener());
-      columnSelect.addActionListener(createSelectionListener());
-      calculateBins();
-      statistics.updateStatistics();
-
-      this.setLayout(new BorderLayout());
-      this.add(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-         visual, statistics));
-
-      initialized = true;
-
-   }
-
-   public JSlider getSlider() {
-      return slider.getSlider();
-   }
-
-   public int getSelection() {
-      return ((Integer)columnLookup.get(columnSelect.getSelectedItem())).intValue();
-   }
-
-   public double getPercentage() {
-      return .01*((double)slider.getValue());
+      super(bc, parameter, lookup);
    }
 
    protected VisualPanel createVisualPanel() {
-        return new VisualPanel();
+        return new UniformVisualPanel();
    }
 
    protected SliderPanel createSliderPanel() {
-        return new SliderPanel();
+        return new UniformSliderPanel();
    }
 
-   protected StatisticsPanel createStatisticsPanel() {
-        return new StatisticsPanel();
+   /*protected StatisticsPanel createStatisticsPanel() {
+        return null;
    }
 
    protected SelectionPanel createSelectionPanel() {
-        return new SelectionPanel();
-   }
-
-   protected SelectionListener createSelectionListener() {
-        return new SelectionListener();
-   }
+        return null;
+   }*/
 
    protected void calculateBins() {
+
+      int index;
+      double max, min;
+
+      counts = new int[slider.getValue()];
+            for (int i = 0; i < counts.length; i++)
+               counts[i] = 0;
+            heights = new double[counts.length];
+            borders = new double[counts.length - 1];
+
+            // get the max and min
+            min = binCounts.getMin(currentColumnIndex);
+            max = binCounts.getMax(currentColumnIndex);
+
+            double increment = (max - min) / (double)counts.length, ceiling;
+
+            if (borders.length > 0) {
+               borders[0] = min + increment;
+               for (int i = 1; i < borders.length; i++)
+                  borders[i] = borders[i - 1] + increment;
+            }
+
+            /*for (int i = 0; i < tbl.getNumRows(); i++) {
+               index = (int)((tbl.getDouble(i, currentColumnIndex) - min)/increment);
+               if (index == counts.length) index--;
+               counts[index]++;
+            }*/
+            counts = binCounts.getCounts(currentColumnIndex, borders);
+
+            for (int i = 0; i < heights.length; i++)
+               heights[i] = (double)counts[i] / (double)/*tbl.*/binCounts.getNumRows();
    }
 
-   protected class VisualPanel extends JPanel {
+   private class UniformVisualPanel extends VisualPanel {
 
-      /*protected VisualPanel() {
+      public UniformVisualPanel() {
 
          this.setLayout(new GridBagLayout());
          Constrain.setConstraints(this, selection, 0, 0, 1, 1,
@@ -193,37 +86,37 @@ public class Histogram extends JPanel {
          Constrain.setConstraints(this, histogram, 0, 1, 1, 1,
             GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
 
-         if (behavior == HISTOGRAM_UNIFORM || behavior == HISTOGRAM_INTERVAL)
             Constrain.setConstraints(this, slider, 0, 2, 1, 1,
                GridBagConstraints.HORIZONTAL, GridBagConstraints.SOUTH, 1, 0);
-
       }
-      */
 
       public Dimension getPreferredSize() {
          return new Dimension(400, 400);
       }
+
    }
 
-   protected class SelectionPanel extends JPanel {
+   /*private class SelectionPanel extends JPanel {
 
-      protected SelectionPanel() {
+      public SelectionPanel() {
 
          this.setBorder(new TitledBorder(" Select attribute: "));
          this.setLayout(new GridBagLayout());
          Constrain.setConstraints(this, columnSelect, 0, 0, 1, 1,
             GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
-      }
-   }
 
-   protected class HistogramPanel extends JPanel implements MouseMotionListener {
+      }
+
+   }*/
+
+   /*private class HistogramPanel extends JPanel implements MouseMotionListener {
 
       boolean calculated;
       int width, height, offset_x, offset_y, hist_x, hist_y;
 
       Graphics2D g2;
 
-      protected HistogramPanel() {
+      public HistogramPanel() {
          calculated = false;
          addMouseMotionListener(this);
       }
@@ -290,7 +183,7 @@ public class Histogram extends JPanel {
 
             }
 */
-            xloc += increment;
+    /*        xloc += increment;
 
          }
 
@@ -344,25 +237,26 @@ public class Histogram extends JPanel {
 
       }
 
-   }
+   }*/
 
-   protected class SliderPanel extends JPanel {
-      protected JSlider slide;
-/*
-      public SliderPanel() {
+   private class UniformSliderPanel extends SliderPanel {
+
+      private JSlider slide;
+
+      private UniformSliderPanel() {
 
          int val = 5;
          double dval;
-         switch(behavior) {
+         //switch(behavior) {
 
-            case HISTOGRAM_UNIFORM:
+         //   case HISTOGRAM_UNIFORM:
 
-               this.setBorder(new TitledBorder(" Number of bins: "));
-               try { val = Integer.parseInt(parameter); }
-               catch(NumberFormatException e) { val = 5; break; }
-               break;
+         this.setBorder(new TitledBorder(" Number of bins: "));
+         try { val = Integer.parseInt(parameter); }
+         catch(NumberFormatException e) { val = 5; /*break;*/ }
+         //      break;
 
-            case HISTOGRAM_INTERVAL:
+         /*   case HISTOGRAM_INTERVAL:
 
                 // get the max and min
                /*double min = Double.MAX_VALUE, max = Double.MIN_VALUE;
@@ -373,7 +267,7 @@ public class Histogram extends JPanel {
                      max = tbl.getDouble(i, currentColumnIndex);
                }
                 */
- /*               double min = binCounts.getMin(currentColumnIndex);
+         /*       double min = binCounts.getMin(currentColumnIndex);
                 double max = binCounts.getMax(currentColumnIndex);
 
                this.setBorder(new TitledBorder(" Bin size as a percentage of interval: "));
@@ -395,10 +289,11 @@ public class Histogram extends JPanel {
             sliderReporter.setText(Integer.toString(val) + "%");
          }
          else {
+         */
             slide = new JSlider(1, val*2, val);
             slide.setMajorTickSpacing(val*2 - 1);
             sliderReporter.setText(Integer.toString(val));
-         }
+         //}
 
          slide.setPaintTicks(true);
          slide.setPaintLabels(true);
@@ -409,9 +304,8 @@ public class Histogram extends JPanel {
             GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
          Constrain.setConstraints(this, sliderReporter, 1, 0, 1, 1,
             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
-
       }
-*/
+
       public int getValue() {
          return slide.getValue();
       }
@@ -419,24 +313,13 @@ public class Histogram extends JPanel {
       public JSlider getSlider() {
          return slide;
       }
-
-        protected class SliderListener implements ChangeListener {
-            public void stateChanged(ChangeEvent e) {
-                calculateBins();
-                //if (behavior == HISTOGRAM_INTERVAL)
-                //    sliderReporter.setText(Integer.toString(slider.getValue()) + "%");
-         //else
-                sliderReporter.setText(Integer.toString(slider.getValue()));
-                histogram.repaint();
-            }
-        }
    }
 
-   protected class StatisticsPanel extends JPanel {
+   /*private class StatisticsPanel extends JPanel {
 
       private NumberFormat N;
 
-      protected StatisticsPanel() {
+      public StatisticsPanel() {
 
          n = new JTextField(10);
          n.setEditable(false);
@@ -483,12 +366,12 @@ public class Histogram extends JPanel {
 
       }
 
-      private void updateStatistics() {
+      public void updateStatistics() {
 
-         n.setText(N.format(/*tbl.*/binCounts.getNumRows()));
+         n.setText(N.format(/*tbl.*///binCounts.getNumRows()));
 
-         double sample_mean, sample_variance;
-         double[] d = new double[/*tbl.*/binCounts.getNumRows()];
+    /*     double sample_mean, sample_variance;
+         double[] d = new double[/*tbl.*///binCounts.getNumRows()];
 
         // get the max and min
          /*double total = 0, max = Double.MIN_VALUE, min = Double.MAX_VALUE;
@@ -503,12 +386,12 @@ public class Histogram extends JPanel {
                min = tbl.getDouble(i, currentColumnIndex);
 
          }*/
-         double max = binCounts.getMax(currentColumnIndex);
+    /*     double max = binCounts.getMax(currentColumnIndex);
             double min = binCounts.getMin(currentColumnIndex);
             double total = binCounts.getTotal(currentColumnIndex);
 
-         sample_mean = total/(double)/*tbl.*/binCounts.getNumRows();
-         mean.setText(N.format(sample_mean));
+         sample_mean = total/(double)/*tbl.*///binCounts.getNumRows();
+     /*    mean.setText(N.format(sample_mean));
 
          Arrays.sort(d);
          median.setText(N.format((d[(int)Math.ceil(d.length/2.0)] + d[(int)Math.floor(d.length/2.0)])/2.0));
@@ -528,9 +411,9 @@ public class Histogram extends JPanel {
          return new Dimension(200, 400);
       }
 
-   }
+   }*/
 
-   private class SelectionListener extends AbstractAction {
+   /*private class SelectionListener extends AbstractAction {
       public void actionPerformed(ActionEvent e) {
          //current = (NumericColumn)table.getColumn(((Integer)
          currentColumnIndex = ((Integer)columnLookup.get(columnSelect.getSelectedItem())).intValue();
@@ -538,5 +421,17 @@ public class Histogram extends JPanel {
          statistics.updateStatistics();
          histogram.repaint();
       }
+   }*/
+
+   /*private class SliderListener implements ChangeListener {
+      public void stateChanged(ChangeEvent e) {
+         calculateBins();
+         if (behavior == HISTOGRAM_INTERVAL)
+            sliderReporter.setText(Integer.toString(slider.getValue()) + "%");
+         else
+            sliderReporter.setText(Integer.toString(slider.getValue()));
+         histogram.repaint();
+      }
    }
+   }*/
 }
