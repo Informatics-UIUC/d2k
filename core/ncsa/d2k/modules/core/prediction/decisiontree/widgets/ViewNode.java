@@ -453,6 +453,7 @@ public class ViewNode {
 
 	// Evaluate double values based on operator
 	boolean evaluate(double dvalue, double value, String operator) {
+
 		if (operator == GREATER_THAN)
 			return value < dvalue;
 
@@ -470,6 +471,32 @@ public class ViewNode {
 
 		else if (operator == NOT_EQUAL_TO)
 			return value != dvalue;
+
+		return false;
+	}
+
+	boolean evaluate(int index, double dvalue, double value, String operator) {
+		if (index == 0) {
+			if (operator == GREATER_THAN)
+				return value < dvalue;
+
+			else if (operator == GREATER_THAN_EQUAL_TO)
+				return value < dvalue;
+
+			else if (operator == LESS_THAN)
+				return value >= dvalue;
+
+			else if (operator == LESS_THAN_EQUAL_TO)
+				return value >= dvalue;
+
+			else if (operator == EQUAL_TO)
+				return false;
+
+			else if (operator == NOT_EQUAL_TO)
+				return value != dvalue;
+		}
+		else
+			return evaluate(dvalue, value, operator);
 
 		return false;
 	}
@@ -502,8 +529,9 @@ public class ViewNode {
 			return false;
 
 		double splitvalue = numericparent.getSplitValue();
+		int index = findBranchIndex();
 
-		return evaluate(splitvalue, condition.value, condition.operator);
+		return evaluate(index, splitvalue, condition.value, condition.operator);
 	}
 
 	// Evaluate nominal split condition
