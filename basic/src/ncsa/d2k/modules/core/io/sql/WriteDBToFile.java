@@ -1,12 +1,11 @@
 package ncsa.d2k.modules.core.io.sql;
 
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import java.sql.*;
-import java.beans.PropertyVetoException;
+import java.beans.*;
 import java.io.*;
-import javax.swing.*;
+import java.sql.*;
+import java.sql.Statement;
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
  * @this module writes the data from a table in database to a file
@@ -133,10 +132,10 @@ public class WriteDBToFile extends OutputModule
         */
         public String getModuleInfo () {
           String s = "<p>Overview: ";
-          s += "This module constructs a SQL statement, and retrieves data from a database and writes it to a file. </p>";
+          s += "This module constructs a SQL statement, and retrieves data from a database and writes to a file. </p>";
           s += "<p>Detailed Description: ";
-          s += "This module constructs an SQL query based on 5 inputs: the database ";
-          s += "connection object, the selected table, the selected fields, ";
+          s += "This module constructs a SQL query based on 5 inputs: the database ";
+          s += "connection object, the selected table, the selected attributes, ";
           s += "the query condition (optional), and the name of the file to write to. ";
           s += "This module then executes the query and retrieves ";
           s += "the data from the specified database and outputs ";
@@ -197,15 +196,16 @@ public class WriteDBToFile extends OutputModule
                 // construct the query to get clumn information.
                 String query = "SELECT "+fieldList.toString()+" FROM "+tableList;
 
-                if (whereClause != null && whereClause.length() > 0)
+                if (whereClause != null && whereClause.length() > 1)
                    query += " WHERE " + whereClause;
 
+                //System.out.println("query is " + query);
                 // Get the number of columns selected.
                 Statement stmt = con.createStatement();
                 ResultSet rs = stmt.executeQuery(query);
                 ResultSetMetaData rsmd = rs.getMetaData ();
                 int numColumns = rsmd.getColumnCount ();
-                MutableTableImpl vt =  new MutableTableImpl(numColumns);
+                //MutableTableImpl vt =  new MutableTableImpl(numColumns);
 
 
                 if(useColumnLabels) {
@@ -240,57 +240,36 @@ public class WriteDBToFile extends OutputModule
                 }
 
                 // Now compile a list of the datatypes.
-                int [] types = new int [numColumns];
+                String [] types = new String [numColumns];
                 for (int i = 0 ; i < numColumns ; i++)
-                        types[i] = rsmd.getColumnType (i+1);
+                        types[i] = rsmd.getColumnTypeName (i+1);
 
                 // Now populate the table.
                 for (int where = 0; rs.next (); where++){
                         for (int i = 0 ; i < numColumns ; i++) {
-                                switch (types[i]) {
-                                        case Types.TINYINT:
-                                        case Types.SMALLINT:
-                                        case Types.INTEGER:
-                                        case Types.BIGINT:
-                                                if (rs.getString(i+1) == null) {
-                                                  fw.write("");
-                                                }
-                                                else
-                                                  fw.write(rs.getInt(i+1));
-                                                break;
-                                        case Types.DOUBLE:
-                                        case Types.NUMERIC:
-                                        case Types.DECIMAL:
-                                        case Types.FLOAT:
-                                        case Types.REAL:
-                                                if (rs.getString(i+1) == null) {
-                                                  fw.write("");
-                                                }
-                                                else
-                                                  fw.write(Double.toString(rs.getDouble(i+1)));
-                                                break;
-                                        case Types.CHAR:
-                                        case Types.VARCHAR:
-                                        case Types.LONGVARCHAR:
-                                                if (rs.getString(i+1) == null) {
-                                                  fw.write("");
-                                                }
-                                                else
-                                                  fw.write(rs.getString(i+1));
-                                                break;
-                                        default:
-                                                rs.getString(i+1);
-                                                break;
-                                }//switch
+                          if (ColumnTypes.isContainNumeric(types[i])) {
+                            if (rs.getString(i + 1) == null) {
+                              fw.write("");
+                            }
+                            else
+                              //fw.write(Double.toString(rs.getDouble(i+1)));
+                              fw.write(rs.getString(i + 1));
+                          }
+                          else {
+                            if (rs.getString(i + 1) == null) {
+                              fw.write("");
+                            }
+                            else
+                              fw.write(rs.getString(i + 1));
+                          }
+                          if(i != (numColumns - 1))
+                            fw.write(delimiter.toCharArray(), 0, delimiter.length());
 
-                                if(i != (numColumns - 1))
-                                        fw.write(delimiter.toCharArray(), 0, delimiter.length());
-
-                              }//for i
-                              fw.write(newLine.toCharArray(), 0, newLine.length());
-                        }
-                        fw.flush();
-                        fw.close();
+                        }//for i
+                        fw.write(newLine.toCharArray(), 0, newLine.length());
+                }
+                fw.flush();
+                fw.close();
 }
         /**
          * Return the human readable name of the module.
