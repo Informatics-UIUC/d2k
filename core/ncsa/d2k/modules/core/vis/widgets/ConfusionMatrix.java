@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 import java.util.*;
 import java.text.*;
+import java.awt.image.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 
@@ -130,8 +131,12 @@ public class ConfusionMatrix extends JScrollPane {
 	*/
 	private void setupTable(int[][] d, String[] r, String[] c) {
 		MatrixModel tblModel = new MatrixModel(d, r, c);
-		/*JTable tmp = new JTable();
-		Graphics g = tmp.getGraphics();
+		JTable tmp = new JTable();
+        Font font = tmp.getFont();
+
+        BufferedImage bi = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+		Graphics g = bi.createGraphics();
+        g.setFont(font);
 		FontMetrics fm = g.getFontMetrics();
 		int max = 0;
 		for (int i = 0; i < r.length; i++) {
@@ -139,29 +144,31 @@ public class ConfusionMatrix extends JScrollPane {
 				max = fm.stringWidth(c[i]);
 		}
 
-		final int mm = max;*/
+		final int mm = max;
 		TableColumnModel cm = new DefaultTableColumnModel() {
 			boolean first = true;
 			public void addColumn(TableColumn tc) {
 				if(first) { first = false; return; }
-				tc.setMinWidth(100);
+				//tc.setMinWidth(100);
+				tc.setMinWidth(mm);
 				super.addColumn(tc);
 			}
 		};
 
-		/*max = 0;
+		max = 0;
 		for (int i = 0; i < r.length; i++) {
 			if(fm.stringWidth(r[i]) > max)
 				max = fm.stringWidth(r[i]);
 		}
 
-		final int mx = max;*/
+		final int mx = max;
 		// setup the columns for the row header table
 		TableColumnModel rowHeaderModel = new DefaultTableColumnModel() {
 			boolean first = true;
 			public void addColumn(TableColumn tc) {
 				if(first) {
-					tc.setMinWidth(100);
+					//tc.setMinWidth(100);
+					tc.setMinWidth(mx);
 					super.addColumn(tc);
 					first = false;
 				}
@@ -233,7 +240,9 @@ public class ConfusionMatrix extends JScrollPane {
 					data[i+2][j+1] = Integer.toString(d[i][j]);
 				}
 
-				double percent = ((double)d[i][i])/total;
+                double percent = 0;
+                if(total != 0)
+				    percent = ((double)d[i][i])/total;
 				data[i+2][colLength-2] = nf.format(percent*100)+"%";
 				data[i+2][colLength-1] = nf.format((1-percent)*100)+"%";
 			}
@@ -244,7 +253,9 @@ public class ConfusionMatrix extends JScrollPane {
 				for(int i = 0; i < r.length; i++) {
 					total += d[i][j];
 				}
-				double percent = ((double)d[j][j])/total;
+				double percent = 0;
+                if(total != 0)
+				    percent = ((double)d[j][j])/total;
 				data[rowLength-2][j+1] = nf.format(percent*100)+"%";
 				data[rowLength-1][j+1] = nf.format((1-percent)*100)+"%";
 			}
