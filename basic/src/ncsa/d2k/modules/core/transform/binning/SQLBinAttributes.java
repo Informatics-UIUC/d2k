@@ -21,7 +21,7 @@ import java.sql.*;
 /**
  * This module does binning for database data
  */
-public class SQLBinColumns extends UIModule {
+public class SQLBinAttributes extends UIModule {
     private static final String EMPTY = "",
     COLON = " : ", COMMA = ",", DOTS = "...",
     OPEN_PAREN = "(", CLOSE_PAREN = ")", OPEN_BRACKET = "[", CLOSE_BRACKET = "]";
@@ -42,7 +42,7 @@ public class SQLBinColumns extends UIModule {
      * @return module's name
      */
     public String getModuleName () {
-        return  "SQL Bin Columns";
+        return  "SQL Bin Attributes";
     }
 
     /**
@@ -70,7 +70,7 @@ public class SQLBinColumns extends UIModule {
       s += "For nominal attributes, data can ";
       s += "collected into groups by unique values. ";
       s += "</p><p>";
-      s += "Binning data is a very important preprocessing step in may data mining  ";
+      s += "Binning data is a very important preprocessing step in many data mining  ";
       s += "activities, especially for datasets containing continuous numeric values. ";
       s += "By grouping similar data together, interesting patterns can be ";
       s += "discovered between groups and computational complexity can be reduced. ";
@@ -159,7 +159,7 @@ public class SQLBinColumns extends UIModule {
         switch (i) {
             case 0:
                 return  "A Binning Transformation object that " +
-			"contains column numbers, names, and labels";
+         "contains column numbers, names, and labels";
             default:
                 return  "No such output";
         }
@@ -417,6 +417,11 @@ public class SQLBinColumns extends UIModule {
                     //txtModel.addElement(((String)fieldNames[i]).toLowerCase());
                   }
                 }
+
+                if (!validateBins(binListModel)) {
+                   binListModel.removeAllElements();
+                }
+
                 // finished...
                 setup_complete = true;
               }
@@ -565,7 +570,7 @@ public class SQLBinColumns extends UIModule {
                     String col = (String)numericColumnLabels.getSelectedValue();
 
                     if (col == null) {
-                       ErrorDialog.showDialog("You must select a column to bin.", "Error");
+                       ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
                        return;
                     }
 
@@ -653,7 +658,7 @@ public class SQLBinColumns extends UIModule {
                     String col = (String)numericColumnLabels.getSelectedValue();
 
                     if (col == null) {
-                       ErrorDialog.showDialog("You must select a column to bin.", "Error");
+                       ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
                        return;
                     }
 
@@ -711,7 +716,7 @@ public class SQLBinColumns extends UIModule {
                         String col = (String)numericColumnLabels.getSelectedValue();
 
                         if(col == null) {
-                           ErrorDialog.showDialog("You must select a column to bin.", "Error");
+                           ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
                            return;
                         }
 
@@ -1041,7 +1046,7 @@ public class SQLBinColumns extends UIModule {
                  * @param e the action event
                  */
                 public void actionPerformed (ActionEvent e) {
-                  if (validateBins(binListModel)) {
+                  // if (validateBins(binListModel)) {
                     Object[] tmp = binListModel.toArray();
                     BinDescriptor[] bins = new BinDescriptor[tmp.length];
                     for (int i = 0; i < bins.length; i++)
@@ -1054,7 +1059,7 @@ public class SQLBinColumns extends UIModule {
                     BinTransform bt = new BinTransform(bins, createInNewColumn.isSelected());
                               pushOutput(bt, 0);
                     viewDone("Done");
-                  }
+                  // }
                 }
             });
             JButton helpButton = new JButton("Help");
@@ -1091,9 +1096,11 @@ public class SQLBinColumns extends UIModule {
                 }
               }
               if (!match) {
+                /*
                 JOptionPane.showMessageDialog(msgBoard,
                          "Current bins contain non-selected attributes. Please remove them.", "Error",
                          JOptionPane.ERROR_MESSAGE);
+                 */
                 return false;
               }
             }
@@ -1210,7 +1217,7 @@ public class SQLBinColumns extends UIModule {
 
             //vered:
             if(colIdx.length == 0){
-               ErrorDialog.showDialog("You must select a column to bin.", "Error");
+               ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
                return;
             }
 
@@ -1265,7 +1272,7 @@ public class SQLBinColumns extends UIModule {
 
             //vered:
             if(colIdx.length == 0){
-              ErrorDialog.showDialog("You must select a column to bin.", "Error");
+              ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
                 return;
             }
 
@@ -1292,8 +1299,8 @@ public class SQLBinColumns extends UIModule {
                   int num = (int)Math.ceil((maxes[i] - mins[i])/intrval);
                   double[] binMaxes = new double[num-1];
                  //Anca replaced: binMaxes[0] = mins[i] + intrval;
-                 System.out.println("interval " + intrval);
-                 System.out.println("binMaxes[0] " + binMaxes[0] + " mins[i]" + mins[i]);
+                 //System.out.println("interval " + intrval);
+                 //System.out.println("binMaxes[0] " + binMaxes[0] + " mins[i]" + mins[i]);
                   binMaxes[0] = mins[i];
                   // add the first bin manually
                   BinDescriptor nbd = createMinNumericBinDescriptor(i, binMaxes[0]);
@@ -1322,7 +1329,7 @@ public class SQLBinColumns extends UIModule {
 
             //vered:
             if(colIdx.length == 0){
-              ErrorDialog.showDialog("You must select a column to bin.", "Error");
+              ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
                 return;
             }
 
@@ -1543,7 +1550,7 @@ public class SQLBinColumns extends UIModule {
              * help window
              */
             public HelpWindow () {
-                super("About BinColumns");
+                super("About SQL Bin Attributes");
                 JEditorPane ep = new JEditorPane("text/html", getHelpString());
                 ep.setCaretPosition(0);
                 getContentPane().add(new JScrollPane(ep));
@@ -1557,11 +1564,11 @@ public class SQLBinColumns extends UIModule {
          */
         private String getHelpString () {
             StringBuffer sb = new StringBuffer();
-            sb.append("<html><body><h2>BinColumns</h2>");
+            sb.append("<html><body><h2>SQL Bin Attributes</h2>");
             sb.append("This module allows a user to interactively bin data from a table. ");
-            sb.append("Numeric data can be binned in four ways:<ul>");
+            sb.append("Scalar data can be binned in four ways:<ul>");
             sb.append("<li><b>Uniform range</b><br>");
-            sb.append("Enter a positive integer value for the number of bins. BinColumns will ");
+            sb.append("Enter a positive integer value for the number of bins. SQL Bin Attributes will ");
             sb.append("divide the binning range evenly over these bins.");
             sb.append("<br><li><b>Specified range</b>:<br>");
             sb.append("Enter a comma-separated sequence of integer or floating-point values ");
@@ -1571,15 +1578,15 @@ public class SQLBinColumns extends UIModule {
             sb.append("<br><li><b>Uniform Weight</b>:<br>");
             sb.append("Enter a positive integer value for even binning with that number in each bin.");
             sb.append("</ul>");
-            sb.append("To bin numeric data, select columns from the ``Numeric Columns'' ");
+            sb.append("To bin scalar data, select attributes from the ``Scalar Attributes'' ");
             sb.append("selection area (top left) and select a binning method by entering a value ");
             sb.append("in the corresponding text field and clicking ``Add''. Data can ");
             sb.append("alternately be previewed in histogram form by clicking the corresponding ");
             sb.append("``Show'' button (this accepts, but does not require, a value in the text field). ");
             sb.append("Uniform weight binning has no histogram (it would always look the same).");
-            sb.append("<br><br>To bin textual data, click the ``Textual'' tab (top left) to bring ");
-            sb.append("up the ``Textual Columns'' selection area. Click on a column to show a list ");
-            sb.append("of unique textual values in that column in the ``Unique Values'' area below. ");
+            sb.append("<br><br>To bin nominal data, click the ``Nominal'' tab (top left) to bring ");
+            sb.append("up the ``Nominal Attributes'' selection area. Click on an attribute to show a list ");
+            sb.append("of unique nominal values in that attribute in the ``Unique Values'' area below. ");
             sb.append("Select one or more of these values and click the right arrow button to group ");
             sb.append("these values. They can then be assigned a collective name as before.");
             sb.append("<br><br>To assign a name to a particular bin, select that bin in ");

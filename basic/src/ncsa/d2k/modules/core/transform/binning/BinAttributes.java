@@ -20,7 +20,7 @@ import ncsa.d2k.modules.core.datatype.table.transformations.*;
 /**
  * put your documentation comment here
  */
-public class BinColumns extends UIModule {
+public class BinAttributes extends UIModule {
   private static final String EMPTY = "",
   COLON = " : ", COMMA = ",", DOTS = "...",
   OPEN_PAREN = "(", CLOSE_PAREN = ")", OPEN_BRACKET = "[", CLOSE_BRACKET = "]";
@@ -32,7 +32,7 @@ public class BinColumns extends UIModule {
    * @return
    */
   public String getModuleName () {
-    return  "Bin Columns";
+    return  "Bin Attributes";
   }
 
   /**
@@ -50,7 +50,7 @@ public class BinColumns extends UIModule {
 
     sb.append( "</p><p> Numeric data can be binned in four ways:<br>" );
     sb.append( "<U>Uniform range:</U><br>" );
-    sb.append( "Enter a positive integer value for the number of bins. Bin Columns will divide the ");
+    sb.append( "Enter a positive integer value for the number of bins. The module will divide the ");
     sb.append( "binning range evenly over these bins. <br> ");
     sb.append( "<U>Specified range:</U><br> ");
     sb.append( "Enter a comma-separated sequence of integer or floating-point values for the endpoints of each bin. <br> ");
@@ -64,13 +64,14 @@ public class BinColumns extends UIModule {
     sb.append( "</P><P>For further information on how to use this module the user may click on the \"Help\" button ");
     sb.append( "during run time and get a detailed description of the functionality." );
 
-    sb.append( "</p><P>Missing and Empty Values Handling: In scalar columns, missing and empty values will be binned into " );
-    sb.append( "\"UNKNOWN\". In nominal columns however, missing/empty values which are represented by " );
-    sb.append( "'?' will be treated as a unique value in the column. In this case, if the user does not group " );
+    sb.append( "</p><P>Missing and Empty Values Handling: In scalar attributes, missing and empty values will be binned into " );
+    sb.append( "\"UNKNOWN\". In nominal attributes, however, missing/empty values which are represented by " );
+    sb.append( "'?' will be treated as a unique value in the attribute. In this case, if the user does not group " );
     sb.append( "the '?' and assign it a bin, then it would also be binned into \"UNKNOWN\".");
 
     sb.append( "</p><P>Data Handling:  This module does not change its input.  ");
-    sb.append( "Rather, it outputs a Transformation that can later be applied to the original table data.</P>" );
+    sb.append( "Rather, it outputs a Transformation that can later be applied to the original table data. ");
+    sb.append( "Note that if its input is an example table, only input and output features will be eligible for binning.</P>" );
 
     return sb.toString();
   }
@@ -105,7 +106,7 @@ public class BinColumns extends UIModule {
   public String getInputInfo (int i) {
     switch (i) {
       case 0:
-        return  "A Table with columns to bin.";
+        return  "A Table with attributes to bin. If it is an Example Table, only input and output features will be eligible for binning.";
       default:
         return  "No such input";
     }
@@ -249,10 +250,11 @@ public class BinColumns extends UIModule {
       uniqueColumnValues = new HashSet[tbl.getNumColumns()];
       binListModel.removeAllElements();
 
-      if (savedBins != null)
-        for (int i = 0; i < savedBins.length; i++) {
-      binListModel.addElement(savedBins[i]);
-        }
+      if (savedBins != null) {
+         for (int i = 0; i < savedBins.length; i++) {
+            binListModel.addElement(savedBins[i]);
+         }
+      }
 
         DefaultListModel numModel = (DefaultListModel)numericColumnLabels.getModel(),
         txtModel = (DefaultListModel)textualColumnLabels.getModel();
@@ -263,16 +265,49 @@ public class BinColumns extends UIModule {
         textUniqueModel.removeAllElements();
         uniqueTextualIndex = 0;
 
-        for (int i = 0; i < tbl.getNumColumns(); i++) {
-          columnLookup.put(tbl.getColumnLabel(i), new Integer(i));
-          //if (table.getColumn(i) instanceof NumericColumn)
-          if (tbl.isColumnScalar(i))
-            numModel.addElement(tbl.getColumnLabel(i));
-          else {          //if (table.getColumn(i) instanceof TextualColumn) {
-            txtModel.addElement(tbl.getColumnLabel(i));
-            uniqueColumnValues[i] = uniqueValues(i);
-          }
+        // !: check inputs/outputs if example table
+        ExampleTable et = null;
+        HashMap etInputs = null;
+        HashMap etOutputs = null;
+        if (tbl instanceof ExampleTable) {
+           et = (ExampleTable)tbl;
+           int[] inputs = et.getInputFeatures();
+           int[] outputs = et.getOutputFeatures();
+           etInputs = new HashMap();
+           etOutputs = new HashMap();
+
+           for (int i = 0; i < inputs.length; i++) {
+              etInputs.put(new Integer(inputs[i]), null);
+           }
+           for (int i = 0; i < outputs.length; i++) {
+              etOutputs.put(new Integer(outputs[i]), null);
+           }
         }
+
+        for (int i = 0; i < tbl.getNumColumns(); i++) {
+
+           if (et != null) {
+              if (!etInputs.containsKey(new Integer(i)) &&
+                  !etOutputs.containsKey(new Integer(i))) {
+                 continue;
+              }
+           }
+
+           columnLookup.put(tbl.getColumnLabel(i), new Integer(i));
+           //if (table.getColumn(i) instanceof NumericColumn)
+           if (tbl.isColumnScalar(i))
+              numModel.addElement(tbl.getColumnLabel(i));
+           else {          //if (table.getColumn(i) instanceof TextualColumn) {
+              txtModel.addElement(tbl.getColumnLabel(i));
+              uniqueColumnValues[i] = uniqueValues(i);
+           }
+
+        }
+
+        if (!validateBins(binListModel)) {
+           binListModel.removeAllElements();
+        }
+
         // finished...
         setup_complete = true;
     }
@@ -362,7 +397,7 @@ public class BinColumns extends UIModule {
             uRangeField.setText(EMPTY);
           }
           catch(NullPointerException npe){
-            ErrorDialog.showDialog("You must select a column to bin.", "Error");
+            ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
           }
                     /*
                      final JSlider uniformSlider = H.getSlider();
@@ -435,7 +470,7 @@ public class BinColumns extends UIModule {
                  frame.setVisible(true);
           }//try
           catch(NullPointerException npe){
-            ErrorDialog.showDialog("You must select a column to bin.", "Error");
+            ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
           }
           catch(IllegalArgumentException iae){
             ErrorDialog.showDialog("Please enter a comma-separated sequence of\ninteger or floating-point values for\nthe endpoints of each bin. ", "Error");
@@ -537,7 +572,7 @@ public class BinColumns extends UIModule {
             ErrorDialog.showDialog(str, "Error");
           }
           catch(NullPointerException npe){
-            ErrorDialog.showDialog("You must select a column to bin.", "Error");
+            ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
           }
                     /*vered - the if else replaced by try catch
                     else {
@@ -885,18 +920,20 @@ public class BinColumns extends UIModule {
          */
         public void actionPerformed (ActionEvent e) {
           //binIt(createInNewColumn.isSelected());
-          Object[] tmp = binListModel.toArray();
-          BinDescriptor[] bins = new BinDescriptor[tmp.length];
-          for (int i = 0; i < bins.length; i++)
-            bins[i] = (BinDescriptor)tmp[i];
+          // if (validateBins(binListModel)) {
+             Object[] tmp = binListModel.toArray();
+             BinDescriptor[] bins = new BinDescriptor[tmp.length];
+             for (int i = 0; i < bins.length; i++)
+                bins[i] = (BinDescriptor)tmp[i];
 
-          savedBins = new BinDescriptor[bins.length];
-          for (int i = 0; i < bins.length; i++)
-            savedBins[i] = bins[i];
+             savedBins = new BinDescriptor[bins.length];
+             for (int i = 0; i < bins.length; i++)
+                savedBins[i] = bins[i];
 
-          BinTransform bt = new BinTransform(bins, createInNewColumn.isSelected());
-          pushOutput(bt, 0);
-          viewDone("Done");
+             BinTransform bt = new BinTransform(bins, createInNewColumn.isSelected());
+             pushOutput(bt, 0);
+             viewDone("Done");
+          // }
         }
       });
       JButton showTable = new JButton("Show Table");
@@ -935,76 +972,17 @@ public class BinColumns extends UIModule {
       add(buttonPanel, BorderLayout.SOUTH);
     }
 
-        /*private void binIt(boolean new_column) {
-    // boolean replace = true;
-         Object[] tmp = binListModel.toArray();
-         BinDescriptor[] bins = new BinDescriptor[tmp.length];
-         for (int i = 0; i < bins.length; i++)
-         bins[i] = (BinDescriptor)tmp[i];
-    // need to figure out which columns have been binned:
-         boolean[] binRelevant = new boolean[table.getNumColumns()];
-         for (int i = 0; i < binRelevant.length; i++)
-         binRelevant[i] = false;
-         for (int i = 0; i < bins.length; i++)
-         binRelevant[bins[i].column_number] = true;
-    // if (replace) {
-    //Column[] c = new Column[table.getNumColumns()];
-    //for(int i = 0; i < c.length; i++)
-    //  c[i] = table.getColumn(i);
-         String[][] newcols =
-         new String[table.getNumColumns()][table.getNumRows()];
-         for(int i = 0; i < table.getNumColumns(); i++) {
-         if (binRelevant[i])
-         for(int j = 0; j < table.getNumRows(); j++) {
-    // find the correct bin for this column
-         boolean binfound = false;
-         for(int k = 0; k < bins.length; k++) {
-         if(bins[k].column_number == i) {
-    // this has the correct column index
-    //if(c[i] instanceof NumericColumn) {
-         if(table.isColumnNumeric(i)) {
-         if(bins[k].eval(table.getDouble(j, i))) {
-         newcols[i][j] = bins[k].name;
-         binfound = true;
-         }
-         }
-         else {
-         if(bins[k].eval(table.getString(j, i))) {
-         newcols[i][j] = bins[k].name;
-         binfound = true;
-         }
-         }
-         }
-         if(binfound) {
-         binRelevant[i] = true;
-         break;
-         }
-         }
-         if(!binfound)
-         newcols[i][j] = "Unknown";
-         }
-         }
-    //StringColumn[] sc = new StringColumn[table.getNumColumns()];
-         for(int i = 0; i < table.getNumColumns(); i++) {
-         if (binRelevant[i]) {
-    //sc[i] = new StringColumn(newcols[i]);
-    //sc[i].setComment(table.getColumn(i).getComment());
-         if (new_column) {
-         if (binRelevant[i]) {
-    //sc[i].setLabel(table.getColumnLabel(i) + " bin");
-         table.addColumn(newcols[i]);
-         table.setColumnLabel(table.getColumnLabel(i)+" bin", table.getNumColumns()-1);
-         }
-         }
-         else {
-         String oldLabel = table.getColumnLabel(i);
-         table.setColumn(newcols[i], i);
-         table.setColumnLabel(oldLabel, i);
-         }
-         }
-         }
-    // }
-         }*/
+    private boolean validateBins(DefaultListModel newBins) {
+       boolean match = false;
+       for (int binIdx = 0; binIdx < newBins.size(); binIdx++) {
+          if (!(columnLookup.containsKey(((BinDescriptor)newBins.get(binIdx)).label))) {
+             // ErrorDialog.showDialog("Current bins contain non-selected attributes. Please remove them.", "Error");
+             // System.out.println("no good: " + ((BinDescriptor)newBins.get(binIdx)).label);
+             return false;
+          }
+       }
+       return true;
+    }
 
     private HashSet uniqueValues (int col) {
       // count the number of unique items in this column
@@ -1059,7 +1037,7 @@ public class BinColumns extends UIModule {
       int[] colIdx = getSelectedNumericIndices();
       //vered
       if(colIdx.length == 0){
-        ErrorDialog.showDialog("Must select a column to bin.", "Error");
+        ErrorDialog.showDialog("Must select an attribute to bin.", "Error");
         return;
       }
 
@@ -1122,7 +1100,7 @@ public class BinColumns extends UIModule {
       int[] colIdx = getSelectedNumericIndices();
       //vered:
       if(colIdx.length == 0){
-        ErrorDialog.showDialog("You must select a column to bin.", "Error");
+        ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
         return;
       }
 
@@ -1173,7 +1151,7 @@ public class BinColumns extends UIModule {
       int[] colIdx = getSelectedNumericIndices();
       //vered:
       if(colIdx.length == 0){
-        ErrorDialog.showDialog("You must select a column to bin.", "Error");
+        ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
         return;
       }
 
@@ -1240,7 +1218,7 @@ public class BinColumns extends UIModule {
 
       //vered:
       if(colIdx.length == 0){
-        ErrorDialog.showDialog("You must select a column to bin.", "Error");
+        ErrorDialog.showDialog("You must select an attribute to bin.", "Error");
         return;
       }
 
@@ -1443,7 +1421,7 @@ public class BinColumns extends UIModule {
        * put your documentation comment here
        */
       public HelpWindow () {
-        super("About Bin Columns");
+        super("About Bin Attributes");
         JEditorPane ep = new JEditorPane("text/html", getHelpString());
         ep.setCaretPosition(0);
         getContentPane().add(new JScrollPane(ep));
@@ -1457,11 +1435,11 @@ public class BinColumns extends UIModule {
      */
     private String getHelpString () {
       StringBuffer sb = new StringBuffer();
-      sb.append("<html><body><h2>Bin Columns</h2>");
+      sb.append("<html><body><h2>Bin Attributes</h2>");
       sb.append("This module allows a user to interactively bin data from a table. ");
-      sb.append("Numeric data can be binned in four ways:<ul>");
+      sb.append("Scalar data can be binned in four ways:<ul>");
       sb.append("<li><b>Uniform range</b><br>");
-      sb.append("Enter a positive integer value for the number of bins. Bin Columns will ");
+      sb.append("Enter a positive integer value for the number of bins. Bin Attributes will ");
       sb.append("divide the binning range evenly over these bins.");
       sb.append("<br><li><b>Specified range</b>:<br>");
       sb.append("Enter a comma-separated sequence of integer or floating-point values ");
@@ -1471,15 +1449,15 @@ public class BinColumns extends UIModule {
       sb.append("<br><li><b>Uniform Weight</b>:<br>");
       sb.append("Enter a positive integer value for even binning with that number in each bin.");
       sb.append("</ul>");
-      sb.append("To bin numeric data, select columns from the \"Numeric Columns\" ");
+      sb.append("To bin scalar data, select attributes from the \"Scalar Attributes\" ");
       sb.append("selection area (top left) and select a binning method by entering a value ");
       sb.append("in the corresponding text field and clicking \"Add\". Data can ");
       sb.append("alternately be previewed in histogram form by clicking the corresponding ");
       sb.append("\"Show\" button (this accepts, but does not require, a value in the text field). ");
       sb.append("Uniform weight binning has no histogram (it would always look the same).");
       sb.append("<br><br>To bin nominal data, click the \"Nominal\" tab (top left) to bring ");
-      sb.append("up the \"Nominal Columns\" selection area. Click on a column to show a list ");
-      sb.append("of unique nominal values in that column in the \"Unique Values\" area below. ");
+      sb.append("up the \"Nominal Attributes\" selection area. Click on an attibute to show a list ");
+      sb.append("of unique nominal values in that attribute in the \"Unique Values\" area below. ");
       sb.append("Select one or more of these values and click the right arrow button to group ");
       sb.append("these values. They can then be assigned a collective name as before.");
       sb.append("<br><br>To assign a name to a particular bin, select that bin in ");
