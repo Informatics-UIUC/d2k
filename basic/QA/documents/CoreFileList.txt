@@ -735,7 +735,8 @@ ApplyTransformation.java			move
 ./transform/attribute:
 ChooseAttributes.java		done
 ChooseAttributeTypes.java	done (may allow bad choices)
-ColumnConstruction.java		done
+ColumnConstruction.java		remove - replaced by AttributeConstruction 4/4/03
+AttributeConstruction.java	done
 ColumnExpression.java		move
 CombinePredictionTables.java	? ask Peter G.
 Continuous2Discrete.java	?, ask Peter G.
@@ -871,4 +872,5 @@ TableEditorModel.java			move
 TableMatrix.java			done
 TableViewerModel.java			move
 UniformHistogram.java			done
+
 
