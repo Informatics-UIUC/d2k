@@ -1,8 +1,10 @@
 package ncsa.d2k.modules.core.optimize.random;
 
 import ncsa.d2k.modules.core.datatype.parameter.*;
-import ncsa.d2k.modules.core.datatype.parameter.basic.*;
-import ncsa.d2k.modules.core.datatype.table.continuous.*;
+import ncsa.d2k.modules.core.datatype.parameter.impl.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+
+//import ncsa.d2k.modules.core.datatype.table.continuous.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import java.util.Random;
 import ncsa.d2k.core.modules.ComputeModule;
@@ -194,8 +196,8 @@ public class UniformSampling
   public void beginExecution() {
 
     InitialExecution = true;
-    ExampleSet = null;
-    NumExamples = 0;
+    ExampleData = null;
+    //NumExamples = 0;
 
     if (ObjectiveScoreDirection == 1) {
       BestUtility = Double.NEGATIVE_INFINITY;
@@ -228,9 +230,15 @@ public class UniformSampling
   //int           BiasSpaceNumDimensions;
   double[][][] InitialExampleSet;
   int InitialNumExamples;
-  ContinuousDoubleExampleTable ExampleSet;
+  //ContinuousDoubleExampleTable ExampleSet;
+  //ExampleTable ExampleSet;
+
   int NumExamples;
   double[][] ExampleData;
+  int [] inputs;
+  int [] outputs;
+  String [] inputNames;
+  String [] outputNames;
 
   double BestUtility = 0;
   int BestExampleIndex = Integer.MIN_VALUE;
@@ -244,50 +252,40 @@ public class UniformSampling
     else {
 
       Example example = (Example)this.pullInput(1);
+      if (ExampleData == null) {
+	    NumExamples = 0;
+		ExampleData = new double [BiasSpace.getNumParameters()+example.getNumOutputs()][MaxNumIterations];
+		inputs = new int [BiasSpace.getNumParameters()];
+		outputs = new int [example.getNumOutputs()];
+		int index = 0;
+		for (; index < inputs.length ; index++) inputs[index] = index;
+		for (int i = 0 ; i < outputs.length ; index++, i++) outputs[i] = index;
 
-      if (ExampleSet == null) {
+		inputNames = new String[BiasSpace.getNumParameters()];
+		for (int i = 0; i < BiasSpace.getNumParameters(); i++) {
+		  inputNames[i] = BiasSpace.getName(i);
+		}
 
-        String[] ControlSpaceDimensionNames = new String[BiasSpace.
-            getNumParameters()];
-        for (int i = 0; i < BiasSpace.getNumParameters(); i++) {
-          ControlSpaceDimensionNames[i] = BiasSpace.getName(i);
-        }
-
-        String[] ObjectiveSpaceDimensionNames = new String[example.getNumOutputs()];
-        for (int i = 0; i < example.getNumOutputs(); i++) {
-          ObjectiveSpaceDimensionNames[i] = example.getOutputName(i);
-        }
-
-        ExampleSet = new ContinuousDoubleExampleTable(MaxNumIterations,
-            BiasSpace.getNumParameters(),
-            example.getNumOutputs(),
-            ControlSpaceDimensionNames,
-            ObjectiveSpaceDimensionNames);
-
-        ExampleSet.setNumRows(0);
-
+		outputNames = new String[example.getNumOutputs()];
+		for (int i = 0; i < example.getNumOutputs(); i++) {
+		  outputNames[i] = example.getOutputName(i);
+		}
       }
 
       // add example to set
-      double[] data = new double[example.getNumInputs() + example.getNumOutputs()];
       int index = 0;
       for (int i = 0; i < example.getNumInputs(); i++) {
-        data[index++] = example.getInputDouble(i);
+        ExampleData[index++][NumExamples] = example.getInputDouble(i);
       }
       for (int i = 0; i < example.getNumOutputs(); i++) {
-        data[index++] = example.getOutputDouble(i);
+        ExampleData[index++][NumExamples] = example.getOutputDouble(i);
       }
-
-      ExampleSet.addRow(data);
       NumExamples++;
 
       // update best solution so far
-
+	  int outputFeature2Score = inputs.length + ObjectiveScoreOutputFeatureNumber;
       for (int e = NumExamples - 1; e < NumExamples; e++) {
-
-        double utility = ExampleSet.getExample(e).getOutputDouble(
-            ObjectiveScoreOutputFeatureNumber - 1);
-
+		double utility = ExampleData [e][outputFeature2Score];
         if (ObjectiveScoreDirection == 1) {
           if (utility > BestUtility) {
             BestUtility = utility;
@@ -344,31 +342,18 @@ public class UniformSampling
       }
 
       // add example to set
-      double[] data = new double[ExampleSet.getNumInputFeatures() +
-          ExampleSet.getNumOutputFeatures()];
-      int index = 0;
-      for (int i = 0; i < ExampleSet.getNumInputFeatures(); i++) {
-        data[index++] = ExampleSet.getInputDouble(BestExampleIndex, i);
-      }
-      for (int i = 0; i < ExampleSet.getNumOutputFeatures(); i++) {
-        data[index++] = ExampleSet.getOutputDouble(BestExampleIndex, i);
-      }
-
-      ContinuousDoubleExampleTable optimalExampleSet = new
-          ContinuousDoubleExampleTable(
-          data,
-          1,
-          ExampleSet.getNumInputFeatures(),
-          ExampleSet.getNumOutputFeatures(),
-          ExampleSet.getInputNames(),
-          ExampleSet.getOutputNames()
-          );
-
+	  double[][] data = new double[ExampleData.length][1];
+	  int index = 0;
+	  for (int i = 0; i < ExampleData.length; i++) {
+		data[index++][0] = ExampleData[i][BestExampleIndex];
+	  }
+	  ExampleTable optimalExampleSet = this.getTable(data, inputNames, outputNames,
+			  inputs, outputs, 1);
+	  ExampleTable exampleSet = this.getTable(ExampleData, inputNames, outputNames,
+			  inputs, outputs, NumExamples);
       this.pushOutput(optimalExampleSet, 1);
-      this.pushOutput(ExampleSet, 2);
-
+      this.pushOutput(exampleSet, 2);
       beginExecution();
-
       return;
     }
 
@@ -408,16 +393,46 @@ public class UniformSampling
 
       }
     }
-
-    ParameterPointImpl parameterPoint = new ParameterPointImpl();
-
-    String[] names = new String[BiasSpace.getNumParameters()];
-    for (int i = 0; i < BiasSpace.getNumParameters(); i++) {
-      names[i] = BiasSpace.getName(i);
-    }
-    parameterPoint.createFromData(names, point);
-
+	String[] names = new String[BiasSpace.getNumParameters()];
+	for (int i = 0; i < BiasSpace.getNumParameters(); i++) {
+	  names[i] = BiasSpace.getName(i);
+	}
+	ParameterPoint parameterPoint = ParameterPointImpl.getParameterPoint(names, point);
     this.pushOutput(parameterPoint, 0);
 
+  }
+
+  /**
+   * Given a two d array of doubles, create a table.
+   * @param data
+   * @return
+   */
+  static public ExampleTable getTable (double[][] data, String [] inputNames,
+			String [] outputNames, int [] inputs, int [] outputs, int count) {
+    Column [] cols = new Column[data.length];
+	int index = 0;
+    for (int i = 0 ; i < inputs.length; i++, index++) {
+	  if (data.length != count) {
+	    double [] tmp = new double [count];
+		System.arraycopy(data[index], 0, tmp, 0, count);
+		data[index] = tmp;
+	  }
+	  cols[index] = new DoubleColumn(data[index]);
+	  cols[index].setLabel(inputNames[i]);
+	}
+	for (int i = 0 ; i < outputs.length; i++, index++) {
+		if (data.length != count) {
+		  double [] tmp = new double [count];
+		  System.arraycopy(data[index], 0, tmp, 0, count);
+		  data[index] = tmp;
+		}
+	  cols[index] = new DoubleColumn(data[index]);
+	  cols[index].setLabel(outputNames[i]);
+	}
+	MutableTable mt = new MutableTableImpl(cols);
+	ExampleTable et = mt.toExampleTable();
+	et.setInputFeatures(inputs);
+	et.setOutputFeatures(outputs);
+	return et;
   }
 }

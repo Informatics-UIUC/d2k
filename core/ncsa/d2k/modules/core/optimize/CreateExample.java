@@ -2,7 +2,8 @@ package ncsa.d2k.modules.core.optimize;
 import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.continuous.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.optimize.random.UniformSampling;
 
 public class CreateExample extends ComputeModule {
 
@@ -58,32 +59,36 @@ public class CreateExample extends ComputeModule {
 
     ParameterPoint   controlParameterPoint = (ParameterPoint) this.pullInput(0);
     ParameterPoint objectiveParameterPoint = (ParameterPoint) this.pullInput(1);
-
     int  numInputs =   controlParameterPoint.getNumParameters();
     int numOutputs = objectiveParameterPoint.getNumParameters();
 
-    double []  inputValues = new double[numInputs];
-    for (int i = 0; i < numInputs; i++) {
-      inputValues[i] = controlParameterPoint.getValue(i);
-    }
-    double [] outputValues = new double[numOutputs];
-    for (int i = 0; i < numOutputs; i++) {
-      outputValues[i] = objectiveParameterPoint.getValue(i);
-    }
+	// Compile the data.
+	double [][] data = new double [numInputs+numOutputs][1];
+	int index = 0;
+	for (int i = 0 ; i < numInputs ; i++, index++) {
+		data[index][0] = controlParameterPoint.getValue(i);
+	}
+	for (int i = 0 ; i < numOutputs ; i++, index++) {
+		data[index][0] = objectiveParameterPoint.getValue(i);
+	}
 
-    double [][] data = new double [][] {inputValues, outputValues};
-
+	// get the names.
     String [] inputNames = new String[numInputs];
-    for (int v = 0; v < numInputs; v++) {
+	int [] inputs = new int [numInputs];
+	index = 0;
+    for (int v = 0; v < numInputs; v++, index++) {
       inputNames[v] = "in" + (v + 1);
+	  inputs[v] = index;
     }
     String [] outputNames = new String[numOutputs];
-    for (int v = 0; v < numOutputs; v++) {
+	int [] outputs = new int [numOutputs];
+	for (int v = 0; v < numOutputs; v++, index++) {
       outputNames[v] = "out" + (v + 1);
-    }
+	  outputs[v] = index;
+	}
 
-    DoubleExample example = new DoubleExample(data, numInputs, numOutputs, inputNames, outputNames);
-
+	// construct an example, first create a table.
+	Example example = UniformSampling.getTable(data, inputNames, outputNames, inputs, outputs, 1).getExample(0);
     this.pushOutput(example, 0);
   }
 }
