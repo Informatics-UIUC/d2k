@@ -8,6 +8,7 @@ import java.util.*;
 import javax.swing.*;
 
 import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.modules.core.transform.StaticMethods;
 
 /**
 	SelectTable.java
@@ -115,10 +116,13 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
     //QA Anca added this:
     //conversion to headless - vered: the super class implements this method.
-  /*  public PropertyDescription[] getPropertiesDescriptions() {
+   public PropertyDescription[] getPropertiesDescriptions() {
         // so that "WindowName" property is invisible
-        return new PropertyDescription[0];
-    }*/
+     PropertyDescription[] pds = new PropertyDescription[2] ;
+     pds[0] = super.supressDescription;
+     pds[1] = new PropertyDescription("selectedTable", "Table Name", "When manually setting this property - make sure the name will be available in the input vector. The names are case sensitive.");
+     return pds;
+    }
 
 	/**
 		This method is called by D2K to get the UserView for this module.
@@ -227,11 +231,13 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
         public String getSelectedTable(){return selectedTable;}
         public void setSelectedTable(String name){selectedTable = name;}
 
-        public void doit(){
-          pullInput(0);
+        public void doit() throws Exception {
+          Vector available = (Vector) pullInput(0);
 
           if (selectedTable == null || selectedTable.length() == 0)
-               System.out.println("\n\nSelectTable:\nInvalid name for selected table.\n");
+               throw new Exception("\n\nSelectTable:\nInvalid name for selected table.\n");
+          if(!available.contains(selectedTable))
+            throw new Exception("The selected table - " + selectedTable + " was not found in the input list of available tables.");
 
            else
              pushOutput(selectedTable, 0);
