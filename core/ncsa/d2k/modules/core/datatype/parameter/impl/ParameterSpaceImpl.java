@@ -216,8 +216,18 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	 * @param parameterIndex the index of the parameter of interest.
 	 * @return A ParamterPoint representing the default values of all parameters.
 	 */
+	String [] labels;
 	public ParameterPoint getDefaultParameterPoint(){
-		return null;
+		double [] vals = new double[this.getNumParameters()];
+		if (labels == null || labels.length != this.getNumParameters()){
+			labels = new String [this.getNumParameters()];
+		}
+		for (int i = 0 ; i < vals.length ; i++) {
+			vals[i] = this.getDefaultValue(i);
+			labels[i] = this.getName(i);
+		}
+		ParameterPoint ppi = ParameterPointImpl.getParameterPoint(labels, vals);
+		return ppi;
 	}
 
 	/**

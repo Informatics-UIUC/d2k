@@ -15,7 +15,7 @@ import java.awt.*;
  * @author unascribed
  * @version 1.0
  */
-public class AbstractParamSpaceGenerator extends ncsa.d2k.core.modules.DataPrepModule {
+abstract public class AbstractParamSpaceGenerator extends ncsa.d2k.core.modules.DataPrepModule {
 
 	protected ParameterSpace space;
 	public ParameterSpace getCurrentSpace() { return space; }
@@ -27,7 +27,7 @@ public class AbstractParamSpaceGenerator extends ncsa.d2k.core.modules.DataPrepM
 	 * mutable.
 	 * @return the factory settings space.
 	 */
-	protected ParameterSpace getDefaultSpace(){return null;}
+	abstract protected ParameterSpace getDefaultSpace();
 
 	/**
 	 * returns information about the input at the given index.
@@ -120,6 +120,7 @@ public class AbstractParamSpaceGenerator extends ncsa.d2k.core.modules.DataPrepM
 	 * All we have to do here is push the parameter space.
 	 */
 	public void doit() {
+		if (space == null) space = this.getDefaultSpace();
 		this.pushOutput(space, 0);
 	}
 

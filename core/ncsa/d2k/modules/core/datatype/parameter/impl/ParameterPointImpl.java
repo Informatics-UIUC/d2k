@@ -16,9 +16,6 @@ Note: It is important that this be an Example so that additional layers
 */
 public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 
-	double [] values;
-	String [] names;
-
 	/**
 	 * return a paramter point from the given arrays.
 	 * @return
@@ -26,21 +23,24 @@ public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 	static final public ParameterPoint getParameterPoint(String []names, double [] values) {
 		int numColumns = names.length;
 		ExampleTableImpl eti = new ExampleTableImpl();
-		double [] vals = new double [1];
 		for (int i = 0 ; i < values.length; i++) {
+			double [] vals = new double [1];
 			vals [0] = values[i];
 			DoubleColumn dc = new DoubleColumn(vals);
 			dc.setLabel(names[i]);
 			eti.addColumn(dc);
 		}
+		int [] ins = new int [numColumns];
+		for (int i = 0 ; i < numColumns; i++) ins[i] = i;
+		eti.setInputFeatures(ins);
 		return new ParameterPointImpl(eti);
 	 }
 
 	 public ParameterPoint createFromData(String [] names, double [] values) {
-		 int numColumns = names.length;
+		int numColumns = names.length;
 		 ExampleTableImpl eti = new ExampleTableImpl();
-		 double [] vals = new double [1];
 		 for (int i = 0 ; i < values.length; i++) {
+			 double [] vals = new double [1];
 			 vals [0] = values[i];
 			 DoubleColumn dc = new DoubleColumn(vals);
 			 dc.setLabel(names[i]);
@@ -71,7 +71,7 @@ public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 	* @return An int value representing the minimum possible value of the parameter.
 	*/
 	public int getNumParameters() {
-		return names.length;
+		return this.getNumColumns();
 	}
 
 	/**
@@ -79,48 +79,58 @@ public class ParameterPointImpl extends ExampleImpl implements ParameterPoint {
 	* @param parameterIndex the index of the parameter of interest.
 	* @return A string value representing the name of the parameter.
 	*/
-	public String getName(int parameterIndex) { return names[parameterIndex]; }
+	public String getName(int parameterIndex) {
+		return this.getColumnLabel(parameterIndex);
+	}
 
 	/**
 	* Get the value of a parameter.
 	* @param parameterIndex the index of the parameter of interest.
 	* @return a double value representing the minimum possible value of the parameter.
 	*/
-	public double getValue(int parameterIndex) { return values[parameterIndex]; }
+	public double getValue(int parameterIndex) {
+		return this.getDouble(0, parameterIndex);
+	}
+
+	public String toString() {
+		StringBuffer sb = new StringBuffer(1024);
+		for (int i = 0 ; i < this.getNumParameters() ; i++) {
+			if (i > 0) sb.append(',');
+			sb.append(this.getValue(i));
+		}
+		return sb.toString();
+	}
+
+	/**
+	* Get the value of a parameter.
+	* @param name is a string which names the parameter of interest.
+	* @return a double value representing the minimum possible value of the parameter.
+	*/
+	public double getValue(String name) throws Exception {
+		return getValue(getParameterIndex(name));
+	}
 
 
-          /**
-   * Get the value of a parameter.
-   * @param name is a string which names the parameter of interest.
-   * @return a double value representing the minimum possible value of the parameter.
-   */
-  public double getValue(String name) throws Exception {
-    return getValue(getParameterIndex(name));
-  }
+	/**
+	* Get the parameter index of that corresponds to the given name.
+	* @return an integer representing the index of the parameters.
+	*/
+	public int getParameterIndex(String name) throws Exception {
 
+		for (int i = 0; i < getNumParameters(); i++) {
+			if (getName(i).equals(name))
+				return i;
+		}
+		Exception e = new Exception();
+		System.out.println("Error!  Can not find name (" + name + ").  ");
+		throw e;
+	}
 
-  /**
-   * Get the parameter index of that corresponds to the given name.
-   * @return an integer representing the index of the parameters.
-   */
-  public int getParameterIndex(String name) throws Exception {
-
-    for (int i = 0; i < getNumParameters(); i++) {
-      if (getName(i).equals(name))
-        return i;
-    }
-    Exception e = new Exception();
-    System.out.println("Error!  Can not find name (" + name + ").  ");
-    throw e;
-  }
-
-
-  /**
-   * Get the parameter index of that corresponds to the given name.
-   * @return an integer representing the index of the parameters.
-   */
-  public ParameterPoint [] segmentPoint(ParameterPoint point, int splitIndex) {
-    return null;
-  }
-
+	/**
+	* Get the parameter index of that corresponds to the given name.
+	* @return an integer representing the index of the parameters.
+	*/
+	public ParameterPoint [] segmentPoint(ParameterPoint point, int splitIndex) {
+		return null;
+	}
 } /* ParameterPoint */
