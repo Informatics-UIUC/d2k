@@ -152,6 +152,7 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
         MutableTable table =(MutableTable) pullInput(0);
         CascadeSort cSort = new CascadeSort(table);
 
+
          if(sortOrderNames == null)
            throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
 
@@ -184,15 +185,7 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
          retVal = StaticMethods.getIntersectIds(sortOrderNames, columns);
          if(retVal.length < sortOrderNames.length){
 
-           //vered - debug
-           System.out.println("retVal length = " + retVal.length);
-           for (int i=0; i<retVal.length; i++)
-             System.out.println("retVal[" + i + "] = " + retVal[i]);
 
-           System.out.println("sortOrderNames length = " + sortOrderNames.length);
-           for (int i=0; i<sortOrderNames.length; i++)
-             System.out.println("sortOrderNames[" + i + "] = " + sortOrderNames[i]);
-           //end debug
            throw new Exception(getAlias() +
                ": Some of the configured labels were found in the input table. " +
                "\nPlease reconfigure this module.");

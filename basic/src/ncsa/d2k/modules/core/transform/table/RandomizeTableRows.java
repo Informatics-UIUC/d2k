@@ -183,9 +183,14 @@ public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 // END QA Comments
 
 
+      /**
+       *
+       * QA Comments
+       * 10/23/03 - Vered started QA process.
+       * does not handle missing values well. bug in implementation of swapRows.
+       * no swapping is done for the missing values array... apparently this was fixed [03-11-03]
+       * works with MutableTableImpl, ExampleTableImpl [11-03-03]
 
-//QA Comments
-// 10/23/03 - Vered started QA process.
-//does not handle missing values well. bug in implementation of swapRows.
-//no swapping is done for the missing values array...
-//awaiting fix of tables.
+        */
+
+

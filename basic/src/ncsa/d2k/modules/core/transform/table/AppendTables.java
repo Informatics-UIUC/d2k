@@ -245,9 +245,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
                 String label = null;
 
 		try {
+
+                  //for each column in first table
 		   for (int i = 0; i < t1numColumns; i++) {
                         int t2Col = -1;
-
+                        //removing common labels fro mthe labels map of second table.
 			label = t1.getColumnLabel(i);
 			Integer tmp = (Integer) colMap2.get(label);
 			if (tmp != null) {  		// col in both
@@ -664,7 +666,10 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(new IntColumn(vals));
+                                        //vered - added following 2 rows to preserve missing values of unique columns in second table (bug 108)
+                                        Column col = new IntColumn(vals);
+                                        this.copyMissingValues(t2.getColumn(i), col, t1.getNumRows());
+					result.addColumn(col);
 					break;
 				}
 
@@ -685,7 +690,12 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(new FloatColumn(vals));
+                                        //vered - added following 2 rows to preserve missing values of unique columns in second table (bug 108)
+                                       Column col = new FloatColumn(vals);
+                                       this.copyMissingValues(t2.getColumn(i), col, t1.getNumRows());
+                                       result.addColumn(col);
+
+
 					break;
 				}
 				case ColumnTypes.DOUBLE: {
@@ -705,7 +715,11 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(new DoubleColumn(vals));
+
+                                        //vered - added following 2 rows to preserve missing values of unique columns in second table (bug 108)
+                                       Column col = new DoubleColumn(vals);
+                                       this.copyMissingValues(t2.getColumn(i), col, t1.getNumRows());
+                                       result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.SHORT: {
@@ -724,8 +738,12 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 					System.arraycopy((short[])t2.getColumn(i).getInternal(),
 									 0, vals, t1Size, t2Size);
 
-					// add the column
-					result.addColumn(new ShortColumn(vals));
+                                        // add the column
+
+                                        //vered - added following 2 rows to preserve missing values of unique columns in second table (bug 108)
+                                       Column col = new ShortColumn(vals);
+                                       this.copyMissingValues(t2.getColumn(i), col, t1.getNumRows());
+                                       result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.LONG: {
@@ -745,7 +763,10 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(new LongColumn(vals));
+                                        //vered - added following 2 rows to preserve missing values of unique columns in second table (bug 108)
+                                       Column col = new LongColumn(vals);
+                                       this.copyMissingValues(t2.getColumn(i), col, t1.getNumRows());
+                                       result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.STRING: {
@@ -765,7 +786,10 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(new StringColumn(vals));
+                                        //vered - added following 2 rows to preserve missing values of unique columns in second table (bug 108)
+                                       Column col = new StringColumn(vals);
+                                       this.copyMissingValues(t2.getColumn(i), col, t1.getNumRows());
+                                       result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.CHAR_ARRAY: {
@@ -785,7 +809,10 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(new CharArrayColumn(vals));
+                                        //vered - added following 2 rows to preserve missing values of unique columns in second table (bug 108)
+                                       Column col = new CharArrayColumn(vals);
+                                       this.copyMissingValues(t2.getColumn(i), col, t1.getNumRows());
+                                       result.addColumn(col);
 					break;
 				}
 
@@ -806,7 +833,10 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(new ByteArrayColumn(vals));
+                                        //vered - added following 2 rows to preserve missing values of unique columns in second table (bug 108)
+                                       Column col = new ByteArrayColumn(vals);
+                                       this.copyMissingValues(t2.getColumn(i), col, t1.getNumRows());
+                                       result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.BOOLEAN: {
@@ -826,7 +856,10 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(new BooleanColumn(vals));
+                                        //vered - added following 2 rows to preserve missing values of unique columns in second table (bug 108)
+                                      Column col = new BooleanColumn(vals);
+                                      this.copyMissingValues(t2.getColumn(i), col, t1.getNumRows());
+                                      result.addColumn(col);
 					break;
 				}
 
@@ -847,7 +880,10 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(new ObjectColumn(vals));
+                                        //vered - added following 2 rows to preserve missing values of unique columns in second table (bug 108)
+                                    Column col = new ObjectColumn(vals);
+                                    this.copyMissingValues(t2.getColumn(i), col, t1.getNumRows());
+                                    result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.BYTE: {
@@ -867,7 +903,10 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(new ByteColumn(vals));
+                                        //vered - added following 2 rows to preserve missing values of unique columns in second table (bug 108)
+                                    Column col = new ByteColumn(vals);
+                                    this.copyMissingValues(t2.getColumn(i), col, t1.getNumRows());
+                                    result.addColumn(col);
 					break;
 				}
 				case ColumnTypes.CHAR: {
@@ -887,7 +926,10 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 									 0, vals, t1Size, t2Size);
 
 					// add the column
-					result.addColumn(new CharColumn(vals));
+                                        //vered - added following 2 rows to preserve missing values of unique columns in second table (bug 108)
+                                    Column col = new CharColumn(vals);
+                                    this.copyMissingValues(t2.getColumn(i), col, t1.getNumRows());
+                                    result.addColumn(col);
 					break;
 				}
 				default: {
@@ -923,7 +965,7 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
 
        10/23/03 - vered started qa process.
           the module throws an exception  when trying to load an itinerary
-          with it.
+          with it. - fixed [11-03-03]
 
       10/24/03 - line 283 throws array index out of bound exception
              because the internal of StringColumn is memory saving
@@ -934,7 +976,10 @@ public class AppendTables extends ncsa.d2k.core.modules.DataPrepModule {
        10/30/03 - does not handle missing values well. the output table does not
   *               "know" which of the values were missing in the original table.
   *               this is not being updated using setValueToMissing or any other
-  *               method. [bug 103] fixed.
+  *               method. [bug 103] fixed - partially.
+ *     11/03/03 - preservation of missing values is not done for second table in
+ *                columns that are unique to this table. [bug 108]
+ *
 
 
        */

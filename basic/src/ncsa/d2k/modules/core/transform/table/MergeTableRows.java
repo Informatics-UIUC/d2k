@@ -858,3 +858,8 @@ public class MergeTableRows extends HeadlessUIModule {
 //           handling of missing values - when the merged table is viewed by a
 //           table viewer, missing values represented by zero. in a addition to
 //           that - the new table does not "know" the value is missing...
+//11/03/03 - problem with preservation of missing values is fixed.
+//           modules works well with MutableTableImpl, ExampleTablEImpl
+//           another problem with missing values: calculation of minimum/average
+//           right now - a missing value is considered to be zero when calculating
+//           these values.
