@@ -179,7 +179,7 @@ import Jama.*;
 		for(int e=0; e<exampleCount; e++){
 			for(int oi=0; oi<outputNames.length; oi++){
 				double sum;
-				sb.append(if(!predictMean){
+				if(!predictMean){
 					sum=0.0;
 					sum+=coefficients[oi][0];
 					for(int i=0; i<et.getNumInputFeatures();i++){
