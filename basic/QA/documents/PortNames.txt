@@ -20,6 +20,9 @@ File Name 1, java.lang.String, Output, First file name - possibly with path,    
 File Name 2, java.lang.String, Output, Second file name - possibly with path,          Input2FileNames (Input 2 File Names)
 File Name,   java.lang.String, Input,  A file name where serialized object is read,    InputSerializedObject (Input Serialized Object)
 File Name,   java.lang.String, Input,  A file name where serialized object is written, OutputSerializedObject (Output Serialized Object)
+File Name,   java.lang.String, Input,  Absolute path to and ARFF  file, 	       CreateARFFParser (Create ARFF File Parser)
+
+File Parser, d2k.modules.core.io.file.input.ARFFFileParser, Output,  An ARFF File Parser, CreateARFFParser (Create ARFF File Parser)
 
 Java Object, java.lang.Object, Output, The object that was deserialized, InputSerializedObject (Input Serialized Object)
 Java Object, java.lang.Object, Input,  The object to be serialized,      OutputSerializedObject (Output Serialized Object)
