@@ -26,6 +26,7 @@ public class BinTransform implements Transformation, Cloneable {
 		else		//missing values info is contained in tbl and "unknown" bins are added for relevant atrbs
 		 bins = BinningUtils.addMissingValueBins(tbl,b);
 		
+		System.out.println("bins.length " + bins.length);
 		new_column = new_col;
 		
 	}
@@ -49,7 +50,7 @@ public class BinTransform implements Transformation, Cloneable {
 			Integer idx = (Integer) colIndexLookup.get(bins[i].label);
 			if (idx != null) {
 				binRelevant[idx.intValue()] = true;
-				  //System.out.println("relevant column " + idx.intValue());
+				 // System.out.println("relevant column " + idx.intValue());
 			}
 			//else
 			//   System.out.println("COLUMN LABEL NOT FOUND!!!");
@@ -60,24 +61,29 @@ public class BinTransform implements Transformation, Cloneable {
 		for (int i = 0; i < mt.getNumColumns(); i++) {
 			if (binRelevant[i])
 				for (int j = 0; j < mt.getNumRows(); j++) {
+					//System.out.println("value for line " + j + " column "+ i + " is "+ mt.getString(j,i));
 					// find the correct bin for this column
 					boolean binfound = false;
 					for (int k = 0; k < bins.length; k++) {
 						//if (bins[k].column_number == i) {
 						if (((Integer) colIndexLookup.get(bins[k].label)).intValue() == i) {
 							// this has the correct column index
-							if (mt.isColumnNumeric(i)) {
+							if (mt.isColumnScalar(i)) {
 								if (mt.isValueMissing(j, i))
 									binfound = false;
 								else if (bins[k].eval(mt.getDouble(j, i))) {
-									// System.out.println("evaled " + mt.getString(j,i) + " into bin " + bins[k].name);
+									//System.out.println("evaled " + mt.getDouble(j,i) + " into bin " + bins[k].name);
 									newcols[i][j] = bins[k].name;
 									binfound = true;
 								}
 							} else {
-								if (mt.isValueMissing(j, i))
+//					
+								if (mt.isValueMissing(j, i)){
+								   //System.out.println(" value is missing for " + j + " " + i);
 									binfound = false;
+								}
 								else if (bins[k].eval(mt.getString(j, i))) {
+									//System.out.println("evaluating " + mt.getString(j,i) + " into bin " + bins[k].name);
 									newcols[i][j] = bins[k].name;
 									binfound = true;
 								}
