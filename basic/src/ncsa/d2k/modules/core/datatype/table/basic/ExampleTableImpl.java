@@ -54,6 +54,15 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		trainSet = new int[0];
 	}
 
+   /**
+    * Given a TableImpl to represent, replicate its
+    * contents in an ExampleTable.
+    * @param table the table to replicate.
+    */
+   public ExampleTableImpl(Column [] cols) {
+      super(cols);
+   }
+   
 	/**
 	 * Given a TableImpl to represent, replicate its
 	 * contents in an ExampleTable.
@@ -462,8 +471,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		int[] newtrain = new int[trainSet.length];
 		System.arraycopy(trainSet, 0, newtrain, 0, trainSet.length);
 
-		ExampleTableImpl mti = new ExampleTableImpl ();
-      mti.columns = cols;
+		ExampleTableImpl mti = new ExampleTableImpl (cols);
 		mti.subset = newsubset;
 		mti.setInputFeatures(newins);
 		mti.setOutputFeatures(newouts);
@@ -517,8 +525,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		int [] newtrain = new int[len];
 		if (len > 0) System.arraycopy(trainSet, 0, newtrain, 0, trainSet.length);
 
-		ExampleTableImpl mti = new ExampleTableImpl ();
-		mti.addColumns(cols);
+		ExampleTableImpl mti = new ExampleTableImpl (cols);
 		int [] ns = new int [newsubset.length];
 		for (int i = 0 ; i < ns.length ; i++)
 			ns [i] = i;
@@ -580,8 +587,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		if (len > 0) System.arraycopy(trainSet, 0, newtrain, 0, trainSet.length);
 
 
-		ExampleTableImpl mti = new ExampleTableImpl ();
-		mti.addColumns(cols);
+		ExampleTableImpl mti = new ExampleTableImpl (cols);
 		int [] ns = new int [newsubset.length];
 		for (int i = 0 ; i < ns.length ; i++) ns [i] = i;
 		mti.subset = ns;

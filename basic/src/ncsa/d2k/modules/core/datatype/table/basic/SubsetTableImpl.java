@@ -126,10 +126,11 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the adjusted newsubset.
     */
    protected int[] resubset(int[] newset) {
+      int [] tmp = new int [newset.length];
       for (int i = 0; i < newset.length; i++) {
-         newset[i] = subset[newset[i]];
+         tmp[i] = subset[newset[i]];
       }
-      return newset;
+      return tmp;
    }
 
    /**
@@ -471,7 +472,7 @@ public class SubsetTableImpl extends MutableTableImpl {
 
       // Copy failed, maybe objects in a column that are not serializable.
       Column[] cols = new Column[this.getNumColumns()];
-      Column[] oldcols = this.getColumns();
+      Column[] oldcols = this.columns;
       for (int i = 0; i < cols.length; i++) {
          cols[i] = oldcols[i].copy();
       }
@@ -495,7 +496,7 @@ public class SubsetTableImpl extends MutableTableImpl {
 
       // Copy failed, maybe objects in a column that are not serializable.
       Column[] cols = new Column[this.getNumColumns()];
-      Column[] oldcols = this.getColumns();
+      Column[] oldcols = this.columns;
       for (int i = 0; i < cols.length; i++) {
          cols[i] = oldcols[i].getSubset(newsubset);
       }
@@ -518,12 +519,12 @@ public class SubsetTableImpl extends MutableTableImpl {
 
       // Copy failed, maybe objects in a column that are not serializable.
       Column[] cols = new Column[this.getNumColumns()];
-      Column[] oldcols =  columns;
+      Column[] oldcols =  this.columns;
       for (int i = 0; i < cols.length; i++) {
          cols[i] = oldcols[i].getSubset(newsubset);
       }
 
-      vt = new MutableTableImpl(cols);
+      vt = new SubsetTableImpl(cols);
       vt.setLabel(this.getLabel());
       vt.setComment(this.getComment());
       return vt;
