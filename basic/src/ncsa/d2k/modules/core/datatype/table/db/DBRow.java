@@ -8,7 +8,7 @@ public class DBRow implements Row {
 	protected int index;
 
 	/** this is the example table we are accessing. */
-	private DBTable table;
+	protected DBTable table;
 
 	  /* A reference for the DBTableConnection functionality */
     protected DBDataSource dataSource;
@@ -41,7 +41,7 @@ public class DBRow implements Row {
 	 * @param i the input index
 	 * @return the ith input as a double
 	 */
-	final public double getDouble(int i) {
+	 public double getDouble(int i) {
 		return (double)dataSource.getNumericData(index, i);
 	}
 
@@ -50,7 +50,7 @@ public class DBRow implements Row {
 	 * @param i the input index
 	 * @return the ith input as a String
 	 */
-	final public String getString(int i) {
+	 public String getString(int i) {
 
                  return dataSource.getTextData(index, i);
 	}
@@ -60,7 +60,7 @@ public class DBRow implements Row {
 	 * @param i the input index
 	 * @return the ith input as an int
 	 */
-	final public int getInt(int i) {
+	 public int getInt(int i) {
 		return (int)dataSource.getNumericData(index, i);
 	}
 
@@ -69,7 +69,7 @@ public class DBRow implements Row {
 	 * @param i the input index
 	 * @return the ith input as a float
 	 */
-	final public float getFloat(int i) {
+	 public float getFloat(int i) {
 		return (float)dataSource.getNumericData(index, i);
 	}
 
@@ -78,7 +78,7 @@ public class DBRow implements Row {
 	 * @param i the input index
 	 * @return the ith input as a short
 	 */
-	final public short getShort(int i) {
+	 public short getShort(int i) {
 		return (short)dataSource.getNumericData(index, i);
 	}
 
@@ -87,7 +87,7 @@ public class DBRow implements Row {
 	 * @param i the input index
 	 * @return the ith input as a long
 	 */
-	final public long getLong(int i) {
+	 public long getLong(int i) {
 		 return (long)dataSource.getNumericData(index, i);
 	}
 
@@ -96,7 +96,7 @@ public class DBRow implements Row {
 	 * @param i the input index
 	 * @return the ith input as a byte
 	 */
-	final public byte getByte(int i) {
+	 public byte getByte(int i) {
 		return dataSource.getTextData(index, i).getBytes()[0];
 	}
 
@@ -105,7 +105,7 @@ public class DBRow implements Row {
 	 * @param i the input index
 	 * @return the ith input as an Object.
 	 */
-	final public Object getObject(int i) {
+	 public Object getObject(int i) {
 		return (Object)dataSource.getObjectData(index, i).toString();
 	}
 
@@ -114,7 +114,7 @@ public class DBRow implements Row {
 	 * @param i the input index
 	 * @return the ith input as a char
 	 */
-	final public char getChar(int i) {
+	 public char getChar(int i) {
 		return dataSource.getTextData(index, i).toCharArray()[0];
 	}
 
@@ -123,7 +123,7 @@ public class DBRow implements Row {
 	 * @param i the input index
 	 * @return the ith input as chars
 	 */
-	final public char[] getChars(int i) {
+	 public char[] getChars(int i) {
 		return dataSource.getTextData(index, i).toCharArray();
 	}
 
@@ -132,7 +132,7 @@ public class DBRow implements Row {
 	 * @param i the input index
 	 * @return the ith input as bytes.
 	 */
-	final public byte[] getBytes(int i) {
+	 public byte[] getBytes(int i) {
 		return dataSource.getTextData(index, i).getBytes();
 	}
 
@@ -141,7 +141,7 @@ public class DBRow implements Row {
 	 * @param i the input index
 	 * @return the ith input as a boolean
 	 */
-	final public boolean getBoolean(int i) {
+	 public boolean getBoolean(int i) {
 		 return new Boolean(dataSource.getTextData(index, i)).booleanValue();
 	}
 }

@@ -9,6 +9,7 @@
 
 package ncsa.d2k.modules.core.datatype.table.db;
 
+
 import java.io.*;
 import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
@@ -114,10 +115,17 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
                     default:
                         break;
                 }
-            predictionColumnsTable = (MutableTableImpl)DefaultTableFactory.getInstance().createTable(c);
+            predictionColumnsTable = new MutableTableImpl(c);
+            //(MutableTableImpl)DefaultTableFactory.getInstance().createTable(c);
         }
     }
 
+//todo: return DBPredictionRow here.
+public Row getRow(){
+
+      return null;
+
+    }
 
 
 /*****************************************************************************/
@@ -378,6 +386,11 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
        return (original.getNumColumns() + predictionColumnsTable.getNumColumns());
    }
 
+/*
+//    VERED 8-26-03
+//    was replaced by getRow() which return a Row object to access
+    //the table.
+
    public void getRow(Object buffer, int position) {
 
        int numCols = getNumColumns();
@@ -444,6 +457,7 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
        }
 
    }
+*/
 
    //VEREd 8-25-03
    //this method was declared unnecessary - thus is removed.
@@ -506,9 +520,13 @@ class LocalDBPredictionTable extends DBExampleTable implements PredictionTable {
    }
    */
 
-   public TableFactory getTableFactory() {
+/*   VERED 8-26-03
+      removed this method since it does not exist in interfac ExampleTable
+
+public TableFactory getTableFactory() {
        return original.getTableFactory();
    }
+*/
 
    public boolean isColumnNominal(int position) {
        if (prediction[position])

@@ -357,11 +357,16 @@ class DBExampleTable extends DBSubsetTable implements ExampleTable{
 
 
      /**
-      * @todo:
-      * fidn out if this is redundant now that we have getRow.
+      * return an example object of this table. the subset is initialized to
+      * the subset of this table, and the index initialized to <code>i</code>.
+      *
+      * @param i: initial index for the returned Example object.
       */
      public Example getExample(int i) {
-      return null;
+       DBExample ex = new DBExample (dataSource, dbConnection, this, subset);
+       ex.setIndex(i);
+       return ex;
+     // return null;
 
        }
 
