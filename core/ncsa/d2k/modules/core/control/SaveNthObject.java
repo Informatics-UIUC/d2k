@@ -80,6 +80,7 @@ public class SaveNthObject extends ComputeModule
 			}
 			if(numfires>=maxfires){
 				pushOutput(savedObjs.get(0), 0);
+				reset();
 				numfires=0;
 			}
 		}else{
