@@ -166,6 +166,7 @@ public class DefineConstraintVariables
          //     ccwFit.getnewConstructions());
 
          constructions = (Object[])getLastCons();
+
           EMOConstruction[] tmp = new EMOConstruction[constructions.length];
           for(int i = 0; i < constructions.length; i++) {
             tmp[i] = (EMOConstruction)constructions[i];

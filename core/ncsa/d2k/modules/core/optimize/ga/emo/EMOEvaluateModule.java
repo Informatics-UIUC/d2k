@@ -187,18 +187,18 @@ public class EMOEvaluateModule
       //extract the fitness constraints variables information
       //Construction[] fitvarConstructions1 = arremoconstructions1.
       //    getVarConstructions();
-      EMOConstruction[] fitvarConstructions1 = pop.getConstraintVariables();
+      EMOConstruction[] constraintVarConstructions = pop.getConstraintVariables();
 
       //extract the fitness constraints information
       //Construction[] fitConstructions1 = arremoconstructions1.
       //    getFuncConstructions();
-      EMOConstruction[] fitConstructions1 = pop.getConstraintFunctions();
+      EMOConstruction[] constraintVariableConstructions = pop.getConstraintFunctions();
 
       // update the mutable table by calculating the
       //constraint varaibles
-      for (int i = 0; i < fitvarConstructions1.length; i++) {
+      for (int i = 0; i < constraintVarConstructions.length; i++) {
         int fitvarpos = 0;
-        while ( ( (fitvarConstructions1[i]).getLabel()).compareTo(newmt.
+        while ( ( (constraintVarConstructions[i]).getLabel()).compareTo(newmt.
             getColumnLabel(fitvarpos)) != 0) {
           fitvarpos++;
         }
@@ -210,7 +210,7 @@ public class EMOEvaluateModule
         //fitness function
         //ColumnTransformation myvarct = new ColumnTransformation(
         AttributeTransform myvarct = new AttributeTransform(
-            new Object[]{fitvarConstructions1[i]});
+            new Object[]{constraintVarConstructions[i]});
         //apply the transformation
         // It is important to note that transform function adds
         // a new column to the table and hence we deleted the column
@@ -220,9 +220,9 @@ public class EMOEvaluateModule
 
       // update the mutable table by calculating the
       //constraints
-      for (int i = 0; i < fitConstructions1.length; i++) {
+      for (int i = 0; i < constraintVariableConstructions.length; i++) {
         int fitpos = 0;
-        while ( ( (fitConstructions1[i]).getLabel()).compareTo(newmt.
+        while ( ( (constraintVariableConstructions[i]).getLabel()).compareTo(newmt.
             getColumnLabel(fitpos)) != 0) {
           fitpos++;
         }
@@ -233,7 +233,7 @@ public class EMOEvaluateModule
         //create a column transform for the corresponding
         //constraint
         EMOFilter myfitct = new EMOFilter(
-            fitConstructions1[i]);
+            constraintVariableConstructions[i]);
         //apply the transformation
         // It is important to note that transform function adds
         // a new column to the table and hence we deleted the column
@@ -241,12 +241,13 @@ public class EMOEvaluateModule
         myfitct.transform(newmt);
 
       }
+      ((ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl)newmt).print();
       //this is the array of integers that contain the column
       // number of the constraints
-      int[] myconstraintpos = new int[fitConstructions1.length];
-      for (int i = 0; i < fitConstructions1.length; i++) {
+      int[] myconstraintpos = new int[constraintVariableConstructions.length];
+      for (int i = 0; i < constraintVariableConstructions.length; i++) {
         int fitpos = 0;
-        while ( ( (fitConstructions1[i]).getLabel()).compareTo(newmt.
+        while ( ( (constraintVariableConstructions[i]).getLabel()).compareTo(newmt.
             getColumnLabel(fitpos)) != 0) {
           fitpos++;
         }
@@ -258,7 +259,7 @@ public class EMOEvaluateModule
       // and update the population accordingly
       for (int mynewii = 0; mynewii < pop.size(); mynewii++) {
         constrvalue = 0;
-        for (int iijj = 0; iijj < fitConstructions1.length; iijj++) {
+        for (int iijj = 0; iijj < constraintVariableConstructions.length; iijj++) {
           constrvalue += newmt.getFloat(mynewii, myconstraintpos[iijj]);
         }
         Individual mymember = pop.getMember(mynewii);
