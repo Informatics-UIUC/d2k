@@ -20984,3 +20984,8 @@ YIL046W	YDR095C	Two Hybrid	Uetz et al	;10688190;
 YIL046W	YNL245C	Two Hybrid	Uetz et al	;10688190;
 YIL046W	YOR087W	Two Hybrid	Uetz et al	;10688190;
 YGR014W	YNL233W	Two Hybrid	Uetz et al	;10688190;
+YMR284W	YDR432W	Synthetic Lethality		[yKu70-Npl3]
+YDR432W	YDL175C	Synthetic Lethality		[Npl3-Air2]
+YDL175C	YNR073C	Synthetic Lethality		[Air2-YNR073c]
+YDL175C	YIL079C	Synthetic Lethality		[Air2-Air1]
+YDL175C	YBR034C	Synthetic Lethality		[Air2-Hmt1]
