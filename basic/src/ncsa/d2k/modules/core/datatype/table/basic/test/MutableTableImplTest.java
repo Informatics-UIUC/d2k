@@ -401,7 +401,7 @@ public class MutableTableImplTest extends TestCase {
 			mtFull.sortByColumn(i);
 			for (int j = 0; j < numRows - 1; j++)
 				assertTrue(
-					"sort failed",
+					"sort failed for column " + i,
 					mtFull.getColumn(i).compareRows(j, j + 1) <= 0);
 		}
 	}

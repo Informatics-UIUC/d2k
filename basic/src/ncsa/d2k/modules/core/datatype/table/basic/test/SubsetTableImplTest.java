@@ -83,6 +83,39 @@ public class SubsetTableImplTest extends MutableTableImplTest {
 		assertEquals(sbt.getInt(0,0),scopy.getInt(0,0));
 	}
 
+
+	/*
+		 * Test for void sortByColumn(int)
+		 */
+		public void testSortByColumnint() {
+			SubsetTableImpl mtFull = (SubsetTableImpl) getFullTable();
+					int numRows = mtFull.getNumRows();
+			for (int i = 0; i < numColumns; i++) {
+				mtFull.sortByColumn(i);
+				int subset[] = mtFull.getSubset();
+				for (int j = 0; j < subset.length -1; j++)
+					assertTrue(
+						"sort failed for column " + i,
+						mtFull.getColumn(i).compareRows(subset[j],subset[j + 1]) <= 0);
+			}
+		}
+
+		/*
+		 * Test for void sortByColumn(int, int, int)
+		 */
+		public void testSortByColumnintintint() {
+		 SubsetTableImpl mtFull = (SubsetTableImpl) getFullTable();
+			int pos = 1;
+			int len = 3;
+			for (int i = 0; i < numColumns; i++) {
+				mtFull.sortByColumn(i, pos, len);
+				int subset[] = mtFull.getSubset();
+				for (int j = pos; j < len - 1; j++)
+					assertTrue(
+						"sort failed",
+						mtFull.getColumn(i).compareRows(subset[j], subset[j + 1]) <= 0);
+			}
+		}
 	
 	/*
 	 * Test for void SubsetTableImpl(int)
