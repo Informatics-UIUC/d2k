@@ -45,7 +45,7 @@ public class NaiveBayesModelGen extends ModelGeneratorModule
 			"java.util.HashMap"};
 		*/
 		String []in = {"ncsa.d2k.modules.core.datatype.BinTree",
-			"ncsa.d2k.modules.util.datatype.ExampleTable"};
+			"ncsa.d2k.util.datatype.ExampleTable"};
 		return in;
     }
 
@@ -132,4 +132,9 @@ public class NaiveBayesModelGen extends ModelGeneratorModule
 	public ModelModule getModel() {
 		return mdl;
     }
+
+	public void endExecution() {
+		super.endExecution();
+		mdl = null;
+	}
 }
