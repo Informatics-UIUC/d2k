@@ -89,6 +89,8 @@ public final class DecisionTreeVis extends VisModule implements HasNames {
 		BrushPanel brushpanel;
 		TreeScrollPane treescrollpane;
 		NavigatorPanel navigatorpanel;
+		JD2KFrame depthframe;
+		DepthPanel depthpanel;
 		JD2KFrame spacingframe;
 		SpacingPanel spacingpanel;
 		JD2KFrame searchframe;
@@ -96,9 +98,10 @@ public final class DecisionTreeVis extends VisModule implements HasNames {
 
 		JMenuBar menubar;
 		JMenuItem printtree, printwindow;
+		JMenuItem depth;
 		JMenuItem spacing;
 		JCheckBoxMenuItem zoom;
-		JCheckBoxMenuItem hidelabels;
+		JCheckBoxMenuItem showlabels;
 		JMenuItem search;
 
 		JPanel sidepanel;
@@ -179,20 +182,24 @@ public final class DecisionTreeVis extends VisModule implements HasNames {
 			optionsmenu.add(printtree);
 			optionsmenu.add(printwindow);
 
+			depth = new JMenuItem("Maximum Depth...");
+			depth.addActionListener(this);
+
 			spacing = new JMenuItem("Node Spacing...");
 			spacing.addActionListener(this);
 
 			zoom = new JCheckBoxMenuItem("Zoom");
 			zoom.addActionListener(this);
 
-			hidelabels = new JCheckBoxMenuItem("Hide Labels");
-			hidelabels.addActionListener(this);
+			showlabels = new JCheckBoxMenuItem("Show Labels");
+			showlabels.setState(true);
+			showlabels.addActionListener(this);
 
+			viewsmenu.add(depth);
 			viewsmenu.add(spacing);
 			viewsmenu.addSeparator();
 			viewsmenu.add(zoom);
-			viewsmenu.addSeparator();
-			viewsmenu.add(hidelabels);
+			viewsmenu.add(showlabels);
 
 			search = new JMenuItem("Search...");
 			search.addActionListener(this);
@@ -279,6 +286,8 @@ public final class DecisionTreeVis extends VisModule implements HasNames {
 			navigatorpanel = new NavigatorPanel(model, treescrollpane);
 			navigatorpanel.setBorder(new RectangleBorder("Navigator"));
 
+			depthframe = new JD2KFrame("Maximum Depth");
+
 			spacingframe = new JD2KFrame("Node Spacing");
 
 			searchframe = new JD2KFrame("Search");
@@ -358,7 +367,7 @@ public final class DecisionTreeVis extends VisModule implements HasNames {
 				}
 			}
 
-			else if (source == hidelabels)
+			else if (source == showlabels)
 				treescrollpane.toggleLabels();
 
 			else if (source == zoom) {
@@ -377,6 +386,13 @@ public final class DecisionTreeVis extends VisModule implements HasNames {
 					zoom.setSelected(false);
 
 				treescrollpane.toggleZoom();
+			}
+
+			else if (source == depth) {
+				depthframe.getContentPane().removeAll();
+				depthframe.getContentPane().add(new DepthPanel(depthframe, treescrollpane));
+				depthframe.pack();
+				depthframe.setVisible(true);
 			}
 
 			else if (source == spacing) {
@@ -436,7 +452,6 @@ public final class DecisionTreeVis extends VisModule implements HasNames {
 		public Color getColor(String string) {
 			return (Color) colortable.get(string);
 		}
-
 	}
 
 	class SpacingPanel extends JPanel implements ActionListener {
@@ -527,7 +542,76 @@ public final class DecisionTreeVis extends VisModule implements HasNames {
 				} catch (Exception exception) {
 				}
 			}
+		}
+	}
 
+	class DepthPanel extends JPanel implements ActionListener {
+		JD2KFrame depthframe;
+		TreeScrollPane treescrollpane;
+
+		JLabel dlabel;
+		JTextField dfield;
+		JButton apply, close, cancel;
+
+		int depth;
+
+		DepthPanel(JD2KFrame frame, TreeScrollPane scrollpane) {
+			depthframe = frame;
+			treescrollpane = scrollpane;
+
+			depth = treescrollpane.getDepth();
+
+			dlabel = new JLabel("Maximum Depth:");
+
+			dfield = new JTextField(Integer.toString(depth), 5);
+
+			apply = new JButton("Apply");
+			apply.addActionListener(this);
+
+			close = new JButton("Close");
+			close.addActionListener(this);
+
+			cancel = new JButton("Cancel");
+			cancel.addActionListener(this);
+
+			JPanel buttonpanel = new JPanel();
+			buttonpanel.add(cancel);
+			buttonpanel.add(close);
+			buttonpanel.add(apply);
+
+			setLayout(new GridBagLayout());
+			Constrain.setConstraints(this, dlabel, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+				GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
+			Constrain.setConstraints(this, dfield, 1, 0, 1, 1, GridBagConstraints.HORIZONTAL,
+				GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
+			Constrain.setConstraints(this, buttonpanel, 0, 1, 2, 1, GridBagConstraints.HORIZONTAL,
+				GridBagConstraints.NORTHWEST, 1, 1, new Insets(5, 5, 5, 5));
+
+		}
+
+		public void actionPerformed(ActionEvent event) {
+			Object source = event.getSource();
+
+			if (source == close)
+				depthframe.setVisible(false);
+
+			if (source == cancel) {
+				treescrollpane.setDepth(depth);
+
+				depthframe.setVisible(false);
+			}
+
+			if (source == apply) {
+				String svalue = dfield.getText();
+
+				try {
+					int ivalue = Integer.parseInt(svalue);
+
+					treescrollpane.setDepth(ivalue);
+
+				} catch (Exception exception) {
+				}
+			}
 		}
 	}
 }

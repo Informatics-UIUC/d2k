@@ -83,6 +83,16 @@ public final class TreeScrollPane extends JScrollPane {
 		return treepanel.vroot;
 	}
 
+	public int getDepth() {
+		return treepanel.getDepth();
+	}
+
+	public void setDepth(int value) {
+		treepanel.setDepth(value);
+		revalidate();
+		repaint();
+	}
+
 	public class TreePanel extends JPanel implements MouseListener, MouseMotionListener, Printable {
 
 		// Brush panel
@@ -112,6 +122,9 @@ public final class TreeScrollPane extends JScrollPane {
 		// Maximum depth
 		int mdepth;
 
+		// Maximum depth to draw
+		int depth;
+
 		// Draw labels
 		boolean labels = true;
 
@@ -127,6 +140,7 @@ public final class TreeScrollPane extends JScrollPane {
 			vroot = new ViewNode(dmodel, droot, null);
 
 			findMaximumDepth(droot);
+			depth = mdepth;
 			buildViewTree(droot, vroot);
 
 			offsets = new LinkedList[mdepth + 1];
@@ -196,6 +210,14 @@ public final class TreeScrollPane extends JScrollPane {
 			}
 		}
 
+		public int getDepth() {
+			return depth;
+		}
+
+		public void setDepth(int value) {
+			depth = value;
+		}
+
 		// Finds the offsets for each node
 		void findViewTreeOffsets(ViewNode vnode) {
 			vnode.findOffsets();
@@ -247,6 +269,9 @@ public final class TreeScrollPane extends JScrollPane {
 
 			for (int index = 0; index < vnode.getNumChildren(); index++) {
 				ViewNode vchild = vnode.getChild(index);
+
+				if (vchild.getDepth() > depth)
+					return;
 
 				double x1 = vnode.x;
 				double y1 = vnode.y + vnode.gheight;
