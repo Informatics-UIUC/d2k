@@ -213,17 +213,20 @@ public interface Table extends java.io.Serializable {
 	 * Get a row from the table at the specified position.  The table will
 	 * copy the entries into the buffer, in a format that is appropriate for
 	 * the buffer's data type.
-		@param buffer a buffer to copy the data into
-		@param position the position
+	 * @param buffer a buffer to copy the data into
+	 * @param position the position
 	*/
 	public void getRow(Object buffer, int position);
 
 	/**
 	 * Get a copy of the data from a column from the Table at the specified
 	 * position.  The Table will copy the entries into the buffer, in a format
-	 * that is appropriate for the buffer's data type.
+	 * that is appropriate for the buffer's data type.  The buffer must be an
+	 * array of data that corresponds to one of the types enumerated in
+	 * ColumnTypes.
 	 * @param buffer a buffer to copy the data into
 	 * @param position the position
+	 * @see ColumnTypes
 	 */
 	 public void getColumn(Object buffer, int position);
 
