@@ -36,6 +36,8 @@ import gnu.trove.*;
 
 public class GetRuleAsscFromDB extends UIModule
         {
+  private static final int SUPPORT = 1;
+  private static final int CONFIDENCE = 2;
   JOptionPane msgBoard = new JOptionPane();
   ConnectionWrapper cw;
   Connection con;
@@ -91,9 +93,7 @@ public class GetRuleAsscFromDB extends UIModule
 
   public String getOutputInfo (int i) {
 		switch (i) {
-			case 0: return "An rule table that has 4 columns: head, body, support and confidence. ";
-			case 1: return "An array that contains all rule labels (column name => column value).";
-                        case 2: return "An array that contains all frequent item sets.";
+			case 0: return "An object of class RuleTable.";
 			default: return "No such output";
 		}
 	}
@@ -116,7 +116,6 @@ public class GetRuleAsscFromDB extends UIModule
 	}
 
   public String[] getOutputTypes () {
-		//String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl","java.util.ArrayList","java.util.ArrayList"};
 		String[] types = {"ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"};
 		return types;
 	}
@@ -144,7 +143,6 @@ public class GetRuleAsscFromDB extends UIModule
         tableName.setText((String)input);
         getColNames();
       }
-      //tableName.setText(NOTHING);
       condition.setText(NOTHING);
       target.setText(NOTHING);
       cubeTableName = NOTHING;
@@ -172,7 +170,6 @@ public class GetRuleAsscFromDB extends UIModule
         0,0,5,1,GridBagConstraints.NONE,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(options, tableName = new JTextField(10),
         5,0,5,1,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,2,1);
-      //tableName.setText(NOTHING);
       tableName.setText((String)pullInput(1));
       tableName.addActionListener(this);
       getColNames();
@@ -261,30 +258,20 @@ public class GetRuleAsscFromDB extends UIModule
             allRules = new ArrayList();
             getItemLabels();
             extractRules();
-            //printFreqItemSets();
           }
-          //dump allRules for debugging
-          //printAllRules();
           finalRules = new ArrayList();
           filterRules();
+          convertToRuleTable();
           if (sortC.getState()) {
-            sortList(1);
+            sortRuleTable(CONFIDENCE);
           }
           else if (sortS.getState()) {
-            sortList(2);
+            sortRuleTable(SUPPORT);
           }
-          //printFinalRules(); // for debugging
-          convertToRuleTable();
-          //printRuleTable();  // for debugging
-          //printItemLabels(); // for debugging
-
-            RuleTable rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
+          RuleTable rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
                     itemLabels, freqItemSets);
 
-            pushOutput(rt, 0);
-          //pushOutput (ruleTable,0);
-          //pushOutput (itemLabels, 1);
-          //pushOutput (freqItemSets,2);
+          pushOutput(rt, 0);
         }
         else { // The user has not chosen a table yet
           JOptionPane.showMessageDialog(msgBoard,
@@ -319,17 +306,15 @@ public class GetRuleAsscFromDB extends UIModule
           System.out.println("Please click button 'Get Rules' first.");
         }
         else if (sortC.getState()) {
-          sortList(1);
-          convertToRuleTable();
+          sortRuleTable(CONFIDENCE);
         }
         else if (sortS.getState()) {
-          sortList(2);
-          convertToRuleTable();
+          sortRuleTable(SUPPORT);
         }
         if (finalRules.size() > 0) {
-          pushOutput (ruleTable, 0);
-          pushOutput (itemLabels, 1);
-          pushOutput (freqItemSets, 2);
+          RuleTable rt = new RuleTable(ruleTable,  minConfidence, minSupport, totalRow,
+                    itemLabels, freqItemSets);
+          pushOutput(rt, 0);
         }
       }
     }
@@ -388,7 +373,6 @@ public class GetRuleAsscFromDB extends UIModule
     query = query + tableName.getText() + "' order by column_id";
     try {
       bt = new BrowseTables(cw, query);
-      //bt = new BrowseTables(cw, query);
       btw = new BrowseTablesView(bt, query);
       btw.setSize(250,200);
       btw.setLocation(200,250);
@@ -455,10 +439,8 @@ public class GetRuleAsscFromDB extends UIModule
         max = itemLabels.size()-1;
         itemRange[colIdx][0] = min;
         itemRange[colIdx][1] = max;
-        //valueStmt.close();
         colIdx++;
       }
-      //valueStmt.close();
     }
     catch (Exception e){
       JOptionPane.showMessageDialog(msgBoard,
@@ -490,7 +472,6 @@ public class GetRuleAsscFromDB extends UIModule
       }
       // An integer array to keep min itemIdx and max itemIdx for each target attribute
       itemRange = new int[colNames.size()][2];
-      //nameStmt.close();
     }
     catch (Exception e){
       JOptionPane.showMessageDialog(msgBoard,
@@ -531,16 +512,13 @@ public class GetRuleAsscFromDB extends UIModule
       con = cw.getConnection();
       // the row with set_size=null keep the total count of the data table
       String totalQry = new String("select cnt from " + tableName.getText() + " where set_size is null");
-      //System.out.println("the query string for total row count is " + totalQry);
       totalStmt = con.createStatement ();
       totalSet = totalStmt.executeQuery(totalQry);
       totalSet.next();
       totalRow = totalSet.getInt(1);
-      //totalSet.close();
       System.out.println("totalRow is " + totalRow);
 
       String cubeQry = new String("select * from " + tableName.getText() + " order by set_size");
-      //System.out.println("the query string for cube is " + cubeQry);
       cubeStmt = con.createStatement ();
       cubeSet = cubeStmt.executeQuery(cubeQry);
       while (cubeSet.next()) {
@@ -611,7 +589,6 @@ public class GetRuleAsscFromDB extends UIModule
           aItemSet.support = support;
           aItemSet.numberOfItems = items.size();
           freqItemSets.add(aItemSet);
-          //printFreqItemSets();
         } // end of else (not an one item set)
       } // end of while loop
     } // end of try
@@ -736,35 +713,23 @@ public class GetRuleAsscFromDB extends UIModule
     return (false);
   }
 
-  // mode 1: sort by confidence, mode 2 sort by support
-  protected void sortList(int mode) {
-    for (int i=0; i<finalRules.size()-1; i++) {
-      for (int j=finalRules.size()-1; j>i; j--) {
-        if (! compare((Rule)finalRules.get(j-1), (Rule)finalRules.get(j), mode)) {
-          Object tmp = finalRules.get(j-1);
-          finalRules.set(j-1, finalRules.get(j));
-          finalRules.set(j, tmp);;
+  protected void sortRuleTable(int mode) {
+    for (int i=0; i<ruleTable.getNumRows()-1; i++) {
+      for (int j=ruleTable.getNumRows()-1; j>i; j--) {
+        if (mode == SUPPORT) {
+          if (ruleTable.getDouble(j-1, 2) < ruleTable.getDouble(j,2)) {
+            ruleTable.swapRows(j-1, j);
+          }
+        }
+        else if (mode == CONFIDENCE) {
+          if (ruleTable.getDouble(j-1, 3) < ruleTable.getDouble(j,3)) {
+            ruleTable.swapRows(j-1, j);
+          }
         }
       }
     }
   }
 
-  protected boolean compare(Rule rule1, Rule rule2, int sortMode) {
-    double value1;
-    double value2;
-    if (sortMode == 1) { // sort by confidence
-      value1 = rule1.confidence;
-      value2 = rule2.confidence;
-    }
-    else {// sort by support
-      value1 = rule1.support;
-      value2 = rule2.support;
-    }
-    if (value1 < value2)
-      return (false);
-    else
-      return (true);
-  }
 
   protected void convertToRuleTable() {
     Column[] cols = new Column[4];
