@@ -221,7 +221,7 @@ public class MergingClass {
 		for (int i = 0; i < mergeCols.length; i++) {
 			double minimum = 0;
 			for (int j = 0; j < rows.length; j++) {
-				if (!table.isValueMissing(rows[i], mergeCols[i]))
+				if (!table.isValueMissing(rows[j], mergeCols[i]))
 					if (j == 0) {
 						minimum = table.getDouble(rows[j], mergeCols[i]);
 					} else {
@@ -276,7 +276,7 @@ public class MergingClass {
 			double sums = 0;
 			int num = rows.length;
 			for (int j = 0; j < rows.length; j++) {
-				if (!table.isValueMissing(rows[i], mergeCols[i]))
+				if (!table.isValueMissing(rows[j], mergeCols[i]))
 					sums += table.getDouble(rows[j], mergeCols[i]);
 				else
 					num--;
