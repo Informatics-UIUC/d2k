@@ -54,13 +54,16 @@ import Jama.*;
 		/////////////////////////
 		//model's methods
 		////////////////////////
+		public RegressionModel(ExampleTable et){
+			this(et, false);
+		}
 
 		/*
 			Constructor
 
 		*/
-		public RegressionModel(ExampleTable et){
-			predictMean=false;
+		public RegressionModel(ExampleTable et, boolean useMean){
+			predictMean=useMean;
 			TrainTable tt=et.getTrainTable();
 
 			int numRows=tt.getNumRows();
@@ -76,6 +79,7 @@ import Jama.*;
 
 			//get the main matrix (input features)
 			//make sure to make room for a constant
+			if(!predictMean){
 			try{
 			
 			Matrix matA=new Matrix(numRows, numIns+1);
@@ -118,7 +122,12 @@ import Jama.*;
 
 
 				//return the mean if it fails
+				//System.out.println("reg failed, using mean: ins:"+
+				//	numIns+" rows:"+numRows);
 				predictMean=true;
+			}
+			}
+			if(predictMean){
 				mean=new double[numOuts];
 				for(int j=0;j<numOuts; j++){//column
 					for(int i=0; i<numRows; i++){
@@ -198,6 +207,7 @@ import Jama.*;
 	}
 
 	public double predictRow(ExampleTable et, int row, int outputColumn){
+	//	System.out.println("outputCol:"+outputColumn);
 		double sum=0.0;
 		if(!predictMean){
 			sum=0.0;

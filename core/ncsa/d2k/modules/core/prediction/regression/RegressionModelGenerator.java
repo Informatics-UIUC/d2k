@@ -62,7 +62,7 @@ public class RegressionModelGenerator extends ModelGeneratorModule
 	*/
 	public void doit() throws Exception{
 		ExampleTable et=(ExampleTable)pullInput(0);
-		model=new RegressionModel(et);
+		model=new RegressionModel(et, false);
 		pushOutput(model, 0);
 		if(!makeModelAvailable)
 			model=null;
