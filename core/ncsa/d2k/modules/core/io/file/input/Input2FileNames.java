@@ -73,7 +73,7 @@ public class Input2FileNames extends InputModule {
         s += "thrown if either editor text area is blank. ";
         s += "</p><p>";
         s += "The file names are made available on the <i>File Name 1</i> ";
-        s += "and <i>File Name 2</i> output ports.";
+        s += "and <i>File Name 2</i> output ports. ";
         s += "A path may or may not be included in each file name ";
         s += "string.  The final forms shown in the properties editor ";
         s += "text boxes are sent to the output ports. ";
@@ -102,11 +102,14 @@ public class Input2FileNames extends InputModule {
     private String fileName0;
 
     public void setFileName0(String s) throws PropertyVetoException {
-        if (s == null || s.length() == 0) {
+        // here we check for length of 0 but not for null as we don't want this
+        // to get thrown if an itinerary is saved/reloaded without the
+        // property dialog being used
+        if ( s != null && s.length() == 0) {
             throw new PropertyVetoException("File Name 1 was not given.", null);
         }
-        fileName0 =  s;
-        //jtf.setText(fileName);
+
+        fileName0 =  s;;
     }
 
     public String getFileName0() {
@@ -118,11 +121,15 @@ public class Input2FileNames extends InputModule {
     private String fileName1;
 
     public void setFileName1(String s) throws PropertyVetoException {
-        if (s == null || s.length() == 0) {
+        // here we check for length of 0 but not for null as we don't want this
+        // to get thrown if an itinerary is saved/reloaded without the
+        // property dialog being used
+        if ( s != null && s.length() == 0) {
             throw new PropertyVetoException("File Name 2 was not given.", null);
         }
+
         fileName1 =  s;
-        //jtf.setText(fileName);
+
     }
 
     public String getFileName1() {
@@ -274,3 +281,17 @@ public class Input2FileNames extends InputModule {
         pushOutput(fn1, 1);
     }
 }
+// QA Comments
+// 2/12/03 - Handed off to QA by David Clutter - replaces Get2FileNames
+//           using property editor instead of UI.
+// 2/12/03 - Ruth started QA process.  Updated documentation; added a couple
+//           methods to help users see information;  added except handler
+//           in property setter method
+// 2/12/03 - emailed david c to see if text box could be variable size
+// 2/13/03 - text box std as is;  david c pointed out error in except handler
+//           when module saved/reloaded w/o setting property name.
+//           ruth fixed error (with help) and committed;  still throw exception
+//           if property dialog/info scanned w/o entering filename. not best
+//           but seems no option as setter called when dialog closed.
+// 2/14/03 - checked into basic.
+// END QA Comments
