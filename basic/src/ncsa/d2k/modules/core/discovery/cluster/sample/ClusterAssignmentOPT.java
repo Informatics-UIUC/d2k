@@ -215,7 +215,7 @@ public class ClusterAssignmentOPT
     s += "table structure. ";
     s += "That is, attribute types, order, and input features (if specified), must be identical. ";
     s += "The clustering does not work if the input data contains missing values. ";
-    s += "The algorithm operates on numeric and boolean datatypes.  If the data to be clustered ";
+    s += "The algorithm operates on numeric and boolean data types.  If the data to be clustered ";
     s += "contains nominal data types, it should be converted prior to performing the clustering. ";
     s += "The <i>Scalarize Nominals</i> module can be used to convert nominal types into boolean values. ";
     s += "</p>";
