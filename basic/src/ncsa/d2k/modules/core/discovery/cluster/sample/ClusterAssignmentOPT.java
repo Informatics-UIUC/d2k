@@ -226,7 +226,7 @@ public class ClusterAssignmentOPT
     s += "</p>";
 
     s += "<p>Scalability: ";
-    s += "The time complexity is linear in the number of examples times the number of iterations. ";
+    s += "The time complexity is linear in the <i>Number of Examples</i> times the <i>Number of Iterations</i>. ";
     s += "The algorithm repeatedly builds two times <i>Number of Clusters</i> table clusters from ";
     s += "<i>Number of Examples</i> table clusters, and requires heap resources to that extent.  A single ";
     s += "table cluster's memory size will vary as the size of the individual examples being clustered.";
