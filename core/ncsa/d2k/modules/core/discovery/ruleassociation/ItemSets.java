@@ -21,11 +21,11 @@ public class ItemSets implements Serializable {
 	/** number of examples. */
 	public int numExamples;
 
-	/** this array contains a list of attribute names of those output attributes. */
-	public String [] outputNames = null;
+	/** this array contains a list of attribute names of target attributes. */
+	public String [] targetNames = null;
 
-	/** this array contains a list of attribute names of those output attributes. */
-	public int [] outputIndices = null;
+	/** this array contains a list of attribute indices of target attributes. */
+	public int [] targetIndices = null;
 
 	/** for each unique item, this hashtable contains it's frequency count and it's
 	 *  order in terms of frequency. */
@@ -42,45 +42,133 @@ public class ItemSets implements Serializable {
 	public Object userData;
 
 	public ItemSets(Table vt) {
-		int numColumns = vt.getNumColumns ();
+		// number of cols and rows in original table
+		int numColumns = vt.getNumColumns();
 		int numRows = this.numExamples = vt.getNumRows ();
 
-		int [] attributes;
+		// number of Attributes we'll care about & place for them
+		int numAttributes = 0;
+		int [] attributes = null;
+
 		boolean isExampleTable = vt instanceof ExampleTable;
+
+		// Size and populate attributes to hold the features that are of
+		// interest in the table. Also build the list of target feature
+		// names.
+		// If we have an example table there are 4 possibilities:
+		//	1) inputs and outputs chosen, make sure no duplicates
+		//         in attributes array. target names = output names
+		//	2) inputs but no outputs chosen, treat as if outputs same
+		//	   as inputs. size attributes array to hold inputs and
+		//	   populate.  target names = input names
+		//	3) outputs chosen but no inputs (very weird), treat as
+		//	   if inputs same as outputs.   size attributes array to
+		//	   hold outputs and populate.   target names = output names
+		// 	4) no inputs or outputs chosen, use all columns as inputs
+		//	   and outputs.  Size attributes same as number of Columns
+		//	   and set target names = output names.
+		// If we don't have an example table, behavior same as 4 above.
+		//
+
 		if (isExampleTable) {
 			ExampleTable et = (ExampleTable)vt;
 			int [] inputs = et.getInputFeatures ();
 			int [] outputs = et.getOutputFeatures ();
-			int totalInsOuts = inputs.length+outputs.length;
-			numColumns = totalInsOuts > et.getNumColumns() ? et.getNumColumns() : totalInsOuts;
-			attributes = new int [numColumns];
-			System.arraycopy(inputs, 0, attributes, 0, inputs.length);
-			System.arraycopy(outputs, 0, attributes, numColumns - outputs.length, outputs.length);
+			int inCnt = inputs.length;
+			int outCnt = outputs.length;
 
-			// Construct the output names.
-			outputNames = new String [outputs.length];
-			for (int i = 0 ; i < outputNames.length; i++)
-				outputNames[i] = new String (vt.getColumnLabel (outputs[i]));
+			// Example Table case 1
+			if ( inCnt > 0 && outCnt > 0 ) {
+			   int uniqCnt = 0;
+			   boolean [] uniqFeatures = new boolean [numColumns]; // max uniq we'll have is all
+
+			   for ( int i = 0; i < inCnt; i++ ) {
+			      if ( ! uniqFeatures[ inputs[i] ] ) {
+				 uniqFeatures[ inputs[i] ] = true;
+				 uniqCnt++;
+			      }
+			   }
+			   for ( int i = 0; i < outCnt; i++ ) {
+			      if ( ! uniqFeatures[ outputs[i] ] ) {
+				 uniqFeatures[ outputs[i] ] = true;
+				 uniqCnt++;
+			      }
+			   }
+
+			   numAttributes = uniqCnt;
+			   attributes = new int [numAttributes];
+			   int attIdx = 0;
+			   for ( int i = 0; i < numColumns; i++ ) {
+			      if ( uniqFeatures[i] ) {
+				 attributes[attIdx++] = i;
+			      }
+			   }
+			   targetNames = new String [outCnt];
+			   for (int i = 0 ; i < outCnt; i++) {
+				targetNames[i] = getNonNullColumnLabel( vt, outputs[i] );
+			   }
+
+			// Example Table case 2
+		        } else if ( inCnt > 0 && outCnt == 0 ) {
+			   numAttributes = inCnt;
+			   attributes = new int [ numAttributes ];
+			   System.arraycopy(inputs, 0, attributes, 0, inCnt);
+
+			   targetNames = new String [inCnt];
+			   for (int i = 0 ; i < inCnt; i++) {
+				targetNames[i] = getNonNullColumnLabel( vt, inputs[i] );
+			   }
+
+			// Example Table case 3
+			} else if ( inCnt == 0 && outCnt > 0 ) {
+			   numAttributes = outCnt;
+			   attributes = new int [ numAttributes ];
+			   System.arraycopy(outputs, 0, attributes, 0, outCnt);
+
+			   targetNames = new String [outCnt];
+			   for (int i = 0 ; i < outCnt; i++) {
+				targetNames[i] = getNonNullColumnLabel( vt, outputs[i] );
+			   }
+
+			// Example Tablee case 4
+			} else if ( inCnt == 0 && outCnt == 0 ) {
+			   numAttributes = numColumns;
+			   attributes = new int [ numAttributes ];
+			   targetNames = new String [ numColumns ];
+
+		           for (int i = 0; i < numColumns; i++ ) {
+			      attributes[i] = i;
+			      targetNames[i] = getNonNullColumnLabel( vt, i );
+			   }
+			}
+
 		} else {
-			attributes = new int [numColumns];
-			outputNames = new String [numColumns];
+		        // Not an Example Table
+			numAttributes = numColumns;
+			attributes = new int [numAttributes];
+			targetNames = new String [numColumns];
+
 			for (int i = 0; i < numColumns; i++) {
-				attributes[i] = i;
-				outputNames[i] = new String (vt.getColumnLabel (i));
+			   attributes[i] = i;
+			   targetNames[i] = getNonNullColumnLabel( vt, i );
 			}
 		}
 
-		// Allocate an array of string for each column prefix.
-		String [] prefix = new String [numColumns];
+		// Allocate an array of string for each attribute column prefix.
+		String [] prefix = new String [numAttributes];
 
 		// Init each prefix, if there is no column label, use our own
 		// home brew.
-		for (int i = 0 ; i < numColumns ; i++) {
+		for (int i = 0 ; i < numAttributes ; i++) {
+/*
 			String tmp = vt.getColumnLabel (attributes[i]);
 			if (tmp != null && tmp.length() > 0)
 				prefix [i] = tmp+"^";
 			else
-				prefix [i] = "^"+Integer.toString (i)+"^";
+				prefix [i] = "Column "+Integer.toString (i)+"^";
+*/
+			String tmp = getNonNullColumnLabel( vt, attributes[i] );
+			prefix [i] = tmp + "^";
 		}
 
 		/** Construct the table containing the unique attributes and their
@@ -90,7 +178,7 @@ public class ItemSets implements Serializable {
 		char [] chars = new char [1024];
 		ArrayList set = new ArrayList();
 		for (int i = 0 ; i < numRows ; i++) {
-			for (int j = 0 ; j < numColumns ; j++) {
+			for (int j = 0 ; j < numAttributes ; j++) {
 				String a = prefix[j];
 				int alen = a.length();
 				String b = vt.getString (i, attributes[j]);
@@ -137,9 +225,9 @@ public class ItemSets implements Serializable {
 
 		// Now construct the new representation of the vertical table, where each
 		// entry is represented by an integer.
-		int [][] documents = new int [numRows][numColumns];
+		int [][] documents = new int [numRows][numAttributes];
 		for (int i = 0 ; i < numRows ; i++) {
-			for (int j = 0 ; j < numColumns ; j++) {
+			for (int j = 0 ; j < numAttributes ; j++) {
 				String a = prefix[j];
 				int alen = a.length();
 				String b = vt.getString (i, attributes[j]);
@@ -161,33 +249,35 @@ public class ItemSets implements Serializable {
 		// indicate if the document contains the item or not.
 		itemFlags = new boolean [numRows][unique.size()];
 		for (int i = 0 ; i < numRows ; i++)
-			for (int j = 0 ; j < numColumns ; j++)
+			for (int j = 0 ; j < numAttributes ; j++)
 				itemFlags[i][documents[i][j]] = true;
 
-		// Figure out what the indices of those items that are outputs
-		// are.
-		String[] targets = outputNames;
+		// Figure out the indices of those items that are targets
 		Iterator keys = unique.keySet().iterator();
 		Iterator indxs = unique.values().iterator();
 		ArrayList list = new ArrayList ();
 
-		// for each of the attributes, see if the inputs include the attribute.
-		if (targets != null)
+		// for each target attributes, see if the inputs include the attribute.
+		if (targetNames != null) {
 			while (keys.hasNext ()) {
 				String name = (String) keys.next ();
 				int[] indx = (int[]) indxs.next ();
-				for (int i = 0 ; i < targets.length; i++)
-					if (name.startsWith (targets[i]))
+				for (int i = 0 ; i < targetNames.length; i++) {
+					if (name.startsWith (targetNames[i])) {
 						list.add (indx);
+                                        }
+                                }
 			}
+                }
 
-		// Put the indexes into the list.
+		// Put the indexes of the targets into the list.
 		int size = list.size ();
 		if (size != 0) {
-			outputIndices = new int [size];
+			targetIndices = new int [size];
 			for (int i = 0 ; i < size ; i++)
-				outputIndices[i] = ((int[])list.get (i))[1];
+				targetIndices[i] = ((int[])list.get (i))[1];
 		}
+
 	}
 
 	/**
@@ -236,4 +326,30 @@ public class ItemSets implements Serializable {
 		return itemFlags;
 	}
 
+	/**
+         * Returns the label of the column specified in the table passed.
+	 * If null or blank, then returns a synthesized label made up of
+	 * "column_" and the column index.
+	 */
+	public String getNonNullColumnLabel( Table tbl, int colIdx ) {
+		String label = tbl.getColumnLabel( colIdx );
+		if ( label == null || label.length() == 0 ) {
+			label = "column_"+Integer.toString(colIdx);
+		}
+		return label;
+	}
+
 }
+
+
+// QA Comments
+//  2/28/03 - Recv from Tom
+//  3/*/03  - Ruth, with help from Loretta, starts QA
+//          - Several iterations and updates by Tom and Ruth so that
+//            it correctly handles Tables (as advertised), handles
+//	      ExampleTables with no ins or outs, and handles Example
+//	      Tables where some, but not all, attributes used as both
+//            Ins and Outs.  Also, added support for empty column
+//            labels that's a bit more consistent w/ other displays.
+// 3/16/03  - Committed to Basic.
+//
