@@ -30,7 +30,7 @@ public class GradientColorScatterPlot extends ScatterPlot {
 	 *	@param sets
 	 *	@param settings
 	 */
-	public GradientColorScatterPlot(TableImpl table,
+	public GradientColorScatterPlot(Table table,
 		DataSet[] sets, GraphSettings settings) {
 		super(table, sets, settings);
 		lowColor = Color.orange;
@@ -48,7 +48,7 @@ public class GradientColorScatterPlot extends ScatterPlot {
 	 *	@param low the low color
 	 *	@param high the high color
 	 */
-	public GradientColorScatterPlot(TableImpl table,
+	public GradientColorScatterPlot(Table table,
 		DataSet[] sets, GraphSettings settings,
 		Color low, Color high) {
 		this(table, sets, settings);
@@ -65,7 +65,7 @@ public class GradientColorScatterPlot extends ScatterPlot {
 	 *	@param high the high color
 	 *	@param position
 	 */
-	public GradientColorScatterPlot(TableImpl table,
+	public GradientColorScatterPlot(Table table,
 		DataSet[] sets, GraphSettings settings,
 		Color low, Color high, int position) {
 		this(table, sets, settings, low, high);
@@ -80,24 +80,22 @@ public class GradientColorScatterPlot extends ScatterPlot {
 	public void drawDataSet(Graphics2D g2, DataSet set) {
 		g2.setPaint(new GradientPaint((float)leftoffset, 0, lowColor,
 			(float)(graphwidth-rightoffset), 0, highColor));
-		Column xcolumn = table.getColumn(set.x);
-		Column ycolumn = table.getColumn(set.y);
 
-		int size = xcolumn.getNumRows();
+		int size = table.getNumRows();
 
 		for (int index=0; index < size; index++) {
 			double xvalue;
 			double yvalue;
-			if(xcolumn instanceof NumericColumn)
-				xvalue = xcolumn.getDouble(index);
+			if(table.isNumericColumn(set.x))
+				xvalue = table.getDouble(index, set.x);
 			else {
-				String v = xcolumn.getString(index);
+				String v = table.getString(index, set.x);
 				xvalue = (double)((Integer)xStringLookup[set.x].get(v)).intValue();
 			}
-			if(ycolumn instanceof NumericColumn)
-				yvalue = ycolumn.getDouble(index);
+			if(table.isNumericColumn(set.y))
+				yvalue = table.getDouble(index, set.y);
 			else {
-				String v = ycolumn.getString(index);
+				String v = table.getString(index, set.y);
 				yvalue = (double)((Integer)yStringLookup[set.y].get(v)).intValue();
 			}
 

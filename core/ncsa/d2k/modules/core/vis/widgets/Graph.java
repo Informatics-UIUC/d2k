@@ -13,7 +13,7 @@ import java.util.HashMap;
 public abstract class Graph extends JPanel {
 
 	// Data
-	protected TableImpl table;
+	protected Table table;
 	protected DataSet[] sets;
 	protected GraphSettings settings;
 
@@ -75,14 +75,29 @@ public abstract class Graph extends JPanel {
 	protected FontMetrics metrics;
 	protected int fontheight, fontascent;
 
+	public double[] getMinAndMax(Table table, int ndx) {
+		double[] minAndMax = new double[2];
+		double mandm;
+		for (int i = 0; i < table.getNumRows(); i++) {
+			mandm = table.getDouble(i, ndx);
+			if (mandm > minAndMax[1]) {
+				minAndMax[1] = mandm;
+			}
+			if (mandm < minAndMax[0]) {
+				minAndMax[0] = mandm;
+			}
+		}
+		return minAndMax;
+	}
+
 	public Graph() {
 	}
 
-	public Graph(TableImpl table, DataSet[] sets, GraphSettings settings) {
-		this.init (table, sets, settings);
+	public Graph(Table table, DataSet[] sets, GraphSettings settings) {
+		this.init(table, sets, settings);
 	}
 
-	public void init (TableImpl table, DataSet[] sets, GraphSettings settings) {
+	public void init(Table table, DataSet[] sets, GraphSettings settings) {
 		this.table = table;
 		this.sets = sets;
 		this.settings = settings;
@@ -97,7 +112,6 @@ public abstract class Graph extends JPanel {
 		ylabel = settings.yaxis;
 
 		DataSet set;
-		Column column;
 
 		// Find interval for x data
 		if ((settings.xminimum == null) || (settings.xmaximum == null)) {
@@ -106,10 +120,10 @@ public abstract class Graph extends JPanel {
 
 				// find the min + max for the first set
 				set = sets[0];
-				column = table.getColumn(set.x);
-				if(column instanceof NumericColumn) {
-					xminimum = ((NumericColumn)column).getMin();
-					xmaximum = ((NumericColumn)column).getMax();
+				if(table.isNumericColumn(set.x)) {
+					double[] mm = getMinAndMax(table, set.x);
+					xminimum = mm[0];
+					xmaximum = mm[1];
 				}
 				else {
 					// iterate through column and assign an integer to each unique val
@@ -120,14 +134,14 @@ public abstract class Graph extends JPanel {
 				// find the min and max for all other sets
 				for (int index=1; index < sets.length; index++) {
 					set = sets[index];
-					column = table.getColumn(set.x);
 
-					if(column instanceof NumericColumn) {
-						double value = ((NumericColumn)column).getMin();
+					if(table.isNumericColumn(set.x)) {
+						double[] mm = getMinAndMax(table, set.x);
+						double value = mm[0];
 						if (value < xminimum)
 							xminimum = value;
 
-						value = ((NumericColumn)column).getMax();
+						value = mm[1];
 						if (value > xmaximum)
 							xmaximum = value;
 					}
@@ -156,10 +170,10 @@ public abstract class Graph extends JPanel {
 				(settings.ydatamaximum == null)) {
 				// find the min and max for the first set
 				set = sets[0];
-				column = table.getColumn(set.y);
-				if(column instanceof NumericColumn) {
-					yminimum = ((NumericColumn)column).getMin();
-					ymaximum = ((NumericColumn)column).getMax();
+				if(table.isNumericColumn(set.y)) {
+					double[] mm = getMinAndMax(table, set.y);
+					yminimum = mm[0];
+					ymaximum = mm[1];
 				}
 				else {
 					// iterate through column and assign an integer to each unique val
@@ -169,14 +183,14 @@ public abstract class Graph extends JPanel {
 				}
 				for (int index=1; index < sets.length; index++) {
 					set = sets[index];
-					column = table.getColumn(set.y);
 
-					if(column instanceof NumericColumn) {
-						double value = ((NumericColumn)column).getMin();
+					if(table.isNumericColumn(set.y)) {
+						double[] mm = getMinAndMax(table, set.y);
+						double value = mm[0];
 						if (value < yminimum)
 							yminimum = value;
 
-						value = ((NumericColumn)column).getMax();
+						value = mm[1];
 						if (value > ymaximum)
 							ymaximum = value;
 					}
@@ -213,7 +227,7 @@ public abstract class Graph extends JPanel {
 	 *	Set the table for this graph.  Reinitialize the table.
 	 *	@param t the new table
 	 */
-	public void setTable(TableImpl t) {
+	public void setTable(Table t) {
 		init(t, sets, settings);
 		repaint();
 	}
@@ -222,10 +236,10 @@ public abstract class Graph extends JPanel {
 	 * Iteratate through a column and map each unique value to an integer.
 	 * Return a HashMap containing the relations.
 	 */
-	static protected HashMap createUniqueValueMap(TableImpl table, int column) {
+	static protected HashMap createUniqueValueMap(Table table, int column) {
 		HashMap map = new HashMap();
 		int idx = 1;
-		for(int i = 0; i < table.getColumn(column).getNumRows(); i++) {
+		for(int i = 0; i < table.getNumRows(); i++) {
 			String s = table.getString(i, column);
 			if(!map.containsKey(s)) {
 				map.put(s, new Integer(idx));

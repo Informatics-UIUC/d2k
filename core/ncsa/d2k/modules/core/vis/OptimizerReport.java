@@ -69,7 +69,7 @@ public class OptimizerReport extends VisModule
     public class ClassView extends JUserPane
 		implements java.io.Serializable, ActionListener{
 
-		TableImpl vt;
+		Table vt;
 		TableMatrix vtm;
 
 		ButtonGroup radios;
@@ -119,7 +119,7 @@ public class OptimizerReport extends VisModule
 			solutionTablePanel.setLayout(new BorderLayout());
 
 			//the vt part
-			vt=(TableImpl)ss.getTable();
+			vt=(Table)ss.getTable();
 			/*
 			if(ss instanceof SOSolutionSpace){
 				int[] newOrder=((SOSolutionSpace)ss).sortSolutions();

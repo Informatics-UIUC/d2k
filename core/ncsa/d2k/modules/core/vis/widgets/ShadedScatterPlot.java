@@ -32,7 +32,7 @@ public class ShadedScatterPlot extends GradientColorScatterPlot {
 	 * @param settings
 	 * @param shadeColumnIndex the index of the column with the values to shade by
 	 */
-	public ShadedScatterPlot(TableImpl table, DataSet[] sets,
+	public ShadedScatterPlot(Table table, DataSet[] sets,
 		GraphSettings settings, int shadeColumnIndex) {
 		super(table, sets, settings);
 
@@ -49,7 +49,7 @@ public class ShadedScatterPlot extends GradientColorScatterPlot {
 	 * @param low the low color
 	 * @param high the high color
 	 */
-	public ShadedScatterPlot(TableImpl table, DataSet[] sets,
+	public ShadedScatterPlot(Table table, DataSet[] sets,
 		GraphSettings settings, int shadeColumnIndex, Color low, Color high) {
 		super(table, sets, settings, low, high);
 
@@ -67,7 +67,7 @@ public class ShadedScatterPlot extends GradientColorScatterPlot {
 	 * @param high the high color
 	 * @param pos
 	 */
-	public ShadedScatterPlot(TableImpl table, DataSet[] sets,
+	public ShadedScatterPlot(Table table, DataSet[] sets,
 		GraphSettings settings, int shadeColumnIndex, Color low,
 		Color high, int pos) {
 		super(table, sets, settings, low, high, pos);
@@ -80,15 +80,30 @@ public class ShadedScatterPlot extends GradientColorScatterPlot {
 	 * Initialize the min and max shading values.
 	 */
 	protected void initRange() {
-		Column c = table.getColumn(shadeColumn);
-		if(c instanceof NumericColumn) {
-			shadeMax = ((NumericColumn)c).getMax();
-			shadeMin = ((NumericColumn)c).getMin();
+		double[] mm = getMinAndMax(table, shadeColumn);
+		if(table.isNumericColumn(shadeColumn)) {
+			shadeMax = mm[1];
+			shadeMin = mm[0];
 		}
 		else {
 			shadeMax = 1.0;
 			shadeMin = 0.0;
 		}
+	}
+
+	public double[] getMinAndMax(Table table, int ndx) {
+		double[] minAndMax = new double[2];
+		double mandm;
+		for (int i = 0; i < table.getNumRows(); i++) {
+			mandm = table.getDouble(i, ndx);
+			if (mandm > minAndMax[1]) {
+				minAndMax[1] = mandm;
+			}
+			if (mandm < minAndMax[0]) {
+				minAndMax[0] = mandm;
+			}
+		}
+		return minAndMax;
 	}
 
 	/**
@@ -97,24 +112,22 @@ public class ShadedScatterPlot extends GradientColorScatterPlot {
 	 *	@param set
 	 */
 	public void drawDataSet(Graphics2D g2, DataSet set) {
-		Column xcolumn = table.getColumn(set.x);
-		Column ycolumn = table.getColumn(set.y);
 
-		int size = xcolumn.getNumRows();
+		int size = table.getNumRows();
 
 		for (int index=0; index < size; index++) {
 			double xvalue;
 			double yvalue;
-			if(xcolumn instanceof NumericColumn)
-				xvalue = xcolumn.getDouble(index);
+			if(table.isNumericColumn(set.x))
+				xvalue = table.getDouble(index, set.x);
 			else {
-				String v = xcolumn.getString(index);
+				String v = table.getString(index, set.x);
 				xvalue = (double)((Integer)xStringLookup[set.x].get(v)).intValue();
 			}
-			if(ycolumn instanceof NumericColumn)
-				yvalue = ycolumn.getDouble(index);
+			if(table.isNumericColumn(set.y))
+				yvalue = table.getDouble(index, set.y);
 			else {
-				String v = ycolumn.getString(index);
+				String v = table.getString(index, set.y);
 				yvalue = (double)((Integer)yStringLookup[set.y].get(v)).intValue();
 			}
 

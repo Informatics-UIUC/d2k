@@ -8,22 +8,20 @@ import java.awt.geom.*;
 
 public class LineGraph extends Graph {
 
-	public LineGraph(TableImpl table, DataSet[] set, GraphSettings settings) {
+	public LineGraph(Table table, DataSet[] set, GraphSettings settings) {
 		super(table, set, settings);
 	}
 
 	public void drawDataSet(Graphics2D g2, DataSet set) {
-		NumericColumn xcolumn = (NumericColumn) table.getColumn(set.x);
-		NumericColumn ycolumn = (NumericColumn) table.getColumn(set.y);
 
-		int size = xcolumn.getNumRows();
+		int size = table.getNumRows();
 
 		for (int index=0; (index+1) < size; index++) {
-			double xvalue0 = xcolumn.getDouble(index);
-			double yvalue0 = ycolumn.getDouble(index);
+			double xvalue0 = table.getDouble(index, set.x);
+			double yvalue0 = table.getDouble(index, set.y);
 
-			double xvalue1 = xcolumn.getDouble(index+1);
-			double yvalue1 = ycolumn.getDouble(index+1);
+			double xvalue1 = table.getDouble(index+1, set.x);
+			double yvalue1 = table.getDouble(index+1, set.y);
 
 			drawPointLine(g2, set.color, xvalue0, yvalue0, xvalue1, yvalue1);
 		}

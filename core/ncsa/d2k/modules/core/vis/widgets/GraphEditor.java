@@ -16,7 +16,7 @@ public class GraphEditor extends JPanel implements ActionListener {
 	public static final int LINE_GRAPH = 1;
 	public static final int LINEAR_REGRESSION = 2;
 
-	TableImpl table;
+	Table table;
 	Hashtable hashtable;
 
 	/** this is the class object for a class of object other than the
@@ -46,7 +46,7 @@ public class GraphEditor extends JPanel implements ActionListener {
 
 	JPanel graphpane;
 
-	public GraphEditor(TableImpl table, int type) {
+	public GraphEditor(Table table, int type) {
 		this.table = table;
 
 		this.type = type;
@@ -60,12 +60,9 @@ public class GraphEditor extends JPanel implements ActionListener {
 		int boxindex = 0;
 
 		while (columnindex < size) {
-			Column column = table.getColumn(columnindex);
-			//if (column instanceof NumericColumn) {
-				hashtable.put(new Integer(boxindex), new Integer(columnindex));
-				String columnlabel = table.getColumnLabel(columnindex);
-				columnlabels.add(columnlabel);
-			//}
+			hashtable.put(new Integer(boxindex), new Integer(columnindex));
+			String columnlabel = table.getColumnLabel(columnindex);
+			columnlabels.add(columnlabel);
 
 			columnindex++;
 			boxindex++;
@@ -230,7 +227,7 @@ public class GraphEditor extends JPanel implements ActionListener {
 	/**
 	 * This constructor is called when a custom graph class is to be used.
 	 */
-	public GraphEditor(TableImpl table, Class graphCls) {
+	public GraphEditor(Table table, Class graphCls) {
 		this (table, -1);
 		this.graphClass = graphCls;
 	}
@@ -375,9 +372,10 @@ public class GraphEditor extends JPanel implements ActionListener {
 				graph.init (table, set, settings);
 			}
 			else if (type == SCATTER_PLOT) {
-				graph = new ScatterPlot (table, set, settings);
+				graph = new ScatterPlot(table, set, settings);
 			}
 			else if (type == LINE_GRAPH) {
+				System.out.println("JOE");
 				graph = new LineGraph(table, set, settings);
 			}
 			else if (type == LINEAR_REGRESSION) {

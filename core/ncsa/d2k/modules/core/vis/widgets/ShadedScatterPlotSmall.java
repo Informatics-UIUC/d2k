@@ -16,19 +16,19 @@ public class ShadedScatterPlotSmall extends ShadedScatterPlot {
 	 *	@param sets
 	 *	@param settings
 	 */
-	public ShadedScatterPlotSmall(TableImpl table,
+	public ShadedScatterPlotSmall(Table table,
 		DataSet[] sets, GraphSettings settings, int shadeColumnIndex) {
 		super(table, sets, settings, shadeColumnIndex);
 		inits();
 	}
 
-	public ShadedScatterPlotSmall(TableImpl table, DataSet[] sets,
+	public ShadedScatterPlotSmall(Table table, DataSet[] sets,
 		GraphSettings settings, int shadeColumnIndex, Color low, Color high) {
 		super(table, sets, settings, shadeColumnIndex, low, high);
 		inits();
 	}
 
-	public ShadedScatterPlotSmall(TableImpl table, DataSet[] sets,
+	public ShadedScatterPlotSmall(Table table, DataSet[] sets,
 		GraphSettings settings, int shadeColumnIndex, Color low,
 		Color high, int pos) {
 		super(table, sets, settings, shadeColumnIndex, low, high, pos);

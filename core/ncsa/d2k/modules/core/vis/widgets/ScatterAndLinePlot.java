@@ -15,10 +15,10 @@ import java.awt.*;
 public class ScatterAndLinePlot extends ScatterPlot {
 
 	DataSet[] ConnectedSets;
-	TableImpl fTable;
+	Table fTable;
 	public ScatterAndLinePlot () {}
 
-	public ScatterAndLinePlot(TableImpl Scattertable, TableImpl Functiontable, DataSet[] Scatterset, DataSet[] Functionset, GraphSettings settings) {
+	public ScatterAndLinePlot(Table Scattertable, Table Functiontable, DataSet[] Scatterset, DataSet[] Functionset, GraphSettings settings) {
 		super(Scattertable, Scatterset, settings);
 		ConnectedSets = Functionset;
 		fTable = Functiontable;
@@ -31,18 +31,18 @@ public class ScatterAndLinePlot extends ScatterPlot {
 
 		// x data check
 		set = ConnectedSets[0];
-		column = (NumericColumn) fTable.getColumn(set.x);
-		xmin = column.getMin();
-		xmax = column.getMax();
+		double[] mm = getMinAndMax(fTable, set.x);
+		xmin = mm[0];
+		xmax = mm[1];
 		for (int index=1; index < ConnectedSets.length; index++) {
 			set = ConnectedSets[index];
-			column = (NumericColumn) fTable.getColumn(set.y);
+			mm = getMinAndMax(fTable, set.y);
 
-			double value = column.getMin();
+			double value = mm[0];
 			if (value < xmin)
 				xmin = value;
 
-			value = column.getMax();
+			value = mm[1];
 			if (value > xmax)
 				xmax = value;
 		}
@@ -54,18 +54,18 @@ public class ScatterAndLinePlot extends ScatterPlot {
 
 		// y data check
 		set = ConnectedSets[0];
-		column = (NumericColumn) fTable.getColumn(set.y);
-		ymin = column.getMin();
-		ymax = column.getMax();
+		mm = getMinAndMax(fTable, set.y);
+		ymin = mm[0];
+		ymax = mm[1];
 		for (int index=1; index < ConnectedSets.length; index++) {
 			set = ConnectedSets[index];
-			column = (NumericColumn) fTable.getColumn(set.y);
+			mm = getMinAndMax(fTable, set.y);
 
-			double value = column.getMin();
+			double value = mm[0];
 			if (value < ymin)
 				ymin = value;
 
-			value = column.getMax();
+			value = mm[1];
 			if (value > ymax)
 				ymax = value;
 		}
@@ -78,21 +78,21 @@ public class ScatterAndLinePlot extends ScatterPlot {
 	//implements the abstract method of the Graph class to draw a function
 	//line
 	public void drawConnectedDataSet(Graphics2D g2, DataSet set) {
-		System.out.println("the color is "+set.color);
-		NumericColumn xcolumn = (NumericColumn) fTable.getColumn(set.x);
-		NumericColumn ycolumn = (NumericColumn) fTable.getColumn(set.y);
+		System.out.println("the color is " + set.color);
+		//NumericColumn xcolumn = (NumericColumn) fTable.getColumn(set.x);
+		//NumericColumn ycolumn = (NumericColumn) fTable.getColumn(set.y);
 
 		int ypixel, lastypixel;
-		int size = xcolumn.getNumRows();
+		int size = fTable.getNumRows();
 		double xvalue, yvalue, oldx, oldy;
-		yvalue = ycolumn.getDouble(0);
-		xvalue = xcolumn.getDouble(0);
+		yvalue = fTable.getDouble(0, set.x);
+		xvalue = fTable.getDouble(0, set.y);
 
 		for ( int index=1; index<size; index++){
 			oldx = xvalue;
 			oldy = yvalue;
-			xvalue = xcolumn.getDouble(index);
-			yvalue = ycolumn.getDouble(index);
+			xvalue = fTable.getDouble(index, set.x);
+			yvalue = fTable.getDouble(index, set.y);
 			drawFLine(g2, set.color, oldx, oldy, xvalue, yvalue);
 		}
 	}
@@ -115,6 +115,21 @@ public class ScatterAndLinePlot extends ScatterPlot {
 
 		g2.setColor(color);
 		g2.drawLine(xint1, yint1, xint2, yint2);
+	}
+
+	public double[] getMinAndMax(Table table, int ndx) {
+		double[] minAndMax = new double[2];
+		double mandm;
+		for (int i = 0; i < table.getNumRows(); i++) {
+			mandm = table.getDouble(i, ndx);
+			if (mandm > minAndMax[1]) {
+				minAndMax[1] = mandm;
+			}
+			if (mandm < minAndMax[0]) {
+				minAndMax[0] = mandm;
+			}
+		}
+		return minAndMax;
 	}
 
 	public void paintComponent(Graphics g) {

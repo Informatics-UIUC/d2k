@@ -40,7 +40,7 @@ public class SurfacePlot3D extends VisModule {
    }
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"}; return i;
+      String[] i = {"ncsa.d2k.modules.core.datatype.table.basic.Table"}; return i;
    }
 
    public String[] getOutputTypes() {
@@ -67,7 +67,7 @@ public class SurfacePlot3D extends VisModule {
       private Transform3D scale, transform;
       private TransformGroup objScale, objTrans;
 
-      private TableImpl input;
+      private Table input;
       private Point3d[] points;
 
       private boolean show_vertices, show_triangles;
@@ -86,10 +86,10 @@ public class SurfacePlot3D extends VisModule {
       private static final int FONT_SIZE = 14;
 
       public void initView(ViewModule m) { }
-      public void setInput(Object o, int i) { if (i == 0) go((TableImpl)o); }
+      public void setInput(Object o, int i) { if (i == 0) go((Table)o); }
       public Object getMenu() { return menuBar; }
 
-      private void go(TableImpl table) {
+      private void go(Table table) {
 
          input = table;
          points = new Point3d[input.getNumRows()];
@@ -550,8 +550,7 @@ public class SurfacePlot3D extends VisModule {
             Column column;
             int index = 0;
             for (int count = 0; count < input.getNumColumns(); count++) {
-               column = input.getColumn(count);
-               if (column instanceof NumericColumn) {
+               if (input.isNumericColumn(count)) {
                   labels.add((String)input.getColumnLabel(count));
                   labelmap.put(new Integer(index++), new Integer(count));
                }

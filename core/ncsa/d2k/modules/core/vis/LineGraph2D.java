@@ -39,7 +39,7 @@ public class LineGraph2D extends ncsa.d2k.infrastructure.modules.VisModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.Table"};
 		return types;
 
 	}
@@ -109,7 +109,7 @@ public class LineGraph2D extends ncsa.d2k.infrastructure.modules.VisModule
 class LineGraphUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane implements ActionListener {
 	LineGraph2D module;
 
-	TableImpl table;
+	Table table;
 
 	JMenuItem help;
 	JMenuBar menuBar;
@@ -131,7 +131,7 @@ class LineGraphUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane im
 	}
 
 	public void setInput(Object object, int index) {
-		table = (TableImpl) object;
+		table = (Table) object;
 
 		buildView();
 	}

@@ -58,7 +58,7 @@ public class ETScatterPlot extends VisModule
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl"};
+		String []in = {"ncsa.d2k.modules.core.datatype.table.basic.ExampleTable"};
 		return in;
     }
 
@@ -121,7 +121,7 @@ public class ETScatterPlot extends VisModule
 		@param d the DataSets to plot
 		@param gs the GraphSettings for this plot
 	*/
-	protected Graph createSmallGraph(TableImpl vt, DataSet[] d,
+	protected Graph createSmallGraph(Table vt, DataSet[] d,
 		GraphSettings gs) {
 		return new ScatterPlotSmall(vt, d, gs);
 	}
@@ -132,7 +132,7 @@ public class ETScatterPlot extends VisModule
 		@param d the DataSets to plot
 		@param gs the GraphSettings for this plot
 	*/
-	protected Graph createGraph(TableImpl vt, DataSet[] d,
+	protected Graph createGraph(Table vt, DataSet[] d,
 		GraphSettings gs) {
 		return new ScatterPlot(vt, d, gs);
 	}
@@ -166,7 +166,7 @@ public class ETScatterPlot extends VisModule
 	class ETPlotView extends JUserPane implements
 		Serializable, MouseListener, ActionListener {
 
-		ExampleTableImpl et;
+		ExampleTable et;
 		JButton showComposite;
 		JButton clearSelected;
 		int []inputs;
@@ -193,7 +193,7 @@ public class ETScatterPlot extends VisModule
 
 		public void setInput(Object o, int i) {
 			if(i == 0) {
-				et = (ExampleTableImpl)o;
+				et = (ExampleTable)o;
 				setup();
 			}
 		}
@@ -206,7 +206,7 @@ public class ETScatterPlot extends VisModule
 			// get the numeric output features
 			for(int i = 0; i < tempoutputs.length; i++) {
 				//if(et.getColumn(tempoutputs[i]) instanceof NumericColumn)
-				if(et.isColumnNumeric(tempoutputs[i]))
+				if(et.isNumericColumn(tempoutputs[i]))
 					list.add(new Integer(tempoutputs[i]));
 			}
 
@@ -223,7 +223,7 @@ public class ETScatterPlot extends VisModule
 			// get the numeric input features
 			for(int i = 0; i < tempinputs.length; i++) {
 				//if(et.getColumn(tempinputs[i]) instanceof NumericColumn)
-				if(et.isColumnNumeric(tempinputs[i]))
+				if(et.isNumericColumn(tempinputs[i]))
 					list.add(new Integer(tempinputs[i]));
 			}
 

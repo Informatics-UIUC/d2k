@@ -39,7 +39,7 @@ public class PieChart2D extends VisModule implements Serializable
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.Table"};
 		return types;
 
 	}
@@ -106,14 +106,14 @@ public class PieChart2D extends VisModule implements Serializable
 class PieChartUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane {
 	PieChart2D module;
 
-	TableImpl table;
+	Table table;
 
 	public void initView(ViewModule viewmodule) {
 		module = (PieChart2D) viewmodule;
 	}
 
 	public void setInput(Object object, int index) {
-		table = (TableImpl) object;
+		table = (Table) object;
 
 		buildView();
 	}
@@ -122,8 +122,8 @@ class PieChartUserPane extends ncsa.d2k.controller.userviews.swing.JUserPane {
 		DataSet set = new DataSet("dataset", Color.gray, 0, 1);
 
 		GraphSettings settings = new GraphSettings();
-		String xaxis = table.getColumn(0).getLabel();
-		String yaxis = table.getColumn(1).getLabel();
+		String xaxis = table.getColumnLabel(0);
+		String yaxis = table.getColumnLabel(1);
 		settings.title = xaxis + " and " + yaxis;
 		settings.xaxis = xaxis;
 		settings.yaxis = yaxis;

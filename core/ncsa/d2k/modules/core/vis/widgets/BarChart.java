@@ -38,7 +38,7 @@ public class BarChart extends Chart {
 
 	int tickmarksize = 4;
 
-	public BarChart(TableImpl table, DataSet set, GraphSettings settings) {
+	public BarChart(Table table, DataSet set, GraphSettings settings) {
 		/*this.table = table;
 		this.set = set;
 		this.settings = settings;
@@ -66,16 +66,32 @@ public class BarChart extends Chart {
 		// Find interval for y data
 		NumericColumn column;
 		if ((settings.yminimum == null) || (settings.ymaximum == null)) {
-			column = (NumericColumn) table.getColumn(set.y);
-			yminimum = column.getMin()-.25*column.getMin();
+			//(set.y)
+			double[] mm = getMinAndMax(table, set.y);
+			yminimum = mm[0] - .25 * mm[0];
 			if (yminimum < 0)
 				yminimum = 0;
-			ymaximum = column.getMax()+.25*column.getMax();
+			ymaximum = mm[1] + .25 * mm[1];
 		}
 		else {
 			yminimum = settings.yminimum.doubleValue();
 			ymaximum = settings.ymaximum.doubleValue();
 		}
+	}
+
+	public double[] getMinAndMax(Table table, int ndx) {
+		double[] minAndMax = new double[2];
+		double mandm;
+		for (int i = 0; i < table.getNumRows(); i++) {
+			mandm = table.getDouble(i, ndx);
+			if (mandm > minAndMax[1]) {
+				minAndMax[1] = mandm;
+			}
+			if (mandm < minAndMax[0]) {
+				minAndMax[0] = mandm;
+			}
+		}
+		return minAndMax;
 	}
 
 	public void paintComponent(Graphics g) {
@@ -140,12 +156,11 @@ public class BarChart extends Chart {
 	}
 
 	public void drawDataSet(Graphics2D g2, DataSet set) {
-		NumericColumn column = (NumericColumn) table.getColumn(1);
 		double x = leftoffset;
 		double barwidth = xoffsetincrement;
 
 		for (int index=0; index < bins; index++) {
-			double value = column.getDouble(index);
+			double value = table.getDouble(index, 1);
 			double y = graphheight-bottomoffset-(value-yminimum)/yscale;
 			double barheight = (value-yminimum)/yscale;
 
@@ -186,8 +201,7 @@ public class BarChart extends Chart {
 		TextualColumn textcolumn;
 		double x = leftoffset+(xoffsetincrement/2);
 		for (int index=0; index < bins; index++) {
-			textcolumn = (TextualColumn) table.getColumn(set.x);
-			String bin = (String) textcolumn.getRow(index);
+			String bin = (String)table.getString(index, set.x);
 			int stringwidth = metrics.stringWidth(bin);
 			g2.drawString(bin, (int) (x-stringwidth/2),
 				(int) (graphheight-bottomoffset+fontheight));

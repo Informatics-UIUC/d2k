@@ -77,7 +77,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
      * @return the input types
      */
     public String[] getInputTypes () {
-        String[] i =  { "ncsa.d2k.modules.core.datatype.table.basic.TableImpl" };
+        String[] i =  { "ncsa.d2k.modules.core.datatype.table.basic.Table" };
         return  i;
     }
 
@@ -134,7 +134,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
         private ScatterPlot3DControl control;
 
         /** the table holding the data */
-        private TableImpl table;
+        private Table table;
 
         /** the canvas area */
         private ScatterPlot3DCanvas canvas;
@@ -176,7 +176,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
          */
         public void setInput (Object o, int i) {
             if (i == 0) {
-                table = (TableImpl)o;
+                table = (Table)o;
                 execute();
             }
         }
@@ -202,25 +202,24 @@ public class ScatterPlot3D extends VisModule implements Serializable {
                 int x = sets[i].x;
                 int y = sets[i].y;
                 int z = sets[i].z;
-                NumericColumn nc = (NumericColumn)table.getColumn(x);
-                for (int j = 0; j < nc.getNumRows(); j++) {
-                    double d = nc.getDouble(j);
+
+                for (int j = 0; j < table.getNumRows(); j++) {
+                    double d = table.getDouble(j, x);
                     if (d > xMax)
                         xMax = d;
                     if (d < xMin)
                         xMin = d;
                 }
-                nc = (NumericColumn)table.getColumn(y);
-                for (int j = 0; j < nc.getNumRows(); j++) {
-                    double d = nc.getDouble(j);
+
+                for (int j = 0; j < table.getNumRows(); j++) {
+                    double d = table.getDouble(j, y);
                     if (d > yMax)
                         yMax = d;
                     if (d < yMin)
                         yMin = d;
                 }
-                nc = (NumericColumn)table.getColumn(z);
-                for (int j = 0; j < nc.getNumRows(); j++) {
-                    double d = nc.getDouble(j);
+                for (int j = 0; j < table.getNumRows(); j++) {
+                    double d = table.getDouble(j, z);
                     if (d > zMax)
                         zMax = d;
                     if (d < zMin)
@@ -627,8 +626,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
                 Column column;
                 int index = 0;
                 for (int count = 0; count < table.getNumColumns(); count++) {
-                    column = table.getColumn(count);
-                    if (column instanceof NumericColumn) {
+                    if (table.isNumericColumn(count)) {
                         labels.add((String)table.getColumnLabel(count));
                         map.put(new Integer(index++), new Integer(count));
                     }

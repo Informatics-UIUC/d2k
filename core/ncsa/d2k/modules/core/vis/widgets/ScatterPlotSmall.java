@@ -14,19 +14,18 @@ public class ScatterPlotSmall extends Graph {
 	int smallspace =1;
 	int largespace = 3;
 
-	public ScatterPlotSmall(TableImpl table, DataSet[] sets, GraphSettings settings) {
+	public ScatterPlotSmall(Table table, DataSet[] sets, GraphSettings settings) {
 		super(table, sets, settings);
 	}
 
 	public void drawDataSet(Graphics2D g2, DataSet set) {
-		NumericColumn xcolumn = (NumericColumn) table.getColumn(set.x);
-		NumericColumn ycolumn = (NumericColumn) table.getColumn(set.y);
 
-		int size = xcolumn.getNumRows();
+
+		int size = table.getNumRows();
 
 		for (int index=0; index < size; index++) {
-			double xvalue = xcolumn.getDouble(index);
-			double yvalue = ycolumn.getDouble(index);
+			double xvalue = table.getDouble(index, set.x);
+			double yvalue = table.getDouble(index, set.y);
 
 			drawPoint(g2, set.color, xvalue, yvalue);
 		}

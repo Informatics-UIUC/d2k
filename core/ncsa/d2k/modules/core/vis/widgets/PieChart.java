@@ -20,14 +20,17 @@ public class PieChart extends Chart {
 		Create a new PieChart that normalizes the data.  Each item
 		will be represented as a fraction of 1.0
 	*/
-	public PieChart(TableImpl vt, DataSet ds, GraphSettings gs,
-		boolean normalize) {
+	public PieChart(Table vt, DataSet ds, GraphSettings gs, boolean normalize) {
 		this(vt, ds, gs);
 
 		DoubleColumn dc = new DoubleColumn(bins);
+		ObjectColumn oc = new ObjectColumn(bins);
 		Column []cols = new Column[2];
-		cols[0] = table.getColumn(set.x);
+		cols[0] = oc;
 		cols[1] = dc;
+		for (int i = 0; i < bins; i++) {
+			oc.setObject(table.getObject(i, set.x), i);
+		}
 
 		double total = 0;
 		for(int i = 0; i < bins; i++)
@@ -38,13 +41,13 @@ public class PieChart extends Chart {
 			dc.setDouble((double)(val/total), i);
 		}
 
-		table = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
+		table = (Table)DefaultTableFactory.getInstance().createTable(cols);
 	}
 
 	/**
 		Create a new PieChart with the data already normalized.
 	*/
-	public PieChart(TableImpl vt, DataSet ds, GraphSettings gs) {
+	public PieChart(Table vt, DataSet ds, GraphSettings gs) {
 		super(vt, ds, gs);
 
 		setBackground(Color.white);
@@ -128,13 +131,12 @@ public class PieChart extends Chart {
 		Draw the chart.
 	*/
 	public void drawDataSet(Graphics2D g2, DataSet set) {
-		NumericColumn column = (NumericColumn) table.getColumn(1);
 
        	// draw chart
 		int angle = 0;
 		for (int count = 0; count < bins; count++) {
 
-			double ratio = column.getDouble(count);
+			double ratio = table.getDouble(count, 1);
 
 			if (count == bins - 1)
 				drawArc(g2, leftoffset, topoffset+2,

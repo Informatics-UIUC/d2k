@@ -16,7 +16,7 @@ public class FunctionPlotSmall extends Graph {
 	int smallspace = 1;
 	int largespace = 3;
 
-	public FunctionPlotSmall(TableImpl Functiontable, DataSet[] set, GraphSettings settings) {
+	public FunctionPlotSmall(Table Functiontable, DataSet[] set, GraphSettings settings) {
 		super(Functiontable, set, settings);
 	}
 
@@ -35,20 +35,20 @@ public class FunctionPlotSmall extends Graph {
 	}*/
 
 	public void drawDataSet(Graphics2D g2, DataSet set) {
-		NumericColumn xcolumn = (NumericColumn) table.getColumn(set.x);
-		NumericColumn ycolumn = (NumericColumn) table.getColumn(set.y);
+		//NumericColumn xcolumn = (NumericColumn) table.getColumn(set.x);
+		//NumericColumn ycolumn = (NumericColumn) table.getColumn(set.y);
 
 		int ypixel, lastypixel;
-		int size = xcolumn.getNumRows();
+		int size = table.getNumRows();
 		double xvalue, yvalue, oldx, oldy;
-		yvalue = ycolumn.getDouble(0);
-		xvalue = xcolumn.getDouble(0);
+		yvalue = table.getDouble(0, set.x);
+		xvalue = table.getDouble(0, set.y);
 
 		for ( int index=1; index<size; index++){
 			oldx = xvalue;
 			oldy = yvalue;
-			xvalue = xcolumn.getDouble(index);
-			yvalue = ycolumn.getDouble(index);
+			xvalue = table.getDouble(index, set.x);
+			yvalue = table.getDouble(index, set.y);
 			drawFLine(g2, set.color, oldx, oldy, xvalue, yvalue);
 		}
 	}

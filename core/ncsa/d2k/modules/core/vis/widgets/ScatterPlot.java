@@ -8,29 +8,29 @@ import java.awt.*;
 public class ScatterPlot extends Graph {
 
 	public ScatterPlot () {}
-	public ScatterPlot(TableImpl table, DataSet[] sets, GraphSettings settings) {
+	public ScatterPlot(Table table, DataSet[] sets, GraphSettings settings) {
 		super(table, sets, settings);
 	}
 
 	public void drawDataSet(Graphics2D g2, DataSet set) {
-		Column xcolumn = table.getColumn(set.x);
-		Column ycolumn = table.getColumn(set.y);
+		boolean xcolumn = table.isNumericColumn(set.x);
+		boolean ycolumn = table.isNumericColumn(set.y);
 
-		int size = xcolumn.getNumRows();
+		int size = table.getNumRows();
 
 		for (int index=0; index < size; index++) {
 			double xvalue;
 			double yvalue;
-			if(xcolumn instanceof NumericColumn)
-				xvalue = xcolumn.getDouble(index);
+			if(xcolumn)
+				xvalue = table.getDouble(index, set.x);
 			else {
-				String v = xcolumn.getString(index);
+				String v = table.getString(index, set.x);
 				xvalue = (double)((Integer)xStringLookup[index].get(v)).intValue();
 			}
-			if(ycolumn instanceof NumericColumn)
-				yvalue = ycolumn.getDouble(index);
+			if(ycolumn)
+				yvalue = table.getDouble(index, set.y);
 			else {
-				String v = ycolumn.getString(index);
+				String v = table.getString(index, set.y);
 				yvalue = (double)((Integer)yStringLookup[index].get(v)).intValue();
 			}
 

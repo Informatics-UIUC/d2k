@@ -35,7 +35,7 @@ public abstract class Chart extends JPanel {
 	// the data
 	DataSet set;
 	GraphSettings settings;
-	TableImpl table;
+	Table table;
 	int bins;
 
 	// dimensions of the chart
@@ -62,7 +62,7 @@ public abstract class Chart extends JPanel {
 	abstract public void initOffsets();
 	abstract public void resize();
 
-	public Chart(TableImpl t, DataSet d, GraphSettings g) {
+	public Chart(Table t, DataSet d, GraphSettings g) {
 		table = t;
 		set = d;
 		settings = g;

@@ -39,7 +39,7 @@ public final class LinearRegression2D extends ncsa.d2k.infrastructure.modules.Vi
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.Table"};
 		return types;
 
 	}
@@ -108,7 +108,7 @@ class LinearRegressionUserPane extends ncsa.d2k.controller.userviews.swing.JUser
 	implements ActionListener {
 	LinearRegression2D module;
 
-	TableImpl table;
+	Table table;
 	JMenuItem help;
 	JMenuBar menuBar;
 	HelpWindow hWindow;
@@ -129,7 +129,7 @@ class LinearRegressionUserPane extends ncsa.d2k.controller.userviews.swing.JUser
 	}
 
 	public void setInput(Object object, int index) {
-		table = (TableImpl) object;
+		table = (Table) object;
 
 		buildView();
 	}

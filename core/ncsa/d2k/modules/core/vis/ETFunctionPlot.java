@@ -48,7 +48,7 @@ public class ETFunctionPlot extends ETScatterPlot {
 		@param d the DataSets to plot
 		@param gs the GraphSettings for this plot
 	*/
-	protected Graph createSmallGraph(TableImpl vt, DataSet[] d,
+	protected Graph createSmallGraph(Table vt, DataSet[] d,
 		GraphSettings gs) {
 		return new FunctionPlotSmall(vt, d, gs);
 	}
@@ -59,7 +59,7 @@ public class ETFunctionPlot extends ETScatterPlot {
 		@param d the DataSets to plot
 		@param gs the GraphSettings for this plot
 	*/
-	protected Graph createGraph(TableImpl vt, DataSet[] d,
+	protected Graph createGraph(Table vt, DataSet[] d,
 		GraphSettings gs) {
 		return new FunctionPlot(vt, d, gs);
 	}

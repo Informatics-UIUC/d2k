@@ -49,7 +49,7 @@ public class LineGraphAppModule extends VisModule {
 
    public String[] getInputTypes() {
       String[] i = {"ncsa.d2k.modules.core.datatype.HashLookupTable",
-         "ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+         "ncsa.d2k.modules.core.datatype.table.basic.Table"};
       return i;
    }
 
@@ -81,7 +81,7 @@ public class LineGraphAppModule extends VisModule {
       implements ActionListener, ItemListener {
 
       public HashLookupTable hlt;
-      public TableImpl vt;
+      public Table vt;
       public LineGraphVerticalTable dt;
       public FindClosest fc;
 
@@ -319,7 +319,7 @@ public class LineGraphAppModule extends VisModule {
          if (index == 0)
             hlt = (HashLookupTable)o;
          else if (index == 1)
-            vt = (TableImpl)o;
+            vt = (Table)o;
 
          inputs_set[index] = true;
 
@@ -1433,10 +1433,10 @@ public class LineGraphAppModule extends VisModule {
 
       int numRecords, numFields, numLines;
       public String[] names;
-      private TableImpl vtable;
+      private Table vtable;
       private HashLookupTable htable;
 
-      public LineGraphVerticalTable(HashLookupTable inhlt, TableImpl invt) {
+      public LineGraphVerticalTable(HashLookupTable inhlt, Table invt) {
 
          htable = inhlt; vtable = invt;
          names = new String[vtable.getNumColumns()];
@@ -1515,8 +1515,8 @@ public class LineGraphAppModule extends VisModule {
             return 120;
          }
          else {
-            DoubleColumn col = (DoubleColumn)vtable.getColumn(field - 1);
-            return col.getMax();
+            double[] mm = getMinAndMax(vtable, field - 1);
+            return mm[1];
          }
       }
 
@@ -1526,13 +1526,27 @@ public class LineGraphAppModule extends VisModule {
             return 0;
          }
          else {
-            DoubleColumn col = (DoubleColumn)vtable.getColumn(field - 1);
-            return col.getMin();
+            double[] mm = getMinAndMax(vtable, field - 1);
+            return mm[0];
          }
       }
 
    }
 
+	public double[] getMinAndMax(Table table, int ndx) {
+		double[] minAndMax = new double[2];
+		double mandm;
+		for (int i = 0; i < table.getNumRows(); i++) {
+			mandm = table.getDouble(i, ndx);
+			if (mandm > minAndMax[1]) {
+				minAndMax[1] = mandm;
+			}
+			if (mandm < minAndMax[0]) {
+				minAndMax[0] = mandm;
+			}
+		}
+		return minAndMax;
+	}
 /*
  * @(#)PickHighlightBehavior.java 1.11 00/03/20 09:08:51
  *

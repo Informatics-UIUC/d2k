@@ -8,25 +8,39 @@ import java.awt.geom.*;
 
 public class LinearRegression extends Graph {
 
-	public LinearRegression(TableImpl table, DataSet[] set, GraphSettings settings) {
+	public LinearRegression(Table table, DataSet[] set, GraphSettings settings) {
 		super(table, set, settings);
 	}
 
+	public double[] getMinAndMax(Table table, int ndx) {
+		double[] minAndMax = new double[2];
+		double mandm;
+		for (int i = 0; i < table.getNumRows(); i++) {
+			mandm = table.getDouble(i, ndx);
+			if (mandm > minAndMax[1]) {
+				minAndMax[1] = mandm;
+			}
+			if (mandm < minAndMax[0]) {
+				minAndMax[0] = mandm;
+			}
+		}
+		return minAndMax;
+	}
+
 	public void drawDataSet(Graphics2D g2, DataSet set) {
-		NumericColumn xcolumn = (NumericColumn) table.getColumn(set.x);
-		NumericColumn ycolumn = (NumericColumn) table.getColumn(set.y);
+		int size = table.getNumRows();
 
-		int size = xcolumn.getNumRows();
-
-		xdataminimum = xcolumn.getMin();
-		xdatamaximum = xcolumn.getMax();
-		ydataminimum = ycolumn.getMin();
-		ydatamaximum = ycolumn.getMax();
+		double[] mm = getMinAndMax(table, set.x);
+		xdataminimum = mm[0];
+		xdatamaximum = mm[1];
+		mm = getMinAndMax(table, set.y);
+		ydataminimum = mm[0];
+		ydatamaximum = mm[1];
 
 		// Draw points
 		for (int index=0; index < size; index++) {
-			double xvalue = xcolumn.getDouble(index);
-			double yvalue = ycolumn.getDouble(index);
+			double xvalue = table.getDouble(index, set.x);
+			double yvalue = table.getDouble(index, set.y);
 
 			drawPoint(g2, set.color, xvalue, yvalue);
 		}
@@ -38,8 +52,8 @@ public class LinearRegression extends Graph {
 		double sumxsquared = 0;
 
 		for (int index=0; index < size; index++) {
-			double xvalue = xcolumn.getDouble(index);
-			double yvalue = ycolumn.getDouble(index);
+			double xvalue = table.getDouble(index, set.x);
+			double yvalue = table.getDouble(index, set.y);
 
 			sumx += xvalue;
 			sumy += yvalue;
