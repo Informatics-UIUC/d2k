@@ -123,4 +123,9 @@ public class ReplaceNominalsWithInts extends ComputeModule {
  *          changed module info. reported bug 144 on missing values preservation.
  * 12-05-03 bug 144 was fixed.
  *          module is ready for basic 4.
+ *
+ * 01-12-04: module is pulled back into qa process.
+ * bug 219 - handling of subset tables. table viewer throws an array index out of
+ * bounds exception with subset table that had this module's transformation
+ * applied to.
  */

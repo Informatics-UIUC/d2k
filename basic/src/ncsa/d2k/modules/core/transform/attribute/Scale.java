@@ -689,4 +689,10 @@ class ScalingTransformation implements Transformation {
  * 			preserved in the new column.
  *
  * 12-08-03 Module is ready fro basic 4.
+ *
+ *
+ * 01-12-04: module is pulled back into qa process.
+ * bug 221 - handling of subset tables. table viewer throws an array index out of
+ * bounds exception with subset table had a scaling transformation applied to.
+
  */

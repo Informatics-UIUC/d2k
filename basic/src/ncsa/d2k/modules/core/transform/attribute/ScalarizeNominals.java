@@ -411,28 +411,28 @@ public class ScalarizeNominals extends DataPrepModule {
 
 	/*
 	private void printInputOutputColumns(ExampleTable et) {
-	
+
 		  int[] inputColumns = et.getInputFeatures(),
 				outputColumns = et.getOutputFeatures();
-	
+
 		  String[] inputNames = et.getInputNames(),
 				   outputNames = et.getOutputNames();
-	
+
 		  System.out.print("actual labels:");
 		  for (int i = 0; i < et.getNumColumns(); i++)
 			 System.out.print(" " + i + "(" + et.getColumnLabel(i) + ")");
 		  System.out.println(" [" + et.getNumColumns() + "]");
-	
+
 		  System.out.print("input columns:");
 		  for (int i = 0; i < inputColumns.length; i++)
 			 System.out.print(" " + inputColumns[i] + "(" + inputNames[i] + ")");
 		  System.out.println(" [" + inputColumns.length + "]");
-	
+
 		  System.out.print("output columns:");
 		  for (int i = 0; i < outputColumns.length; i++)
 			 System.out.print(" " + outputColumns[i] + "(" + outputNames[i] + ")");
 		  System.out.println(" [" + outputColumns.length + "]");
-	
+
 	}
 	*/
 
@@ -444,4 +444,10 @@ public class ScalarizeNominals extends DataPrepModule {
  * 12-1-03  Tom, fixed bug #148. Now resulting columns will all contain
  *          missing values where the original column contained a missing value.
  * 12-05-03 modules is ready for basic 4
+ *
+ *
+ * 01-12-04: module is pulled back into qa process.
+ * bug 220 - handling of subset tables. table viewer throws an array index out of
+ * bounds exception with subset table that is the output of this module.
+
  */
