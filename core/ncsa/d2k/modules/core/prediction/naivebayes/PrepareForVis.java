@@ -46,12 +46,17 @@ public class PrepareForVis extends DataPrepModule {
         "<p>Detailed Description: This module determines which of the input "+
         "features of the training data are the best predictors of the output. "+
         "This is done by performing predictions on the training data and leaving "+
-        "out one input feature each time."+
+        "out one input feature each time.  Data structures to hold values for "+
+        "the pie charts in NaiveBayesVis are also created here."+
         "<p>Properties: none"+
         "<p>Data Type Restrictions: none"+
-        "<p>Data Handling: This module does not destroy or modify the input."+
-        "<p>Scalability: This module will perform N predictions for each "+
-        "input, where N is the number of training examples.";
+        "<p>Data Handling: The data structures used to display pie charts in "+
+        "NaiveBayesVis are created by this module.  These structures are stored "+
+        "in <i>Naive Bayes Model</i>.  The number of pie charts is "+
+        "proportional to the number of discrete values in the inputs of the "+
+        "training data set."+
+        "<p>Scalability: This module will perform NxM predictions, "+
+        "where N is the number of inputs and M is the number of training examples.";
   }
 
   public String getModuleName() {
