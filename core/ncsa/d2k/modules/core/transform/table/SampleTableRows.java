@@ -5,6 +5,7 @@ package ncsa.d2k.modules.core.transform.table;
 
 
 import java.util.*;
+import java.beans.PropertyVetoException;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
@@ -20,19 +21,40 @@ import ncsa.d2k.modules.core.datatype.table.*;
 */
 public class SampleTableRows extends DataPrepModule  {
 
-	/**
-	   Return a description of the function of this module.
-	   @return A description of this module.
-	*/
-	public String getModuleInfo() {
-		return "Overview: Creates a sample of the given Table, by either randomly selecting     rows, or using"+
-			" the first rows.<p>Detailed Description: This module will take the inputs table, and select <i>"+
-			"     Sample Size</i> rows from it, where <i>Sample Size</i> is a property the     user can modify."+
-			" The selected rows will then be placed in a different     table and passed as the output. If"+
-			" the <i>Use First</i> property is set,     the first <i>Sample Size</i> entries from the file"+
-			" will be placed in the     resulting table. Otherwise, they are selected randomly.<p>Scalability:"+
-			" This module should scale very well. There must be memory to     accomodate both the input table"+
-			" and the resulting sample table.";
+        /**
+           Return a description of the function of this module.
+           @return A description of this module.
+        */
+        public String getModuleInfo() {
+
+    	  String s = "<p>Overview: ";
+    	  s += "This module samples the input <i>Table</i> and chooses a certain number of rows to copy ";
+    	  s += "to a new <i>Sample Table</i>.  The number of rows and sampling method are determined by the ";
+    	  s += "module properties. ";
+
+    	  s += "</p><p>Detailed Description: ";
+    	  s += "This module creates a new <i>Sample Table</i> by sampling rows of the input <i>Table</i>.  If <i>Use First Rows</i> ";
+    	  s += "is set, the first <i>Sample Size</i> rows in the input table are copied to the new table.  If it is not ";
+    	  s += "set, <i>Sample Size</i> rows are selected randomly from the input table, using the <i>Random Seed</i> ";
+    	  s += "to seed the random number generator.  If the same seed is used across runs with the same input table, ";
+    	  s += "the sample tables produced by the module will be identical. ";
+
+    	  s += "</p><p>";
+    	  s += "If the input table has fewer than <i>Sample Size</i> rows, an exception will be raised. ";
+
+    	  s += "</p><p>";
+    	  s += "An <i>OPT</i>, optimizable, version of this module that uses control ";
+    	  s += "parameters encapsulated in a <i>Parameter Point</i> instead of properties is also available. ";
+
+    	  s += "</p><p>Data Handling: ";
+    	  s += "The input table is not changed. ";
+
+    	  s += "</p><p>Scalability: ";
+    	  s += "This module should scale very well. There must be memory to accomodate both the input table ";
+    	  s += "and the resulting sample table. ";
+
+    	  return s;
+
 	}
 
 	/**
@@ -40,7 +62,7 @@ public class SampleTableRows extends DataPrepModule  {
 	   @return The name of this module.
 	*/
 	public String getModuleName() {
-		return "SampleTableRows";
+		return "Sample Table Rows";
 	}
 
 	/**
@@ -70,7 +92,7 @@ public class SampleTableRows extends DataPrepModule  {
 	*/
 	public String getInputInfo(int i) {
 		switch (i) {
-			case 0: return "This is the original table that will be sampled.";
+			case 0: return "The table that will be sampled.";
 			default: return "No such input";
 		}
 	}
@@ -83,8 +105,8 @@ public class SampleTableRows extends DataPrepModule  {
 	public String getInputName(int i) {
 		switch(i) {
 			case 0:
-				return "Original Table";
-			default: return "NO SUCH INPUT!";
+				return "Table";
+			default: return "No such input";
 		}
 	}
 
@@ -95,7 +117,7 @@ public class SampleTableRows extends DataPrepModule  {
 	*/
 	public String getOutputInfo(int i) {
 		switch (i) {
-			case 0: return "This table is the result of sampling the original table.";
+			case 0: return "A new table containing a sample of rows from the original table.";
 			default: return "No such output";
 		}
 	}
@@ -109,17 +131,17 @@ public class SampleTableRows extends DataPrepModule  {
 		switch(i) {
 			case 0:
 				return "Sample Table";
-			default: return "NO SUCH OUTPUT!";
+			default: return "No such output";
 		}
 	}
 
 	/** the number of rows to sample */
-	int N;
+	int N = 1;
 	/** true if the first N rows should be the sample, false if the sample
 		should be random rows from the table */
-	boolean useFirst;
+	boolean useFirst = false;
 	/** the seed for the random number generator */
-	int seed;
+	int seed = 0;
 
 	public void setUseFirst(boolean b) {
 		useFirst = b;
@@ -129,16 +151,24 @@ public class SampleTableRows extends DataPrepModule  {
 		return useFirst;
 	}
 
-	public void setSampleSize(int i) {
-		N = i;
+	public void setSampleSize(int i) throws PropertyVetoException {
+                if ( i < 1 ) {
+		    throw new PropertyVetoException ( " Value must be > 0. ", null);
+		} else {
+		  N = i;
+                }
 	}
 
 	public int getSampleSize() {
 		return N;
 	}
 
-	public void setSeed(int i) {
-		seed = i;
+	public void setSeed(int i) throws PropertyVetoException {
+                if ( i < 0 ) {
+		    throw new PropertyVetoException ( " Value must be >= 0. ", null);
+		} else {
+		  seed = i;
+                }
 	}
 
 	public int getSeed() {
@@ -150,9 +180,18 @@ public class SampleTableRows extends DataPrepModule  {
 	 */
 	public PropertyDescription [] getPropertiesDescriptions () {
 		PropertyDescription [] pds = new PropertyDescription [3];
-		pds[0] = new PropertyDescription ("sampleSize", "Sample Size", "This number of examples in the resulting table.");
-		pds[1] = new PropertyDescription ("seed", "Seed", "The seed for the random number generater used to select the random folds. If this value is set to the same value for different runs, the results be the exact same.");
-		pds[2] = new PropertyDescription ("useFirst", "Use First", "If this option is selected, the first entries in the original table will be used as the sample.");
+		pds[0] = new PropertyDescription ("sampleSize",
+						  "Sample Size",
+			"The number of rows to include in the resulting table. " +
+			"It must be greater than 0 and no more than the number of rows in the input table. " );
+		pds[1] = new PropertyDescription ("seed",
+						  "Random Seed",
+                        "The seed for the random number generator used to select the sample set of " +
+                        "<i>Sample Size</i> rows.  It must be greater than or equal to 0. " +
+                        "The seed is not used if the <i>Use First Rows</i> option is selected. " );
+		pds[2] = new PropertyDescription ("useFirst",
+						  "Use First Rows",
+			"If this option is selected, the first entries in the original table will be used as the sample.");
 		return pds;
 	}
 
@@ -166,7 +205,12 @@ public class SampleTableRows extends DataPrepModule  {
           Table newTable = null;
 
           if (N > (orig.getNumRows()-1)){
-            throw new Exception("SampleTableRows: Sample size is >= the number of table rows.  Use a smaller value.");
+                int numRows = orig.getNumRows() - 1;
+                throw new Exception( getAlias()  +
+			   ": Sample size (" + N +
+			   ") is >= the number of rows in the table (" + numRows +
+			   "). \n" +
+ 			   "Use a smaller sample size.");
           }
 
           //System.out.println("Sampling " + N + " rows from a table of " +
@@ -232,3 +276,8 @@ public class SampleTableRows extends DataPrepModule  {
 //		pushOutput(newTable, 0);
 	}
 }
+// Start QA Comments
+// 4/8/03 - Ruth updated Module Info and properties to match the OPT version and also
+//          to add a comment that it exists.  Also added Exceptions of Sample Size < 1
+//          or seed < 0.
+// End QA Comments.
