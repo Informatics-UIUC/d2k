@@ -106,15 +106,6 @@ public class InputSerializedObject extends InputModule {
         }
     }
 
-   /** Return an array with information on the properties the user may update.
-    *  Empty for this module!
-    *  @return The PropertyDescriptions for properties the user may update. (none)
-    */
-    public PropertyDescription[] getPropertiesDescriptions() {
-        PropertyDescription[] pds = null;
-        return pds;
-    }
-
  //////////
  // Doit //
  //////////
@@ -171,4 +162,6 @@ public class InputSerializedObject extends InputModule {
 //           also icon label -> alias link seems broken
 // 2/13/03 - filed bug report on prop ed with 0 prop;  tweaked exception hndlr
 // 2/14/03 - checked into basic.
+// 2/25/03 - removed getPropertyDescriptions() that returned null as not needed
+//           with latest changed to property display.  updated in basic too.
 // END QA Comments
