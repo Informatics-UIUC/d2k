@@ -4,7 +4,7 @@ import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.basic.*;
 import ncsa.d2k.core.modules.ComputeModule;
 
-public class LinearBiasSpaceGenerator extends ComputeModule {
+public class StepwiseLinearBiasSpaceGenerator extends ComputeModule {
 
   private int        NumRoundsMin = 0;
   public  void    setNumRoundsMin (int value) {       this.NumRoundsMin = value;}
@@ -19,20 +19,6 @@ public class LinearBiasSpaceGenerator extends ComputeModule {
   private int        DirectionMax = 0;
   public  void    setDirectionMax (int value) {       this.DirectionMax = value;}
   public  int     getDirectionMax ()          {return this.DirectionMax;}
-
-  private double     MinOutputValueMin = Double.NEGATIVE_INFINITY;
-  public  void    setMinOutputValueMin (double value) {       this.MinOutputValueMin = value;}
-  public  double  getMinOutputValueMin ()             {return this.MinOutputValueMin;}
-  private double     MinOutputValueMax = Double.NEGATIVE_INFINITY;
-  public  void    setMinOutputValueMax (double value) {       this.MinOutputValueMax = value;}
-  public  double  getMinOutputValueMax ()             {return this.MinOutputValueMax;}
-
-  private double     MaxOutputValueMin = Double.POSITIVE_INFINITY;
-  public  void    setMaxOutputValueMin (double value) {       this.MaxOutputValueMin = value;}
-  public  double  getMaxOutputValueMin ()             {return this.MaxOutputValueMin;}
-  private double     MaxOutputValueMax = Double.POSITIVE_INFINITY;
-  public  void    setMaxOutputValueMax (double value) {       this.MaxOutputValueMax = value;}
-  public  double  getMaxOutputValueMax ()             {return this.MaxOutputValueMax;}
 
   public String getModuleName() {
     return "LinearBiasSpaceGenerator";
@@ -75,7 +61,7 @@ public class LinearBiasSpaceGenerator extends ComputeModule {
 
   public void doit() throws Exception {
 
-    int         numControlParameters = 4;
+    int         numControlParameters = 2;
     double []   minControlValues = new double[numControlParameters];
     double []   maxControlValues = new double[numControlParameters];
     double []   defaults         = new double[numControlParameters];
@@ -101,27 +87,11 @@ public class LinearBiasSpaceGenerator extends ComputeModule {
     types           [biasIndex] = ColumnTypes.INTEGER;
     biasIndex++;
 
-    biasNames       [biasIndex] = "MinOutputValue";
-    minControlValues[biasIndex] = MinOutputValueMin;
-    maxControlValues[biasIndex] = MinOutputValueMax;
-    defaults        [biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
-    resolutions     [biasIndex] = 1000;
-    types           [biasIndex] = ColumnTypes.DOUBLE;
-    biasIndex++;
-
-    biasNames       [biasIndex] = "MaxOutputValue";
-    minControlValues[biasIndex] = MaxOutputValueMin;
-    maxControlValues[biasIndex] = MaxOutputValueMax;
-    defaults        [biasIndex] = (minControlValues[biasIndex] + maxControlValues[biasIndex]) / 2.0;
-    resolutions     [biasIndex] = 1000;
-    types           [biasIndex] = ColumnTypes.DOUBLE;
-    biasIndex++;
-
     ParameterSpaceImpl parameterSpace = new ParameterSpaceImpl();
     parameterSpace.createFromData(biasNames, minControlValues, maxControlValues, defaults, resolutions, types);
     Class functionInducerClass = null;
     try {
-      functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.regression.continuous.LinearInducerOpt");
+      functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.regression.continuous.StepwiseLinearInducerOpt");
     }
     catch (Exception e) {
       System.out.println("could not find class");

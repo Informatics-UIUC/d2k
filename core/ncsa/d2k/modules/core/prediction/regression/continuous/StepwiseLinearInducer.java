@@ -6,7 +6,7 @@ import ncsa.d2k.core.modules.*;
 import Jama.Matrix;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-public class LinearInducer extends LinearInducerOpt
+public class StepwiseLinearInducer extends StepwiseLinearInducerOpt
 {
   private int        NumRounds = 0;
   public  void    setNumRounds (int value) {       this.NumRounds = value;}
@@ -15,14 +15,6 @@ public class LinearInducer extends LinearInducerOpt
   private int     Direction = 0;
   public  void    setDirection (int value) {       this.Direction = value;}
   public  int     getDirection ()             {return this.Direction;}
-
-  private double     MinOutputValue = 0.0;
-  public  void    setMinOutputValue (double value) {       this.MinOutputValue = value;}
-  public  double  getMinOutputValue ()             {return this.MinOutputValue;}
-
-  private double     MaxOutputValue = 1.0;
-  public  void    setMaxOutputValue (double value) {       this.MaxOutputValue = value;}
-  public  double  getMaxOutputValue ()             {return this.MaxOutputValue;}
 
 
   public String getModuleInfo() {
