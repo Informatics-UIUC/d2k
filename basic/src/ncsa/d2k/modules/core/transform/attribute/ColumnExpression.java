@@ -40,6 +40,21 @@ public class ColumnExpression implements Expression {
 
    }
 
+   public MutableTable getTable(){
+       return (MutableTable) table;
+   }
+   public void setTable(MutableTable mt){
+       table = mt;
+
+       labelToIndex = new HashMap();
+       for (int i = 0; i < table.getNumColumns(); i++)
+           labelToIndex.put(table.getColumnLabel(i), new Integer(i));
+
+
+
+   }
+
+
 /******************************************************************************/
 /* Expression interface                                                       */
 /******************************************************************************/
@@ -275,7 +290,13 @@ public class ColumnExpression implements Expression {
 
          }
 
-         return new TerminalNode(getIndex(expression));
+         try{
+                        return new TerminalNode(1,1,Float.parseFloat(expression));
+                    }catch(Exception e){
+                        float tempmyfloat = 0;
+                        return new TerminalNode(0,getIndex(expression),tempmyfloat);
+                    }
+
 
       }
 
@@ -1493,101 +1514,119 @@ public class ColumnExpression implements Expression {
 
    }
 
-   private class TerminalNode extends Node {
+       private class TerminalNode extends Node {
 
-      private int column;
+           private int column;
+           int myownflag;
+           float myownscalarvalue;
+           public TerminalNode(int myownflag, int column, float myownscalarvalue) throws ExpressionException {
 
-      public TerminalNode(int column) throws ExpressionException {
-         this.column = column;
+               this.myownflag = myownflag;
+               if(myownflag ==0){
+                   this.column = column;
 
-         if (column < table.getNumColumns()) { // in table
+                   if (column < table.getNumColumns()) { // in table
 
-            switch (table.getColumnType(column)) {
-               case ColumnTypes.BOOLEAN:
-                  returnType = TYPE_BOOLEAN; break;
-               case ColumnTypes.BYTE:
-                  returnType = TYPE_BYTE; break;
-               case ColumnTypes.DOUBLE:
-                  returnType = TYPE_DOUBLE; break;
-               case ColumnTypes.FLOAT:
-                  returnType = TYPE_FLOAT; break;
-               case ColumnTypes.INTEGER:
-                  returnType = TYPE_INTEGER; break;
-               case ColumnTypes.LONG:
-                  returnType = TYPE_LONG; break;
-               case ColumnTypes.SHORT:
-                  returnType = TYPE_SHORT; break;
-               default:
-                  throw new ExpressionException
-               ("ColumnExpression supports only numeric and boolean columns.");
-            }
+                       switch (table.getColumnType(column)) {
+                       case ColumnTypes.BOOLEAN:
+                           returnType = TYPE_BOOLEAN; break;
+                       case ColumnTypes.BYTE:
+                           returnType = TYPE_BYTE; break;
+                       case ColumnTypes.DOUBLE:
+                           returnType = TYPE_DOUBLE; break;
+                       case ColumnTypes.FLOAT:
+                           returnType = TYPE_FLOAT; break;
+                       case ColumnTypes.INTEGER:
+                           returnType = TYPE_INTEGER; break;
+                       case ColumnTypes.LONG:
+                           returnType = TYPE_LONG; break;
+                       case ColumnTypes.SHORT:
+                           returnType = TYPE_SHORT; break;
+                       default:
+                           throw new ExpressionException
+                               ("ColumnExpression supports only numeric and boolean columns.");
+                       }
 
-         }
-         else { // in array passed to setLazyExpression
+                   }
+                   else { // in array passed to setLazyExpression
 
-            returnType = ((Integer)extraColumnIndexToType.get(new Integer(column))).intValue();
+                       returnType = ((Integer)extraColumnIndexToType.get(new Integer(column))).intValue();
 
-         }
+                   }
+               }
+               else{
+                   returnType = TYPE_FLOAT;
+                   this.myownscalarvalue = myownscalarvalue;
+               }
+           }
 
-      }
+           public String toString() {
+               if(myownflag ==0){
+                   if (column >= table.getNumColumns())
+                       return "NEW";
 
-      public String toString() {
+                   return table.getColumnLabel(column);
+               }
+               else {
+                   return((String)Float.toString(myownscalarvalue));
+               }
+           }
 
-         if (column >= table.getNumColumns())
-            return "NEW";
+           public Object evaluate() throws ExpressionException {
+               if(myownflag ==0){
+                   switch (returnType) {
 
-         return table.getColumnLabel(column);
+                   case TYPE_BOOLEAN:
+                       boolean[] b = new boolean[table.getNumRows()];
+                       for (int i = 0; i < b.length; i++)
+                           b[i] = table.getBoolean(i, column);
+                       return (Object)b;
+                   case TYPE_BYTE:
+                       byte[] bb = new byte[table.getNumRows()];
+                       for (int i = 0; i < bb.length; i++)
+                           bb[i] = table.getByte(i, column);
+                       return (Object)bb;
+                   case TYPE_DOUBLE:
+                       double[] d = new double[table.getNumRows()];
+                       for (int i = 0; i < d.length; i++)
+                           d[i] = table.getDouble(i, column);
+                       return (Object)d;
+                   case TYPE_FLOAT:
+                       float[] f = new float[table.getNumRows()];
+                       for (int i = 0; i < f.length; i++)
+                           f[i] = table.getFloat(i, column);
+                       return (Object)f;
+                   case TYPE_INTEGER:
+                       int[] I = new int[table.getNumRows()];
+                       for (int i = 0; i < I.length; i++)
+                           I[i] = table.getInt(i, column);
+                       return (Object)I;
+                   case TYPE_LONG:
+                       long[] l = new long[table.getNumRows()];
+                       for (int i = 0; i < l.length; i++)
+                           l[i] = table.getLong(i, column);
+                       return (Object)l;
+                   case TYPE_SHORT:
+                       short[] s = new short[table.getNumRows()];
+                       for (int i = 0; i < s.length; i++)
+                           s[i] = table.getShort(i, column);
+                       return (Object)s;
+                   default:
+                       throw new ExpressionException
+                           ("There has been an error in ColumnExpression. Double-check your expression.");
 
-      }
+                   }
 
-      public Object evaluate() throws ExpressionException {
+               }
+               else{
+                   float[] myf = new float[table.getNumRows()];
+                   for (int i = 0; i < myf.length; i++)
+                       myf[i] = myownscalarvalue;
+                   return (Object)myf;
+               }
+           }
+       }
 
-         switch (returnType) {
-
-            case TYPE_BOOLEAN:
-               boolean[] b = new boolean[table.getNumRows()];
-               for (int i = 0; i < b.length; i++)
-                  b[i] = table.getBoolean(i, column);
-               return (Object)b;
-            case TYPE_BYTE:
-               byte[] bb = new byte[table.getNumRows()];
-               for (int i = 0; i < bb.length; i++)
-                  bb[i] = table.getByte(i, column);
-               return (Object)bb;
-            case TYPE_DOUBLE:
-               double[] d = new double[table.getNumRows()];
-               for (int i = 0; i < d.length; i++)
-                  d[i] = table.getDouble(i, column);
-               return (Object)d;
-            case TYPE_FLOAT:
-               float[] f = new float[table.getNumRows()];
-               for (int i = 0; i < f.length; i++)
-                  f[i] = table.getFloat(i, column);
-               return (Object)f;
-            case TYPE_INTEGER:
-               int[] I = new int[table.getNumRows()];
-               for (int i = 0; i < I.length; i++)
-                  I[i] = table.getInt(i, column);
-               return (Object)I;
-            case TYPE_LONG:
-               long[] l = new long[table.getNumRows()];
-               for (int i = 0; i < l.length; i++)
-                  l[i] = table.getLong(i, column);
-               return (Object)l;
-            case TYPE_SHORT:
-               short[] s = new short[table.getNumRows()];
-               for (int i = 0; i < s.length; i++)
-                  s[i] = table.getShort(i, column);
-               return (Object)s;
-            default:
-               throw new ExpressionException
-               ("There has been an error in ColumnExpression. Double-check your expression.");
-
-         }
-
-      }
-
-   }
 
 /******************************************************************************/
 /* Evaluation traverses the tree recursively starting at the root.            */

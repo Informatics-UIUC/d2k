@@ -140,13 +140,16 @@ public class AttributeConstruction extends UIModule {
       private int[]              newTypes;  // the transformation
 
       private JButton addColumnButton, addOperationButton, addBooleanButton,
-                      deleteButton, abortButton, doneButton, helpButton;
+                      deleteButton, abortButton, doneButton, helpButton, addScalarButton;
       private JComboBox columnBox, operationBox, booleanBox;
       private JTextField newNameField;
+      private JTextField scalarField;
+      private JScrollPane thatPane;
+      private HelpWindow help = new HelpWindow();
 
       private JList newColumnList;
       private DefaultListModel newColumnModel;
-
+      private JPanel columnPanel;
       private HashMap stringsToColumnBoxEntries;
 
       private Object[] constructions;
@@ -174,8 +177,9 @@ public class AttributeConstruction extends UIModule {
 
       private void initialize() {
 
-         this.removeAll();
 
+         this.removeAll();
+         //setPreferredSize(new Dimension(800, 300));
          expression = new ColumnExpression(table);
 
          gui = new ExpressionGUI(expression, true);
@@ -258,7 +262,7 @@ public class AttributeConstruction extends UIModule {
                new ImageIcon(mod.getImage("/images/addbutton.gif")));
          addColumnButton.addActionListener(this);
 
-         JPanel columnPanel = new JPanel();
+         columnPanel = new JPanel();
          columnPanel.setLayout(new GridBagLayout());
          Constrain.setConstraints(columnPanel, new JLabel(), 0, 0, 1, 1,
             GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
@@ -297,12 +301,32 @@ public class AttributeConstruction extends UIModule {
 
          JPanel booleanPanel = new JPanel();
          booleanPanel.setLayout(new GridBagLayout());
+
+         JPanel scalarPanel = new JPanel();
+         JPanel scalarNamePanel = new JPanel();
+
+
+         addScalarButton = new JButton(new ImageIcon(mod.getImage("/images/addbutton.gif")));
+         addScalarButton.addActionListener(this);
+         scalarField = new JTextField(16);
+
+         scalarField.setMinimumSize(new Dimension(150, 20));
+         scalarField.setPreferredSize(new Dimension(150, 20));
+         scalarPanel.setLayout(new GridBagLayout());
+         scalarNamePanel.setLayout(new GridBagLayout());
+
          Constrain.setConstraints(booleanPanel, new JLabel(), 0, 0, 1, 1,
-            GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
+            GridBagConstraints.NONE, GridBagConstraints.CENTER, 1, 0);
          Constrain.setConstraints(booleanPanel, booleanBox, 1, 0, 1, 1,
             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
          Constrain.setConstraints(booleanPanel, addBooleanButton, 2, 0, 1, 1,
             GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+
+        Constrain.setConstraints(scalarPanel, scalarField, 1, 0, 1, 1,
+                 GridBagConstraints.NONE, GridBagConstraints.WEST, 0, 0);
+        Constrain.setConstraints(scalarPanel, addScalarButton, 2, 0, 1, 1,
+                 GridBagConstraints.NONE, GridBagConstraints.EAST, 0, 0);
+
 
          JPanel leftPanel = new JPanel();
          leftPanel.setLayout(new GridBagLayout());
@@ -316,7 +340,12 @@ public class AttributeConstruction extends UIModule {
             GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
          Constrain.setConstraints(leftPanel, booleanPanel, 0, 4, 1, 1,
             GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1, 0);
-         Constrain.setConstraints(leftPanel, new JLabel(), 0, 5, 1, 1,
+
+
+
+      Constrain.setConstraints(leftPanel, scalarPanel ,0, 6, 1, 1,
+            GridBagConstraints.BOTH, GridBagConstraints.NORTH, 1, 0);
+      Constrain.setConstraints(leftPanel, new JLabel(), 0, 7, 1, 1,
             GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
 
          newColumnList = new JList();
@@ -344,14 +373,20 @@ public class AttributeConstruction extends UIModule {
          deleteButton = new JButton("Delete");
          deleteButton.addActionListener(this);
 
+
          JPanel rightPanel = new JPanel();
+
+         thatPane = new JScrollPane(newColumnList);
+         thatPane.setPreferredSize(new Dimension(200,200));
+
          rightPanel.setLayout(new GridBagLayout());
          Constrain.setConstraints(rightPanel, new JLabel("New attributes defined:  "), 0, 0, 1, 1,
             GridBagConstraints.NONE, GridBagConstraints.NORTHWEST, 0, 0);
-         Constrain.setConstraints(rightPanel, new JScrollPane(newColumnList), 0, 1, 1, 1,
+         Constrain.setConstraints(rightPanel, thatPane, 0, 1, 1, 1,
             GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
          Constrain.setConstraints(rightPanel, deleteButton, 0, 2, 1, 1,
             GridBagConstraints.NONE, GridBagConstraints.SOUTHEAST, 0, 0);
+
 
          JPanel guiPanel = new JPanel();
          guiPanel.setLayout(new GridBagLayout());
@@ -378,7 +413,7 @@ public class AttributeConstruction extends UIModule {
          helpButton = new JButton("Help");
          helpButton.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-               HelpWindow help = new HelpWindow();
+
                help.setVisible(true);
             }
          });
@@ -409,6 +444,7 @@ public class AttributeConstruction extends UIModule {
          Object src = e.getSource();
 
          if (src == addColumnButton)
+
             gui.getTextArea().insert((String)columnBox.getSelectedItem(),
                gui.getTextArea().getCaretPosition());
 
@@ -420,15 +456,23 @@ public class AttributeConstruction extends UIModule {
             gui.getTextArea().insert(" " + booleanBox.getSelectedItem() + " ",
                gui.getTextArea().getCaretPosition());
 
-         else if (src == abortButton)
-            viewCancel();
+      else if (src == addScalarButton)
+                 gui.getTextArea().insert(" " + scalarField.getText() + " ",
+                    gui.getTextArea().getCaretPosition());
+
+         else if (src == abortButton) {
+           help.setVisible(false);
+           viewCancel();
+         }
 
          else if (src == doneButton) {
+           help.setVisible(false);
             pushOutput(new AttributeTransform(newColumnModel.toArray()), 0);
             viewDone("Done");
          }
 
          else if (src == deleteButton) {
+
             int selected = newColumnList.getSelectedIndex();
             if (selected != -1) {
 
@@ -471,6 +515,8 @@ public class AttributeConstruction extends UIModule {
 
             }
          }
+         //thatPane.setMinimumSize(new Dimension(200, 200));
+
 
       }
 
@@ -523,7 +569,8 @@ public class AttributeConstruction extends UIModule {
             }
             */
 
-            columnBox.addItem(newNameField.getText());
+
+               columnBox.addItem(newNameField.getText());
 
             StringBuffer newLabelBuffer = new StringBuffer(newNameField.getText());
             for (int i = 0; i < newLabelBuffer.length(); i++)
@@ -632,8 +679,9 @@ public class AttributeConstruction extends UIModule {
                new AttributeTransform(null).new Construction(
                   newNameField.getText(), gui.getTextArea().getText());
             newColumnModel.addElement(added);
+            newColumnList.setMinimumSize(new Dimension(200, 200));
 
-            // _lastExpression = gui.getTextArea().getText();
+           // _lastExpression = gui.getTextArea().getText();
             // _newExp = newExpressions;
             _newLab = newLabels;
             // _newExpStr = newExpressionStrings;
@@ -674,7 +722,7 @@ public class AttributeConstruction extends UIModule {
       sb.append("subtraction, multiplication, division, and modulus. The ");
       sb.append("operations available on boolean attributes are AND and OR. ");
       sb.append("The user can construct an expression for the new attribute ");
-      sb.append("using the lists of attributes and operators on the left. ");
+      sb.append("using the lists of attributes and/or the scalar textfield and the operators on the left. ");
       sb.append("It is important that this expression be well-formed: that ");
       sb.append("parentheses match, that attribute labels surround operators, ");
       sb.append("and so forth.");
@@ -693,7 +741,8 @@ public class AttributeConstruction extends UIModule {
       sb.append("as parentheses, or a hyphen, which would be interpreted as ");
       sb.append("a subtraction operator) <b>must</b> be preceded by a ");
       sb.append("backslash character in order to distinguish them from those ");
-      sb.append("operators.");
+      sb.append("operators.  <b>Note:</b> Any numeric values used as the name of an attribute ");
+       sb.append("will be treated as scalar values rather than column names");
       sb.append("</body></html>");
       return sb.toString();
 
