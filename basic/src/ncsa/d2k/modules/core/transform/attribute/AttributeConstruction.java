@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.gui.*;
 import ncsa.d2k.core.modules.*;
@@ -75,8 +76,8 @@ public class AttributeConstruction extends HeadlessUIModule {
       sb.append("Other than that, this module does not modify its input data. ");
       sb.append("Rather, its output is a <i>Transformation</i> that can then ");
       sb.append("be used to modify the table. In this module, and computation ");
-	  sb.append("performed with a missing value will result in a missing value ");
-	  sb.append("in the constructed attribute column.");
+          sb.append("performed with a missing value will result in a missing value ");
+          sb.append("in the constructed attribute column.");
       sb.append("</p>");
       return sb.toString();
    }
@@ -179,6 +180,10 @@ public class AttributeConstruction extends HeadlessUIModule {
 
       protected JLabel constructionLabel;
       protected ViewModule mod;
+      
+      // added DC 3.25.2004
+      private Construction selectedItem;
+      private int selectedIndex;
 
       public ColumnConstructionGUI() {
         this.newLabels = (String[])AttributeConstruction.this.getNewLabel();
@@ -219,9 +224,9 @@ public class AttributeConstruction extends HeadlessUIModule {
        mod.setWindowName(getAlias());
 //vered end merge
          this.removeAll();
-		 this.newLabels = null;
-		 this.newTypes = null;
-		 this.constructions = null;
+                 this.newLabels = null;
+                 this.newTypes = null;
+                 this.constructions = null;
          expression = new ColumnExpression(table);
 
          gui = new ExpressionGUI(expression, true);
@@ -408,6 +413,29 @@ public class AttributeConstruction extends HeadlessUIModule {
          newColumnModel = new DefaultListModel();
          newColumnList.setModel(newColumnModel);
          newColumnList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+// added 3.25.2004 by DC         
+         final ListSelectionModel rowSel = newColumnList.getSelectionModel();
+         rowSel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+         rowSel.addListSelectionListener(new ListSelectionListener() {
+           public void valueChanged(ListSelectionEvent e) {
+             if(e.getValueIsAdjusting())
+               return;
+             if(rowSel.isSelectionEmpty())  {
+               selectedItem = null;
+               return;
+             }
+             else {
+               int selRow = rowSel.getMinSelectionIndex();
+   
+               Construction ff = (Construction)
+                   newColumnModel.get(selRow);
+               selectedItem = ff;
+               selectedIndex= selRow;
+               newNameField.setText(ff.label);
+               gui.getTextArea().setText(ff.expression);
+             }
+           }
+         });
 
          if (constructions != null) {
             for (int i = 0; i < constructions.length; i++) {
@@ -588,15 +616,16 @@ public class AttributeConstruction extends HeadlessUIModule {
                newTyp = newTypes;
                lastCons = newColumnModel.toArray();
 
-
-
-
+                // added 3.25.2004 by DC
+                newColumnList.getSelectionModel().clearSelection();
 
             }
          }
 
 
       }
+      
+      
 
       public void expressionChanged(Object evaluation) {
 
@@ -671,11 +700,27 @@ public class AttributeConstruction extends HeadlessUIModule {
                return;
             }
             gui.setExpression(newExp);
+            
+            
+// Changed 3.25.3004 by DC            
+            if(selectedItem != null) {
+              String newName = newNameField.getText();
+                selectedItem.label = newNameField.getText();
+                selectedItem.expression = gui.getTextArea().getText();
+                newColumnModel.set(selectedIndex, selectedItem);
+                newColumnList.getSelectionModel().clearSelection();
+            }
+            else {
+              Construction added = new Construction(
+                newNameField.getText(), gui.getTextArea().getText());
+              newColumnModel.addElement(added);
+            }
+// end change            
 
-            Construction added =
+            /*Construction added =
                new Construction(
                   newNameField.getText(), gui.getTextArea().getText());
-            newColumnModel.addElement(added);
+            newColumnModel.addElement(added);*/
             newColumnList.setMinimumSize(new Dimension(200, 200));
 
             newLabel = newLabels;
@@ -816,4 +861,13 @@ public class AttributeConstruction extends HeadlessUIModule {
 /**
  * vered - 3-10-2004: merged basic4 version with basic3 version (added support
  * in new operations from basic3).
+*/
+
+/**
+ * clutter - 3-25-2004 
+ * Made an update so that when a previously defined column is selected, then
+ * the name and expression gui show the contents of that construction.  when
+ * add is pressed, that construction is updated.
+ * 
+ * all changes are marked "changed 3.25.2004 by DC"
 */
