@@ -139,7 +139,7 @@ public class DBarChart2D extends VisModule {
       settings.xaxis = xaxis;
       settings.yaxis = yaxis;
 
-      add(new JScrollPane(new DBarChart(table, set, settings, getYIncrement(), getXIncrement(), getCharacters())));
+      add(new JScrollPane(new DBarChart(table, set, settings, getXIncrement(), getYIncrement(), getCharacters())));
     }
 
     public Dimension getPreferredSize() {
