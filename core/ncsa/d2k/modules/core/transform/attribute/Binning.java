@@ -106,7 +106,7 @@ public class Binning extends DataPrepModule  {
     /**
        Perform the calculation.
     */
-    public void doit() {
+    public void doit() throws Exception {
 		BinTree bt = (BinTree)pullInput(0);
 		ExampleTable vt = (ExampleTable)pullInput(1);
 
