@@ -482,9 +482,7 @@ public final class TreeScrollPane extends JScrollPane {
 			viewport.setViewPosition(point);
 		}
 
-		// Print this component.
-		public int print(Graphics g, PageFormat pf, int pi)
-			throws PrinterException {
+		public int print(Graphics g, PageFormat pf, int pi) throws PrinterException {
 
 			double pageHeight = pf.getImageableHeight();
 			double pageWidth = pf.getImageableWidth();
@@ -504,7 +502,7 @@ public final class TreeScrollPane extends JScrollPane {
 			if(pi >= 1)
 				return Printable.NO_SUCH_PAGE;
 
-			Graphics2D g2 = (Graphics2D)g;
+			Graphics2D g2 = (Graphics2D) g;
 			g2.translate(pf.getImageableX(), pf.getImageableY());
 			g2.scale(scale, scale);
 			print(g2);

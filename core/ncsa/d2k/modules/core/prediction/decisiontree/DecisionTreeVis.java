@@ -85,8 +85,8 @@ class DecisionTreeUserView extends ncsa.d2k.controller.userviews.swing.JUserPane
 	NavigatorPanel navigatorpanel;
 
 	JMenuBar menubar;
-	JMenuItem printitem;
-	JCheckBoxMenuItem labelsitem;
+	JMenuItem printtree, printwindow;
+	JCheckBoxMenuItem hidelabels;
 
 	Hashtable colortable;
 	Hashtable ordertable;
@@ -147,17 +147,21 @@ class DecisionTreeUserView extends ncsa.d2k.controller.userviews.swing.JUserPane
 			}
 		}
 
-		printitem = new JMenuItem("Print...");
-		printitem.addActionListener(this);
+		printtree = new JMenuItem("Print Tree...");
+		printtree.addActionListener(this);
+
+		printwindow = new JMenuItem("Print Window...");
+		printwindow.addActionListener(this);
 
 		optionsmenu.add(colorsmenu);
 		optionsmenu.addSeparator();
-		optionsmenu.add(printitem);
+		optionsmenu.add(printtree);
+		optionsmenu.add(printwindow);
 
-		labelsitem = new JCheckBoxMenuItem("Hide Labels");
-		labelsitem.addActionListener(this);
+		hidelabels = new JCheckBoxMenuItem("Hide Labels");
+		hidelabels.addActionListener(this);
 
-		viewsmenu.add(labelsitem);
+		viewsmenu.add(hidelabels);
 
 		// Split pane
 		brushpanel = new BrushPanel(model);
@@ -255,7 +259,7 @@ class DecisionTreeUserView extends ncsa.d2k.controller.userviews.swing.JUserPane
 			}
 		}
 
-		else if (source == labelsitem)
+		else if (source == hidelabels)
 			treescrollpane.toggleLabels();
 
 		else if (source == zoominbox)
@@ -264,9 +268,22 @@ class DecisionTreeUserView extends ncsa.d2k.controller.userviews.swing.JUserPane
 		else if (source == zoomoutbox)
 			treescrollpane.toggleZoomout();
 
-		else if (source == printitem) {
+		else if (source == printtree) {
 			PrinterJob pj = PrinterJob.getPrinterJob();
 			pj.setPrintable(treescrollpane.getPrintable());
+			if (pj.printDialog()) {
+				try {
+					pj.print();
+				}
+				catch(Exception exception) {
+					exception.printStackTrace();
+				}
+			}
+		}
+
+		else if (source == printwindow) {
+			PrinterJob pj = PrinterJob.getPrinterJob();
+			pj.setPrintable(this);
 			if (pj.printDialog()) {
 				try {
 					pj.print();
