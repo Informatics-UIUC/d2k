@@ -47,7 +47,7 @@ import java.beans.PropertyVetoException;
 import gnu.trove.*;
 
 
-public class SQLRainForest extends ReentrantComputeModule {
+public class SQLRainForest extends SQLRainForestOPT {
   JOptionPane msgBoard = new JOptionPane();
 
   // the number of split values for numeric attribute
@@ -142,7 +142,7 @@ public class SQLRainForest extends ReentrantComputeModule {
 
   public String getOutputInfo(int i) {
     switch (i) {
-      case 0: return "Decision tree model.";
+      case 0: return "The generated decision tree model.";
       default: return "No such output";
     }
   }
@@ -204,7 +204,9 @@ public class SQLRainForest extends ReentrantComputeModule {
     s += "of Large Datasets by J. Gehrke et al. </li></ul></p>";
     s += "<p>Restrictions: ";
     s += "This module will only classify examples with ";
-    s += "nominal outputs. We currently only support Oracle databases. </p>";
+    s += "nominal outputs. We currently only support Oracle databases. ";
+    s += "There are two implementations on RainForest. <i>SQLRainForest</i> does ";
+    s += "not do parameter optimization, but <i>SQLRainForestOPT<i> does.</p>";
     s += "<p>Data Handling: This module does not modify the input data. </p>";
     s += "<p>Scalability: This module can handle a huge data set even the ";
     s += "size of the data set is larger than the available memory. </p> ";
@@ -214,8 +216,7 @@ public class SQLRainForest extends ReentrantComputeModule {
   public String[] getInputTypes () {
     String[] types = {"ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
                       "java.lang.String",
-                      "ncsa.d2k.modules.core.datatype.table.ExampleTable",
-                      "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"};
+                      "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
       return types;
   }
 
@@ -301,7 +302,6 @@ public class SQLRainForest extends ReentrantComputeModule {
     cw = (ConnectionWrapper)pullInput(0);
     dbTable = (String)pullInput(1);
     meta = (ExampleTable)pullInput(2);
-    ParameterPoint pp = (ParameterPoint)pullInput(3);
     inputFeatures = new int[meta.getInputFeatures().length];
     inputFeatures = meta.getInputFeatures();
     outputFeatures = new int[meta.getOutputFeatures().length];
@@ -314,11 +314,8 @@ public class SQLRainForest extends ReentrantComputeModule {
       availableCols[colIdx] = meta.getColumnLabel(inputFeatures[colIdx]);
     }
     totalRow = meta.getNumEntries();
-    setMinimumRatioPerLeaf(pp.getValue(SQLRainForestParamSpaceGenerator.MIN_RATIO));
     minimumRecordsPerLeaf = totalRow * minimumRatioPerLeaf;
-    setModeThreshold(pp.getValue(SQLRainForestParamSpaceGenerator.MODE_THRESHOLD));
-    setBinNumber(pp.getValue(SQLRainForestParamSpaceGenerator.BIN_NUMBER));
-    setDominateRatio(pp.getValue(SQLRainForestParamSpaceGenerator.DOMINATE_RATIO));
+
     // if totalRow < modeThreshold, use in-memory mode
     if (totalRow > 0 && totalRow < modeThreshold) {
       NodeInfo aNodeInfo = createDataTable(dbTable, meta, splitValues, totalRow);
@@ -330,8 +327,9 @@ public class SQLRainForest extends ReentrantComputeModule {
       }
       DecisionForestNode rootNode = buildTree(splitValues, availableCols, aNodeInfo, exampleSet);
       DecisionForestModel mdl = new DecisionForestModel(rootNode, meta, totalRow, classValues);
-      PredictionModelModule pmm=(PredictionModelModule) mdl;
-      pushOutput(pmm, 0);
+      //PredictionModelModule pmm=(PredictionModelModule) mdl;
+      //pushOutput(pmm, 0);
+      pushOutput(mdl, 0);
     }
     else if (totalRow >= modeThreshold) { // use in-db mode
       classValues = getClassValues(classColName);
