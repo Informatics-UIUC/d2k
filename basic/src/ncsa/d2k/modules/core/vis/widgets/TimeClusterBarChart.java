@@ -281,13 +281,15 @@ public class TimeClusterBarChart extends BarChart
     }
     else {
       String legendLabel = mutable.getString(0, 2);
-      legendwidth = metrics.stringWidth(legendLabel);
-      legendwidth += 3*smallspace+samplecolorsize;
+      //legendwidth = metrics.stringWidth(legendLabel);
+      legendwidth = (metrics.stringWidth(legendLabel))/2;
+      legendwidth += 5*smallspace+samplecolorsize;
 
       if (legendwidth < longestwidthz)
         legendwidth = longestwidthz;
 
-      legendheight = (fontheight+smallspace)+(legendStrings.length*fontheight*2);
+      //legendheight = (fontheight+smallspace)+(legendStrings.length*fontheight*2);
+      legendheight = (fontheight+smallspace)+(legendStrings.length*fontheight*3);
     }
 
     // Primary offsets
@@ -454,7 +456,6 @@ public class TimeClusterBarChart extends BarChart
     g2.rotate(Math.toRadians(90));
 
 
-    //for (int run=0; run < runs; run++) {
     for (int valIdx=0; valIdx<uniqValues.length; valIdx++) {
       String value = uniqValues[valIdx];
       int stringwidth = metrics.stringWidth(value);
@@ -538,10 +539,15 @@ public class TimeClusterBarChart extends BarChart
       g2.fill(new Rectangle.Double(x, y, samplecolorsize, samplecolorsize));
       g2.setColor(Color.black);
       y += samplecolorsize;
-      g2.drawString(legendStrings[index], (int) (x+samplecolorsize+smallspace), (int) y);
-      //y += fontheight - samplecolorsize;
+      x += samplecolorsize+smallspace;
+      g2.drawString(legendStrings[index], (int) x, (int) y);
       y += fontheight - samplecolorsize + smallspace;
-      g2.drawString(legendTimeRanges[index], (int) x, (int) y);
+      // show time description in 3 lines: 1. start time, 2. "-", 3. end time
+      g2.drawString(legendTimeRanges[index].substring(0,19), (int) x, (int) y);
+      y += fontheight - samplecolorsize;
+      g2.drawString("- - - ", (int) (x+(samplecolorsize*6)), (int) y);
+      y += fontheight - smallspace;
+      g2.drawString(legendTimeRanges[index].substring(22,41), (int) x, (int) y);
     }
   }
 
@@ -601,7 +607,8 @@ public class TimeClusterBarChart extends BarChart
     for (int row=1; row<sortedTable.getNumRows(); row++) {
       if (sortedTable.getInt(row, set.l) == level) {
         // update the end time
-        str = str.substring(0,9) + sortedTable.getString(row, set.z).substring(9,17);
+        // must show full time string for handling over-night and over-year cases
+        str = str.substring(0,21) + sortedTable.getString(row, set.z).substring(21,41);
       }
       else if (sortedTable.getInt(row, set.l) != level) {
         legendTimeRanges[level] = str;
@@ -684,7 +691,6 @@ public class TimeClusterBarChart extends BarChart
 
         // to solve sorting problem, granularity level has been *(-1), we need to reverse back.
         int colorIndex = (int) (mutable.getDouble(bin-offset, 4)*(-1)); // get the granularity level
-        //int colorIndex = (int) (mutable.getDouble(bin-offset, 4)); // get the granularity level
         GradientColorSet barColor = barColors[colorIndex];
         if (colorIndex == granLevel) {
           countOnLevel += 1;
