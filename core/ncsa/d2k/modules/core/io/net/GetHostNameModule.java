@@ -5,8 +5,6 @@ import java.io.*;
 import java.net.*;
 
 /**
-		GetHostNameModule.java
-		
 		Given a string that must be a URL, this module will identify the host machine, and pass that along as an output string along with the original URL.
 */
 public class GetHostNameModule extends ncsa.d2k.infrastructure.modules.DataPrepModule {
@@ -18,7 +16,7 @@ public class GetHostNameModule extends ncsa.d2k.infrastructure.modules.DataPrepM
 	*/
 	public String getOutputInfo (int index) {
 		String[] outputDescriptions = {
-				"This string will contain the name of the host.", 
+				"This string will contain the name of the host.",
 				"The original URL is passed along as an output."
 		};
 		return outputDescriptions[index];
@@ -68,7 +66,7 @@ public class GetHostNameModule extends ncsa.d2k.infrastructure.modules.DataPrepM
 			System.out.println ("The url was wrong -> "+(String) urlString);
 			return;
 		}
-		
+
 		this.pushOutput (url, 0);
 		this.pushOutput (url.getHost (), 1);
 	}

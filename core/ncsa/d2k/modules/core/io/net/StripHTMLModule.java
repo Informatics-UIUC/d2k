@@ -5,8 +5,6 @@ import java.util.*;
 import java.io.*;
 
 /**
-		StripHTMLModule.java
-		
 		This module will strip all the html tags out of the given data. A byte array output stream is used to generate the resulting byte array.
 */
 public class StripHTMLModule extends ncsa.d2k.infrastructure.modules.DataPrepModule {
@@ -62,13 +60,13 @@ public class StripHTMLModule extends ncsa.d2k.infrastructure.modules.DataPrepMod
 		else {
 			// How many bytes do we care about.
 			int howMany = html.length;
-			
+
 			// The location of the last point copied up to.
 			int lastLoc = 0;
-			
+
 			// put bytes here.
 			ByteArrayOutputStream bos = new ByteArrayOutputStream ();
-			
+
 			// Find the next '<'
 			int i = 0;
 			for (; i < howMany; i++) {
@@ -81,7 +79,7 @@ public class StripHTMLModule extends ncsa.d2k.infrastructure.modules.DataPrepMod
 							break;
 						}
 					}
-				
+
 					// Find the end of the anchor.
 					for (; i < howMany; i++)
 						if (html[i] == (byte) '>')
@@ -89,8 +87,8 @@ public class StripHTMLModule extends ncsa.d2k.infrastructure.modules.DataPrepMod
 					lastLoc = i+1;
 				}
 			}
-			
-			if (lastLoc < i) 
+
+			if (lastLoc < i)
 				bos.write (html, lastLoc, i - lastLoc - 1);
 			this.pushOutput (bos.toByteArray(), 0);
 		}

@@ -2,7 +2,10 @@ package ncsa.d2k.modules.core.io.console;
 import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
-public class ETPrint extends ncsa.d2k.infrastructure.modules.DataPrepModule{
+/**
+ * Print statistics about an ExampleTable.
+ */
+public class ETPrint extends ncsa.d2k.infrastructure.modules.OutputModule{
 
 	public String getInputInfo(int index) {
 		switch (index) {

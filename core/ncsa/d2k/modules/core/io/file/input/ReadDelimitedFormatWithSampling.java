@@ -7,8 +7,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
- * Read in a file with a single delimiter.
-*/
+ * Read in a file with a single delimiter and use a random sample of the data.
+ */
 public class ReadDelimitedFormatWithSampling extends ReadDelimitedFormat {
 
 	/**

@@ -5,8 +5,6 @@ import java.net.*;
 import java.io.*;
 
 /**
-		HTMLReaderModule.java
-		
 		Given a valid URL, this module will read in an HTML file, write it into a byte array, and provide the byte array as it's only output.
 */
 public class HTMLReaderModule extends ncsa.d2k.infrastructure.modules.InputModule implements Serializable {
@@ -57,14 +55,14 @@ public class HTMLReaderModule extends ncsa.d2k.infrastructure.modules.InputModul
 		return temp;
 	}
 
-	/** 
+	/**
 		the debug property.
 	*/
 	boolean debug = false;
 	public void setDebugging (boolean db) { debug = db; }
 	public boolean getDebugging () { return debug; }
 	/**
-		This module fires whenever it receives *either* of it's inputs, it 
+		This module fires whenever it receives *either* of it's inputs, it
 		does not want two inputs to execute.
 	*/
 	public synchronized boolean isReady () {
@@ -73,16 +71,16 @@ public class HTMLReaderModule extends ncsa.d2k.infrastructure.modules.InputModul
 		else
 			return false;
 	}
-	
+
 	private final int buffsize = 2048;
-	
+
 	public void doit () {
 		URL webLoc;
 		if (this.inputFlags[1] > 0)
 			webLoc = (URL) this.pullInput (1);
 		else
 			webLoc = (URL) this.pullInput (0);
-			
+
 		if (webLoc == null) {
 			if (debug)
 				System.out.println ("Done with first");
@@ -103,7 +101,7 @@ public class HTMLReaderModule extends ncsa.d2k.infrastructure.modules.InputModul
 				this.pushOutput (webLoc, 1);
 				return;
 			}
-			
+
 			// Stick the bytes into the byte array output stream.
 			ByteArrayOutputStream out = new ByteArrayOutputStream ();
 			byte [] buffer = new byte [buffsize];
@@ -132,11 +130,11 @@ public class HTMLReaderModule extends ncsa.d2k.infrastructure.modules.InputModul
 			try {
 				out.close ();
 			} catch (IOException e) {}
-			
+
 			// get our bytes.
 			this.pushOutput (out.toByteArray (), 0);
 			this.pushOutput (webLoc, 1);
-			
+
 		}
 	}
 }

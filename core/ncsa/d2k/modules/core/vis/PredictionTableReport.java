@@ -14,6 +14,8 @@ import javax.swing.*;
 import java.text.*;
 
 /**
+ * Displays statistics about any PredictionTable.  The number of correct
+ * predictions and a confusion matrix are included.
    @author David Clutter
 */
 public class PredictionTableReport extends VisModule implements HasNames {

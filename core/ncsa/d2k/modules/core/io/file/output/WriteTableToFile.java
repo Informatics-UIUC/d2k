@@ -6,7 +6,6 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import java.io.*;
 
 /**
-   WriteVTToFile.java
    Write the contents of a Table to a flat file.
    @author David Clutter
 */

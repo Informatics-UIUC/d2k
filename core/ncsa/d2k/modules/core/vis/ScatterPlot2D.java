@@ -14,7 +14,7 @@ import javax.swing.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
-	ScatterPlot2D.java
+ * 	A two-dimensional scatter plot.  Displays any two columns of numeric data.
 */
 public class ScatterPlot2D extends ncsa.d2k.infrastructure.modules.VisModule
     implements Serializable, HasNames {

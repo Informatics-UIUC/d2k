@@ -5,8 +5,7 @@ import java.util.*;
 /*#end^1 CONTINUE EDITING FOLLOWING THIS LINE. ^#&*/
 /*&%^2 DO NOT MODIFY THE CODE TO THE NEXT COMMENT!!! */
 /**
-	PrintObjectModule.java
-	
+	Print an Object by calling its toString() method.
 */
 public class PrintObjectModule extends ncsa.d2k.infrastructure.modules.OutputModule {
 
@@ -77,7 +76,7 @@ public class PrintObjectModule extends ncsa.d2k.infrastructure.modules.OutputMod
 	public void doit () throws Exception {
 		synchronized( System.out ) {
 			Object inputArg = this.pullInput (0);
-			
+
 			// int[]
 			if (inputArg instanceof int[]) {
 				int [] ia = (int []) inputArg;
@@ -132,7 +131,7 @@ public class PrintObjectModule extends ncsa.d2k.infrastructure.modules.OutputMod
 
 				for( int i=0;i<fa.length;i++)
 						System.out.println(i + ": " + fa[i] + " , " );
-					
+
 				System.out.println( "} " );
 			} else if( inputArg instanceof float[][] ) {
 				float[][] fa = (float[][]) inputArg;
@@ -212,7 +211,7 @@ public class PrintObjectModule extends ncsa.d2k.infrastructure.modules.OutputMod
 						System.out.println(i + ": {" + new String(ba[i]) + "}");
 					else
 						System.out.println(i + ": {null}");
-					
+
 				System.out.println( "}" );
 			} else if( inputArg instanceof byte[][][] ) {
 				byte[][][] ba = (byte[][][]) inputArg;
@@ -228,7 +227,7 @@ public class PrintObjectModule extends ncsa.d2k.infrastructure.modules.OutputMod
 							System.out.print("  {null}");
 					System.out.println( "}" );
 				}
-					
+
 				System.out.println( "}" );
 			} else if (inputArg instanceof Hashtable) {
 				Hashtable hash = (Hashtable) inputArg;

@@ -8,8 +8,6 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
-   ETScatterPlot.java
-
 	Given an ExampleTable, plot each numeric input variable against each
 	numeric output variable in a FunctionPlot.  A matrix of these plots is
 	shown.  The plots can be selected and a larger composite graph of

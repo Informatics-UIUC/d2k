@@ -5,13 +5,11 @@ import java.util.*;
 import java.io.*;
 
 /**
-		StripHTMLModule.java
-		
 		This module will strip all the html tags out of the given data. A byte array output stream is used to generate the resulting byte array.
 */
 public class MakeNGramDataModule extends ncsa.d2k.infrastructure.modules.DataPrepModule {
 	ByteArrayOutputStream byteOutput = null;
-	
+
 	/**
 		This method returns the description of the various inputs.
 
@@ -57,11 +55,11 @@ public class MakeNGramDataModule extends ncsa.d2k.infrastructure.modules.DataPre
 		String[] temp = {"[B"};
 		return temp;
 	}
-	
+
 	/**
-		This module fires whenever it receives *either* of it's inputs, it 
+		This module fires whenever it receives *either* of it's inputs, it
 		does not want two inputs to execute.
-		
+
 		@param parentIndex the index of the parent providing the input.
 		@param newInput the new input.
 	*/
@@ -71,7 +69,7 @@ public class MakeNGramDataModule extends ncsa.d2k.infrastructure.modules.DataPre
 		else
 			return false;
 	}
-	
+
 	final byte [] commentTag = {
 			(byte) 'c',(byte) 'o',(byte) 'm',(byte) 'm',
 			(byte) 'e',(byte) 'n',(byte) 't',(byte) ':', (byte)' '};
@@ -79,7 +77,7 @@ public class MakeNGramDataModule extends ncsa.d2k.infrastructure.modules.DataPre
 			(byte) 'N',(byte) 'O',(byte) 'T'};
 	final byte [] newline = {(byte) 0x0A};
 	int counter = 1;
-	
+
 	/**
 		Write the newly formated ngram data to the byte array
 		stream, and when done, send the whole byte array out.
@@ -103,7 +101,7 @@ public class MakeNGramDataModule extends ncsa.d2k.infrastructure.modules.DataPre
 						case 'a': case 'b': case 'c': case 'd': case 'e': case 'f':
 						case 'g': case 'h': case 'i': case 'j': case 'k': case 'l':
 						case 'm': case 'n': case 'o': case 'p': case 'q': case 'r':
-						case 's': case 't': case 'u': case 'v': case 'w': case 'x': 
+						case 's': case 't': case 'u': case 'v': case 'w': case 'x':
 						case 'y': case 'z':
 							html[i] -= 0x20;
 						case 'A': case 'B': case 'C': case 'D': case 'E': case 'F':

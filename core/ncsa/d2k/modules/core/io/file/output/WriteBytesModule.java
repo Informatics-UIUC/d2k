@@ -5,31 +5,29 @@ import java.util.*;
 import java.io.*;
 
 /**
-	StripHTMLModule.java
-		
 	This module will strip all the html tags out of the given data. A byte array output stream is used to generate the resulting byte array.
 */
 public class WriteBytesModule extends ncsa.d2k.infrastructure.modules.OutputModule implements Serializable {
 	private String filename = null;
-	
+
 	/**
 		Set the file name to the string passed in.
-		
+
 		@param filename the new file name.
 	*/
 	public void setFilename (String fileName) {
 		this.filename = fileName;
 	}
-	
+
 	/**
 		Set the file name to the string passed in.
-		
+
 		@param filename the new file name.
 	*/
 	public String getFilename () {
 		return this.filename;
 	}
-	
+
 	/**
 		This method returns the description of the various inputs.
 

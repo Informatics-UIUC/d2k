@@ -18,8 +18,6 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
-   ETScatterPlot.java
-
 	Given an ExampleTable, plot each numeric input variable against each
 	numeric output variable in a ScatterPlot.  A matrix of these plots is
 	shown.  The plots can be selected and a larger composite graph of

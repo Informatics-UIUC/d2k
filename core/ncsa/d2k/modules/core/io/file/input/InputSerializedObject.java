@@ -10,7 +10,10 @@ package ncsa.d2k.modules.core.io.file.input;
 import  java.io.*;
 import  ncsa.d2k.infrastructure.modules.*;
 
-
+/*
+ * Reads a serialized object from a file.
+ * @author David Tcheng
+ */
 public class InputSerializedObject extends InputModule
     implements HasNames, HasProperties, java.io.Serializable {
 

@@ -10,8 +10,6 @@ import javax.swing.text.html.parser.*;
 import javax.swing.text.ChangedCharSetException;
 import javax.swing.text.SimpleAttributeSet;
 /**
-	HTMLLinkSearchModule.java
-
 	Given an array of bytes, this module will search it the array for all anchors,
 	generating a list of anchors and also including the original bytes as an output.
 */

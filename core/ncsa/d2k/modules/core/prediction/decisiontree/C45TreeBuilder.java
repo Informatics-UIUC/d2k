@@ -88,6 +88,16 @@ public class C45TreeBuilder extends ComputeModule
 		return debug;
 	}
 
+	private boolean useGainRatio = true;
+
+	public void setUseGainRatio(boolean b) {
+		useGainRatio = b;
+	}
+
+	public boolean getUseGainRatio() {
+		return useGainRatio;
+	}
+
 	private NumberFormat nf;
 	private static final String LESS_THAN = " < ";
 	private static final String GREATER_THAN_EQUAL_TO = " >= ";
@@ -481,8 +491,10 @@ public class C45TreeBuilder extends ComputeModule
 			attCol, outputs[0]);
 
 		gain -= numEntr;
-		double spliter = splitInfo(attCol, splitVal, examples);
-		gain /= spliter;
+		if(useGainRatio) {
+			double spliter = splitInfo(attCol, splitVal, examples);
+			gain /= spliter;
+		}
 
 		return new EntrSplit(splitVal, gain);
 	}
@@ -529,9 +541,11 @@ public class C45TreeBuilder extends ComputeModule
 			catEntr += categoricalAttributeEntropy(attCol, vals[i], examples);
 
 		gain -= catEntr;
-		double sInfo = splitInfo(attCol, 0, examples);
-		// divide the information gain by the split info
-		gain /= sInfo;
+		if(useGainRatio) {
+			double sInfo = splitInfo(attCol, 0, examples);
+			// divide the information gain by the split info
+			gain /= sInfo;
+		}
 		return gain;
 	}
 

@@ -6,8 +6,6 @@ import java.io.*;
 import java.net.*;
 
 /**
-		URLDispatchModule.java
-
 		This module takes two inputs; One is a vector containing a list of URLs, the other is a trigger that will always cause it to fire. When it fires, will simply take the next URL from the list and provide it as output.
 */
 public class URLDispatchModule extends ncsa.d2k.infrastructure.modules.DataPrepModule {
