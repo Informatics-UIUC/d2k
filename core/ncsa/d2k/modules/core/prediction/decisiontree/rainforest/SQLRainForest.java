@@ -1646,6 +1646,9 @@ public class SQLRainForest extends ReentrantComputeModule {
    *  @return ture if aString is in aList, false otherwise
    */
   private boolean inList(String aString, String[] aList) {
+    if (aString == null || aString.equals(" ") || aString.equals("")) {
+      return true; // do not add null value to the list
+    }
     for (int listIdx=0; listIdx<aList.length; listIdx++) {
       if (aString.equals(aList[listIdx])) {
         return true;
@@ -1660,6 +1663,9 @@ public class SQLRainForest extends ReentrantComputeModule {
    *  @return true if aString is in aList, false otherwise
    */
   private boolean inList(String aString, ArrayList aList) {
+    if (aString == null || aString.equals(" ") || aString.equals("")) {
+      return true; // do not add null value to the list
+    }
     for (int strIdx=0; strIdx<aList.size(); strIdx++) {
       if (aList.get(strIdx).toString().equals(aString)) {
         return true;
