@@ -16,6 +16,8 @@ import javax.swing.*;
 */
 public class PieChart extends Chart {
 
+   private int max_legend_rows = 5;
+
    /**
       Create a new PieChart that normalizes the data.  Each item
       will be represented as a fraction of 1.0
@@ -96,11 +98,15 @@ public class PieChart extends Chart {
          legendheight = 0;
       }
       else {
-         String[] names = new String[table.getNumRows()];
+         String[] names;
+         if (table.getNumRows() < max_legend_rows)
+            names = new String[table.getNumRows()];
+         else
+            names = new String[max_legend_rows];
 
          names[0] = table.getString(0, 0);
          legendwidth = metrics.stringWidth(names[0]);
-         for (int index=1; index < table.getNumRows(); index++) {
+         for (int index=1; index < table.getNumRows() && index < max_legend_rows; index++) {
             String s = table.getString(index, 0);
             int stringwidth = metrics.stringWidth(s);
             if (stringwidth > legendwidth)
@@ -108,8 +114,13 @@ public class PieChart extends Chart {
          }
 
          legendwidth += 4*smallspace+samplecolorsize;
-         legendheight = (table.getNumRows()*fontheight)+
-            (fontheight-samplecolorsize);
+
+         if (table.getNumRows() <= max_legend_rows)
+            legendheight = ((names.length)*fontheight)+
+               (fontheight-samplecolorsize);
+         else
+            legendheight = ((names.length + 1)*fontheight)+
+               (fontheight-samplecolorsize);
 
          legendleftoffset = leftoffset;
          legendtopoffset = legendheight+2*smallspace;
@@ -189,7 +200,7 @@ public class PieChart extends Chart {
       x += smallspace;
       y += fontheight-samplecolorsize;
 
-      for (int index=0; index < table.getNumRows(); index++) {
+      for (int index=0; index < table.getNumRows() && index < max_legend_rows; index++) {
          g2.setColor(getColor(index));
          g2.fill(new Rectangle.Double(x, y, samplecolorsize, samplecolorsize));
          y += fontheight;
@@ -203,9 +214,15 @@ public class PieChart extends Chart {
       x += 2*smallspace+samplecolorsize;
       y += fontheight;
 
-      for (int index=0; index < table.getNumRows(); index++) {
+      int index = 0;
+      for (index=0; index < table.getNumRows() && index < max_legend_rows; index++) {
          g2.drawString(table.getString(index, 0), (int) x, (int) y);
          y += fontheight;
       }
+
+      if (index < table.getNumRows()) {
+         g2.drawString("...", (int)x, (int)y);
+      }
+
    }
 }

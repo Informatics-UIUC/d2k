@@ -65,14 +65,15 @@ public class GraphEditor extends JPanel implements ActionListener {
       int boxindex = 0;
 
       while (columnindex < size) {
-         hashtable.put(new Integer(boxindex), new Integer(columnindex));
-         String columnlabel = table.getColumnLabel(columnindex);
 
-         if (table.isColumnNumeric(columnindex))
+         if (table.isColumnNumeric(columnindex)) {
+            hashtable.put(new Integer(boxindex), new Integer(columnindex));
+            String columnlabel = table.getColumnLabel(columnindex);
             columnlabels.add(columnlabel);
+            boxindex++;
+         }
 
          columnindex++;
-         boxindex++;
       }
 
       namelabel = new JLabel("Name: ");
@@ -475,7 +476,10 @@ public class GraphEditor extends JPanel implements ActionListener {
       }
 
       public void actionPerformed(ActionEvent event) {
+         Color prevColor = color;
          color = JColorChooser.showDialog(this, "Edit Color", Color.black);
+         if (color == null)
+            color = prevColor;
          renderpanel.setBackground(color);
       }
 

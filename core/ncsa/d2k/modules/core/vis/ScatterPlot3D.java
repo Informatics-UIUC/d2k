@@ -53,7 +53,8 @@ public class ScatterPlot3D extends VisModule {
       sb.append("increase quickly with the number of data points plotted. ");
       sb.append("These requirements can be reduced somewhat by choosing to ");
       sb.append("plot points as cubes rather than spheres in the ");
-      sb.append("\"Settings\" tab.");
+      sb.append("\"Settings\" tab that appears when the visualization is ");
+      sb.append("enabled.");
       sb.append("</p>");
       return sb.toString();
    }
