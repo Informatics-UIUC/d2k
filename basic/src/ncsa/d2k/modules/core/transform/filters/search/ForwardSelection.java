@@ -28,8 +28,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.transform.filters.*;
 import ncsa.d2k.modules.core.transform.filters.evaluation.*;
 import ncsa.d2k.modules.core.transform.filters.search.*;
-import ncsa.d2k.modules.projects.anca.attributeSelection.*;
-import ncsa.d2k.modules.projects.anca.attributeSelection.evaluation.*;
+
 
 /**
  * Class for performing a forward selection hill climbing search. <p>
