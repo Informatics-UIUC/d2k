@@ -448,112 +448,76 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 		return getChar(row, predictions[predictionColIdx]);
 	}
 
-	/**
-	 * Add a column of integer predictions to this PredictionTable.
-	 * @param predictions the predictions
-	 * @return the index of the prediction column in the prediction set
-	 */
-	public int addPredictionColumn(int[] predictions) {
-		return addPredictionColumn(new IntColumn(predictions));
+	public int addPredictionColumn(int[] predictions, String label) {
+		int i = addPredictionColumn(new IntColumn(predictions));
+		getColumn(i).setLabel(label);
+		return i;
 	}
 
-	/**
-	 * Add a column of float predictions to this PredictionTable.
-	 * @param predictions the predictions
-	 * @return the index of the prediction column in the prediction set
-	 */
-	public int addPredictionColumn(float[] predictions) {
-		return addPredictionColumn(new FloatColumn(predictions));
+	public int addPredictionColumn(float[] predictions, String label) {
+		int i = addPredictionColumn(new FloatColumn(predictions));
+		getColumn(i).setLabel(label);
+		return i;
 	}
 
-	/**
-	 * Add a column of double predictions to this PredictionTable.
-	 * @param predictions the predictions
-	 * @return the index of the prediction column in the prediction set
-	 */
-	public int addPredictionColumn(double[] predictions) {
-		return addPredictionColumn(new DoubleColumn(predictions));
+	public int addPredictionColumn(double[] predictions, String label) {
+		int i = addPredictionColumn(new DoubleColumn(predictions));
+		getColumn(i).setLabel(label);
+		return i;
 	}
 
-	/**
-	 * Add a column of long predictions to this PredictionTable.
-	 * @param predictions the predictions
-	 * @return the index of the prediction column in the prediction set
-	 */
-	public int addPredictionColumn(long[] predictions) {
-		return addPredictionColumn(new LongColumn(predictions));
+	public int addPredictionColumn(long[] predictions, String label) {
+		int i = addPredictionColumn(new LongColumn(predictions));
+		getColumn(i).setLabel(label);
+		return i;
 	}
 
-	/**
-	 * Add a column of short predictions to this PredictionTable.
-	 * @param predictions the predictions
-	 * @return the index of the prediction column in the prediction set
-	 */
-	public int addPredictionColumn(short[] predictions) {
-		return addPredictionColumn(new ShortColumn(predictions));
+	public int addPredictionColumn(short[] predictions, String label) {
+		int i = addPredictionColumn(new ShortColumn(predictions));
+		getColumn(i).setLabel(label);
+		return i;
 	}
 
-	/**
-	 * Add a column of boolean predictions to this PredictionTable.
-	 * @param predictions the predictions
-	 * @return the index of the prediction column in the prediction set
-	 */
-	public int addPredictionColumn(boolean[] predictions) {
-		return addPredictionColumn(new BooleanColumn(predictions));
+	public int addPredictionColumn(boolean[] predictions, String label) {
+		int i = addPredictionColumn(new BooleanColumn(predictions));
+		getColumn(i).setLabel(label);
+		return i;
 	}
 
-	/**
-	 * Add a column of String predictions to this PredictionTable.
-	 * @param predictions the predictions
-	 * @return the index of the prediction column in the prediction set
-	 */
-	public int addPredictionColumn(String[] predictions) {
-		return addPredictionColumn(new StringColumn(predictions));
+	public int addPredictionColumn(String[] predictions, String label) {
+		int i = addPredictionColumn(new StringColumn(predictions));
+		getColumn(i).setLabel(label);
+		return i;
 	}
 
-	/**
-	 * Add a column of char[] predictions to this PredictionTable.
-	 * @param predictions the predictions
-	 * @return the index of the prediction column in the prediction set
-	 */
-	public int addPredictionColumn(char[][] predictions) {
-		return addPredictionColumn(new ContinuousCharArrayColumn(predictions));
+	public int addPredictionColumn(char[][] predictions, String label) {
+		int i = addPredictionColumn(new ContinuousCharArrayColumn(predictions));
+		getColumn(i).setLabel(label);
+		return i;
 	}
 
-	/**
-	 * Add a column of byte[] predictions to this PredictionTable.
-	 * @param predictions the predictions
-	 * @return the index of the prediction column in the prediction set
-	 */
-	public int addPredictionColumn(byte[][] predictions) {
-		return addPredictionColumn(new ContinuousByteArrayColumn(predictions));
+	public int addPredictionColumn(byte[][] predictions, String label) {
+		int i = addPredictionColumn(new ContinuousByteArrayColumn(predictions));
+		getColumn(i).setLabel(label);
+		return i;
 	}
 
-	/**
-	 * Add a column of Object predictions to this PredictionTable.
-	 * @param predictions the predictions
-	 * @return the index of the prediction column in the prediction set
-	 */
-	public int addPredictionColumn(Object[] predictions) {
-		return addPredictionColumn(new ObjectColumn(predictions));
+	public int addPredictionColumn(Object[] predictions, String label) {
+		int i = addPredictionColumn(new ObjectColumn(predictions));
+		getColumn(i).setLabel(label);
+		return i;
 	}
 
-	/**
-	 * Add a column of byte predictions to this PredictionTable.
-	 * @param predictions the predictions
-	 * @return the index of the prediction column in the prediction set
-	 */
-	public int addPredictionColumn(byte[] predictions) {
-		return -1;
+	public int addPredictionColumn(byte[] predictions, String label) {
+		int i = addPredictionColumn(new ByteColumn(predictions));
+		getColumn(i).setLabel(label);
+		return i;
 	}
 
-	/**
-	 * Add a column of char predictions to this PredictionTable.
-	 * @param predictions the predictions
-	 * @return the index of the prediction column in the prediction set
-	 */
-	public int addPredictionColumn(char[] predictions) {
-		return -1;
+	public int addPredictionColumn(char[] predictions, String label) {
+		int i = addPredictionColumn(new CharColumn(predictions));
+		getColumn(i).setLabel(label);
+		return i;
 	}
 
 	public PredictionTable toPredictionTable() {

@@ -86,13 +86,13 @@ public class GradientColorScatterPlot extends ScatterPlot {
 		for (int index=0; index < size; index++) {
 			double xvalue;
 			double yvalue;
-			if(table.isNumericColumn(set.x))
+			if(table.isColumnNumeric(set.x))
 				xvalue = table.getDouble(index, set.x);
 			else {
 				String v = table.getString(index, set.x);
 				xvalue = (double)((Integer)xStringLookup[set.x].get(v)).intValue();
 			}
-			if(table.isNumericColumn(set.y))
+			if(table.isColumnNumeric(set.y))
 				yvalue = table.getDouble(index, set.y);
 			else {
 				String v = table.getString(index, set.y);

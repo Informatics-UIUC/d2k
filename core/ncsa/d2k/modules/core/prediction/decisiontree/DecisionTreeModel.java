@@ -187,7 +187,7 @@ public class DecisionTreeModel extends PredictionModelModule
 		if(preds.length == 0) {
 			//StringColumn sc = new StringColumn(pt.getNumRows());
 			String [] predic = new String[pt.getNumRows()];
-			pt.addPredictionColumn(predic);
+			pt.addPredictionColumn(predic, "Predictions");
 			preds = pt.getPredictionSet();
 		}
 

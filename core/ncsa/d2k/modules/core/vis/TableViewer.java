@@ -1,19 +1,16 @@
 package ncsa.d2k.modules.core.vis;
 
-import ncsa.d2k.modules.core.vis.widgets.TableMatrix;
-import ncsa.d2k.modules.core.io.file.output.WriteTableToFile;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.UserView;
-import ncsa.d2k.controller.userviews.swing.JUserPane;
-
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.table.*;
 import java.io.*;
-
+import javax.swing.*;
+import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.io.file.output.*;
+import ncsa.d2k.modules.core.vis.widgets.*;
 
 /**
    Display the contents of a VerticalTable.

@@ -626,7 +626,7 @@ public class ScatterPlot3D extends VisModule implements Serializable {
                 Column column;
                 int index = 0;
                 for (int count = 0; count < table.getNumColumns(); count++) {
-                    if (table.isNumericColumn(count)) {
+                    if (table.isColumnNumeric(count)) {
                         labels.add((String)table.getColumnLabel(count));
                         map.put(new Integer(index++), new Integer(count));
                     }

@@ -550,7 +550,7 @@ public class SurfacePlot3D extends VisModule {
             Column column;
             int index = 0;
             for (int count = 0; count < input.getNumColumns(); count++) {
-               if (input.isNumericColumn(count)) {
+               if (input.isColumnNumeric(count)) {
                   labels.add((String)input.getColumnLabel(count));
                   labelmap.put(new Integer(index++), new Integer(count));
                }

@@ -39,7 +39,7 @@ public class LineGraph2D extends ncsa.d2k.infrastructure.modules.VisModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.Table"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 
 	}

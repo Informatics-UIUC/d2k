@@ -1,31 +1,14 @@
 package ncsa.d2k.modules.core.vis.widgets;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.StringTokenizer;
-import java.text.NumberFormat;
-import javax.swing.AbstractAction;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JSplitPane;
-import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import ncsa.d2k.modules.core.datatype.table.basic.NumericColumn;
-import ncsa.d2k.modules.core.datatype.table.basic.TableImpl;
-import ncsa.gui.Constrain;
+import java.awt.*;
+import java.awt.event.*;
+import java.text.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.event.*;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.gui.*;
 
 /**
  * A histogram panel.
@@ -48,8 +31,9 @@ public class Histogram extends JPanel {
    private int[] counts;
    private double[] heights;
 
-   private TableImpl table;
-   private NumericColumn current;
+   private Table table;
+   //private NumericColumn current;
+   private int currentColumnIndex;
    private String parameter;
 
    private HashMap columnLookup;
@@ -64,7 +48,7 @@ public class Histogram extends JPanel {
    private VisualPanel visual;
    private StatisticsPanel statistics;
 
-   public Histogram(TableImpl table, int behavior, String parameter)
+   public Histogram(Table table, int behavior, String parameter)
       throws IllegalArgumentException {
 
       if (behavior < HISTOGRAM_MIN || behavior > HISTOGRAM_MAX)
@@ -79,9 +63,11 @@ public class Histogram extends JPanel {
 
       boolean found_numeric = false;
       for (int i = 0; i < table.getNumColumns(); i++) {
-         if (table.getColumn(i) instanceof NumericColumn) {
+         //if (table.getColumn(i) instanceof NumericColumn) {
+		 if(table.isColumnNumeric(i)) {
             if (!found_numeric) {
-               current = (NumericColumn)table.getColumn(i);
+               //current = (NumericColumn)table.getColumn(i);
+			   currentColumnIndex = i;
                found_numeric = true;
             }
             columnLookup.put(table.getColumnLabel(i), new Integer(i));
@@ -122,23 +108,23 @@ public class Histogram extends JPanel {
 
             max = Double.MIN_VALUE; min = Double.MAX_VALUE;
 
-            for (int i = 0; i < current.getNumRows(); i++) {
-               if (current.getDouble(i) < min)
-                  min = current.getDouble(i);
-               if (current.getDouble(i) > max)
-                  max = current.getDouble(i);
+            for (int i = 0; i < table.getNumRows(); i++) {
+               if (table.getDouble(i, currentColumnIndex) < min)
+                  min = table.getDouble(i, currentColumnIndex);
+               if (table.getDouble(i, currentColumnIndex) > max)
+                  max = table.getDouble(i, currentColumnIndex);
             }
 
             double increment = (max - min) / (double)counts.length, ceiling;
 
-            for (int i = 0; i < current.getNumRows(); i++) {
-               index = (int)((current.getDouble(i) - min)/increment);
+            for (int i = 0; i < table.getNumRows(); i++) {
+               index = (int)((table.getDouble(i, currentColumnIndex) - min)/increment);
                if (index == counts.length) index--;
                counts[index]++;
             }
 
             for (int i = 0; i < heights.length; i++)
-               heights[i] = (double)counts[i] / (double)current.getNumRows();
+               heights[i] = (double)counts[i] / (double)table.getNumRows();
 
             break;
 
@@ -166,10 +152,10 @@ public class Histogram extends JPanel {
 
             // some redundancy here
             boolean found;
-            for (int i = 0; i < current.getNumRows(); i++) {
+            for (int i = 0; i < table.getNumRows(); i++) {
                found = false;
                for (int j = 0; j < binMaxes.length; j++) {
-                  if (current.getDouble(i) <= binMaxes[j] && !found) {
+                  if (table.getDouble(i, currentColumnIndex) <= binMaxes[j] && !found) {
                      counts[j]++;
                      found = true;
                      break;
@@ -180,7 +166,7 @@ public class Histogram extends JPanel {
             }
 
             for (int i = 0; i < heights.length; i++)
-               heights[i] = (double)counts[i] / (double)current.getNumRows();
+               heights[i] = (double)counts[i] / (double)table.getNumRows();
 
             break;
 
@@ -188,11 +174,11 @@ public class Histogram extends JPanel {
 
             max = Double.MIN_VALUE; min = Double.MAX_VALUE;
 
-            for (int i = 0; i < current.getNumRows(); i++) {
-               if (current.getDouble(i) < min)
-                  min = current.getDouble(i);
-               if (current.getDouble(i) > max)
-                  max = current.getDouble(i);
+            for (int i = 0; i < table.getNumRows(); i++) {
+               if (table.getDouble(i, currentColumnIndex) < min)
+                  min = table.getDouble(i, currentColumnIndex);
+               if (table.getDouble(i, currentColumnIndex) > max)
+                  max = table.getDouble(i, currentColumnIndex);
             }
 
             double interval = ((double)slider.getValue()/100.0)*(double)(max - min);
@@ -203,14 +189,14 @@ public class Histogram extends JPanel {
             for (int i = 0; i < counts.length; i++)
                counts[i] = 0;
 
-            for (int i = 0; i < current.getNumRows(); i++) {
-               index = (int)((current.getDouble(i) - min)/interval);
+            for (int i = 0; i < table.getNumRows(); i++) {
+               index = (int)((table.getDouble(i, currentColumnIndex) - min)/interval);
                if (index == counts.length) index--;
                counts[index]++;
             }
 
             for (int i = 0; i < heights.length; i++)
-               heights[i] = (double)counts[i] / (double)current.getNumRows();
+               heights[i] = (double)counts[i] / (double)table.getNumRows();
 
             break;
 
@@ -330,11 +316,11 @@ public class Histogram extends JPanel {
             case HISTOGRAM_INTERVAL:
 
                double min = Double.MAX_VALUE, max = Double.MIN_VALUE;
-               for (int i = 0; i < current.getNumRows(); i++) {
-                  if (current.getDouble(i) < min)
-                     min = current.getDouble(i);
-                  if (current.getDouble(i) > max)
-                     max = current.getDouble(i);
+               for (int i = 0; i < table.getNumRows(); i++) {
+                  if (table.getDouble(i, currentColumnIndex) < min)
+                     min = table.getDouble(i, currentColumnIndex);
+                  if (table.getDouble(i, currentColumnIndex) > max)
+                     max = table.getDouble(i, currentColumnIndex);
                }
 
                this.setBorder(new TitledBorder(" Bin interval: "));
@@ -354,6 +340,9 @@ public class Histogram extends JPanel {
             slide = new JSlider(1, 100, val);
          else
             slide = new JSlider(1, val*2, val);
+		//slide.setMajorTickSpacing(10);
+		//slide.setPaintTicks(true);
+		//slide.setPaintLabels(true);
          slide.addChangeListener(new SliderListener());
 
          this.setLayout(new GridBagLayout());
@@ -416,25 +405,25 @@ public class Histogram extends JPanel {
 
       public void updateStatistics() {
 
-         n.setText(N.format(current.getNumRows()));
+         n.setText(N.format(table.getNumRows()));
 
          double sample_mean, sample_variance;
-         double[] d = new double[current.getNumRows()];
+         double[] d = new double[table.getNumRows()];
 
          double total = 0, max = Double.MIN_VALUE, min = Double.MAX_VALUE;
          for (int i = 0; i < d.length; i++) {
 
-            d[i] = current.getDouble(i);
+            d[i] = table.getDouble(i, currentColumnIndex);
             total += d[i];
 
-            if (current.getDouble(i) > max)
-               max = current.getDouble(i);
-            if (current.getDouble(i) < min)
-               min = current.getDouble(i);
+            if (table.getDouble(i, currentColumnIndex) > max)
+               max = table.getDouble(i, currentColumnIndex);
+            if (table.getDouble(i, currentColumnIndex) < min)
+               min = table.getDouble(i, currentColumnIndex);
 
          }
 
-         sample_mean = total/(double)current.getNumRows();
+         sample_mean = total/(double)table.getNumRows();
          mean.setText(N.format(sample_mean));
 
          Arrays.sort(d);
@@ -459,8 +448,8 @@ public class Histogram extends JPanel {
 
    private class SelectionListener extends AbstractAction {
       public void actionPerformed(ActionEvent e) {
-         current = (NumericColumn)table.getColumn(((Integer)
-            columnLookup.get(columnSelect.getSelectedItem())).intValue());
+         //current = (NumericColumn)table.getColumn(((Integer)
+         currentColumnIndex = ((Integer)columnLookup.get(columnSelect.getSelectedItem())).intValue();
          calculateBins();
          statistics.updateStatistics();
          histogram.repaint();

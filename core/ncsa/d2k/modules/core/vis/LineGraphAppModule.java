@@ -43,13 +43,13 @@ public class LineGraphAppModule extends VisModule {
 
    public String getModuleInfo () {
       return "LineGraphAppModule is a three-dimensional visualization of " +
-             "VerticalTable data (referenced in a HashLookupTable) as a " +
+             "Table data (referenced in a HashLookupTable) as a " +
              "line graph.";
    }
 
    public String[] getInputTypes() {
       String[] i = {"ncsa.d2k.modules.core.datatype.HashLookupTable",
-         "ncsa.d2k.modules.core.datatype.table.basic.Table"};
+         "ncsa.d2k.modules.core.datatype.table.Table"};
       return i;
    }
 

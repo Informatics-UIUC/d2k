@@ -1,47 +1,18 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.StringTokenizer;
-import javax.swing.AbstractAction;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import ncsa.d2k.controller.userviews.swing.JUserPane;
-import ncsa.d2k.gui.JD2KFrame;
-import ncsa.d2k.infrastructure.modules.UIModule;
-import ncsa.d2k.infrastructure.modules.ViewModule;
-import ncsa.d2k.infrastructure.views.UserView;
-import ncsa.d2k.modules.core.datatype.table.basic.Column;
-import ncsa.d2k.modules.core.datatype.table.basic.NumericColumn;
-import ncsa.d2k.modules.core.datatype.table.basic.StringColumn;
-import ncsa.d2k.modules.core.datatype.table.basic.TextualColumn;
-import ncsa.d2k.modules.core.datatype.table.basic.TableImpl;
-import ncsa.d2k.modules.core.vis.widgets.Histogram;
-import ncsa.d2k.modules.core.vis.widgets.TableMatrix;
-import ncsa.gui.Constrain;
-import ncsa.gui.DisposeOnCloseListener;
-import ncsa.gui.JOutlinePanel;
+import java.awt.*;
+import java.awt.event.*;
+import java.text.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.gui.*;
+import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.gui.*;
 
 public class BinColumns extends UIModule {
 
@@ -68,38 +39,38 @@ public class BinColumns extends UIModule {
    }
 
    public String[] getInputTypes() {
-      String[] i = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+      String[] i = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
       return i;
    }
 
    public String[] getOutputTypes() {
-      String[] o = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+      String[] o = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
       return o;
    }
 
-   public String getInputName(int i) {
+   public String getInputInfo(int i) {
       switch(i) {
-         case 0: return "Table";
+         case 0: return "A MutableTable with columns to bin.  The columns may be replaced, so the table must be mutable.";
          default: return "no such input!";
       }
    }
 
    public String getOutputName(int i) {
       switch(i) {
-         case 0: return "Table";
+         case 0: return "The input Table with its columns binned.";
          default: return "no such output!";
       }
    }
 
-   public String getInputInfo(int i) {
+   public String getInputName(int i) {
       if (i == 0)
-         return "An ExampleTable with data in it.";
+         return "Table";
       return "BinColumns has no such input.";
    }
 
    public String getOutputInfo(int i) {
       if (i == 0)
-         return "A Table.";
+         return "A Table with its columns binned up.";
       return "BinColumns has no such output.";
    }
 
@@ -124,7 +95,7 @@ public class BinColumns extends UIModule {
          numericColumnLabels, textualColumnLabels, currentBins;
       private DefaultListModel binListModel;
 
-      private TableImpl table;
+      private MutableTable table;
 
       /* numeric text fields */
       private JTextField
@@ -156,7 +127,7 @@ public class BinColumns extends UIModule {
 
       public void setInput(Object o, int id) {
 
-         table = (TableImpl)o;
+         table = (MutableTable)o;
 
          // clear all text fields and lists...
          curSelName.setText(EMPTY);
@@ -181,10 +152,11 @@ public class BinColumns extends UIModule {
 
             columnLookup.put(table.getColumnLabel(i), new Integer(i));
 
-            if (table.getColumn(i) instanceof NumericColumn)
+            //if (table.getColumn(i) instanceof NumericColumn)
+			if(table.isColumnNumeric(i))
                numModel.addElement(table.getColumnLabel(i));
 
-            else if (table.getColumn(i) instanceof TextualColumn) {
+            else { //if (table.getColumn(i) instanceof TextualColumn) {
                txtModel.addElement(table.getColumnLabel(i));
                uniqueColumnValues[i] = uniqueValues(i);
             }
@@ -619,16 +591,16 @@ public class BinColumns extends UIModule {
 
          // if (replace) {
 
-            Column[] c = new Column[table.getNumColumns()];
+            //Column[] c = new Column[table.getNumColumns()];
 
-            for(int i = 0; i < c.length; i++)
-               c[i] = table.getColumn(i);
+            //for(int i = 0; i < c.length; i++)
+             //  c[i] = table.getColumn(i);
 
             String[][] newcols =
                new String[table.getNumColumns()][table.getNumRows()];
 
-            for(int i = 0; i < c.length; i++) {
-               for(int j = 0; j < c[i].getNumRows(); j++) {
+            for(int i = 0; i < table.getNumColumns(); i++) {
+               for(int j = 0; j < table.getNumRows(); j++) {
 
                   // find the correct bin for this column
                   boolean binfound = false;
@@ -638,7 +610,8 @@ public class BinColumns extends UIModule {
                      if(bins[k].column_number == i) {
 
                         // this has the correct column index
-                        if(c[i] instanceof NumericColumn) {
+                        //if(c[i] instanceof NumericColumn) {
+						if(table.isColumnNumeric(i)) {
                            if(bins[k].eval(table.getDouble(j, i))) {
                               newcols[i][j] = bins[k].name;
                               binfound = true;
@@ -655,31 +628,31 @@ public class BinColumns extends UIModule {
 
                      if(binfound)
                         break;
-
                   }
 
                   if(!binfound)
                      newcols[i][j] = "Unknown";
-
                }
             }
 
-            StringColumn[] sc = new StringColumn[table.getNumColumns()];
+            //StringColumn[] sc = new StringColumn[table.getNumColumns()];
 
-            for(int i = 0; i < sc.length; i++) {
+            for(int i = 0; i < table.getNumColumns(); i++) {
 
-               sc[i] = new StringColumn(newcols[i]);
-               sc[i].setComment(table.getColumn(i).getComment());
+               //sc[i] = new StringColumn(newcols[i]);
+               //sc[i].setComment(table.getColumn(i).getComment());
 
                if (new_column) {
                   if (binRelevant[i]) {
-                     sc[i].setLabel(table.getColumnLabel(i) + " bin");
-                     table.addColumn(sc[i]);
+                     //sc[i].setLabel(table.getColumnLabel(i) + " bin");
+                     table.addColumn(newcols[i]);
+					 table.setColumnLabel(table.getColumnLabel(i)+" bin", table.getNumColumns()-1);
                   }
                }
                else {
-                  sc[i].setLabel(table.getColumnLabel(i));
-                  table.setColumn(sc[i], i);
+                  String oldLabel = table.getColumnLabel(i);
+                  table.setColumn(newcols[i], i);
+				  table.setColumnLabel(oldLabel, i);
                }
 
             }
@@ -737,9 +710,9 @@ public class BinColumns extends UIModule {
          for (int i = 0; i < colIdx.length; i++) {
 
             // find the max and min and make equally spaced bins
-            NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
-            for (int j = 0; j < nc.getNumRows(); j++) {
-               double d = nc.getDouble(j);
+            //NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
+            for (int j = 0; j < table.getNumRows(); j++) {
+               double d = table.getDouble(j, colIdx[i]);
                if (d > maxes[i])
                   maxes[i] = d;
                if (d < mins[i])
@@ -844,9 +817,9 @@ public class BinColumns extends UIModule {
          for (int i = 0; i < colIdx.length; i++) {
 
             // find the max and min
-            NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
-            for (int j = 0; j < nc.getNumRows(); j++) {
-               double d = nc.getDouble(j);
+            //NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
+            for (int j = 0; j < table.getNumRows(); j++) {
+               double d = table.getDouble(j, colIdx[i]);
                if (d > maxes[i])
                   maxes[i] = d;
                if (d < mins[i])
@@ -902,11 +875,11 @@ public class BinColumns extends UIModule {
          // actual column, so we get a copy of the data
          for(int i = 0; i < colIdx.length; i++) {
 
-            NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
+            //NumericColumn nc = (NumericColumn)table.getColumn(colIdx[i]);
 
-            double[] data = new double[nc.getNumRows()];
+            double[] data = new double[table.getNumRows()];
             for(int j = 0; j < data.length; j++)
-               data[j] = nc.getDouble(j);
+               data[j] = table.getDouble(j, colIdx[i]);
 
             // sort it
             Arrays.sort(data);
@@ -1074,14 +1047,16 @@ public class BinColumns extends UIModule {
             if (!e.getValueIsAdjusting()) {
 
                Object lbl = textualColumnLabels.getSelectedValue();
-               int idx = ((Integer)columnLookup.get(lbl)).intValue();
-               HashSet unique = uniqueColumnValues[idx];
-               textUniqueModel.removeAllElements();
-               textCurrentModel.removeAllElements();
-               Iterator i = unique.iterator();
-               while(i.hasNext())
+			   if(lbl != null) {
+               	int idx = ((Integer)columnLookup.get(lbl)).intValue();
+               	HashSet unique = uniqueColumnValues[idx];
+               	textUniqueModel.removeAllElements();
+               	textCurrentModel.removeAllElements();
+               	Iterator i = unique.iterator();
+               	while(i.hasNext())
                   textUniqueModel.addElement(i.next());
 
+			   }
             }
 
          }

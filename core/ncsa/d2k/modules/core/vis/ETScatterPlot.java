@@ -206,7 +206,7 @@ public class ETScatterPlot extends VisModule
 			// get the numeric output features
 			for(int i = 0; i < tempoutputs.length; i++) {
 				//if(et.getColumn(tempoutputs[i]) instanceof NumericColumn)
-				if(et.isNumericColumn(tempoutputs[i]))
+				if(et.isColumnNumeric(tempoutputs[i]))
 					list.add(new Integer(tempoutputs[i]));
 			}
 
@@ -223,7 +223,7 @@ public class ETScatterPlot extends VisModule
 			// get the numeric input features
 			for(int i = 0; i < tempinputs.length; i++) {
 				//if(et.getColumn(tempinputs[i]) instanceof NumericColumn)
-				if(et.isNumericColumn(tempinputs[i]))
+				if(et.isColumnNumeric(tempinputs[i]))
 					list.add(new Integer(tempinputs[i]));
 			}
 

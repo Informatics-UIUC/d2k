@@ -1,17 +1,14 @@
 package ncsa.d2k.modules.core.vis;
 
+import java.awt.*;
+import java.text.*;
+import javax.swing.*;
+import ncsa.d2k.controller.userviews.swing.*;
 import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.UserView;
-import ncsa.d2k.controller.userviews.swing.JUserPane;
-
-import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import java.text.*;
+import ncsa.d2k.modules.core.vis.widgets.*;
 
 /**
  * Displays statistics about any PredictionTable.  The number of correct

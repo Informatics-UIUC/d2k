@@ -120,7 +120,7 @@ public abstract class Graph extends JPanel {
 
 				// find the min + max for the first set
 				set = sets[0];
-				if(table.isNumericColumn(set.x)) {
+				if(table.isColumnNumeric(set.x)) {
 					double[] mm = getMinAndMax(table, set.x);
 					xminimum = mm[0];
 					xmaximum = mm[1];
@@ -135,7 +135,7 @@ public abstract class Graph extends JPanel {
 				for (int index=1; index < sets.length; index++) {
 					set = sets[index];
 
-					if(table.isNumericColumn(set.x)) {
+					if(table.isColumnNumeric(set.x)) {
 						double[] mm = getMinAndMax(table, set.x);
 						double value = mm[0];
 						if (value < xminimum)
@@ -170,7 +170,7 @@ public abstract class Graph extends JPanel {
 				(settings.ydatamaximum == null)) {
 				// find the min and max for the first set
 				set = sets[0];
-				if(table.isNumericColumn(set.y)) {
+				if(table.isColumnNumeric(set.y)) {
 					double[] mm = getMinAndMax(table, set.y);
 					yminimum = mm[0];
 					ymaximum = mm[1];
@@ -184,7 +184,7 @@ public abstract class Graph extends JPanel {
 				for (int index=1; index < sets.length; index++) {
 					set = sets[index];
 
-					if(table.isNumericColumn(set.y)) {
+					if(table.isColumnNumeric(set.y)) {
 						double[] mm = getMinAndMax(table, set.y);
 						double value = mm[0];
 						if (value < yminimum)

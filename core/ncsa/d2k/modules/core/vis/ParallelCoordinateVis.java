@@ -1,29 +1,22 @@
 package ncsa.d2k.modules.core.vis;
 
-import javax.swing.*;
-import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.print.*;
 import java.awt.geom.*;
 import java.awt.image.*;
+import java.awt.print.*;
+import java.io.*;
+import java.text.*;
 import java.util.*;
-import java.text.NumberFormat;
-import java.io.File;
-
-import ncsa.d2k.infrastructure.modules.*;
+import javax.swing.*;
+import javax.swing.table.*;
 import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.infrastructure.views.UserView;
-
-import ncsa.gui.Constrain;
-import ncsa.gui.JOutlinePanel;
-import ncsa.gui.DisposeOnCloseListener;
-
-import ncsa.d2k.gui.JD2KFrame;
-
-import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.d2k.gui.*;
+import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.vis.widgets.*;
+import ncsa.gui.*;
 
 /**
  * Plots the data in a Table on parallel axes.

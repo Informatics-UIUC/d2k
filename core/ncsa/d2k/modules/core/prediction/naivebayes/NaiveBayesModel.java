@@ -592,7 +592,7 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 
 		if(preds.length == 0) {
             String[] newPreds = new String[pt.getNumRows()];
-			pt.addPredictionColumn(newPreds);
+			pt.addPredictionColumn(newPreds, "Predictions");
 			preds = pt.getPredictionSet();
 		}
 

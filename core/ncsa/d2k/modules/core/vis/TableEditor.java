@@ -1,21 +1,13 @@
 package ncsa.d2k.modules.core.vis;
 
-import ncsa.d2k.modules.core.vis.widgets.TableEditorModel;
-import ncsa.d2k.modules.core.vis.widgets.TableMatrix;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-
-import ncsa.d2k.infrastructure.views.UserView;
-import ncsa.d2k.util.ErrorDialog;
-
-import javax.swing.*;
-import javax.swing.table.*;
-import javax.swing.event.*;
-
 import java.awt.*;
-import java.awt.event.*;
-
-import java.util.EventObject;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import ncsa.d2k.infrastructure.views.*;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.vis.widgets.*;
 
 /**
    Displays a Table and allows editing of the cells.

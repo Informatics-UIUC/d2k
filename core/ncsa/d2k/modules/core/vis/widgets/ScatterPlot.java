@@ -13,8 +13,8 @@ public class ScatterPlot extends Graph {
 	}
 
 	public void drawDataSet(Graphics2D g2, DataSet set) {
-		boolean xcolumn = table.isNumericColumn(set.x);
-		boolean ycolumn = table.isNumericColumn(set.y);
+		boolean xcolumn = table.isColumnNumeric(set.x);
+		boolean ycolumn = table.isColumnNumeric(set.y);
 
 		int size = table.getNumRows();
 
