@@ -678,8 +678,8 @@ public class C45TreeBuilderOPT
         "attribute with the highest information gain as the root.  For "+
         "a nominal input, the node will have branches for each unique value "+
         "in the nominal column.  For scalar inputs, a binary node is created "+
-        "with a split point chosen that offer the greatest information gain. "+
-        "The compleixy of building the entire tree is O(mn log n) where m is "+
+        "with a split point chosen that offers the greatest information gain. "+
+        "The complexity of building the entire tree is O(mn log n) where m is "+
         " the number of inputs and n is the number of examples."+
         "The choosing of split points for a scalar input is potentially an "+
         "O(n log n) operation at each node of the tree."+
@@ -706,7 +706,7 @@ public class C45TreeBuilderOPT
   }
 
   public String getInputName(int i) {
-    return "TrainingTable";
+    return "Example Table";
   }
 
   public String getOutputInfo(int i) {
@@ -720,10 +720,10 @@ public class C45TreeBuilderOPT
 
   public String getOutputName(int i) {
     if (i == 0) {
-      return "Tree";
+      return "Decision Tree Root";
     }
     else {
-      return "TrainingTable";
+      return "Example Table";
     }
   }
 

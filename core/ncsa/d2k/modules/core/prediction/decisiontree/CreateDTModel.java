@@ -14,7 +14,7 @@ public class CreateDTModel
     return "<p>Overview: Given a DecisionTreeNode that is the root " +
         " of a decision tree, create a new DecisionTreeModel." +
         "<p>Detailed Description: Create a DecisionTreeModel from " +
-        "<i>Decision Tree Root</i>.  The <i>Example Table<i> must " +
+        "<i>Decision Tree Root</i>.  The <i>Example Table</i> must " +
         "be the same set of examples used to construct the decision tree." +
         "<p>Data Type Restrictions: none" +
         "<p>Data Handling: This module will create a PredictionTable " +
@@ -68,7 +68,7 @@ public class CreateDTModel
   public String getOutputInfo(int i) {
     switch (i) {
       case 0:
-        return "A DecisionTreeModel created from the DecisionTreeNode";
+        return "A DecisionTreeModel created from the Decision Tree Root Node";
       default:
         return "No such output";
     }

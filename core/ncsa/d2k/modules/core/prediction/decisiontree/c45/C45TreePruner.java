@@ -65,7 +65,7 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
 	public String getOutputInfo(int i) {
 		switch(i) {
 			case(0):
-				return "A DecisionTreeModel containing the pruned tree.";
+				return "A Decision Tree containing the pruned tree.";
 			case(1):
 				return "The input ExampleTable, unchanged.";
 			default:

@@ -46,7 +46,7 @@ public final class DecisionTreeVis
   public String getInputName(int index) {
     switch (index) {
       case 0:
-        return "Viewable Decision Tree";
+        return "Decision Tree Model";
       default:
         return "NO SUCH INPUT!";
     }
@@ -768,19 +768,19 @@ public final class DecisionTreeVis
   private String getHelpString() {
     StringBuffer s = new StringBuffer("<html>");
     s.append("<h1>Decision Tree Vis Help</h1>");
-    s.append("<p>Overview: Decision Tree Vis is an interactive display of the");
+    s.append("<p>Overview: Decision Tree Vis is an interactive display of the ");
     s.append("contents of a decision tree.");
     s.append("<hr>");
     s.append(
-        "<p>Detailed Description: Decision Tree Vis is comprised of three main");
+        "<p>Detailed Description: Decision Tree Vis is comprised of three main ");
     s.append("components: the Main Area, the Navigator, and the Node Info.");
     s.append("<p>The Main Area shows the decision tree.  When the cursor is ");
     s.append(
-        "positioned over a node in the tree, the Node Info is updated to show");
+        "positioned over a node in the tree, the Node Info is updated to show ");
     s.append(
-        "the contents of the node.  The main area also shows the branch labels");
+        "the contents of the node.  The main area also shows the branch labels ");
     s.append(
-        "of the decision tree.  The labels are displayed approximately halfway");
+        "of the decision tree.  The labels are displayed approximately halfway ");
     s.append("between the parent and child.  Subtrees in the Main Area can be ");
     s.append("collapsed using the arrow widget next to a node in the tree.  A ");
     s.append(
@@ -809,6 +809,7 @@ public final class DecisionTreeVis
     s.append(
         "	<li>Print Window: The Decision Tree Window itself can be printed");
     s.append("	using this option.");
+    s.append("  <li>Save as PMML: The Decision Tree Model is saved in a PMML file.");
     s.append("	</ul>");
     s.append("<li>Views");
     s.append("	<ul>");
@@ -844,7 +845,7 @@ public final class DecisionTreeVis
     s.append(
         "combined using Replace. The single remaining condition is then used to search ");
     s.append(
-        "the tree. The search results can be iterated by using Next and Previous.");
+        "the tree. The search result nodes can be visited  by using Next and Previous.");
     s.append("	</ul>");
     s.append("</ul>");
     s.append("<hr>");
