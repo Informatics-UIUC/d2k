@@ -40,7 +40,7 @@ public class SQLHTree extends ComputeModule
   static String NOTHING = "";
   static String DELIMITER = "\t";
   static String ELN = "\n";
-  static String NA = "____";
+  static String NA = "~~~~";
   // String for the list of column names separated by ","
   String columnStr;
 
