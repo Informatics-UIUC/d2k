@@ -14,7 +14,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
  * @author clutter
  * @version 1.0
  */
-public class ReadFileToADTree extends InputModule {
+public class ParseFileToADTree extends InputModule {
 
     public String[] getInputTypes() {
         String[] in = {"ncsa.d2k.modules.core.io.file.input.FlatFileParser"};
@@ -54,7 +54,7 @@ public class ReadFileToADTree extends InputModule {
         sb.append("Read a file into an ADTree index structure ");
         sb.append("<p>Detailed Description: ");
         sb.append("Given a FlatFileParser, read the data and store all counts");
-				sb.append("into an ADTree.");
+            sb.append("into an ADTree.");
         sb.append("An ExampleTable that contains the meta data for the ADTree");
         sb.append("is also created.");
         return sb.toString();
@@ -67,16 +67,16 @@ public class ReadFileToADTree extends InputModule {
     public void doit() {
         FlatFileParser ffr = (FlatFileParser)pullInput(0);
         ADTree adt = new ADTree(ffr.getNumColumns());
-				//there are two levels of debug for an ADTree; set the first one only
-				adt.setDebug1(debug);
-		    for(int i = 0; i < ffr.getNumColumns(); i++)
+            //there are two levels of debug for an ADTree; set the first one only
+            adt.setDebug1(debug);
+          for(int i = 0; i < ffr.getNumColumns(); i++)
             adt.setLabel(i+1, ffr.getColumnLabel(i));
         for(int i = 0; i < ffr.getNumRows(); i++) {
             String[] vals = new String[ffr.getNumColumns()];
             char[][] row = ffr.getRowElements(i);
             for(int j = 0; j < row.length; j++)
                 vals[j] = new String(row[j]);
-						//System.out.println("countingLine for " + i + ": " +  vals.toString());
+                  //System.out.println("countingLine for " + i + ": " +  vals.toString());
             adt.countLine(adt, vals);
         }
 
@@ -121,30 +121,30 @@ public class ReadFileToADTree extends InputModule {
 
         DefaultTableFactory  dtf = DefaultTableFactory.getInstance();
         Table table = dtf.createTable(cols);
-  	    ExampleTable meta = dtf.createExampleTable(table);
+       ExampleTable meta = dtf.createExampleTable(table);
 
         pushOutput(adt, 0);
         pushOutput(meta, 1);
     }
 
-		boolean debug = false;
+      boolean debug = false;
 
 
-		/**
-	    Set the value for the debug variable
-	    @param b boolean value for the debug variable
+      /**
+       Set the value for the debug variable
+       @param b boolean value for the debug variable
     */
-		public void setDebug(boolean b){
-		  debug=b;
-	  }
+      public void setDebug(boolean b){
+        debug=b;
+     }
 
-		/**
-	    Get the debug setting
-	    @return The boolean value of debug
+      /**
+       Get the debug setting
+       @return The boolean value of debug
     */
 
-		public boolean getDebug(){
-		  return debug;
-	  }
+      public boolean getDebug(){
+        return debug;
+     }
 
 }

@@ -1,16 +1,21 @@
+//package ncsa.d2k.modules.projects.clutter.rdr;
 package ncsa.d2k.modules.core.io.file.input;
 
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.modules.core.datatype.table.sparse.*;
-import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
+import java.io.*;
+import java.util.*;
 
 /**
  * Given a FlatFileReader, create a TableImpl initialized with its contents.
  */
-public class ReadFileToSparseTable extends ReadFileToTable {
+public class ParseFileToTable extends InputModule {
 
-    /*private boolean useBlanks = true;
+    protected static final char QUESTION = '?';
+    protected static final char SPACE = ' ';
+
+    private boolean useBlanks = true;
     public void setUseBlanks(boolean b) {
         useBlanks = b;
     }
@@ -23,23 +28,23 @@ public class ReadFileToSparseTable extends ReadFileToTable {
         retVal[0] = new PropertyDescription("useBlanks", "Set Blanks to be Missing Values",
             "When true, any blank entries in the file will be set as missing values in the table.");
         return retVal;
-    }*/
+    }
 
-    /*public String[] getInputTypes() {
+    public String[] getInputTypes() {
         String[] in = {"ncsa.d2k.modules.core.io.file.input.FlatFileParser"};
         return in;
-    }*/
+    }
 
     public String[] getOutputTypes() {
         String[] out = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
         return out;
     }
 
-    /*public String getInputInfo(int i) {
+    public String getInputInfo(int i) {
         return "A FlatFileParser to read data from.";
-    }*/
+    }
 
-    /*public String getOutputInfo(int i) {
+    public String getOutputInfo(int i) {
         switch(i) {
             case 0:
                 return "A Table with the data from the file reader.";
@@ -49,32 +54,37 @@ public class ReadFileToSparseTable extends ReadFileToTable {
     }
 
     public String getInputName(int i) {
-        return "filereader";
+        return "File Parser";
     }
 
     public String getOutputName(int i) {
         switch(i) {
             case 0:
-                return "table";
+                return "Table";
             default:
                 return "";
         }
     }
 
     public String getModuleInfo() {
-        return "Given a FlatFileReader, create a Table initialized with its contents.";
-    }*/
-
-    public String getModuleName() {
-        return "Read File to Sparse Table";
+        // return "Given a FlatFileReader, create a Table initialized with its contents.";
+        StringBuffer sb = new StringBuffer("<p>Overview: ");
+        sb.append("Given a FlatFileParser, this module creates a Table ");
+        sb.append("initialized with the contents of a flat file from disk.");
+        sb.append("</p>");
+        return sb.toString();
     }
 
-    /*public void doit() throws Exception {
+    public String getModuleName() {
+        return "Parse File To Table";
+    }
+
+    public void doit() throws Exception {
         FlatFileParser fle = (FlatFileParser)pullInput(0);
         Table t = createTable(fle);
         //Table bt = createBlanks(fle);
 
-        if(getUseBlanks()) {
+        if(useBlanks) {
             // if a value was blank, make it a 'missing value' in the table
             MutableTable mt = (MutableTable)t;
             boolean[][] blanks = fle.getBlanks();
@@ -91,7 +101,7 @@ public class ReadFileToSparseTable extends ReadFileToTable {
 
         pushOutput(t, 0);
         //pushOutput(bt, 1);
-    }*/
+    }
 
     protected Table createTable(FlatFileParser df) {
         int numRows = df.getNumRows();
@@ -103,53 +113,48 @@ public class ReadFileToSparseTable extends ReadFileToTable {
         for(int i = 0; i < columns.length; i++) {
             int type = df.getColumnType(i);
 
-            // create the column
+/*            // create the column
             if(type == ColumnTypes.STRING)
-                columns[i] = new SparseStringColumn(numRows);
+                columns[i] = new StringColumn(numRows);
             else if(type == ColumnTypes.DOUBLE)
-                columns[i] = new SparseDoubleColumn(numRows);
+                columns[i] = new DoubleColumn(numRows);
             else if(type == ColumnTypes.FLOAT)
-                columns[i] = new SparseFloatColumn(numRows);
+                columns[i] = new FloatColumn(numRows);
             else if(type == ColumnTypes.INTEGER)
-                columns[i] = new SparseIntColumn(numRows);
+                columns[i] = new IntColumn(numRows);
             else if(type == ColumnTypes.SHORT)
-                columns[i] = new SparseShortColumn(numRows);
+                columns[i] = new ShortColumn(numRows);
             else if(type == ColumnTypes.LONG)
-                columns[i] = new SparseLongColumn(numRows);
+                columns[i] = new LongColumn(numRows);
             else if(type == ColumnTypes.CHAR_ARRAY)
-                columns[i] = new SparseCharArrayColumn(numRows);
+                columns[i] = new CharArrayColumn(numRows);
             else if(type == ColumnTypes.BYTE_ARRAY)
-                columns[i] = new SparseByteArrayColumn(numRows);
+                columns[i] = new ByteArrayColumn(numRows);
             else if(type == ColumnTypes.CHAR)
-                columns[i] = new SparseCharColumn(numRows);
+                columns[i] = new CharColumn(numRows);
             else if(type == ColumnTypes.BYTE)
-                columns[i] = new SparseByteColumn(numRows);
+                columns[i] = new ByteColumn(numRows);
             else if(type == ColumnTypes.BOOLEAN)
-                columns[i] = new SparseBooleanColumn(numRows);
+                columns[i] = new BooleanColumn(numRows);
             else
-                columns[i] = new SparseStringColumn(numRows);
-
-//            columns[i] = ColumnUtilities.createColumn(type, numRows);
+                columns[i] = new StringColumn(numRows);
+            */
+            columns[i] = ColumnUtilities.createColumn(type, numRows);
 
             if(type != -1)
                 hasTypes = true;
 
             // set the label
             String label = df.getColumnLabel(i);
-            //System.out.println(i+" "+label);
             if(label != null)
                 columns[i].setLabel(label);
         }
 
-        //MutableTableImpl ti = new MutableTableImpl(columns);
-        SparseMutableTable ti = new SparseMutableTable(numRows, 0);
-        for(int i = 0; i < columns.length; i++)
-            ti.addColumn((AbstractSparseColumn)columns[i]);
+        MutableTableImpl ti = new MutableTableImpl(columns);
         for(int i = 0; i < numRows; i++) {
             char[][] row = df.getRowElements(i);
             if(row != null) {
                 for(int j = 0; j < columns.length; j++) {
-
                     boolean isMissing = true;
                     char[] elem = row[j];//(char[])row.get(j);
 
@@ -187,17 +192,6 @@ public class ReadFileToSparseTable extends ReadFileToTable {
                             ti.setValueToMissing(true, i, j);
                         }
                     }
-
-/*                char[] elem = row[j];//(char[])row.get(j);
-                //System.out.println(new String(elem));
-                if(elem.length > 0) {
-                    try {
-                        ti.setChars(elem, i, j);
-                    }
-                    catch(NumberFormatException e) {
-                        ti.setChars(Integer.toString(0).toCharArray(), i, j);
-                    }
-                }*/
                 }
             }
         }
@@ -225,11 +219,9 @@ public class ReadFileToSparseTable extends ReadFileToTable {
                 }
 
                 if(isNumeric) {
-                    //SparseDoubleColumn dc = new SparseDoubleColumn(newCol);
-                    //dc.setLabel(ti.getColumnLabel(i));
-                    String oldlbl = ti.getColumnLabel(i);
-                    ti.setColumn(newCol, i);
-                    ti.setColumnLabel(/*ti.getColumnLabel(i)*/oldlbl, i);
+                    DoubleColumn dc = new DoubleColumn(newCol);
+                    dc.setLabel(ti.getColumnLabel(i));
+                    ti.setColumn(dc, i);
                 }
             }
         }

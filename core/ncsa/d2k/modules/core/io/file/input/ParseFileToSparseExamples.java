@@ -7,7 +7,7 @@ import ncsa.d2k.modules.core.datatype.table.sparse.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.examples.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 
-public class ReadFileToSparseExamples extends InputModule {
+public class ParseFileToSparseExamples extends InputModule {
 
     public String[] getInputTypes() {
         String[] in = {"ncsa.d2k.modules.core.io.file.input.FlatFileParser",

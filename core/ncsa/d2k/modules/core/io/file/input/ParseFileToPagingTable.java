@@ -9,7 +9,7 @@ import ncsa.d2k.modules.core.datatype.table.paging.*;
 /**
  * Read a file to a MutablePagingTable.
  */
-public class ReadFileToPagingTable extends ReadFileToTable {
+public class ParseFileToPagingTable extends ParseFileToTable {
 
     private int numRowsPerPage = 5000;
     public int getNumRowsPerPage() {
@@ -75,7 +75,7 @@ public class ReadFileToPagingTable extends ReadFileToTable {
     }
 
     public String getModuleName() {
-        return "Read File to Paging Table";
+        return "Parse File to Paging Table";
     }
 
     /*public void doit() throws Exception {
