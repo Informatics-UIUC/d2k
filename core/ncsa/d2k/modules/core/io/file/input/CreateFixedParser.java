@@ -61,7 +61,7 @@ public class CreateFixedParser extends InputModule {
         sb.append("Given a file name and a \"header\" Table of metadata ");
         sb.append("describing the file's format, this module creates a ");
         sb.append("parser for that file. This parser can then be passed to ");
-        sb.append("ReadFileToTable, for example to read the file into a Table.");
+        sb.append("ReadFileToTable, for example, to read the file into a Table.");
         sb.append("</p><p>Data Type Restrictions: ");
         sb.append("The specified file must be in fixed format.");
         sb.append("</p><p>Data Handling: ");
