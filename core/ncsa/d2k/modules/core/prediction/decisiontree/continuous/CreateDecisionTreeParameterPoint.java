@@ -4,8 +4,9 @@ import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.basic.*;
 import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.core.modules.PropertyDescription;
+import java.beans.PropertyVetoException;
 
-public class DecisionTreeBiasGenerator
+public class CreateDecisionTreeParameterPoint
     extends ComputeModule {
 
   int numBiasDimensions = 9;
@@ -18,19 +19,20 @@ public class DecisionTreeBiasGenerator
         "minDecompositionPopulation",
         "Minimum examples per leaf",
         "Prevents the generation of splits that result in leaf nodes with " +
-        "than the specified number of examples.  ");
+        "less than the specified number of examples.  ");
 
     pds[1] = new PropertyDescription(
         "minErrorReduction",
         "Minimum split error reduction",
         "The units of this error reduction are relative to the error function passed to the " +
-        "decision tree inducer.  ");
+        "decision tree inducer.  " +
+        "A split will not occur unless the error is reduced by at least the amount specified.");
 
     pds[2] = new PropertyDescription(
-        "useSimpleBooleanSplit",
-        "Generate boolean attributes splits",
-        "Since booleans are numericaly coded as 0.0 = false and 1.0 = true, it generates split " +
-        "points at 0.5.  ");
+        "useOneHalfSplit",
+        "Generate splits only at 1/2",
+        "This works fine for boolean values and continuous ones.  " +
+        "If used as the sole decomposition strategy, it forces thes system to only split on a variable once.  ");
 
     pds[4] = new PropertyDescription(
         "useMeanBasedSplit",
@@ -75,10 +77,9 @@ public class DecisionTreeBiasGenerator
   }
 
   private int MinDecompositionPopulation = 20;
-  public void setMinDecompositionPopulation(int value) throws Exception {
+  public void setMinDecompositionPopulation(int value) throws PropertyVetoException {
     if (value < 1) {
-      System.out.println("Error!  MinDecompositionPopulation < 1");
-      throw new Exception();
+      throw new PropertyVetoException("Minimum examples per leaf < 1", null);
     }
     this.MinDecompositionPopulation = value;
   }
@@ -88,13 +89,7 @@ public class DecisionTreeBiasGenerator
   }
 
   private double MinErrorReduction = 0.0;
-  public void setMinErrorReduction(double value) throws Exception {
-    /*
-    if (value < 0.0) {
-      System.out.println("Error!  MinErrorReduction < 0.0");
-      throw new Exception();
-    }
-    */
+  public void setMinErrorReduction(double value) {
     this.MinErrorReduction = value;
   }
 
@@ -102,17 +97,17 @@ public class DecisionTreeBiasGenerator
     return this.MinErrorReduction;
   }
 
-  public boolean UseSimpleBooleanSplit = false;
-  public void setUseSimpleBooleanSplit(boolean value) throws Exception {
-    this.UseSimpleBooleanSplit = value;
+  public boolean UseOneHalfSplit = false;
+  public void setUseOneHalfSplit(boolean value) throws PropertyVetoException {
+    this.UseOneHalfSplit = value;
   }
 
-  public boolean getUseSimpleBooleanSplit() {
-    return this.UseSimpleBooleanSplit;
+  public boolean getUseOneHalfSplit() {
+    return this.UseOneHalfSplit;
   }
 
   public boolean UseMidPointBasedSplit = false;
-  public void setUseMidPointBasedSplit(boolean value) throws Exception {
+  public void setUseMidPointBasedSplit(boolean value) {
     this.UseMidPointBasedSplit = value;
   }
 
@@ -120,8 +115,8 @@ public class DecisionTreeBiasGenerator
     return this.UseMidPointBasedSplit;
   }
 
-  public boolean UseMeanBasedSplit = false;
-  public void setUseMeanBasedSplit(boolean value) throws Exception {
+  public boolean UseMeanBasedSplit = true;
+  public void setUseMeanBasedSplit(boolean value) {
     this.UseMeanBasedSplit = value;
   }
 
@@ -130,7 +125,7 @@ public class DecisionTreeBiasGenerator
   }
 
   public boolean UsePopulationBasedSplit = false;
-  public void setUsePopulationBasedSplit(boolean value) throws Exception {
+  public void setUsePopulationBasedSplit(boolean value) {
     this.UsePopulationBasedSplit = value;
   }
 
@@ -139,7 +134,7 @@ public class DecisionTreeBiasGenerator
   }
 
   public boolean SaveNodeExamples = false;
-  public void setSaveNodeExamples(boolean value) throws Exception {
+  public void setSaveNodeExamples(boolean value) {
     this.SaveNodeExamples = value;
   }
 
@@ -148,7 +143,7 @@ public class DecisionTreeBiasGenerator
   }
 
   public boolean UseMeanNodeModels = true;
-  public void setUseMeanNodeModels(boolean value) throws Exception {
+  public void setUseMeanNodeModels(boolean value) {
     this.UseMeanNodeModels = value;
     this.UseLinearNodeModels = !value;
   }
@@ -158,7 +153,7 @@ public class DecisionTreeBiasGenerator
   }
 
   public boolean UseLinearNodeModels = false;
-  public void setUseLinearNodeModels(boolean value) throws Exception {
+  public void setUseLinearNodeModels(boolean value) {
     this.UseLinearNodeModels = value;
     this.UseMeanNodeModels = !value;
   }
@@ -174,9 +169,13 @@ public class DecisionTreeBiasGenerator
   public String getModuleInfo() {
     String s = "<p>Overview: ";
     s += "This module allows the user to specify the parameter settings which ";
-    s += "control the behavior of the DecisionTreeInducerOpt. ";
-    s += "The first output is a ParameterPoint which can be used as input into a DecisionTreeInducerOpt. ";
-    s += "The second output is the DecisionTreeInducerOpt class which can be used as input for ApplyFunctionInducer. ";
+    s += "control the behavior of the DecisionTreeInducerOpt.  ";
+    s += "The first output is a Parameter Point which can be used as input into a DecisionTreeInducerOpt.  ";
+    s += "The second output is the Decision Tree Inducer Opt Module which can be used as input for ApplyFunctionInducer.  ";
+    s += "This decision tree building algorithm allows for multiple decomposition (splitting) strategies to be used ";
+    s += "simultaneously.  It also allows for an exclusive choice between using mean averaging at the leaves or linear functions ";
+    s += "created by multiple regression.  ";
+    s += "";
     s += "</p>";
     return s;
   }
@@ -214,9 +213,9 @@ public class DecisionTreeBiasGenerator
   public String getOutputInfo(int i) {
     switch (i) {
       case 0:
-        return "A ParameterPoint which specifies the control settings of the Decision Tree Inducer";
+        return "A ParameterPoint which specifies the control settings of the Decision Tree Inducer Opt Module";
       case 1:
-        return "The DecisionTreeInducerOpt Class";
+        return "The Decision Tree Inducer Opt Module for use in Apply Function Inducer";
       default:
         return "No such output";
     }
@@ -246,8 +245,8 @@ public class DecisionTreeBiasGenerator
     biasNames[biasIndex] = "MinErrorReduction";
     bias[biasIndex] = MinErrorReduction;
     biasIndex++;
-    biasNames[biasIndex] = "UseSimpleBooleanSplit";
-    if (UseSimpleBooleanSplit)
+    biasNames[biasIndex] = "UseOneHalfSplit";
+    if (UseOneHalfSplit)
       bias[biasIndex] = 1.0;
     else
       bias[biasIndex] = 0.0;
