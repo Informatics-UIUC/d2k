@@ -328,8 +328,6 @@ public class SQLHTree extends ComputeModule
       System.out.println("The user has selected a cube to build a new cube.");
       rightInput = false;
     }
-    //String userName = System.getProperty("user.name").toUpperCase();
-    //cubeTableName = userName + "_" + tableName + "_CUBE";
     if (isInputPipeConnected(3)) {
       whereClause = (String)pullInput(3);
       if (whereClause.length()==0)
@@ -581,9 +579,9 @@ public class SQLHTree extends ComputeModule
       while (tableNames.next()) {
         ResultSet columns = metadata.getColumns(null,"%",tableNames.getString("TABLE_NAME"),"%");
         while (columns.next()) {
-          String columnName = columns.getString("COLUMN_NAME");
-          String dataType = columns.getString("TYPE_NAME");
-          if (fieldNames[col].equals(columnName)) {
+          String columnName = columns.getString("COLUMN_NAME").toUpperCase();
+          String dataType = columns.getString("TYPE_NAME").toUpperCase();
+          if (fieldNames[col].toUpperCase().equals(columnName)) {
             if (dataType.equals("NUMBER") ||
                 dataType.equals("INTEGER") ||
                 dataType.equals("FLOAT") ||
@@ -713,11 +711,7 @@ public class SQLHTree extends ComputeModule
         }
         else { // this column is not binned, get the unique value from the database table
           String valueQry = new String("select distinct " + colName + " from ");
-          if (aColumn.dataType.equals("NUMBER"))
-            // convert all numeric value to string before order it
-            valueQry = valueQry + tableName + " where " + colName + " is not null order by (to_char(" + colName + "))";
-          else
-            valueQry = valueQry + tableName + " where " + colName + " is not null order by " + colName;
+          valueQry = valueQry + tableName + " where " + colName + " is not null order by " + colName;
           Statement valueStmt = con.createStatement();
           ResultSet valueSet = valueStmt.executeQuery(valueQry);
           while (valueSet.next()) {
@@ -806,7 +800,7 @@ public class SQLHTree extends ComputeModule
             // Searching baseHeadTble to find the record with this value.
             // To speed up the search, first find the starting index and ending index
             // in baseHeadTbl for this column.
-            itemIdx = getIndex(startIdx, endIdx, aValue, false);
+            itemIdx = getIndex(startIdx, endIdx, aValue, false, aColumn.dataType);
             if (itemIdx < 0)
               return false;
           }
@@ -815,13 +809,13 @@ public class SQLHTree extends ComputeModule
           }
           else if (aColumn.isBinned && aColumn.dataType.equals("STRING")) {
             aValue = binValue(colIdx, aValue);
-            itemIdx = getIndex(startIdx, endIdx, aValue, true);
+            itemIdx = getIndex(startIdx, endIdx, aValue, true, aColumn.dataType);
             if (itemIdx < 0)
               return false;
           }
           else if (aColumn.isBinned && aColumn.dataType.equals("NUMBER")) {
             aValue = binValue(colIdx, Double.valueOf(aValue).doubleValue());
-            itemIdx = getIndex(startIdx, endIdx, aValue, true);
+            itemIdx = getIndex(startIdx, endIdx, aValue, true, aColumn.dataType);
             if (itemIdx < 0)
               return false;
           }
@@ -883,10 +877,10 @@ public class SQLHTree extends ComputeModule
    *  @param isBinned the flag for binning
    *  @return the index in baseHeadTbl for this string value
    */
-  protected int getIndex(int first, int last, String val, boolean isBinned) {
+  protected int getIndex(int first, int last, String val, boolean isBinned, String columnType) {
     Head aHead;
-    // use binary search to find the value's index for non binned column
-    if (!isBinned) {
+    // use binary search to find the value's index for non binned categorical column
+    if (!isBinned && !columnType.equals("NUMBER")) {
       while ((last - first) > 1) {
         aHead = (Head)baseHeadTbl.get((first+last)/2);
         if (val.compareTo(aHead.value) > 0) {
@@ -915,7 +909,7 @@ public class SQLHTree extends ComputeModule
         return (-1); // not found the item
       }
     }
-    else {// use sequencial search to find the value's index for the binned column
+    else {// use sequencial search to find the value's index for the binned column or the numeric column
       for (int i=first; i<=last; i++) {
         aHead = (Head)baseHeadTbl.get(i);
         if (val.equals(aHead.value))
