@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * Create a new fixed file reader.
  */
-public class ReadFixedFile extends InputModule {
+public class CreateFixedParser extends InputModule {
 
     public String[] getInputTypes() {
         String[] in = { "java.lang.String",
@@ -37,9 +37,9 @@ public class ReadFixedFile extends InputModule {
     public String getInputName(int i) {
         switch(i) {
             case(0):
-                return "filename";
+                return "File Name";
             case(1):
-                return "header";
+                return "Header Table";
             default:
                 return "";
         }
@@ -50,11 +50,28 @@ public class ReadFixedFile extends InputModule {
     }
 
     public String getOutputName(int i) {
-        return "FixedFileParser";
+        return "Fixed File Parser";
     }
 
     public String getModuleInfo() {
-        return "Create a FixedFileParser for the specified file.";
+        // return "Create a FixedFileParser for the specified file.";
+        StringBuffer sb = new StringBuffer("<p>Overview: ");
+        sb.append("This module creates a parser for a fixed-format file.");
+        sb.append("</p><p>Detailed Description: ");
+        sb.append("Given a file name and a \"header\" Table of metadata ");
+        sb.append("describing the file's format, this module creates a ");
+        sb.append("parser for that file. This parser can then be passed to ");
+        sb.append("ReadFileToTable, for example to read the file into a Table.");
+        sb.append("</p><p>Data Type Restrictions: ");
+        sb.append("The specified file must be in fixed format.");
+        sb.append("</p><p>Data Handling: ");
+        sb.append("This module does not destroy or modify its input data.");
+        sb.append("</p>");
+        return sb.toString();
+    }
+
+    public String getModuleName() {
+       return "Create Fixed-format Parser";
     }
 
     public void doit() throws Exception {
