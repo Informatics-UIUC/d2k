@@ -397,13 +397,13 @@ public interface Column extends java.io.Serializable {
 	 * @return true if there are any missing values in the column.
 	 */
 	public boolean hasMissingValues();
-	
+
 	/**
 		 * return the number of missing values in the column.
 		 * @return number of missing values in the column.
 		 */
 		public int getNumMissingValues();
-	
+
 	/**
 	 * Return true if the value at row is missing, false otherwise
 	 * @param row the row index
@@ -432,5 +432,9 @@ public interface Column extends java.io.Serializable {
 	public void setValueToEmpty(boolean b, int row);
 
 	public Object getInternal();
+
+
+     //VERED - this is for testing purposes
+        public boolean equals (Object col) ;
 
 }/*Column*/

@@ -28,4 +28,6 @@ public interface VHashMap {
 
   public void replaceObject(Object obj, int key);
 
+  public boolean equals(Object other);
+
 }

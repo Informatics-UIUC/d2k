@@ -562,7 +562,7 @@ public class SparseExampleTable
 
   /**
    * Return a copy of this Table.
-   * @todo handle case of an empty example table
+
    * @return A new Table with a copy of the contents of this table.
    */
   public Table copy() {

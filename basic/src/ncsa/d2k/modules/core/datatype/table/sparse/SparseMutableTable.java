@@ -668,7 +668,7 @@ public class SparseMutableTable
 
 
   /**
-   * @todo need to add IntObjectHashMap object to rows?
+
    * @param add_num_rows
    */
   public void addRows(int add_num_rows) {

@@ -42,8 +42,7 @@ import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
  * table implementations.  Missing values however are not the same as "default" values
  * which constitute the majority of values in the value space.
  *
- * @todo think of the option of creating a reference map for the row objects too.
- * see removeRow code for thsi matter.
+
  *
 
  */
@@ -134,7 +133,7 @@ public abstract class SparseTable
     //retrieving valid rows numbers
     int[] rKeys;
 
-//todo: this cases should be handle in constructor of subset table...
+//todo: this cases should be handle in constructor of subset table... ?
     //should not be here. especially now that train and test tables are subset tables...
     if (T instanceof TestTable) {
       rKeys = ( (SparseExampleTable) T).testSet;

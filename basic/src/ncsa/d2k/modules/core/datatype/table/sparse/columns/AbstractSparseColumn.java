@@ -674,6 +674,17 @@ abstract public class AbstractSparseColumn
    * Returns the hash map that holds all the elements of this map
    */
   protected abstract VHashMap getElements();
+  public boolean equals(Object other){
+    boolean retVal = true;
+    if(!(other instanceof AbstractSparseColumn)) return false;
+
+    AbstractSparseColumn col = (AbstractSparseColumn) other;
+    VHashMap elements = getElements();
+    if(!elements.equals(col.getElements())) return false;
+    if(!missing.equals(col.missing)) return false;
+    if(!empty.equals(col.empty)) return false;
+    return retVal;
+  }
 
   /**
        * Reteives valid rows indices from row no. <code>begin</code> through row no.
