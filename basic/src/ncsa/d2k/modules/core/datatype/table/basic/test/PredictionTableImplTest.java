@@ -84,6 +84,11 @@ public class PredictionTableImplTest extends ExampleTableImplTest {
 	public Table getEmptyMutableTable() {
 		return new MutableTableImpl();
 	}
+	
+	public Table getEmptyExampleTable() {
+	   return etEmpty;
+		}
+	
 	public Column[] getColumns() {
 		return columns;
 	}
@@ -118,11 +123,12 @@ public class PredictionTableImplTest extends ExampleTableImplTest {
 		 */
 		public void testCopyintArray() {
 			PredictionTable mtFull = (PredictionTable) getFullTable();
-			MutableTable mtEmpty = (MutableTable) getEmptyMutableTable();
+			//MutableTable mtEmpty = (MutableTable) getEmptyMutableTable();
+			ExampleTable mtEmpty = (ExampleTable) getEmptyExampleTable();
 			//PredictionTable mtCopy = (PredictionTable) getEmptyTable();
 			int subset[] = { 1, 3 };
 			Table mtCopy = (Table)mtFull.copy(subset);
-			for (int i = 0; i < numColumns; i++)
+			for (int i = 0; i < mtFull.getNumColumns(); i++)
 				mtEmpty.addColumn(mtFull.getColumn(i).getSubset(subset));
 			assertEquals(((Table)mtEmpty),((Table) mtCopy));
 		}
