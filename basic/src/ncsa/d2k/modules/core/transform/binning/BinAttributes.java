@@ -1349,6 +1349,8 @@ public class BinAttributes extends HeadlessUIModule {
 		 maxes[i] = ss.getMaximum();
 		mins[i] = ss.getMinimum();
 
+
+
                 //vered: (01-16-04) added this code to create the desired number of bins.
                                 //not too few and not too many.
 
@@ -1892,10 +1894,10 @@ class TableBinCounts implements BinCounts {
  *
  * bug 228: binning and representation of missing values. missing values are binned
  * into the "UNKNOWN" bin but are still marked as missing if binning is done
- * in the same column.
+ * in the same column. (fixed)
  *
  * bug 229 - when checking the "create in a new column" box, the module creates
-   the new binned columns with identical labels as the original ones have.
+   the new binned columns with identical labels as the original ones have. (fixed)
 
 
    bug 235 - module does not allow creation of bins with identical names even if

@@ -574,7 +574,7 @@ public class SQLAutoBin extends AutoBin {
 		BinDescriptor[] bn = new BinDescriptor[bins.size()];
 		for (int i = 0; i < bins.size(); i++) {
 			bn[i] = (BinDescriptor) bins.get(i);
-			System.out.println("bin i "  + bn[i].name + " " + i);
+		//	System.out.println("bin i "  + bn[i].name + " " + i);
 		}
 
 		return bn;
@@ -791,6 +791,6 @@ public class SQLAutoBin extends AutoBin {
 
   * bug 228: binning and representation of missing values. missing values are binned
   * into the "UNKNOWN" bin but are still marked as missing if binning is done
-  * in the same column.
+  * in the same column. (fixed)
 
 */
