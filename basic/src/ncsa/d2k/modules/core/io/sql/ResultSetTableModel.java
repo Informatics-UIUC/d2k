@@ -1,6 +1,6 @@
 package ncsa.d2k.modules.core.io.sql;
 /**
- * <p>Title: BrowseTables
+ * <p>Title: ResultSetTableModel
  * <p>Description: This class takes a JDBC ResultSet object and implements
  * the TableModel interface in terms of it so that a Swing JTable component
  * can display the contents of the ResultSet. </p>
@@ -10,37 +10,20 @@ package ncsa.d2k.modules.core.io.sql;
  * @version 1.0
  */
 
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.UserView;
-
-import ncsa.d2k.userviews.swing.*;
-
-import ncsa.gui.Constrain;
-import ncsa.gui.JOutlinePanel;
-
-//import ncsa.d2k.modules.core.datatype.table.*;
-
 import java.sql.*;
 import java.util.*;
-import java.text.*;
-import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.table.*;
-import javax.swing.event.TableModelListener;
-import javax.swing.event.TableModelEvent;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.JScrollPane;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
 public class ResultSetTableModel implements TableModel{
     ResultSet results;             // The ResultSet to interpret
+    Vector vector;
     ResultSetMetaData metadata;    // Additional information about the results
     int numcols, numrows;          // How many rows and columns in the table
 
+    // This class has two constructors. One is used for general queries, which takes
+    // a ResultSet as the input. Another is used for listing table name or column name,
+    // which takes a vector as the input.
     /**
      * This constructor creates a TableModel from a ResultSet.
      * @param results The result set to display
@@ -54,13 +37,24 @@ public class ResultSetTableModel implements TableModel{
 	numrows = results.getRow();             // How many rows?
     }
 
+    ResultSetTableModel(Vector results) throws SQLException {
+        vector = results;
+        //this.results = results;                 // Save the results
+        //metadata = results.getMetaData();       // Get metadata on them
+        numcols = 1;    // How many columns?
+        //results.last();                         // Move to last row
+        numrows = vector.size();             // How many rows?
+    }
+
     /**
      * Call this when done with the table model.  It closes the ResultSet and
      * the Statement object used to create it.
      **/
     public void close() {
+      if (metadata != null) {
 	try { results.getStatement().close(); }
 	catch(SQLException e) {};
+      }
     }
 
     /** Automatically close when we're garbage collected */
@@ -72,9 +66,14 @@ public class ResultSetTableModel implements TableModel{
 
     // This TableModel method returns columns names from the ResultSetMetaData
     public String getColumnName(int column) {
+      if (metadata == null) {
+        return ("Name");
+      }
+      else {
 	try {
 	    return metadata.getColumnLabel(column+1);
 	} catch (SQLException e) { return e.toString(); }
+      }
     }
 
     // This TableModel method specifies the data type for each column.
@@ -93,12 +92,18 @@ public class ResultSetTableModel implements TableModel{
      * @return A object in the specified cell
      **/
     public Object getValueAt(int row, int column) {
+      if (metadata != null) {
 	try {
 	    results.absolute(row+1);                // Go to the specified row
 	    Object o = results.getObject(column+1); // Get value of the column
 	    if (o == null) return null;
 	    else return o.toString();               // Convert it to a string
 	} catch (SQLException e) { return e.toString(); }
+      }
+      else {
+        Object o = vector.get(row);
+        return o.toString();
+      }
     }
 
     // Our table isn't editable

@@ -20,6 +20,7 @@ import ncsa.gui.JOutlinePanel;
 import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.sql.*;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
@@ -32,7 +33,7 @@ public class SaveFileToDB extends UIModule
     /* Input holder for VerticalTable */
     protected Table vt;
     /* SQL Query String */
-    protected String query;
+    //protected String query;
     /* The resultset table model */
     protected BrowseTables bt;
     /* Popup window for the available table list */
@@ -70,7 +71,7 @@ public class SaveFileToDB extends UIModule
       String s = "<p> Overview: ";
       s += "This module saves data from a data table to a database table. </p>";
       s += "<p> Detailed Description: ";
-      s += "This module takes an Oracle database Connection and a ";
+      s += "This module takes an database Connection and a ";
       s += "table as the input, and saves the data from ";
       s += "the data table to a database table. There are two options " ;
       s += "provided. You can either create a new database table to save the data, ";
@@ -79,10 +80,10 @@ public class SaveFileToDB extends UIModule
       s += "cannot find the database table you want to add data to, please report the ";
       s += "problem to your database administrator. </p>";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle databases.";
-
+      s += "We currently only support Oracle and SQLServer databases.";
       return s;
     }
+
     /**
        Provide the module name.
        @return The name of this module.
@@ -267,7 +268,7 @@ public class SaveFileToDB extends UIModule
                       0,0,2,5,GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER,1,1);
 
             /* Third outline panel inside of appendTablePanel */
-            JOutlinePanel vtTableInfo = new JOutlinePanel("VT Table Information");
+            JOutlinePanel vtTableInfo = new JOutlinePanel("Data File Information");
             vtTableInfo.setLayout (new GridBagLayout());
 
             /* Table with scrollbar for viewing the VT table definition */
@@ -504,11 +505,26 @@ public class SaveFileToDB extends UIModule
         } /* end of actionPerformed */
 
       /** connect to a database and retrieve the list of available tables */
+      // All commercial databases have different catalog tables. Inorder to
+      // make this method generic to all commercial databases, we have to use
+      // java.sql's DatabaseMetaData. However, DatabaseMetaData contains too
+      // many fields, we are only interested the table name. Use vector to keep table names.
       protected void doBrowse() {
-          query = "select table_name from user_tables";
+        Connection con;
+        //cw = (ConnectionWrapper)pullInput(0);
+         Vector v = new Vector();
           try {
-              bt = new BrowseTables(cw, query);
-              btw = new BrowseTablesView(bt, query);
+              DatabaseMetaData metadata = null;
+              con = cw.getConnection();
+              metadata = con.getMetaData();
+              String[] types = {"TABLE"};
+              ResultSet tableNames = metadata.getTables(null,"%","%",types);
+              while (tableNames.next()) {
+                String aTable = tableNames.getString("TABLE_NAME");
+                v.addElement(aTable);
+              }
+              bt = new BrowseTables(cw, v);
+              btw = new BrowseTablesView(bt, v);
               btw.setSize(250,200);
               btw.setTitle("Available Tables");
               btw.setLocation(200,250);
@@ -563,25 +579,24 @@ public class SaveFileToDB extends UIModule
               if (s2.length()>0) {
                 String len = newTableDef.getValueAt(i, 2).toString();
                 if (s2.equals("string"))
-                  sb = sb + "varchar2(" + len.toString()+")";
+                  sb = sb + "varchar(" + len.toString()+")";
                 else if (s2.equals("byte[]"))
-                  sb = sb + "varchar2(" + len.toString()+")";
+                  sb = sb + "varchar(" + len.toString()+")";
                 else if (s2.equals("char[]"))
-                  sb = sb + "varchar2(" + len.toString()+")";
-                /* all numeric datatype set to Oracle default length 22 */
+                  sb = sb + "varchar(" + len.toString()+")";
                 else if (s2.equals("int"))
-                  sb = sb + "number";
+                  sb = sb + "numeric";
                 else if (s2.equals("float"))
-                  sb = sb + "number";
+                  sb = sb + "numeric";
                 else if (s2.equals("double"))
-                  sb = sb + "number";
+                  sb = sb + "numeric";
                 else if (s2.equals("long"))
-                  sb = sb + "number";
+                  sb = sb + "numeric";
                 else if (s2.equals("short"))
-                  sb = sb + "number";
-                /* boolean datatype is saved as Oracle varchar2 */
+                  sb = sb + "numeric";
+                /* boolean datatype is saved as varchar */
                 else if (s2.equals("boolean"))
-                  sb = sb + "varchar2(" + "5)";
+                  sb = sb + "varchar(" + "5)";
                 else {
                   JOptionPane.showMessageDialog(msgBoard,
                   "Invalid data type. Table cannot be created", "Error",
@@ -602,9 +617,9 @@ public class SaveFileToDB extends UIModule
           sb = sb + ")";
           Connection con = cw.getConnection ();
           Statement stmt = con.createStatement ();
-          ResultSet result = stmt.executeQuery(sb);
+          stmt.executeUpdate(sb);
+          //ResultSet result = stmt.executeQuery(sb);
           stmt.close();
-          result.close();
           System.out.println("Table " + newTableName.getText() + " has been created");
        }
        catch (Exception e){
@@ -671,21 +686,24 @@ public class SaveFileToDB extends UIModule
     /** get the structure of a database table
     */
     protected void getDBTableDef() {
-        try {
-          Connection con = cw.getConnection ();
-          Statement stmt;
-          String sb = new String("select column_name, data_type, data_length " +
-            "from user_tab_columns where table_name = '" +
-            chosenTableName.getText().toUpperCase() + "' order by column_id");
-          stmt = con.createStatement ();
-          ResultSet tableSet = stmt.executeQuery(sb);
+      try {
+        Connection con = cw.getConnection ();
+        DatabaseMetaData metadata = con.getMetaData();
+        String[] names = {"TABLE"};
+        ResultSet tableNames = metadata.getTables(null,"%",chosenTableName.getText().toUpperCase(),names);
+        while (tableNames.next()) {
+          ResultSet columns = metadata.getColumns(null,"%",tableNames.getString("TABLE_NAME"),"%");
           int rIdx = 0;
-          while (tableSet.next()) {
-            dbTableDef.setValueAt(tableSet.getString(1),rIdx,0);
-            dbTableDef.setValueAt(tableSet.getString(2),rIdx,1);
-            dbTableDef.setValueAt(tableSet.getString(3),rIdx,2);
+          while (columns.next()) {
+            String columnName = columns.getString("COLUMN_NAME");
+            String dataType = columns.getString("TYPE_NAME");
+            int columnSize = columns.getInt("COLUMN_SIZE");
+            dbTableDef.setValueAt(columnName,rIdx,0);
+            dbTableDef.setValueAt(dataType,rIdx,1);
+            dbTableDef.setValueAt(Integer.toString(columnSize),rIdx,2);
             rIdx++;
           }
+
           /* if rIdx == 0, that indicate the tableSet is empty, the db table does not exist */
           if (rIdx == 0) {
             JOptionPane.showMessageDialog(msgBoard,
@@ -693,14 +711,14 @@ public class SaveFileToDB extends UIModule
                 JOptionPane.ERROR_MESSAGE);
             System.out.println("table does not exist.");
           }
-          stmt.close();
         }
-        catch (Exception e){
+      }
+      catch (Exception e){
            JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
            System.out.println("Error occoured in getDBTableDef.");
-        }
+      }
     }
 
     /** verify the data type and length of the vertical table suitable to
@@ -755,14 +773,15 @@ public class SaveFileToDB extends UIModule
         @return Dose the data type match? (yes or no)
     */
     protected boolean isTypeMatch (Object type1, Object type2) {
-      if (type1.equals("varchar2")) {
+      if (type1.toString().toLowerCase().indexOf("varchar")>=0) {
         if (type2.equals("string") || type2.equals("boolean") ||
             type2.equals("byte[]") || type2.equals("char[]"))
           return (true);
         else
           return (false);
       }
-      else if (type1.equals("number")) {
+      else if (type1.toString().toLowerCase().indexOf("number")>=0 ||
+               type1.toString().toLowerCase().indexOf("numeric")>=0) {
         if (type2.equals("int") || type2.equals("float") ||
             type2.equals("double") || type2.equals("long") ||
             type2.equals("short"))

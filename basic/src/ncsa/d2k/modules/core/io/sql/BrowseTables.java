@@ -39,6 +39,9 @@ public class BrowseTables
   protected ConnectionWrapper cw;
   Connection con;
 
+  // This class has two constructors. One is used for general queries, which takes
+  // a query as the input. Another is used for listing table name or column name,
+  // which takes a vector as the input.
   /**
    * Constructor
    * @param cw
@@ -49,6 +52,22 @@ public class BrowseTables
    * @throws IllegalAccessException
    */
   public BrowseTables(ConnectionWrapper cw, String query)
+     throws ClassNotFoundException, SQLException, InstantiationException,
+            IllegalAccessException
+  {
+    con = cw.getConnection();
+  }
+
+  /**
+   * Constructor
+   * @param cw
+   * @param result This constructor used for meta queries, such as get table list or column list
+   * @throws ClassNotFoundException
+   * @throws SQLException
+   * @throws InstantiationException
+   * @throws IllegalAccessException
+   */
+  public BrowseTables(ConnectionWrapper cw, Vector result)
      throws ClassNotFoundException, SQLException, InstantiationException,
             IllegalAccessException
   {
@@ -77,6 +96,31 @@ public class BrowseTables
     // Create and return a TableModel for the ResultSet
     return new ResultSetTableModel(tableSet);
   }
+
+  /**
+   * Table model for query results
+   * @param tableSet The result set for meta queries, such as the list of tables, columns
+   * @return The table model for displaying result set
+   * @throws SQLException
+   */
+  public ResultSetTableModel getResultSetTableModel(Vector tableSet)
+    throws SQLException
+  {
+    // If we've called close(), then we can't call this method
+    if (con == null)
+      throw new IllegalStateException("Connection already closed");
+    // Create a Statement object that will be used to excecute the query.
+    // The arguments specify that the returned ResultSet will be
+    // scrollable, read-only, and insensitive to changes in the db.
+
+    //Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                                         //ResultSet.CONCUR_READ_ONLY);
+    // Run the query, creating a ResultSet
+    //ResultSet tableSet = stmt.executeQuery(query);
+    // Create and return a TableModel for the ResultSet
+    return new ResultSetTableModel(tableSet);
+  }
+
     /**
      * Close database connection
      */

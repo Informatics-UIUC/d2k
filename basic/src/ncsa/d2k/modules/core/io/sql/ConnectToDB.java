@@ -23,7 +23,7 @@ public class ConnectToDB extends UIModule {
  *** Variables ***
 
  */
-
+    private String dbVendor;
     private String url;
 
     /** username */
@@ -82,7 +82,7 @@ public class ConnectToDB extends UIModule {
       s += "After you successfully log onto a database, this connection is ";
       s += "passed to next modules for use. </p>";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle databases.";
+      s += "We currently only support Oracle and SQLServer databases.";
 
         return s;
 
@@ -215,14 +215,15 @@ public class ConnectToDB extends UIModule {
     }
 
     public PropertyDescription [] getPropertiesDescriptions () {
-      PropertyDescription [] pds = new PropertyDescription [6];
-      pds[0] = new PropertyDescription ("username", "User Name", "The login account to use.");
-      pds[1] = new PropertyDescription ("password", "Password", "The password to use.");
-      pds[2] = new PropertyDescription ("machine", "Machine Name", "The server this database is running on.");
-      pds[3] = new PropertyDescription ("port", "Connection Port", "The connection Port to use.");
-      pds[4] = new PropertyDescription ("dbInstance", "Database Instance", "The database to connect.");
+      PropertyDescription [] pds = new PropertyDescription [7];
+      pds[0] = new PropertyDescription ("dbVendor", "Database Vendor", "The database vendor.");
+      pds[1] = new PropertyDescription ("username", "User Name", "The login account to use.");
+      pds[2] = new PropertyDescription ("password", "Password", "The password to use.");
+      pds[3] = new PropertyDescription ("machine", "Machine Name", "The server this database is running on.");
+      pds[4] = new PropertyDescription ("port", "Connection Port", "The connection Port to use.");
+      pds[5] = new PropertyDescription ("dbInstance", "Database Instance", "The database to connect.");
       //pds[5] = new PropertyDescription ("url", "Connection URL", "The connection URL to use (for MicroSoft SQLServer).");
-      pds[5] = new PropertyDescription ("driver", "JDBC Driver", "The JDBC driver to use.");
+      pds[6] = new PropertyDescription ("driver", "JDBC Driver", "The JDBC driver to use.");
       return pds;
     }
 
@@ -234,6 +235,34 @@ public class ConnectToDB extends UIModule {
      *** Get and Set Functions ***
 
      */
+
+    /**
+
+     * Set the database vendor
+
+     * @param v - The database vendor
+
+     */
+
+    public void setDbVendor(String v) {
+
+        dbVendor = v;
+
+    }
+
+    /**
+
+     * Get the database vendor
+
+     * @return
+
+     */
+
+    public String getDbVendor() {
+
+        return dbVendor;
+
+    }
 
 
 
@@ -260,7 +289,6 @@ public class ConnectToDB extends UIModule {
      */
 
     public String getUrl() {
-
         return url;
 
     }
@@ -479,8 +507,8 @@ public class ConnectToDB extends UIModule {
 
         private JComboBox cbV;
 
-        // we currently only support Oracle
-        private String[] Vendors = {"Oracle"};
+        // we currently only support Oracle and SQLServer
+        private String[] Vendors = {"Oracle", "SQLServer"};
         //private String[] Vendors = {"Oracle", "MySQL", "SQLServer"};
 
         private int dbFlag;
@@ -577,8 +605,6 @@ public class ConnectToDB extends UIModule {
 
             cbV.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-
-
             cbV.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -602,7 +628,7 @@ public class ConnectToDB extends UIModule {
 
                         tfD.setText("org.gjt.mm.mysql.Driver");
 
-                    }
+                    } */
 
                     else if (newSelection == "SQLServer") {
 
@@ -611,7 +637,7 @@ public class ConnectToDB extends UIModule {
                         tfD.setText("com.microsoft.jdbc.sqlserver.SQLServerDriver");
 
                     }
-                    */
+
 
                 }
 
@@ -648,6 +674,15 @@ public class ConnectToDB extends UIModule {
 
 
             // Add Database Vendors
+            // try to display the last vendor chosen
+
+            String v = getDbVendor();
+
+            if(v != null) {
+
+                cbV.setSelectedItem(v);
+
+            }
 
             JLabel lV = new JLabel("Vendor");
 
@@ -897,8 +932,16 @@ public class ConnectToDB extends UIModule {
                 cbV.setSelectedItem("Oracle");
 
             }
-
-
+/*
+            if (cbV.getItemAt(0) == "Oracle") {
+                tfPo.setText("1521");
+                tfD.setText("oracle.jdbc.driver.OracleDriver");
+            }
+            else if (cbV.getItemAt(0) == "SQLServer") {
+              tfPo.setText("1433");
+              tfD.setText("com.microsoft.jdbc.sqlserver.SQLServerDriver");
+            }
+*/
 
             setLayout(new BorderLayout());
 
@@ -1011,11 +1054,11 @@ public class ConnectToDB extends UIModule {
 
                       pushOutput (mc, 0);
 
-                  }
+                  } */
 
-                  else if(_driver == "com.microsoft.jdbc.sqlserver.SQLServerDriver") {
+                  else if(_driver.equals("com.microsoft.jdbc.sqlserver.SQLServerDriver")) {
 
-                      setUrl("jdbc:microsoft:sqlserver://"+getMachine()+":"+getPort()+";"
+                    setUrl("jdbc:microsoft:sqlserver://"+getMachine()+":"+getPort()+";"
 
                              +"DatabaseName="+getDbInstance());
 
@@ -1027,14 +1070,18 @@ public class ConnectToDB extends UIModule {
 
                               getPassword().trim());
 
+                      //System.out.println("sc is " + sc);
                       pushOutput (sc, 0);
+                      viewDone("Done");
 
                   }
 
-                  else
+                  else {
+                    System.out.println("no match driver");
+                      //pushOutput(null, 0);
+                    viewDone("Done");
+                  }
 
-                      pushOutput(null, 0);
-                  */
                   //viewDone("Done");
 
         }

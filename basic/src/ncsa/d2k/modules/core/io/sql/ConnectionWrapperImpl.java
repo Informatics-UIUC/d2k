@@ -33,10 +33,13 @@ public class ConnectionWrapperImpl implements ConnectionWrapper, java.io.Seriali
 		(String _url, String _driver, String _username, String _password)
 	{
 		url = _url;
+//System.out.println("url is : " + url);
 		driver = _driver;
-System.out.println("driver : " + driver);
+//System.out.println("driver : " + driver);
 		username = _username;
+//System.out.println("username : " + username);
 		password = _password;
+//System.out.println("password is : " + password);
 	} /* ConnectionWrapper(String,String,String,String) */
 
     public Connection getConnection() throws SQLException, ClassNotFoundException,

@@ -96,7 +96,7 @@ public class SQLChooseAttributes extends UIModule {
       s += "real data. The real data can be retrieved from the database table ";
       s += "by other modules. </p>";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle databases. </p> ";
+      s += "We currently only support Oracle and SQLServer databases. </p> ";
 
       return s;
 
@@ -356,7 +356,9 @@ public class SQLChooseAttributes extends UIModule {
         cols[selectedColumn].setLabel(colNames.get(colIdx).toString());
         // data type may be in uppercase or lowercase
         if (colTypes.get(colIdx).toString().equals("NUMBER") ||
-            colTypes.get(colIdx).toString().equals("number")) {
+            colTypes.get(colIdx).toString().equals("number") ||
+            colTypes.get(colIdx).toString().equals("NUMERIC") ||
+            colTypes.get(colIdx).toString().equals("numeric")) {
           cols[selectedColumn].setIsScalar(true);
           // cannot choose numeric column as the output column
           if (outputFeatures[0] == colIdx) {

@@ -32,7 +32,7 @@ public class AvailableFieldsInput extends InputModule
           s += "This module makes a connection to a database and retrieves the ";
           s += "list of available fields in the selected table. </p>";
           s += "<p> Restrictions: ";
-          s += "We currently only support Oracle database.";
+          s += "We currently only support Oracle and SQLServer database.";
 
           return s;
 	}

@@ -40,7 +40,7 @@ public class AvailableTablesInput extends InputModule
           s += "cannot see the tables you are looking for, please report the ";
           s += "problems to your database administrator. </p>";
           s += "<p> Restrictions: ";
-          s += "We currently only support Oracle database.";
+          s += "We currently only support Oracle and SQLServer database.";
 
           return s;
 	}
@@ -101,20 +101,31 @@ public class AvailableTablesInput extends InputModule
 	protected void doit ()  throws Exception
 	{
 		ConnectionWrapper cw = (ConnectionWrapper) this.pullInput (0);
+                System.out.println("cw is " + cw);
 		Connection con = cw.getConnection();
 		Vector v = new Vector();
 
-		Statement stmt = con.createStatement();
-                String qryString = "select table_name from user_tables";
-                if (dataTableOnly && !dataCubeOnly) {
-                  qryString = qryString + " where table_name not like '%_CUBE%'";
+                DatabaseMetaData metadata = null;
+                con = cw.getConnection();
+                metadata = con.getMetaData();
+                String[] types = {"TABLE"};
+                ResultSet tableNames = metadata.getTables(null,"%","%",types);
+                while (tableNames.next()) {
+                  String aTable = tableNames.getString("TABLE_NAME");
+                  if (dataTableOnly && !dataCubeOnly) {
+                    if (aTable.toUpperCase().indexOf("CUBE") < 0) {
+                      v.addElement(aTable);
+                    }
+                  }
+                  else if (dataCubeOnly && !dataTableOnly) {
+                    if (aTable.toUpperCase().indexOf("CUBE") >= 0) {
+                      v.addElement(aTable);
+                    }
+                  }
+                  else {
+                    v.addElement(aTable);
+                  }
                 }
-                else if (dataCubeOnly && !dataTableOnly) {
-                  qryString = qryString + " where table_name like '%_CUBE%'";
-                }
-		ResultSet tableSet = stmt.executeQuery(qryString);
-		while (tableSet.next())
-		    v.addElement(tableSet.getString(1));
 
 		this.pushOutput (cw, 0);
 		this.pushOutput (v, 1);
