@@ -37,7 +37,9 @@ public class ParameterSpaceImpl extends ContinuousExampleSet implements Paramete
       types        [i] = table.getInt   (typeRowIndex,         i);
     }
 
-    return createFromData(names, minValues, maxValues, defaultValues, resolutions, types);
+
+    this.createFromData(names, minValues, maxValues, defaultValues, resolutions, types);
+    return this;
 
 /*
       String [] names,
@@ -239,8 +241,6 @@ public class ParameterSpaceImpl extends ContinuousExampleSet implements Paramete
     int space2NumParameters = space2.getNumParameters();
     int newNumParameters = space1NumParameters + space2NumParameters;
 
-    ParameterSpace space = new ParameterSpaceImpl();
-
     String [] names         = new String[newNumParameters];
     double [] minValues     = new double[newNumParameters];
     double [] maxValues     = new double[newNumParameters];
@@ -266,7 +266,9 @@ public class ParameterSpaceImpl extends ContinuousExampleSet implements Paramete
       types        [space1NumParameters + i] = space2.getType        (i);
     }
 
-    return createFromData(names, minValues, maxValues, defaultValues, resolutions, types);
+    ParameterSpace space = new ParameterSpaceImpl();
+    space.createFromData(names, minValues, maxValues, defaultValues, resolutions, types);
+    return space;
   }
 
 }
