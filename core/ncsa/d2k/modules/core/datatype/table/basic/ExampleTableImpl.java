@@ -120,14 +120,7 @@ public class ExampleTableImpl
       else
         setTestingSet(new int[0]);
 
-      //copy the transformations
-      try {
-        transformations = (ArrayList) ( (ArrayList) ( (MutableTable) tt).
-                                       getTransformations()).clone();
-      }
-      catch (Exception e) {
-        transformations = null;
-      }
+
     }
     else {
       setInputFeatures(new int[0]);
@@ -135,6 +128,16 @@ public class ExampleTableImpl
       setTestingSet(new int[0]);
       setTrainingSet(new int[0]);
     }
+    //copy the transformations
+    try {
+      transformations = (ArrayList) ( (ArrayList) ( (MutableTable) table).
+                                     getTransformations()).clone();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      transformations = null;
+    }
+
   }
 
   /**
