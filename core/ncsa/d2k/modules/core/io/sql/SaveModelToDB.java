@@ -549,9 +549,9 @@ public class SaveModelToDB extends UIModule {
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "dbconnection";
+				return "DBConnection";
 			case 1:
-				return "model";
+				return "PredictionModel";
 			default: return "NO SUCH INPUT!";
 		}
 	}

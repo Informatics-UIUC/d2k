@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.io.sql;
 
 /**
  * <p>Title: </p>
- * <p>Description: Retrieve a model from a database
+ * <p>Description: Retrieve a prediction model from a database
  * <p>Copyright: Copyright (c) 2001</p>
  * <p>Company: NCSA ALG </p>
  * @author Dora Cai
@@ -36,8 +36,8 @@ public class GetModelFromDB extends UIModule
   BrowseTablesView btw;
   JTextField modelName;
   JTextField modelDesc;
-  GenericTableModel trainSet;
-  GenericTableModel classLabel;
+  GenericMatrixModel trainSet;
+  GenericMatrixModel classLabel;
   JTextField dataSize;
   JTable trainSetDef;
   JTable classLabelDef;
@@ -49,7 +49,7 @@ public class GetModelFromDB extends UIModule
 
   public String getOutputInfo (int i) {
     switch(i) {
-      case 0: return "A model";
+      case 0: return "A prediction model";
       default: return "No such output";
     }
   }
@@ -62,7 +62,7 @@ public class GetModelFromDB extends UIModule
   }
 
   public String getModuleInfo () {
-    String text = "Retrieve a saved data mining model from a database table.";
+    String text = "Retrieve a saved prediction model from a database.";
     return text;
   }
 
@@ -74,6 +74,40 @@ public class GetModelFromDB extends UIModule
   public String[] getOutputTypes () {
     String [] out = {"ncsa.d2k.modules.PredictionModelModule"};
     return out;
+  }
+
+  /**
+  * Return the human readable name of the module.
+  * @return the human readable name of the module.
+  */
+  public String getModuleName() {
+    return "GetModelFromDB";
+  }
+
+  /**
+   * Return the human readable name of the indexed input.
+   * @param index the index of the input.
+   * @return the human readable name of the indexed input.
+   */
+  public String getInputName(int index) {
+    switch(index) {
+      case 0:
+        return "DBConnection";
+      default: return "NO SUCH INPUT!";
+    }
+  }
+
+  /**
+   * Return the human readable name of the indexed output.
+   * @param index the index of the output.
+   * @return the human readable name of the indexed output.
+   */
+   public String getOutputName(int index) {
+    switch(index) {
+      case 0:
+        return "PredictionModel";
+      default: return "NO SUCH OUTPUT!";
+    }
   }
 
   protected String[] getFieldNameMapping () {
@@ -101,8 +135,8 @@ public class GetModelFromDB extends UIModule
         modelDesc.setText(NOTHING);
         dataSize.setText(NOTHING);
         notes.setText(NOTHING);
-        trainSet.initTableModel(100,4);
-        classLabel.initTableModel(100,1);
+        trainSet.initMatrixModel(100,4);
+        classLabel.initMatrixModel(100,1);
      }
     }
 
@@ -144,7 +178,7 @@ public class GetModelFromDB extends UIModule
       String [] columnHeading = {"Attribute Name","Attribute Type","Number of Bins","Input/Output"};
       JOutlinePanel trainSetInfo = new JOutlinePanel("Training Set Information");
       trainSetInfo.setLayout (new GridBagLayout());
-      trainSet = new GenericTableModel(100,4,false,columnHeading);
+      trainSet = new GenericMatrixModel(100,4,false,columnHeading);
       trainSetDef = new JTable(trainSet);
       JScrollPane tablePane = new JScrollPane(trainSetDef);
       trainSetDef.setPreferredScrollableViewportSize (new Dimension(200,80));
@@ -155,7 +189,7 @@ public class GetModelFromDB extends UIModule
       String [] columnHeading2 = {"Class Name"};
       JOutlinePanel classInfo = new JOutlinePanel("Class Information");
       classInfo.setLayout (new GridBagLayout());
-      classLabel = new GenericTableModel(100,1,false,columnHeading2);
+      classLabel = new GenericMatrixModel(100,1,false,columnHeading2);
       classLabelDef = new JTable(classLabel);
       JScrollPane tablePane2 = new JScrollPane(classLabelDef);
       classLabelDef.setPreferredScrollableViewportSize (new Dimension(100,80));
@@ -230,9 +264,9 @@ public class GetModelFromDB extends UIModule
         if (modelName.getText()!= null && modelName.getText()!=NOTHING)
         {
           /* wipe out previously loaded model definition */
-          trainSet.initTableModel(100,4);
+          trainSet.initMatrixModel(100,4);
           trainSet.fireTableDataChanged();
-          classLabel.initTableModel(100,1);
+          classLabel.initMatrixModel(100,1);
           classLabel.fireTableDataChanged();
           if (getAttribute()) {
             if (getClassLabel()) {
@@ -260,9 +294,9 @@ public class GetModelFromDB extends UIModule
         {
           modelName.setText(btw.getChosenRow());
           /* wipe out previously loaded information */
-          trainSet.initTableModel(100,4);
+          trainSet.initMatrixModel(100,4);
           trainSet.fireTableDataChanged();
-          classLabel.initTableModel(100,1);
+          classLabel.initMatrixModel(100,1);
           classLabel.fireTableDataChanged();
           if (getAttribute()) {
             if (getClassLabel()) {
@@ -396,7 +430,7 @@ public class GetModelFromDB extends UIModule
       blob = ((OracleResultSet)rset).getBLOB(1);
       // Get the length of the blob
       long length = blob.getLength();
-      System.out.println("blob length" + length);
+      System.out.println("blob length " + length);
 
       // Get input stream from BLOB
       instream = blob.getBinaryStream();
