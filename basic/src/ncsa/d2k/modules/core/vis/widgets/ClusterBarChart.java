@@ -11,7 +11,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.util.*;
 
-public class ClusterBarChart extends BarChart implements MouseListener {
+public class ClusterBarChart extends BarChart
+    implements MouseListener, MouseMotionListener {
   private static final int LEFTOFFSET = 20;
   private static final int RIGHTOFFSET = 20;
   private static final int TOPOFFSET = 20;
@@ -37,6 +38,10 @@ public class ClusterBarChart extends BarChart implements MouseListener {
   private int longestwidthz;
 
   Color[] clustercolors;
+
+  Rectangle2D.Double rectangle;
+  Rectangle2D.Double[]  barBoundary;    //array to keep rectangle boundary infomation
+  String[] tipValues;
 
   public ClusterBarChart(Table table, DataSet set, GraphSettings settings, int xincrement, int yincrement) throws Exception {
     super(table, set, settings);
@@ -285,6 +290,7 @@ public class ClusterBarChart extends BarChart implements MouseListener {
     if (settings.displaylegend)
       drawLegend(g2);
     drawDataSet(g2, set);
+    addMouseMotionListener(this);
   }
 
   public void drawTitle(Graphics2D g2) {
@@ -402,8 +408,7 @@ public class ClusterBarChart extends BarChart implements MouseListener {
     }
   }
 
-  public void mousePressed(MouseEvent event) {
-  }
+  public void mousePressed(MouseEvent event) {}
 
   public void mouseReleased(MouseEvent event) {
   }
@@ -412,6 +417,32 @@ public class ClusterBarChart extends BarChart implements MouseListener {
   }
 
   public void mouseExited(MouseEvent event) {
+  }
+
+  public void mouseMoved(MouseEvent e) {
+    setToolTipText(e);
+  }
+
+  public void setToolTipText(MouseEvent e) {
+    double cx = e.getX();
+    double cy = e.getY();
+    String tip = "";
+    // search barBoundary to find which bar has been pointed to
+    for (int i=0; i<barBoundary.length; i++) {
+      if (inRectangle(cx, cy, barBoundary[i])) {
+        tip = tipValues[i];
+        break;
+      }
+    }
+    setToolTipText(tip);
+  }
+
+  public boolean inRectangle(double x, double y, Rectangle2D.Double rectangle) {
+    if (x >= rectangle.getMinX() && x < rectangle.getMaxX() &&
+        y >= rectangle.getMinY() && y < rectangle.getMaxY())
+      return true;
+    else
+      return false;
   }
 
   HashMap map = new HashMap();
@@ -459,9 +490,14 @@ public class ClusterBarChart extends BarChart implements MouseListener {
     int counter = 0;
     int offset = 0;
 
+    barBoundary = new Rectangle2D.Double[bins];
+    tipValues = new String[bins];
     for (int bin=0; bin < bins; bin++) {
 
       if (counter == runsize) {
+        rectangle = new Rectangle2D.Double(x, 0, barwidth, 0);
+        barBoundary[bin] = rectangle;
+        tipValues[bin] = " ";
         counter = 0;
         offset++;
       }
@@ -471,11 +507,15 @@ public class ClusterBarChart extends BarChart implements MouseListener {
         double barheight = (value-yminimum)/yscale;
         double y = getGraphHeight()-bottomoffset-barheight;
 
+        rectangle = new Rectangle2D.Double(x, y, barwidth, barheight);
+        barBoundary[bin] = rectangle;
+        tipValues[bin] = mutable.getString(bin-offset, set.y) + " " + value;
+
         g2.setColor(getClusterColor(counter));
-        g2.fill(new Rectangle2D.Double(x, y, barwidth, barheight));
+        g2.fill(rectangle);
 
         g2.setColor(Color.black);
-        g2.draw(new Rectangle2D.Double(x, y, barwidth, barheight));
+        g2.draw(rectangle);
 
         counter++;
       }

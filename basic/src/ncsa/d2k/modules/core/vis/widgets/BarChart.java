@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.vis.widgets;
 
 import java.awt.*;
 import java.awt.geom.*;
+import java.awt.event.*;
 import java.text.*;
 import java.util.*;
 import javax.swing.*;
@@ -9,8 +10,11 @@ import javax.swing.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.util.*;
+import ncsa.d2k.gui.*;
+import ncsa.d2k.userviews.swing.*;
 
-public class BarChart extends Chart {
+public class BarChart extends Chart
+    implements MouseListener, MouseMotionListener {
 
   // Minimum and maximum scale values
   double xminimum, xmaximum;
@@ -49,9 +53,12 @@ public class BarChart extends Chart {
   int maximumcharacters = 15;
 
   boolean resize = true;
+  Rectangle2D.Double rectangle;
+  Rectangle2D.Double[]  barBoundary;    //array to keep rectangle boundary infomation
 
   public BarChart(Table table, DataSet set, GraphSettings settings) {
     super(table, set, settings);
+    addMouseListener(this);
 
     setBackground(Color.white);
 
@@ -294,6 +301,7 @@ public class BarChart extends Chart {
     if (settings.displaylegend)
       drawLegend(g2);
     drawDataSet(g2, set);
+    addMouseMotionListener(this);
   }
 
   public void drawTitle(Graphics2D g2) {
@@ -443,12 +451,14 @@ public class BarChart extends Chart {
     double x = leftoffset;
     double barwidth = xoffsetincrement;
 
+    barBoundary = new Rectangle2D.Double[table.getNumRows()];
     for (int bin=0; bin < bins; bin++) {
       double value = table.getDouble(bin, set.y);
       double barheight = (value-yminimum)/yscale;
       double y = getGraphHeight()-bottomoffset-barheight;
 
-      Rectangle2D.Double rectangle = new Rectangle2D.Double(x, y, barwidth, barheight);
+      rectangle = new Rectangle2D.Double(x, y, barwidth, barheight);
+      barBoundary[bin] = rectangle;
 
       g2.setColor(colors[bin%colors.length]);
       g2.fill(rectangle);
@@ -459,4 +469,43 @@ public class BarChart extends Chart {
       x += xoffsetincrement;
     }
   }
+
+  public void setToolTipText(MouseEvent e) {
+    double cx = e.getX();
+    double cy = e.getY();
+    String tip = "";
+    // search barBoundary to find which bar has been pointed to
+    for (int i=0; i<barBoundary.length; i++) {
+      if (inRectangle(cx, cy, barBoundary[i])) {
+        tip = table.getString(i, set.x) + " " + table.getDouble(i, set.y);
+        break;
+      }
+    }
+    setToolTipText(tip);
+  }
+
+  public boolean inRectangle(double x, double y, Rectangle2D.Double rectangle) {
+    if (x >= rectangle.getMinX() && x < rectangle.getMaxX() &&
+        y >= rectangle.getMinY() && y < rectangle.getMaxY())
+      return true;
+    else
+      return false;
+  }
+
+  public void mouseClicked(MouseEvent e) {}
+
+  public void mouseReleased(MouseEvent e) {}
+
+  public void mouseEntered(MouseEvent e) {}
+
+  public void mouseExited(MouseEvent e) {}
+
+  public void mouseDragged(MouseEvent e) {}
+
+  public void mousePressed(MouseEvent e) {}
+
+  public void mouseMoved(MouseEvent e) {
+    setToolTipText(e);
+  }
+
 }
