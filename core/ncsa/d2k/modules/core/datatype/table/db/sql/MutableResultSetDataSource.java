@@ -2,8 +2,15 @@ package ncsa.d2k.modules.core.datatype.table.db.sql;
 
 import java.sql.*;
 import java.io.*;
-
 import ncsa.d2k.modules.core.io.sql.*;
+/**
+ * <p>Title: MutableResultSetDataSource</p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2002</p>
+ * <p>Company: NCSA</p>
+ * @author Sameer Mathur
+ * @version 1.0
+ */
 
 public class MutableResultSetDataSource extends ResultSetDataSource {
 
@@ -27,7 +34,6 @@ public class MutableResultSetDataSource extends ResultSetDataSource {
         this.setUserSelectedTables(tables);
         this.setUserSelectedCols(cols);
         this.setUserSelectedWhere("");
-        //userQuery = dbConnection.getTableQuery(tables, cols, "");
         StringBuffer query = new StringBuffer();
         query.append("SELECT ");
         for(int i = 0; i < columns.length; i++) {
@@ -39,7 +45,6 @@ public class MutableResultSetDataSource extends ResultSetDataSource {
         }
         query.append("FROM ");
         query.append(tableName);
-        //userQuery = query.toString();
 
         // Create a Prediction Table in the Database
         dbConnection.createTable(tableName, seqColName, columns,
@@ -50,19 +55,15 @@ public class MutableResultSetDataSource extends ResultSetDataSource {
     }
 
     protected void finalize() throws Throwable {
-        //dbConnection.dropTable(userTables[0]);
         super.finalize();
     }
 
-    /**
-     * Re-initialize when we are de-serialized.
-     */
-   private void readObject(ObjectInputStream in)
-      throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream in)
+        throws IOException, ClassNotFoundException {
 
-      in.defaultReadObject();
-      rs = dbConnection.getUpdatableResultSet(tableName, columnNames, "");
-      initialize();
+        in.defaultReadObject();
+        rs = dbConnection.getUpdatableResultSet(tableName, columnNames, "");
+        initialize();
     }
 
     public void setString(String val, int row, int c) {

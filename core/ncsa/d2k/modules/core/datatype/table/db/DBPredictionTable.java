@@ -2,11 +2,18 @@ package ncsa.d2k.modules.core.datatype.table.db;
 
 import java.sql.*;
 import java.util.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.db.sql.*;
-
 import ncsa.d2k.modules.core.io.sql.*;
+
+/**
+ * <p>Title: DBPredictionTable </p>
+ * <p>Description: Prediction Table Implementation for a Database </p>
+ * <p>Copyright: NCSA (c) 2002</p>
+ * <p>Company: </p>
+ * @author Sameer Mathur, David Clutter
+ * @version 1.0
+ */
 
 public class DBPredictionTable extends DBExampleTable implements PredictionTable{
 
@@ -381,7 +388,6 @@ public class DBPredictionTable extends DBExampleTable implements PredictionTable
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // 5. return the correct index of the prediction column in the prediction set
         return predictionSet.length-1;
     }
 
@@ -440,7 +446,6 @@ public class DBPredictionTable extends DBExampleTable implements PredictionTable
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // 5. return the correct index of the prediction column in the prediction set
         return predictionSet.length-1;
     }
 
@@ -470,9 +475,7 @@ public class DBPredictionTable extends DBExampleTable implements PredictionTable
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // 5. return the correct index of the prediction column in the prediction set
         return predictionSet.length-1;
-
     }
 
     /**
@@ -501,7 +504,6 @@ public class DBPredictionTable extends DBExampleTable implements PredictionTable
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // 5. return the correct index of the prediction column in the prediction set
         return predictionSet.length-1;
     }
 
@@ -531,7 +533,6 @@ public class DBPredictionTable extends DBExampleTable implements PredictionTable
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // 5. return the correct index of the prediction column in the prediction set
         return predictionSet.length-1;
 
     }
@@ -562,7 +563,6 @@ public class DBPredictionTable extends DBExampleTable implements PredictionTable
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // 5. return the correct index of the prediction column in the prediction set
         return predictionSet.length-1;
     }
 
@@ -592,7 +592,6 @@ public class DBPredictionTable extends DBExampleTable implements PredictionTable
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // 5. return the correct index of the prediction column in the prediction set
         return predictionSet.length-1;
     }
 
@@ -652,7 +651,6 @@ public class DBPredictionTable extends DBExampleTable implements PredictionTable
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // 5. return the correct index of the prediction column in the prediction set
         return predictionSet.length-1;
     }
 
@@ -683,7 +681,6 @@ public class DBPredictionTable extends DBExampleTable implements PredictionTable
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // 5. return the correct index of the prediction column in the prediction set
         return predictionSet.length-1;
     }
 
@@ -720,12 +717,10 @@ public class DBPredictionTable extends DBExampleTable implements PredictionTable
 
     public int getNumColumns() {
         // #columns in DBTable + #columns in DBPredictionTable -1 (do not count SEQ_NUM)
-        return dataSource.getNumDistinctColumns() + predictionSet.length;//this.getNumPredicitonTableColumns();
+        return dataSource.getNumDistinctColumns() + predictionSet.length;
     }
 
-//////////////////////////////////////////////////////////////////////////////////////////
 ////////////////// BEGIN overloaded  get<DataType>() functions ///////////////////////////
-
     /**
 	 * Get an Object from the database table.
      * @param row the row of the table
@@ -906,8 +901,6 @@ public class DBPredictionTable extends DBExampleTable implements PredictionTable
         else
             return this.getCharPrediction(row, column-numDBTableCols);
     }
-
-//////////////////////////////////////////////////////////////////////////////////////////
 ////////////////// END overloaded  get<DataType>() functions /////////////////////////////
 
     public String getColumnLabel(int position){
@@ -919,9 +912,7 @@ public class DBPredictionTable extends DBExampleTable implements PredictionTable
             return predictionColumns.getColumnLabel(position-numDBTableCols+1);
     }
 
-//////////////////////////////////////////////////////////////////////////////////////////
 ////////////////// BEGIN PRIVATE HELPER FUNCTIONS ////////////////////////////////////////
-
 
     private void addPredictonColumnHelper(String label) {
         // 1. add a new column called 'label' to the prediction table in the database
@@ -998,12 +989,8 @@ public class DBPredictionTable extends DBExampleTable implements PredictionTable
                 break;
         }
         predictionCol = m; //3
-
-        // update the predictionSet
-//        predictionSet[backup.length] = numCols + predictionCol -2;
         predictionSet[backup.length] = numCols + predictionCol;
     }
 
 ////////////////// END PRIVATE HELPER FUNCTIONS //////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////
 }//DBPredictionTable

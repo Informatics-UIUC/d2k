@@ -1,22 +1,19 @@
 package ncsa.d2k.modules.core.datatype.table.db;
-
 import ncsa.d2k.modules.core.datatype.table.*;
-
 import ncsa.d2k.modules.core.io.sql.*;
 
 /**
- * <p>Title: </p>
- * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2002</p>
+ * <p>Title: DBTrainTable </p>
+ * <p>Description: Database implementation for TrainTable </p>
+ * <p>Copyright: NCSA (c) 2002</p>
  * <p>Company: </p>
- * @author unascribed
+ * @author Sameer Mathur, David Clutter
  * @version 1.0
  */
 
 public class DBTrainTable extends DBExampleTable implements TrainTable{
 
     private DBExampleTable original;
-
     DBTrainTable(DBExampleTable orig, DBDataSource _dbtableconnection, DBConnection _dbconnection) {
         super(orig, _dbtableconnection, _dbconnection);
         original = orig;

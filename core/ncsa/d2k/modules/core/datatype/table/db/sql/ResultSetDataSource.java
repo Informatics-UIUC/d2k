@@ -1,18 +1,24 @@
 package ncsa.d2k.modules.core.datatype.table.db.sql;
 
-//import ncsa.d2k.core.modules.*;
 import java.sql.*;
 import java.sql.Types;
 import java.util.*;
 import java.io.*;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.db.*;
-
 import ncsa.d2k.modules.core.io.sql.*;
 
 /**
+ * <p>Title: CachedSQLDataSource</p>
+ * <p>Description: This is a DBConnection that is 'bound' to a particular database.
+ * Objects of this class are bound to a database, tables within the database,
+ * and columns within those tables.</p>
+ * <p>Copyright: Copyright (c) 2002</p>
+ * <p>Company: NCSA</p>
+ * @author Sameer Mathur
+ * @version 1.0
  */
+
 public class ResultSetDataSource implements DBDataSource {
 
     /** The Connection to the DB */
@@ -95,31 +101,12 @@ public class ResultSetDataSource implements DBDataSource {
     }
 
     /**
-     * Close all connections when we are serialized.
-     /
-    private void writeObject(ObjectOutputStream out)
-        throws IOException, Exception {
-        out.defaultWriteObject();
-
-        rs.close();
-        stmt.close();
-        rs = null;
-        rsmd = null;
-        stmt = null;
-    }*/
-
-    /**
      * Return a copy of this.  The copy will use the same ConnectionWrapper,
      * but will have its own cached ResultSet.
      */
     public DBDataSource copy() {
-//        return new ResultSetDataSource(dbConnection,  userTables,
-//                                       userAllColumns, whereClause);
         return new ResultSetDataSource(dbConnection, userTables, userAllColumns, whereClause);
     }
-
-
-
 
     public void       setUserSelectedTables(String[] _userTables){
         this.userTables = _userTables;
@@ -273,11 +260,6 @@ public class ResultSetDataSource implements DBDataSource {
             return ColumnTypes.STRING;
     }
 
-    /**
-     *
-     * @param pos
-     * @return
-     */
     private int getColumnSQLType (int pos) {
         try{
            return rsmd.getColumnType(pos+1);
@@ -287,7 +269,6 @@ public class ResultSetDataSource implements DBDataSource {
             return 0;
         }
     }
-
 
     public String getTextData(int row, int col) {
         try {

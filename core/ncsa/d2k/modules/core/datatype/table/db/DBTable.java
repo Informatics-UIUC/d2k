@@ -1,7 +1,15 @@
 package ncsa.d2k.modules.core.datatype.table.db;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.io.sql.*;
+
+/**
+ * <p>Title: DBTable </p>
+ * <p>Description: An implementation of the Table Interface for Database access </p>
+ * <p>Copyright: NCSA (c) 2002</p>
+ * <p>Company: </p>
+ * @author Sameer Mathur, David Clutter
+ * @version 1.0
+ */
 
 public class DBTable extends AbstractTable implements Table {
 
@@ -20,18 +28,6 @@ public class DBTable extends AbstractTable implements Table {
         dbConnection = null;
         isNominal = new boolean[dataSource.getNumDistinctColumns()];
 
-        /*for(int i = 0; i < dataSource.getNumDistinctColumns(); i++) {
-            if ((dataSource.getColumnType(i) == ColumnTypes.STRING) ||
-                (dataSource.getColumnType(i) == ColumnTypes.CHAR) ||
-                (dataSource.getColumnType(i) == ColumnTypes.OBJECT)
-               )
-                isNominal[i] = true;
-            else if ((dataSource.getColumnType(i) == ColumnTypes.DOUBLE) ||
-                     (dataSource.getColumnType(i) == ColumnTypes.INTEGER) ||
-                     (dataSource.getColumnType(i) == ColumnTypes.FLOAT)
-               )
-                isNominal[i] = false;
-        }*/
         for(int i = 0; i < dataSource.getNumDistinctColumns(); i++) {
             int type = dataSource.getColumnType(i);
             if ( (type == ColumnTypes.DOUBLE) || (type == ColumnTypes.INTEGER) ||
@@ -40,7 +36,6 @@ public class DBTable extends AbstractTable implements Table {
                 isNominal[i] = false;
             else
                 isNominal[i] = true;
-
         }
     }
 
@@ -53,19 +48,6 @@ public class DBTable extends AbstractTable implements Table {
         dbConnection = _dbconnection;
 
        isNominal = new boolean[dataSource.getNumDistinctColumns()];
-        /*for(int i = 0; i < dataSource.getNumDistinctColumns(); i++) {
-            if ((dataSource.getColumnType(i) == ColumnTypes.STRING) ||
-                (dataSource.getColumnType(i) == ColumnTypes.CHAR) ||
-                (dataSource.getColumnType(i) == ColumnTypes.OBJECT)
-               )
-                isNominal[i] = true;
-            else if ((dataSource.getColumnType(i) == ColumnTypes.DOUBLE) ||
-                     (dataSource.getColumnType(i) == ColumnTypes.INTEGER) ||
-                     (dataSource.getColumnType(i) == ColumnTypes.FLOAT)
-               )
-                isNominal[i] = false;
-        }
-       */
         for(int i = 0; i < dataSource.getNumDistinctColumns(); i++) {
             int type = dataSource.getColumnType(i);
             if ( (type == ColumnTypes.DOUBLE) || (type == ColumnTypes.INTEGER) ||
@@ -197,10 +179,7 @@ public class DBTable extends AbstractTable implements Table {
     public char getChar(int row, int column){
         return dataSource.getTextData(row, column).toCharArray()[0];
     }
-
-	//////////////////////////////////////
 	//// Accessing Table Metadata
-
 	/**
 		Returns the name associated with the column.
 		@param position the index of the Column name to get.
@@ -395,8 +374,6 @@ public class DBTable extends AbstractTable implements Table {
 	*/
 	public Table getSubset(int start, int len){
             // here we will return a TrainDBTable.
-
-            //return dbintf.getCache().table.getSubset(start,len);
             ExampleTable et = this.toExampleTable();
             int[] trSet = new int[len];
             int ctr = 0;

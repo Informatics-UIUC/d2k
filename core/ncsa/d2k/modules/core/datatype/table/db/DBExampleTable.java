@@ -3,8 +3,15 @@ package ncsa.d2k.modules.core.datatype.table.db;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.*;
-
 import ncsa.d2k.modules.core.io.sql.*;
+/**
+ * <p>Title: DBExampleTable </p>
+ * <p>Description: Example Table Implementation for a Database </p>
+ * <p>Copyright: NCSA (c) 2002</p>
+ * <p>Company: </p>
+ * @author Sameer Mathur, David Clutter
+ * @version 1.0
+ */
 
 public class DBExampleTable extends DBTable implements ExampleTable{
 
@@ -52,7 +59,6 @@ public class DBExampleTable extends DBTable implements ExampleTable{
                 }
             }
         }
-
         isNominal = new boolean[orig.isNominal.length];
         for(int i = 0; i < isNominal.length; i++)
             isNominal[i] = orig.isNominal[i];
@@ -179,13 +185,7 @@ public class DBExampleTable extends DBTable implements ExampleTable{
     public TestTable getTestTable () {
         if (testSet == null)
             return  null;
-        //return new DBTestTable((DBExampleTable)this, tableConnection, tables, columns, where, cacheType);
-
-        // CHOOSE A BETTER NUMBER FOR GET NUM ROWS
-        //if(dbConnection == null || getNumRows() > 100000000)
-        //    return new DBTestTable(this, dataSource, dbConnection);
-        //else
-            return new LocalDBTestTable(this, dataSource.copy());
+        return new LocalDBTestTable(this, dataSource.copy());
     }
 
     /**
@@ -195,19 +195,10 @@ public class DBExampleTable extends DBTable implements ExampleTable{
     public TrainTable getTrainTable () {
         if (trainSet == null)
             return  null;
-        //return new DBTrainTable ((DBExampleTable)this, tableConnection, tables, columns, where, cacheType);
         return new DBTrainTable (this, dataSource.copy(), dbConnection);
     }
 
     public PredictionTable toPredictionTable() {
-        //return new DBPredictionTable (this, tableConnection, tables, columns, where, cacheType);
-        //return new DBPredictionTable (this, dataSource, dbConnection);
-        //return new LocalDBPredictionTable(this, dataSource);
-
-        // CHOOSE A BETTER NUMBER FOR GET NUM ROWS
-        //if(dbConnection == null || getNumRows() > 100000000)
-        //    return new DBPredictionTable(this, dataSource, dbConnection);
-        //else
             return new LocalDBPredictionTable(this, dataSource.copy());
     }
 

@@ -8,9 +8,9 @@ import java.util.*;
 import java.io.*;
 
 /**
- * <p>Title: SQLDBConnection</p>
- * Old name : AbstractDBConnect
- * <p>Description: This is a DBConnection that is 'bound' to a particular database.  * Objects of this class are bound to a database, tables within the database,
+ * <p>Title: CachedSQLDataSource</p>
+ * <p>Description: This is a DBConnection that is 'bound' to a particular database.
+ * Objects of this class are bound to a database, tables within the database,
  * and columns within those tables.</p>
  * <p>Copyright: Copyright (c) 2002</p>
  * <p>Company: NCSA</p>
@@ -19,22 +19,14 @@ import java.io.*;
  */
 
 public class CachedSQLDataSource implements DBDataSource {
-
-    //protected ConnectionWrapper cw; /* Input holder for ConnectionWrapper */
     protected DBConnection dbconnection;
     protected Cache cache;
-
     protected String dbInstance;
-
     protected String[]   userTables;
     protected String[][] userAllColumns;
     protected String     whereClause;
-
-//    protected String     userQuery;
-
     protected int        numDistinctUserColumns;
     protected int        numUserRows;
-
     protected ArrayList columnComments;
     protected String[] columnLabels;
 
@@ -44,20 +36,9 @@ public class CachedSQLDataSource implements DBDataSource {
                                String whereClause,
                                int cacheType) {
         dbconnection = connection;
-//        userTables = tables;
-//        userAllColumns = columns;
-//        whereClause = whereClaus;
         this.setUserSelectedTables(tables);
         this.setUserSelectedCols(columns);
         this.setUserSelectedWhere(whereClause);
-
-        System.out.println("CSDS: "+tables+" "+columns+" "+whereClause);
-
-        //..............//
-//        this.userQuery = this.dbconnection.getTableQuery(tables, columns, whereClause);
-        //..............//
-
-
         initialize(cacheType);
     }
 
@@ -76,25 +57,6 @@ public class CachedSQLDataSource implements DBDataSource {
       in.defaultReadObject();
       initialize(0);
     }
-
-//    abstract String getFirstRowQuery(String tableName);
-//    abstract String getNumRecordsQuery(String tableName);
-//    abstract String getAllTableNamesQuery();
-
-    /*public void setDBInstance(String[] tables, String[][] columns,
-        String whereClause, int cacheType) {
-
-        setUserSelectedTables(tables);
-        setUserSelectedCols(columns);
-        setUserSelectedWhere(whereClause);
-        initialize(cacheType);
-    }*/
-
-    /**
-     * Functions related to the Table/Column/Cache selections made by the user
-     */
-
-
 
     public void       setUserSelectedTables(String[] _userTables){
         this.userTables = _userTables;
@@ -162,227 +124,35 @@ public class CachedSQLDataSource implements DBDataSource {
         return numDistinctUserColumns;
     }
 
-/*
-    protected void     setUserSelectedWhere(String _where){
-        whereClause = _where;
-    }
-    protected String   getUserSelectedWhere(){
-        return whereClause;
-    }
-*/
-
     private void initialize(int cacheType) {
         try {
-//            Connection con = dbconnection.getConnection();
-//            Statement stmt = con.createStatement();
-//            String query = this.getDatabaseQuery();
-//            ResultSet rs = stmt.executeQuery(this.userQuery);
-//            ResultSetMetaData rsmd = rs.getMetaData();
-
-//            DBDataSource dbds = new
-            /*cache = new FixedRowCache(dbconnection.getResultSet(this.userTables,
-                                                                this.userAllColumns,
-                                                                this.whereClause));
-
-                                                                */
                 DBDataSource dbds = new ResultSetDataSource(
-                    dbconnection/*.getResultSet(userTables, userAllColumns, whereClause)*/,
-                    userTables, userAllColumns, whereClause);
+                    dbconnection, userTables, userAllColumns, whereClause);
                 cache = new FixedRowCache(dbds);
-
-
-                                                                            ////////FIX////////////
-//            stmt.close();
         }
         catch(Exception e) {
             e.printStackTrace();
         }
-
         setNumUserSelectedRows();
         setNumDistinctUserSelectedCols (null);
         columnLabels = this.getDistinctUserSelectedCols();
     }
-
-    /**
-     * Creates new Cache Object depending on the CacheStyle chosen by the user
-     /
-    public void setCache(String _userCacheName){
-        if (_userCacheName == "FixedRowCache") {//////////////USE CACHEFACTORY//////////
-            //cache = new FixedRowCache(0, 0);
-
-            try {
-                Connection con = this.getConnection();
-                Statement stmt = con.createStatement();
-                String query = this.getDatabaseQuery();
-                ResultSet rs = stmt.executeQuery(query);
-                ResultSetMetaData rsmd = rs.getMetaData();
-
-
-
-                // calculate MaxCacheRows //(potentially using #rows, #cols, colDatatypes of the result set)
-                //cache.setMaxCacheRows(10);
-
-                cache.table = new TableImpl(rsmd.getColumnCount());   //Initialize TableImpl : Cache
-                for (int col = 1; col <= rsmd.getColumnCount(); col++) { //Initialize  Columns of the TableImpl
-                    if (rsmd.getColumnType(col) == 2)
-                        cache.table.setColumn(new DoubleColumn(cache.getMaxCacheRows()), col-1);
-                    else // //(rsmd.getColumnType(col) == 12)
-                        cache.table.setColumn(new StringColumn(cache.getMaxCacheRows()), col-1);
-                }
-
-                //cache.table.setLabel("table");
-                //cache.table.setComment("table");
-                //cache.table.setKeyColumn(0);
-
-                // set Labels, isNominal, isScaler in the TableImpl
-                for (int col = 1; col <= rsmd.getColumnCount(); col++) {
-                    cache.table.setColumnLabel(rsmd.getColumnLabel(col), col-1);
-                    //cache.table.setColumnIsNominal(false, col-1);
-                    //cache.table.setColumnIsScalar(false, col-1);
-                }
-
-
-                // now populate the cache for the first time
-                int numRowsAddedToCache = 0;
-                while (  (rs.next()) && (numRowsAddedToCache < cache.getMaxCacheRows()) ) {
-                    for (int col = 1; col <= rsmd.getColumnCount(); col++) {
-                        if (rsmd.getColumnType(col) == 2) {
-                            double data = rs.getDouble(col);
-                            //System.out.println("number: " + data + " (r,c) = (" + r + "," + c + ")");
-                            cache.table.setDouble(data, numRowsAddedToCache, col-1);
-                        }
-                        else { //(rsmd.getColumnType(c) == 12)
-                            String data = rs.getString(col);
-                            //System.out.println("string: " + data + " (r,c) = (" + r + "," + c + ")");
-                            cache.table.setString(data, numRowsAddedToCache, col-1);
-                        }
-                    }//for loop processes all the columns for a particular row
-                    numRowsAddedToCache++;
-                }//while
-
-                //now initialize how many rows were written to the cache
-                cache.setNumCacheRows(numRowsAddedToCache);
-
-
-                //now initialize minRowNum & maxRowNum  (THIS COULD GO IN THE FixedRowCache() CONSTRUCTOR)
-                cache.minRowNum = 0;
-                cache.maxRowNum = cache.minRowNum + cache.getNumCacheRows() -1;
-
-                stmt.close();
-            }
-            catch (Exception e) {
-    System.out.println("Error in FixedRowCache:Constructor");
-                e.printStackTrace();
-            }
-        }//if "FixedRowCache" //////////////USE CACHEFACTORY//////////
-
- /////////////TODO//////////
-
-        else {  // DEFAULT / OTHER KIND OF CACHE TO USE
-            cache = new FixedRowCache(0);
-
-            try {
-                Connection con = this.getConnection();
-                Statement stmt = con.createStatement();
-                String query = this.getDatabaseQuery();
-                ResultSet rs = stmt.executeQuery(query);
-                ResultSetMetaData rsmd = rs.getMetaData();
-
-                // calculate MaxCacheRows //(potentially using #rows, #cols, colDatatypes of the result set)
-                cache.setMaxCacheRows(10);
-
-                cache.table = new TableImpl(rsmd.getColumnCount());   //Initialize TableImpl : Cache
-                for (int c = 1; c <= rsmd.getColumnCount(); c++) { //Initialize  Columns of the TableImpl
-                    if (rsmd.getColumnType(c) == 2)
-                        cache.table.setColumn(new DoubleColumn(cache.getMaxCacheRows()), c-1);
-                    else // //(rsmd.getColumnType(c) == 12)
-                        cache.table.setColumn(new StringColumn(cache.getMaxCacheRows()), c-1);
-                }
-
-                // now populate the cache for the first time
-                int numRowsAddedToCache = 0;
-                while (  (rs.next()) && (numRowsAddedToCache < cache.getMaxCacheRows()) ) {
-                    for (int c = 1; c <= rsmd.getColumnCount(); c++) {
-                        if (rsmd.getColumnType(c) == 2) {
-                            double data = rs.getDouble(c);
-                            //System.out.println("number: " + data + " (r,c) = (" + r + "," + c + ")");
-                            cache.table.setDouble(data, numRowsAddedToCache, c-1);
-                        }
-                        else { //(rsmd.getColumnType(c) == 12)
-                            String data = rs.getString(c);
-                            //System.out.println("string: " + data + " (r,c) = (" + r + "," + c + ")");
-                            cache.table.setString(data, numRowsAddedToCache, c-1);
-                        }
-                    }//for loop processes all the columns for a particular row
-                    numRowsAddedToCache++;
-                }//while
-
-                //now initialize how many rows were written to the cache
-                cache.setNumCacheRows(numRowsAddedToCache);
-
-
-                //now initialize minRowNum & maxRowNum  (THIS COULD GO IN THE FixedRowCache() CONSTRUCTOR)
-                cache.minRowNum = 0;
-                cache.maxRowNum = cache.minRowNum + cache.getNumCacheRows() -1;
-
-                stmt.close();
-            }
-            catch (Exception e) {
-    System.out.println("Error in FixedRowCache:Constructor");
-                e.printStackTrace();
-            }
-
-        }//ELSE
-
-    }
-    */
-
-
-//////////REMOVE THIS FROM HERE////////////
 
      // Caching Mechanism Followed :
         // On a cache miss, write upto getNumCacheRows() records of the ResultSet rs,
         // beginning from record# rowInResultSet
     public void updateCache (int rowInResultSet) {
         try {
-//System.out.println("first: update minRowNum");
-//            cache.minRowNum = rowInResultSet;
-
-//System.out.println("second: connect to the Database");
-//            Connection con = dbconnection.getConnection();//this.getConnection();
-//            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-//                                                 ResultSet.CONCUR_UPDATABLE);
-//            String query = this.getDatabaseQuery();
-//            ResultSet rs = stmt.executeQuery(this.userQuery);
-            //ResultSetMetaData rsmd = rs.getMetaData();
-
-
-//            cache.update(rowInResultSet, rs);
             cache.update(rowInResultSet,
-                new ResultSetDataSource(dbconnection/*.getResultSet(this.userTables,
-                                                                   this.userAllColumns,
-                                                                   this.whereClause)*/,
-                                                                   userTables,
-                                                                   userAllColumns,
-                                                                   whereClause));
-//            stmt.close();
+                new ResultSetDataSource(dbconnection, userTables, userAllColumns, whereClause));
          }
          catch(Exception e) {
             e.printStackTrace();
          }
     }//UpdateCache()
 
-
-
     protected void setNumUserSelectedRows(){
         try{
-            // connect to the database and query it
-//            Connection con = dbconnection.getConnection();//this.getConnection();
-//            Statement stmt = con.createStatement();
-
-//            String query = this.getDatabaseQuery();
-//            ResultSet rs = stmt.executeQuery(this.userQuery);
-
             ResultSet rs = dbconnection.getResultSet(this.userTables,
                                                      this.userAllColumns,
                                                      this.whereClause);
@@ -392,10 +162,8 @@ public class CachedSQLDataSource implements DBDataSource {
                 count++;
             }
             this.numUserRows = count;
-//            stmt.close();
         }
         catch (Exception e) {
-//System.out.println("Error in SQLDBConnection: SetNumUserSelectedRows: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -436,18 +204,8 @@ public class CachedSQLDataSource implements DBDataSource {
             return ColumnTypes.STRING;
     }
 
-    /**
-     *
-     * @param pos
-     * @return
-     */
     private int getColumnSQLType (int pos) {
         try{
-//            Connection con = dbconnection.getConnection();
-//            Statement stmt = con.createStatement();
-//            String query = this.getDatabaseQuery();
-//            ResultSet rs = stmt.executeQuery(this.userQuery);
-
             ResultSet rs = dbconnection.getResultSet(this.userTables,
                                                      this.userAllColumns,
                                                      this.whereClause);
@@ -460,20 +218,13 @@ public class CachedSQLDataSource implements DBDataSource {
         }
     }
 
-
-
-
-
-
     public String getTextData(int row, int col) {
         try {
             return cache.getCacheTextData(row, col);
         }
         catch (CacheMissException cme) {
             try {
-//System.out.println("GetTextData: CacheMissExceptionA");
-                this.updateCache(row);              ////////////////FIX//////////////
-//System.out.println("GetTextData: CacheMissExceptionB");
+                this.updateCache(row);
                 return cache.getCacheTextData(row, col); //return data from the updated cache
             }
             catch (CacheMissException cmeError) {
@@ -493,15 +244,11 @@ public class CachedSQLDataSource implements DBDataSource {
             return cache.getCacheNumericData(row, col);
         }
         catch (CacheMissException cme) {
-            //System.out.println("SQLDBConnection:GetNumericData " + cme.getMessage());
-
             try {
-                this.updateCache(row);               ////////////////FIX//////////////
-                return cache.getCacheNumericData(row, col); //return data from the updated cache
+                this.updateCache(row);
+                return cache.getCacheNumericData(row, col);
             }
             catch (CacheMissException cmeError) {
-                //System.out.println("SQLDBConnection:GetTextData:WARNING: " +
-                //                   "Cache Miss After Update " + cmeError.getMessage());
                 return 0.0;
             }
             catch (Exception e) {
@@ -516,15 +263,11 @@ public class CachedSQLDataSource implements DBDataSource {
             return cache.getCacheBooleanData(row, col);
         }
         catch (CacheMissException cme) {
-            //System.out.println("SQLDBConnection:getBooleanData " + cme.getMessage());
-
             try {
-                this.updateCache(row);               ////////////////FIX//////////////
-                return cache.getCacheBooleanData(row, col); //return data from the updated cache
+                this.updateCache(row);
+                return cache.getCacheBooleanData(row, col);
             }
             catch (CacheMissException cmeError) {
-                //System.out.println("SQLDBConnection:getBooleanData:WARNING: " +
-                //                   "Cache Miss After Update " + cmeError.getMessage());
                 return false;
             }
             catch (Exception e) {
@@ -539,15 +282,11 @@ public class CachedSQLDataSource implements DBDataSource {
             return cache.getCacheObjectData(row, col);
         }
         catch (CacheMissException cme) {
-            //System.out.println("SQLDBConnection:GetNumericData " + cme.getMessage());
-
             try {
-                this.updateCache(row);               ////////////////FIX//////////////
-                return cache.getCacheObjectData(row, col); //return data from the updated cache
+                this.updateCache(row);
+                return cache.getCacheObjectData(row, col);
             }
             catch (CacheMissException cmeError) {
-//                System.out.println("SQLDBConnection:getObjectData:WARNING: " +
-//                                   "Cache Miss After Update " + cmeError.getMessage());
                 return null;
             }
             catch (Exception e) {
@@ -556,9 +295,6 @@ public class CachedSQLDataSource implements DBDataSource {
             }
         }
     } //getObjectData
-
-
-
 
     protected void     setDBInstance (String dbInst) {
         dbInstance = dbInst;
@@ -572,215 +308,7 @@ public class CachedSQLDataSource implements DBDataSource {
         return dbconnection.getConnection().getMetaData().getDatabaseProductName();
     }
 
-
-
-    /**
-     * Functions related to the Connection
-     /
-    public Connection     getConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
-        return cw.getConnection();
-    }/
-
-    public ConnectionWrapperImpl    getConnectionWrapper() {
-        return cw;
-    }*/
-
-
-
-    /*public String[]     getTableNames() {
-//System.out.println("entering getAllTableNames..");
-        String tables[];
-        Vector vec = new Vector();
-
-        try {
-          Connection con = getConnection();
-          Statement stmt = con.createStatement();
-          ResultSet rs = stmt.executeQuery(getAllTableNamesQuery());
-          //int idx = 0;
-          while (rs.next())
-              //tables[idx++] = rs.getString(1);
-              vec.addElement((Object)rs.getString(1));
-          stmt.close();
-
-          // copy over the tables in the Vector into an Array of Strings
-          tables = new String[vec.size()];
-          for (int i=0; i<vec.size(); i++) {
-              tables[i] = vec.elementAt(i).toString();
-          }
-
-          return tables;
-        }
-        catch (Exception e){
-           JOptionPane.showMessageDialog(null,
-                e.getMessage(), "Error0",
-                JOptionPane.ERROR_MESSAGE);
-           System.out.println("Error occoured in GetTableNames.");
-           return null;
-        }
-    }*/
-
-
-    /*public String[]     getColumnNames (String tableName) {
-//System.out.println("entering GetColumnNames..");
-       try {
-          Connection con = getConnection();
-          Statement stmt = con.createStatement();
-          ResultSet rs = stmt.executeQuery(getFirstRowQuery(tableName));
-          ResultSetMetaData rsmd = rs.getMetaData();
-          String columns[] = new String[rsmd.getColumnCount()];
-
-          for (int i = 1; i <= rsmd.getColumnCount(); i++)
-              columns[i-1] = rsmd.getColumnName(i);
-
-          stmt.close();
-          return columns;
-        }
-        catch (Exception e){
-           JOptionPane.showMessageDialog(msgBoard,
-                e.getMessage(), "Error1",
-                JOptionPane.ERROR_MESSAGE);
-           System.out.println("Error occoured in GetColumnNames.");
-           return null;
-        }
-    }
-
-
-    public String[]     getColumnTypes (String tableName) {
-//System.out.println("entering GetAllColumnTypes..");
-        try {
-          Connection con = getConnection();
-          Statement stmt = con.createStatement();
-          ResultSet rs = stmt.executeQuery(getFirstRowQuery(tableName));
-          ResultSetMetaData rsmd = rs.getMetaData();
-          String columnsTypes[] = new String[rsmd.getColumnCount()];
-
-          for (int i = 1; i <= rsmd.getColumnCount(); i++)
-              columnsTypes[i-1] = rsmd.getColumnTypeName(i);
-
-          stmt.close();
-//System.out.println("exiting GetAllColumnTypes..");
-          return columnsTypes;
-        }
-        catch (Exception e){
-           JOptionPane.showMessageDialog(msgBoard,
-                e.getMessage(), "Error2",
-                JOptionPane.ERROR_MESSAGE);
-           System.out.println("Error occoured in GetAllColumnTypes.");
-           return null;
-        }
-    }
-
-    public String     getColumnType (String tableName, String columnName) {
-//System.out.println("entering GetColumnType..");
-       try {
-          Connection con = getConnection();
-          Statement stmt = con.createStatement();
-          ResultSet rs = stmt.executeQuery(getFirstRowQuery(tableName));
-          ResultSetMetaData rsmd = rs.getMetaData();
-          String type = new String();
-
-          for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-              if (rsmd.getColumnName(i) == columnName) {
-                  type = rsmd.getColumnName(i);
-                  break;
-              }
-          }
-          stmt.close();
-          return type;
-        }
-        catch (Exception e){
-           JOptionPane.showMessageDialog(msgBoard,
-                e.getMessage(), "Error3",
-                JOptionPane.ERROR_MESSAGE);
-           System.out.println("Error occoured in GetColumnType.");
-           return null;
-        }
-    }
-
-
-    public int    getColumnLength (String tableName, String columnName) {
-System.out.println("entering GetColumnLength..");
-       try {
-          Connection con = getConnection();
-          Statement stmt = con.createStatement();
-          ResultSet rs = stmt.executeQuery(getFirstRowQuery(tableName));
-          ResultSetMetaData rsmd = rs.getMetaData();
-          int length = 0;
-
-          for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-              if (rsmd.getColumnName(i) == columnName) {
-                  length = rsmd.getColumnDisplaySize(i);
-                  break;
-              }
-          }
-          stmt.close();
-          return length;
-        }
-        catch (Exception e){
-           JOptionPane.showMessageDialog(msgBoard,
-                e.getMessage(), "Error3",
-                JOptionPane.ERROR_MESSAGE);
-           System.out.println("Error occoured in GetColumnType.");
-           return 0;
-        }
-    }
-
-
-    public int[]    getColumnLengths(String tableName) {
-//System.out.println("entering GetAllColumnLengths..");
-        try {
-          Connection con = getConnection();
-          Statement stmt = con.createStatement();
-          ResultSet rs = stmt.executeQuery(getFirstRowQuery(tableName));
-          ResultSetMetaData rsmd = rs.getMetaData();
-          int columnsLengths[] = new int[rsmd.getColumnCount()];
-
-          for (int i = 1; i <= rsmd.getColumnCount(); i++)
-              columnsLengths[i-1] = rsmd.getColumnDisplaySize(i);
-
-          stmt.close();
-//System.out.println("exiting GetAllColumnTypes..");
-          return columnsLengths;
-        }
-        catch (Exception e){
-           JOptionPane.showMessageDialog(msgBoard,
-                e.getMessage(), "Error2",
-                JOptionPane.ERROR_MESSAGE);
-           System.out.println("Error occoured in GetAllColumnTypes.");
-           return new int[(0)];
-        }
-    }
-
-    public int    getNumRecords (String tableName) {
-//System.out.println("entering GetNumRecords..");
-        int numRecords = 0;
-        try {
-          Connection con = getConnection();
-          String query = getNumRecordsQuery(tableName);
-          Statement stmt = con.createStatement();
-          ResultSet rs = stmt.executeQuery(query);
-          while (rs.next()) {
-              numRecords = rs.getInt(1);
-          }
-          numRecords--; ///////////For some reason, numRecords is one more than it should be..
-          stmt.close();
-//System.out.println("SQLDBConnection:GetNumRecords: " + numRecords);
-          return numRecords;
-        }
-        catch (Exception e){
-           JOptionPane.showMessageDialog(msgBoard,
-                e.getMessage(), "Error*6",
-                JOptionPane.ERROR_MESSAGE);
-           System.out.println("Error occoured in GetNumRecords.");
-           return numRecords;
-        }
-    }
-    */
-
     public String getColumnLabel(int pos) {
-//for (int i=0; i<columnLabels.length; i++) {
-//    System.out.println("label" + i + ": " + columnLabels[i]);
-//}
         if (pos < columnLabels.length)
             return columnLabels[pos];
         else {
@@ -798,9 +326,4 @@ System.out.println("Column Comment position : " + pos + " out of bounds");
         }
     }
 
-/*
-    public Connection getConnection() throws SQLException, ClassNotFoundException,
-    InstantiationException, IllegalAccessException {
-        return dbconnection.getConnection();
-    }*/
 } //SQLDBConnection

@@ -1,7 +1,15 @@
 package ncsa.d2k.modules.core.datatype.table.db;
-
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.io.sql.*;
+
+/**
+ * <p>Title: DBTestTable </p>
+ * <p>Description: Database implementation for TestTable </p>
+ * <p>Copyright: NCSA (c) 2002</p>
+ * <p>Company: </p>
+ * @author Sameer Mathur, David Clutter
+ * @version 1.0
+ */
 
 public class DBTestTable extends DBPredictionTable implements TestTable {
 
