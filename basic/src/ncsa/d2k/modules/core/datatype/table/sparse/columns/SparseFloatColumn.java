@@ -431,12 +431,12 @@ public class SparseFloatColumn
    * sorts the elements in this column so that the rows that were originally
    * valid remain valid after sorting
    */
-  public void sort() {
+ /* public void sort() {
     VIntIntHashMap newOrder = elements.getSortedOrder();
     elements = (VIntFloatHashMap) elements.reorder(newOrder);
     missing = missing.reorder(newOrder);
     empty = empty.reorder(newOrder);
-  }
+  }*/
 
   /**
    * returns a subset of this column with entried from rows indicated by
@@ -756,6 +756,9 @@ public class SparseFloatColumn
   protected VHashMap getElements() {
     return elements;
   }
+  protected void setElements(VHashMap map){
+     elements = (VIntFloatHashMap) map;
+   }
 
   //=================
   // Private Methods

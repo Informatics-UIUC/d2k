@@ -235,11 +235,11 @@ public class SparseStringColumn
     for (int i = 0; i < rows.length; i++) {
 
       //set its value in the sub column
-      subCol.setString(getString(rows[i]), rows[i]);
+      subCol.setString(getString(rows[i]), i);
 
       //getting attributes from super
     }
-    super.getSubset(this, pos, len);
+    super.getSubset(subCol, pos, len);
 
     return subCol;
 
@@ -460,6 +460,12 @@ public class SparseStringColumn
   public Column reorderRows(VIntIntHashMap newOrder) {
     //     SparseStringColumn retVal = new SparseStringColumn (row2Id.size());
     SparseStringColumn retVal = (SparseStringColumn) copy();
+    VIntIntHashMap newRow2Id = new VIntIntHashMap(row2Id.size());
+    int[] keys = newOrder.keys();
+    for(int i=0; i<keys.length; i++){
+      newRow2Id.put(keys[i], row2Id.get(newOrder.get(keys[i])));
+    }
+    /*
     int[] destRows = newOrder.keys();
     for (int i = 0; i < destRows.length; i++) {
       int srcRow = newOrder.get(destRows[i]);
@@ -467,8 +473,11 @@ public class SparseStringColumn
         retVal.setString(getString(srcRow), destRows[i]);
       }
     }
-
+*/
     //  retVal.copyAttributes(this);
+
+    retVal.row2Id = newRow2Id;
+//    this.row2Id = newRow2Id;
 
     return retVal;
   }
@@ -670,14 +679,16 @@ public class SparseStringColumn
      All entries at row numbers greater than <codE>pos</code> are moved down
      the column to the next row.
      @param newEntry the newEntry to insert
-     @param pos the position to insert at
+     @param pos the position to insert at (row number)
    */
   public void insertRow(Object newEntry, int pos) {
 
     String str = SparseStringColumn.toStringObject(newEntry);
     int index = getInsertionIndex(str);
+    //index is the index of str into the values array.
 
     row2Id.insertObject(new Integer(index), pos);
+    valuesInColumn[index] = str;
 
     missing.increment(pos);
     empty.increment(pos);
@@ -773,10 +784,13 @@ public class SparseStringColumn
    * valid remain valid after sorting and for each valid row i, getString(i)
    * is smaller than getString(i+1) (aside of the maximal row number).
    */
-  public void sort() {
+/*  public void sort() {
     VIntIntHashMap newOrder = getNewOrder();
     reorderRows(newOrder);
-  }
+  }*/
+
+
+
 
   /**
    * Swaps the values between 2 rows.
@@ -907,6 +921,14 @@ public class SparseStringColumn
   protected VHashMap getElements() {
     return row2Id;
   }
+
+
+  protected void setElements(VHashMap map){
+   row2Id = (VIntIntHashMap) map;
+ }
+
+
+
 
 
 } //SparseStringColumn

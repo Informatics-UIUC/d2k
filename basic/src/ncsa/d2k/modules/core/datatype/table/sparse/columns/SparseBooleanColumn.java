@@ -673,14 +673,14 @@ public class SparseBooleanColumn
    * values will be held at the end of this column
    */
 
-  public void sort() {
+/*  public void sort() {
     VIntIntHashMap newOrder = elements.getSortedOrder();
     elements = (VIntBooleanHashMap) elements.reorder(newOrder);
 
     missing = missing.reorder(newOrder);
     empty = empty.reorder(newOrder);
 
-  }
+  }*/
 
 
   /**
@@ -806,6 +806,10 @@ public class SparseBooleanColumn
   protected VHashMap getElements() {
     return elements;
   }
+
+    protected void setElements(VHashMap map){
+      elements = (VIntBooleanHashMap) map;
+    }
 
 }
 /*

@@ -571,12 +571,13 @@ public class SparseDoubleColumn
    * sorts the elements in this column so that the rows that were originally
    * valid remain valid after sorting
    */
-  public void sort() {
+  //VERED - now sort is implemented in the abstract sparse column
+/*  public void sort() {
     VIntIntHashMap newOrder = elements.getSortedOrder();
     elements = (VIntDoubleHashMap) elements.reorder(newOrder);
     missing = missing.reorder(newOrder);
     empty = empty.reorder(newOrder);
-  }
+  }*/
 
   /**
    * Swaps the values between 2 rows.
@@ -764,6 +765,9 @@ public class SparseDoubleColumn
   protected VHashMap getElements() {
     return elements;
   }
+  protected void setElements(VHashMap map){
+     elements = (VIntDoubleHashMap) map;
+   }
 
   /**
    * Reorders the data stored in this column in a new column.

@@ -557,13 +557,13 @@ public class SparseLongColumn
    * sorts the elements in this column so that the rows that were originally
    * valid remain valid after sorting
    */
-  public void sort() {
+/*  public void sort() {
     VIntIntHashMap newOrder = elements.getSortedOrder();
     elements = (VIntLongHashMap) elements.reorder(newOrder);
     missing = missing.reorder(newOrder);
     empty = empty.reorder(newOrder);
   }
-
+*/
 
   /**
    * Swaps the values between 2 rows.
@@ -755,6 +755,11 @@ public class SparseLongColumn
   protected VHashMap getElements() {
     return elements;
   }
+
+  protected void setElements(VHashMap map){
+   elements = (VIntLongHashMap) map;
+ }
+
 
   //=================
   // Private Methods

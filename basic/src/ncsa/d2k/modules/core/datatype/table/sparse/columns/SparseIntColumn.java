@@ -453,13 +453,13 @@ public class SparseIntColumn
    * sorts the elements in this column so that the rows that were originally
    * valid remain valid after sorting
    */
-  public void sort() {
+ /* public void sort() {
     VIntIntHashMap newOrder = elements.getSortedOrder();
     elements = (VIntIntHashMap) elements.reorder(newOrder);
     missing = missing.reorder(newOrder);
     empty = empty.reorder(newOrder);
   }
-
+*/
   /**
    * Set the value at pos to be newEntry, converted into int
    * @param newEntry the new item
@@ -711,6 +711,11 @@ public class SparseIntColumn
   protected VHashMap getElements() {
     return elements;
   }
+
+  protected void setElements(VHashMap map){
+   elements = (VIntIntHashMap) map;
+ }
+
 
   //=================
   // Private Methods

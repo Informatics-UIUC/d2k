@@ -552,13 +552,13 @@ public class SparseCharColumn
    * sorts the elements in this column so that the rows that were originally
    * valid remain valid after sorting
    */
-  public void sort() {
+/*  public void sort() {
     VIntIntHashMap newOrder = elements.getSortedOrder();
     elements = (VIntCharHashMap) elements.reorder(newOrder);
     missing = missing.reorder(newOrder);
     empty = empty.reorder(newOrder);
   }
-
+*/
 
   /**
    * Swaps the values between 2 rows.
@@ -663,6 +663,12 @@ public class SparseCharColumn
   protected VHashMap getElements() {
     return elements;
   }
+
+  protected void setElements(VHashMap map){
+     elements = (VIntCharHashMap) map;
+   }
+
+
 
   /**
    * Returns the internal representation of this column.

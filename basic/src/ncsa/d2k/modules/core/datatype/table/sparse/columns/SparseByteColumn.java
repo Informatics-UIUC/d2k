@@ -637,7 +637,7 @@ public class SparseByteColumn
        * valid remain valid after sorting and for each valid row i, get(i) is smaller
    * than get(i+1) (aside of the maximal row number).
    */
-  public void sort() {
+/*  public void sort() {
 
     VIntIntHashMap newOrder = elements.getSortedOrder();
     elements = (VIntByteHashMap) elements.reorder(newOrder);
@@ -645,7 +645,7 @@ public class SparseByteColumn
     missing = missing.reorder(newOrder);
     empty = empty.reorder(newOrder);
 
-  }
+  }*/
 
 
   /**
@@ -815,6 +815,11 @@ public class SparseByteColumn
   protected VHashMap getElements() {
     return elements;
   }
+
+  protected void setElements(VHashMap map){
+   elements = (VIntByteHashMap) map;
+ }
+
 
   /**
        * Returns the valid values in rows <codE>begin</code> through <codE>end</code>

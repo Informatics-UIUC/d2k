@@ -410,14 +410,14 @@ public class SparseObjectColumn
        * Note - sort() supports only Comparable Objects or char arrays or byte arrays.
    * using sort with objects different than the above will throw an exception.
    */
-  public void sort() {
+/*  public void sort() {
     VIntIntHashMap newOrder = getNewOrder();
     elements = (VIntObjectHashMap) elements.reorder(newOrder);
 
     missing = missing.reorder(newOrder);
     empty = empty.reorder(newOrder);
   }
-
+*/
   /**
         Set the item at pos to be a Bollean object encapsulating newEntry.
         @param newEntry the new item
@@ -909,6 +909,12 @@ public class SparseObjectColumn
   protected VHashMap getElements() {
     return elements;
   }
+
+
+  protected void setElements(VHashMap map){
+   elements = (VIntObjectHashMap) map;
+ }
+
 
 
   /**

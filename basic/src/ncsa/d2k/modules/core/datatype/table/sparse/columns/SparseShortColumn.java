@@ -537,7 +537,7 @@ public class SparseShortColumn
    * sorts the elements in this column so that the rows that were originally
    * valid remain valid after sorting
    */
-  public void sort() {
+ /* public void sort() {
     VIntIntHashMap newOrder = elements.getSortedOrder();
     elements = (VIntShortHashMap) elements.reorder(newOrder);
 
@@ -545,7 +545,7 @@ public class SparseShortColumn
     empty = empty.reorder(newOrder);
 
   }
-
+*/
 
   /**
         Set the item at pos to be newEntry by casting it to a short.
@@ -780,6 +780,13 @@ public class SparseShortColumn
   protected VHashMap getElements() {
     return elements;
   }
+
+
+  protected void setElements(VHashMap map){
+   elements = (VIntShortHashMap) map;
+ }
+
+
 
   /**
        * Returns the valid values in rows <codE>begin</code> through <codE>end</code>

@@ -13,6 +13,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 
+import java.util.*;
 /**
  * Title:        Sparse Table
  * Description:  Sparse Table projects will implement data structures compatible to the interface tree of Table, for sparsely stored data.
@@ -684,6 +685,15 @@ abstract public class AbstractSparseColumn
    */
   protected abstract VHashMap getElements();
 
+  /**
+   * sets the hash map of this column to refer <code>map</code>.
+   * this is a protected method, to be used only internally, in order
+   * to avoid code duplication and implementation of more methods
+   * in the abstract class.
+   * @param map - values, to be held by this column.
+   */
+  protected abstract void setElements(VHashMap map);
+
 
   //this method is for test units only.
   public boolean equals(Object other){
@@ -786,6 +796,7 @@ abstract public class AbstractSparseColumn
   protected void reorderRows(AbstractSparseColumn toOrder,
                              VIntIntHashMap newOrder) {
     toOrder.missing = missing.reorder(newOrder);
+    toOrder.empty = empty.reorder(newOrder);
     toOrder.copyAttributes(this);
   }
 
@@ -820,7 +831,63 @@ abstract public class AbstractSparseColumn
     }
   }
 
+  /**
+   * Returns an array of Elements containing the values in this column
+   * with their current indices.
+   * this is for purposes of sorting.
+   * @return
+   */
+  public Element[] getValuesForSort(){
+    int[] keys = keys();
+   return getValuesForSort(keys);
+  }
+
+  public Element[] getValuesForSort(int[] keys){
+
+   Element[] retVal = new Element[keys.length];
+   for (int i=0; i<retVal.length; i++){
+       retVal[i] = new Element(getObject(keys[i]), keys[i]);
+   }//for
+   return retVal;
+
+ }
+
+
+  protected VIntIntHashMap getSortedOrder(){
+    VIntIntHashMap retVal = new VIntIntHashMap(getNumEntries());
+    Element[] values = getValuesForSort();
+    int[] sortedKeys = getIndices();
+    Arrays.sort(values, new ObjectComparator());
+    for (int i=0; i<values.length; i++){
+      retVal.put(sortedKeys[i], values[i].getIndex());
+    }
+    return retVal;
+  }
+
+
+  protected VIntIntHashMap getSortedOrder(int begin, int end){
+
+  int[] keys = VHashService.getIndicesInRange(begin, end, getElements());
+  VIntIntHashMap retVal = new VIntIntHashMap(keys.length);
+  Element[] values = getValuesForSort(keys);
+  Arrays.sort(keys);
+  Arrays.sort(values, new ObjectComparator());
+  for (int i=0; i<values.length; i++){
+    retVal.put(keys[i], values[i].getIndex());
+  }
+  return retVal;
 }
+
+
+   public void sort(){
+     VIntIntHashMap order = getSortedOrder();
+     setElements(getElements().reorder(order));
+     missing = missing.reorder(order);
+     empty = empty.reorder(order);
+   }
+
+
+}//AbstractSparseColumn
 
 
 
