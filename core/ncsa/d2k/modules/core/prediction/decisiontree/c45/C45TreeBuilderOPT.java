@@ -705,11 +705,17 @@ public class C45TreeBuilderOPT
   public String getInputInfo(int i) {
     String in = "An ExampleTable to build a decision tree from. ";
     in += "Only one output feature is used.";
-    return in;
+    if (i == 0) 
+	return in;
+    else 
+	return "Control Point in Parameter Space";
   }
 
   public String getInputName(int i) {
-    return "Example Table";
+      if( i == 0)
+	  return "Example Table";
+      else
+	  return "Parameter Point";
   }
 
   public String getOutputInfo(int i) {
