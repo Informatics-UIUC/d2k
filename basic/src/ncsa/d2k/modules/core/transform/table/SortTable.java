@@ -1,4 +1,3 @@
-
 package ncsa.d2k.modules.core.transform.table;
 
 import java.awt.*;
@@ -60,7 +59,7 @@ public class SortTable extends ncsa.d2k.core.modules.UIModule {
          "</P><p><b>Detailed Description:</b><br> This module provides the user with an "+
          "interface to choose sorting columns for a cascading sort: The whole table is "+
          "being sorted according to the first column that is chosen. If more than one "+
-         "column is chosen for the sort – for each successive column, a sort is being "+
+         "column is chosen for the sort ï¿½ for each successive column, a sort is being "+
          "applied on the table only for runs in the previous column.<br>"+
          "A run is a collection of identical values in a column.</P><P>"+
          "<u>Missing Values Handling:</u> This module handles missing values as if they were " +

@@ -14,9 +14,11 @@ import java.beans.PropertyVetoException;
 	The user to select a percentage of the table to be train and test. This
 	module provide a custom gui that is a slider indicating the percent of the
 	data to be used as training data.
-   @author Tom Redman
+
+   @author Tom Redman, revised Xiaolei Li 
 */
-public class SimpleTrainTest extends DataPrepModule  {
+public class SimpleTrainTest extends DataPrepModule  
+{
 
 	boolean debug = false;
 	/**
@@ -47,7 +49,8 @@ public class SimpleTrainTest extends DataPrepModule  {
 	   Return the name of this module.
 	   @return The name of this module.
 	*/
-	public String getModuleName() {
+	public String getModuleName() 
+	{
 		return "Simple Train Test";
 	}
 
@@ -56,7 +59,8 @@ public class SimpleTrainTest extends DataPrepModule  {
 	   module.
 	   @return The datatypes of the inputs.
 	*/
-	public String[] getInputTypes() {
+	public String[] getInputTypes() 
+	{
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
 		return types;
 	}
@@ -66,7 +70,8 @@ public class SimpleTrainTest extends DataPrepModule  {
 	   module.
 	   @return The datatypes of the outputs.
 	*/
-	public String[] getOutputTypes() {
+	public String[] getOutputTypes() 
+	{
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.TrainTable","ncsa.d2k.modules.core.datatype.table.TestTable"};
 		return types;
 	}
@@ -76,7 +81,8 @@ public class SimpleTrainTest extends DataPrepModule  {
 	   @param i The index of the input
 	   @return The description of the input
 	*/
-	public String getInputInfo(int i) {
+	public String getInputInfo(int i) 
+	{
 		switch (i) {
 			case 0: return "This table <i>contains</i> the data that will be split into test examples     and training examples.";
 			default: return "No such input";
@@ -88,10 +94,10 @@ public class SimpleTrainTest extends DataPrepModule  {
 	   @param i The index of the input.
 	   @return The name of the input
 	*/
-	public String getInputName(int i) {
+	public String getInputName(int i) 
+	{
 		switch(i) {
-			case 0:
-				return "Original Table";
+			case 0: return "Original Table";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -101,7 +107,8 @@ public class SimpleTrainTest extends DataPrepModule  {
 	   @param i The index of the output.
 	   @return The description of the output.
 	*/
-	public String getOutputInfo(int i) {
+	public String getOutputInfo(int i) 
+	{
 		switch (i) {
 			case 0: return "The table contains the training data.";
 			case 1: return "The table contains the test data.";
@@ -114,12 +121,11 @@ public class SimpleTrainTest extends DataPrepModule  {
 	   @param i The index of the output.
 	   @return The name of the output
 	*/
-	public String getOutputName(int i) {
+	public String getOutputName(int i) 
+	{
 		switch(i) {
-			case 0:
-				return "Train Table";
-			case 1:
-				return "Test Table";
+			case 0: return "Train Table";
+			case 1: return "Test Table";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
@@ -130,19 +136,36 @@ public class SimpleTrainTest extends DataPrepModule  {
 	/** percent of dataset to use to train the model. */
 	int trainPercent = 50;
 
-	/** true if the first N rows should be the sample, false if the sample
-		should be random rows from the table */
-	boolean useFirst;
+	/** 
+	  True if the samples are to be drawn randomly from the database.
+	  False will result in the first N being chosen. 
+	  */
+	boolean randomSampling;
 
 	/** the seed for the random number generator */
 	int seed;
 
-	public void setUseFirst(boolean b) {
-		useFirst = b;
+	public void setRandomSampling(boolean b) {
+		randomSampling = b;
 	}
 
-	public boolean getUseFirst() {
-		return useFirst;
+	public boolean getRandomSampling() {
+		return randomSampling;
+	}
+
+	public void setSeed(int i) throws PropertyVetoException 
+	{
+		if (i < 0) {
+		    throw new PropertyVetoException ( " Value must be >= 0. ", null);
+		} 
+		else {
+			seed = i;
+		}
+	}
+
+	public int getSeed() 
+	{
+		return seed;
 	}
 
 	public void setTestPercent(int i) throws PropertyVetoException {
@@ -168,10 +191,11 @@ public class SimpleTrainTest extends DataPrepModule  {
 	 * @return a list of the property descriptions.
 	 */
 	public PropertyDescription [] getPropertiesDescriptions () {
-		PropertyDescription [] pds = new PropertyDescription [3];
+		PropertyDescription [] pds = new PropertyDescription [4];
 		pds[0] = new PropertyDescription ("trainPercent", "Train Percent", "This percentage of the data will be used for training the model.");
 		pds[1] = new PropertyDescription ("testPercent", "Test Percent", "This percentage of the data will be used for testing the model.");
-		pds[2] = new PropertyDescription ("useFirst", "Use First", "If this option is selected, the first entries in the data will be used for test, the last entries for train, rather than selecting them randomly.");
+		pds[2] = new PropertyDescription ("randomSampling", "Random Sampling", "If this option is selected, the entries will be selected randomly.  Otherwise, the first entries in the database will be used for testing and the last entries for training.");
+		pds[3] = new PropertyDescription ("seed", "Random Seed", "Seed of random sampling.  Ignored if Random Sampling is off.");
 		return pds;
 	}
 
@@ -198,7 +222,7 @@ public class SimpleTrainTest extends DataPrepModule  {
 
 		// If we are to select the examples for test and train at random,
 		// we need to to shuffle the indices.
-		if(!useFirst) {
+		if(randomSampling) {
 			// Shuffle the indices randomly.
 			Random r = new Random();
 			for(int i = 0; i < nr; i++) {
@@ -255,7 +279,8 @@ public class SimpleTrainTest extends DataPrepModule  {
 	 * This panel displays the editable properties of the SimpleTestTrain modules.
 	 * @author Thomas Redman
 	 */
-	class JSetPercentage extends JPanel implements CustomModuleEditor {
+	class JSetPercentage extends JPanel implements CustomModuleEditor,
+	ActionListener {
 
 		/** the module to modify. */
 		SimpleTrainTest module;
@@ -265,18 +290,30 @@ public class SimpleTrainTest extends DataPrepModule  {
 		TestTrainSlider slider = null;
 
 		/** if selected, the first N entries are the test entries. */
-		JCheckBox first = new JCheckBox("Use First Entries");
+		JCheckBox first = new JCheckBox("Use Random Sampling");
+		
+		/** if random sampling is used, these will be exposed. */
+	    JLabel m_seed_label = null;
+	    JTextField m_seed = null;
 
 		/**
 		 * Given the module to change.
 		 * @param stt the module.
 		 */
 		JSetPercentage (SimpleTrainTest stt) {
+			Font tmp = new Font ("Serif", Font.PLAIN, 12);
 			this.module = stt;
 			this.setLayout(new GridBagLayout());
 			slider = new TestTrainSlider(stt.getTestPercent(), stt.getTrainPercent());
-			first.setSelected(module.getUseFirst());
-			Font tmp = new Font ("Serif", Font.PLAIN, 12);
+			first.setSelected(module.getRandomSampling());
+			first.setFont(tmp);
+			first.addActionListener(this);
+
+			m_seed_label = new JLabel("Random Seed: ");
+			m_seed_label.setFont(tmp);
+			m_seed = new JTextField(Integer.toString(stt.getSeed()), 5);
+			m_seed.setFont(tmp);
+
 			JLabel label = new JLabel("Select from 1 to 99 percent test data.");
 			label.setFont(tmp);
 			Constrain.setConstraints(this, label, 0, 0, 1, 1, GridBagConstraints.NONE,
@@ -287,9 +324,24 @@ public class SimpleTrainTest extends DataPrepModule  {
 			label.setFont(tmp);
 			Constrain.setConstraints(this, label, 0, 2, 1, 1, GridBagConstraints.NONE,
 									 GridBagConstraints.CENTER, 0.0, 0.0);
-			first.setFont(tmp);
+
 			Constrain.setConstraints(this, first, 0, 3, 1, 1, GridBagConstraints.NONE,
 									 GridBagConstraints.CENTER, 0.0, 0.0);
+
+			Constrain.setConstraints(this, m_seed_label, 0, 4, 1, 1, GridBagConstraints.NONE,
+									 GridBagConstraints.CENTER, 0.0, 0.0);
+
+			Constrain.setConstraints(this, m_seed, 0, 4, 1, 1, GridBagConstraints.NONE,
+									 GridBagConstraints.EAST, 0.0, 0.0);
+
+			if (stt.getRandomSampling()) {
+				m_seed.setEnabled(true);
+				m_seed_label.setEnabled(true);
+			}
+			else {
+				m_seed.setEnabled(false);
+				m_seed_label.setEnabled(false);
+			}
 		}
 
 		/**
@@ -318,12 +370,46 @@ public class SimpleTrainTest extends DataPrepModule  {
 				module.setTrainPercent(trainpercent);
 				changed = true;
 			}
-			if (module.getUseFirst() != first.isSelected()) {
-				module.setUseFirst(first.isSelected());
+			if (module.getRandomSampling() != first.isSelected()) {
+				module.setRandomSampling(first.isSelected());
 				changed = true;
 			}
+
+			try {
+				int seed = Integer.parseInt(m_seed.getText());
+
+				if (module.getSeed() != seed) {
+					module.setSeed(seed);
+					changed = true;
+				}
+			}
+			catch (Exception e) {
+				throw new PropertyVetoException("Error in seed field: "
+						+ e.getMessage(), null);
+			}
+
 			return changed;
 		}
+
+		public void actionPerformed(ActionEvent e) 
+		{
+			Object src = e.getSource();
+
+			if (src == this.first) {
+				JCheckBox cb = (JCheckBox) src;
+
+				if (cb.isSelected()) {
+					m_seed.setEnabled(true);
+					m_seed_label.setEnabled(true);
+				}
+				else {
+					m_seed.setEnabled(false);
+					m_seed_label.setEnabled(false);
+				}
+			}
+		}
+
+
 
 		class TestTrainSlider extends JComponent implements MouseMotionListener, MouseListener {
 
