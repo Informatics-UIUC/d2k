@@ -15,29 +15,31 @@ import ncsa.d2k.modules.core.datatype.table.*;
 public class NFoldTTables extends NFoldExTable{
 
 	public String getOutputInfo(int i){
-/*		switch (i) {
+		switch (i) {
 			case 0: return "The Test Table";
 			case 1: return "The Train Table";
 			case 2: return "The N that was set in the properties";
 			default: return "No such output";
-		}*/
-		switch (i) {
+		}
+/*		switch (i) {
 			case 0: return "The Example Table";
 			case 1: return "The Test Table";
 			case 2: return "The Train Table";
 			case 3: return "The N that was set in the properties";
 			default: return "No such output";
 		}
+        */
 	}
 
 	public String[] getOutputTypes(){
-//		String[] types = {"ncsa.d2k.modules.core.datatype.table.TestTable",
-//                                  "ncsa.d2k.modules.core.datatype.table.TrainTable",
-//                                  "java.lang.Integer"};
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable",
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.TestTable",
+                                  "ncsa.d2k.modules.core.datatype.table.TrainTable",
+                                  "java.lang.Integer"};
+/*		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable",
                                   "ncsa.d2k.modules.core.datatype.table.TestTable",
                                   "ncsa.d2k.modules.core.datatype.table.TrainTable",
                                   "java.lang.Integer"};
+        */
 		return types;
 	}
 
@@ -68,16 +70,17 @@ public class NFoldTTables extends NFoldExTable{
         TestTable testT= examples.getTestTable();
         TrainTable trainT= examples.getTrainTable();
 
-//		this.pushOutput (testT, 0);
-//		this.pushOutput (trainT, 1);
+		this.pushOutput (testT, 0);
+		this.pushOutput (trainT, 1);
 
-        this.pushOutput(examples, 0);
+/*        this.pushOutput(examples, 0);
         this.pushOutput(testT, 1);
         this.pushOutput(trainT, 2);
+        */
 
         if(numFires==0){
-//			this.pushOutput (new Integer(breaks.length+1), 2);
-            this.pushOutput (new Integer(breaks.length+1), 3);
+			this.pushOutput (new Integer(breaks.length+1), 2);
+//            this.pushOutput (new Integer(breaks.length+1), 3);
         }
 
         numFires++;
