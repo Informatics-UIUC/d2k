@@ -143,9 +143,11 @@ public class SQLHTree extends ComputeModule
       s += "<p> Restrictions: ";
       s += "We currently only support Oracle and SQLServer databases. Due to the intensive ";
       s += "computation involved in constructing a data cube, the memory and CPU requirements ";
-      s += "may substantially increase when more attributes and more unique values for them  ";
-      s += "are included. We suggest you only choose a data set that has less ";
-      s += "than 25 fields for analysis. ";
+      s += "may be substantially increased when more attributes and more unique values ";
+      s += "are included. It is recommended only to choose a data set that has less ";
+      s += "than 25 fields for analysis, and it is also recommended to group data values into ";
+      s += "bins if the number of unique values in an attribute is over 5% of the total ";
+      s += "number of records.";
       return s;
   }
 
