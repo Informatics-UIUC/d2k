@@ -41,6 +41,7 @@ public class SQLHTree extends ComputeModule
   static String DELIMITER = "\t";
   static String ELN = "\n";
   static String NA = "~~~~";
+  static int MAXTABLENAME = 30;
   // String for the list of column names separated by ","
   String columnStr;
 
@@ -1054,7 +1055,11 @@ public class SQLHTree extends ComputeModule
       String userOSName = System.getProperty("user.name").toUpperCase();
       if (userOSName.length() > 5)
         userOSName = userOSName.substring(0,5);
-      cubeTableName = userOSName + "_" + userDBName + "_" + tableName + "_CUBE";
+      cubeTableName = userOSName + "_" + userDBName + "_" + tableName;
+      // Oracle database only supports table name up to 30.
+      if (cubeTableName.length() > (MAXTABLENAME-5))
+        cubeTableName = cubeTableName.substring(0,MAXTABLENAME-5);
+      cubeTableName = cubeTableName + "_CUBE";
       if (foundTable(cubeTableName)) {
         JOptionPane inputBoard = new JOptionPane();
         inputBoard.setInitialValue(cubeTableName);
