@@ -8,14 +8,28 @@ import java.awt.event.*;
 
 import java.util.*;
 
+
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.Constrain;
 
 import ncsa.d2k.modules.core.datatype.table.db.*;
 import ncsa.d2k.modules.core.datatype.table.db.sql.*;
-
-public class SelectDBTables extends UIModule {
+/**
+ *
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2003</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ *
+ * @todo: getting class cast exception when trying to remove a table from the
+ *        selected tables.
+ * @todo: gettign array index out of bound exception when not selectign ANYTHING
+ * and clicking "done".
+ */
+public class SelectDBTables extends HeadlessUIModule {
 
     public String[] getInputTypes() {
         String[] in = {"ncsa.d2k.modules.core.io.sql.DBConnection"};
@@ -66,7 +80,7 @@ public class SelectDBTables extends UIModule {
         return null;
     }
 
-    private class QueryDBView extends JUserPane {
+    protected class QueryDBView extends JUserPane {
         private JList allTablesList;                  // all tables
         private DefaultListModel allTablesModel;
 
@@ -419,7 +433,11 @@ public class SelectDBTables extends UIModule {
                 }
             });
             done = new JButton("Done");
-            done.addActionListener(new AbstractAction() {
+            done.addActionListener(new DoneListener());
+
+     //the following was commented out in support of headless conversion.
+     //the code can be found in class DoneListener [vered]
+                             /*      {
                 public void actionPerformed(ActionEvent e) {
                     Object[] selectedTables =  selectedTablesModel.toArray();
 
@@ -431,10 +449,10 @@ public class SelectDBTables extends UIModule {
                         String tn = (String)selectedTables[i];
                         SelectedTable st = (SelectedTable)tableNameToSelectedColsLookup.get(tn);
 
+
                         tabs[i] = st.tableName;
                         cols[i] = st.selectedColumnNames;
                     }
-
                     dbds = new ResultSetDataSource(dbc, tabs, cols, where);
                     DBTable table = new DBTable(dbds, dbc);
 
@@ -443,7 +461,7 @@ public class SelectDBTables extends UIModule {
                     // push output here
                     viewDone("Done");
                 }
-            });
+            });*/
 
             buttonPanel.add(next);
             buttonPanel.add(previous);
@@ -466,6 +484,48 @@ public class SelectDBTables extends UIModule {
         }//initiview
 
 
+//headless conversion support
+        public class DoneListener extends AbstractAction{
+            public void actionPerformed(ActionEvent e) {
+                Object[] selectedTables =  selectedTablesModel.toArray();
+
+                String[] tabs = new String[selectedTables.length];
+                String[][] cols = new String[selectedTables.length][];
+                String where = getWhereClause();
+
+                //headless conversion support
+                setWhereClause(where);
+                //headless conversion support
+
+
+                for(int i = 0; i < selectedTables.length; i++) {
+                    String tn = (String)selectedTables[i];
+                    SelectedTable st = (SelectedTable)tableNameToSelectedColsLookup.get(tn);
+
+
+                    tabs[i] = st.tableName;
+                    cols[i] = st.selectedColumnNames;
+                }
+
+                //headless conversion support
+               setSelectedTablesNames(tabs);
+                setSelectedColumnsNames(cols);
+                //headless conversion support
+
+
+                dbds = new ResultSetDataSource(dbc, tabs, cols, where);
+                DBTable table = new DBTable(dbds, dbc);
+
+                pushOutput(table, 0);
+
+                // push output here
+                viewDone("Done");
+            }
+            private QueryDBView parentView;
+
+         }
+
+//headless conversion
 
 //......................................................................................//
 
@@ -674,5 +734,161 @@ public class SelectDBTables extends UIModule {
             for(int id = 0; id < tbls.length; id++)
                 availTablesModel.addElement(tbls[id]);
         }
+
+
     }
+
+
+
+    //headless conversion - vered 9-9-03
+
+    protected String[] selectedTablesNames;  //the tables names that were selected through the gui run
+    protected String[][] selectedColumnsNames; ////the columns names that were selected through the gui run
+    //for each selectedTablesNamesi[i], selectedColumnsNames[i] holds the selected columns for it.
+
+    //setter and getter methods for tables and columns names.
+    public void setSelectedTablesNames(Object[] names){
+
+
+    selectedTablesNames = (String[])names;
+  }
+    public void setSelectedColumnsNames(Object[][] names){
+
+    selectedColumnsNames = (String[][])names;
+  }
+
+    public Object[] getSelectedTablesNames(){return selectedTablesNames;}
+    public Object[][] getSelectedColumnsNames(){return selectedColumnsNames;}
+
+    private String whereClause;  //represents the restriction set by the user through the gui run.
+    //getter and setter methods for the where clause.
+    public void setWhereClause(String _where){ whereClause = _where;   }
+    public String getWhereClause(){ return whereClause;   }
+
+
+
+    protected void doit(){
+
+      DBConnection dbc = (DBConnection)pullInput(0);
+      String[] availableTables = dbc.getTableNames();
+
+
+
+
+    //getting the available tables in the database that are also selected.
+    boolean[] isTargetTable = getIntersection(availableTables, selectedTablesNames);
+    //now for each selectedTablesNames[i] that is available isTarget[i] is true.
+
+    //targetTables holds only the intersection between available and selected.
+    String[] targetTables = getPositive(isTargetTable, selectedTablesNames);
+
+    //targetColumns[i] will hold the available columns for targetTables[i] that were also selected.
+    String[][] targetColumns = new String[targetTables.length][];
+
+
+      //going over the available columns for each table.
+      for (int i=0, j=0; i<selectedTablesNames.length; i++){
+        //if the selected table is also a target
+        if(isTargetTable[i]){
+          //getting its available columns.
+          String[] availableColumns = dbc.getColumnNames(selectedTablesNames[i]);
+          //verifying which of the columns is a target.
+          boolean[] isTargetsCols = getIntersection(availableColumns, selectedColumnsNames[i]);
+          //retrieving only the target columns names for this table.
+          targetColumns[j] = getPositive(isTargetsCols, selectedColumnsNames[i]);
+          //increasing targetColumns counter.
+          j++;
+        }//if
+      }//for
+
+      //creating the data source that will hold the data for the DBTable
+       DBDataSource dbDataSource = new ResultSetDataSource(dbc, targetTables, targetColumns, whereClause);
+       //creating the DBTable
+      DBTable table = new DBTable(dbDataSource, dbc);
+
+      pushOutput(table, 0);
+
+
+    }//doit
+
+    /**
+     * returns a String array with strings from <codE>values</code> that have
+     * a matching true in the <codE>positive</code> array.
+     * @param positive - indicates which Strings from <code>values</code> will be included
+     * in the returned value. if <code>positive[i]</code> is true then <codE>values[i]</codE>
+     *  will be included in the returned value.
+     * @param values - Strings to be included in the returned value if having a
+     *   matching true in <codE>positive</code>
+     * @return - String[] including only Strings from <codE>values</code> such that
+     *  <codE>positive[i]</code> is true.
+     */
+    private String[] getPositive(boolean[] positive, String[] values){
+      int counter = 0;  //counts how many positive[i]=true are. this will be the
+      //length of the returned array.
+
+      //counting the positives.
+      for (int i=0; i<positive.length; i++)
+        if(positive[i]) counter++;
+
+      //allocating the returned value.
+      String[] retVal = new String[counter];
+      //for each of the input Strings
+      for (int i=0, j=0; i<values.length; i++)
+        //if it has a matching positive value
+        if(positive[i]){
+          //put it in the returned value.
+          retVal[j] = values[i];
+          //increase the retVal counter.
+          j++;
+        }//if
+
+      return retVal;
+    }//getPositive
+
+    /**
+     * Returns a boolean array that represents the intersection between <code>available</codE>
+     * and <codE>desired</code>.
+     * the returned value has the same size as <codE>desired</code>, because this
+     * method checks that a String in <codE>desired</codE> is also in <code>available</code>.
+     * @param available
+     * @param desired
+     * @return
+     */
+    private boolean[] getIntersection(String[] available, String[] desired){
+
+      //creating a hash map with desired values as keys.
+      HashMap tablesMap = new HashMap();
+      for (int i=0; i<available.length; i++)
+        tablesMap.put(available[i], new Integer(i));
+
+        //if desired[i] is in available then isTarget[i] is true
+   boolean[] isTarget = new boolean[desired.length];
+
+    // int numTargets=0; //numTargets is counter for target strings
+
+     //populating isTarget.
+     for(int i=0; i<desired.length; i++){
+       if(tablesMap.containsKey(desired[i])){
+        // numTargets++;
+         isTarget[i] = true;
+       }
+       else isTarget[i] = false;
+     }//for
+
+     /* the following section commented out and moved to getPositive
+      because of the need to know which table is a target table, for
+      populating the target columns array...
+
+      String[] targetTableNames = new String[numTargetTables];
+     for(int i=0, j=0; i<selectedTablesNames.length; i++)
+       if(isTarget[i]){
+         targetTableNames[j] = selectedTablesNames[i];
+         j++;
+       }//if
+*/
+     return isTarget;
+
+    }
+
+    //headless conversion
 }
