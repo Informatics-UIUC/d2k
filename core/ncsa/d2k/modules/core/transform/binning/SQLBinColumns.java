@@ -359,6 +359,8 @@ public class SQLBinColumns extends UIModule {
                 binCounts = new SQLBinCounts(tableName, fieldNames, whereClause, connectionWrapper);
 
                 // clear all text fields and lists...
+                ((DefaultListModel)textUniqueVals.getModel()).removeAllElements();
+                ((DefaultListModel)textCurrentGroup.getModel()).removeAllElements();
                 curSelName.setText(EMPTY);
                 textBinName.setText(EMPTY);
                 uRangeField.setText(EMPTY);
