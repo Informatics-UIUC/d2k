@@ -72,8 +72,8 @@ public class HierAgglomClustererParamSpaceGenerator
     PropertyDescription[] pds = new PropertyDescription[4];
     pds[0] = new PropertyDescription( CLUSTER_METHOD,
                                       CLUSTER_METHOD,
-        "The method to use for determining the distance between two clusters. " +
-        "This distance is used in formulating the tree that is part of the final cluster model. " +
+        "The method to use for determining the similarity between two clusters. " +
+        "This similarity measure is used in formulating the tree that is part of the final cluster model. " +
         "<p>WARDS METHOD: Use a minimum variance approach that sums the squared error " +
         "(distance) for every point in the cluster to the cluster centroid.</p>" +
         "<p>SINGLE LINK: Distance of closest pair (one from each cluster).</p>" +
@@ -86,25 +86,33 @@ public class HierAgglomClustererParamSpaceGenerator
     pds[1] = new PropertyDescription( DISTANCE_METRIC,
                                       DISTANCE_METRIC,
         "This property determines the type of distance function to use in calculating the " +
-        "distance between two examples.  This distance is used in assigning points to clusters, and " +
-        "in determining if there was sufficient movement since the last assignment iteration "+
-        "to continue the refinement process. " +
+        "distance between two points. This distance is used in " +
+        "in determining if cluster agglomeration should continue when the <i> "+
+        DISTANCE_THRESHOLD +
+        "</i> is greater than 0.  Cluster centroids define the points. " +
         "<p>EUCLIDEAN: \"Straight\" line distance between points.</p>" +
         "<p>MANHATTAN: Distance between two points measured along axes at right angles.</p>" +
         "<p>COSINE: 1 minus the cosine of the angle between the norms of the vectors denoted by two points.</p>");
 
     pds[2] = new PropertyDescription( NUM_CLUSTERS,
                                       NUM_CLUSTERS,
-       "This property specifies the maximum number of clusters to form. It must be greater than 1.");
-
+       "This property specifies the number of clusters to form. It must be greater than 1. " +
+       "If <i>" +
+       DISTANCE_THRESHOLD +
+       "</i> is not zero, clustering may be halted with more than this number of clusters formed. ");
     pds[3] = new PropertyDescription( DISTANCE_THRESHOLD,
 				      DISTANCE_THRESHOLD,
        "This property specifies the percentage of the <i>maximum distance</i> to use " +
-       "as a cutoff value to halt cluster agglomeration.  It can range from 0 to 100. " +
-       "Lower values result in fewer clusters, with the exception that for a value of 0 " +
-       "cluster formation is not halted until " +
+       "as a cutoff value to halt cluster agglomeration.  " +
+       "When the distance between the two clusters that are closest exceeds the cutoff value, cluster agglomeration stops, " +
+       "even if more than <i>" +
        NUM_CLUSTERS +
-       "are formed. " +
+       "</i> remain.  Lower values for the <i>" +
+       DISTANCE_THRESHOLD +
+       "</i> result in more clusters.  If the value is 0 (the default), then no cutoff occurs and cluster " +
+       "agglomeration continues until <i>" +
+       NUM_CLUSTERS +
+       "</i> remain. " +
        "See the <i>Hier. Agglom. Clusterer</i> module information for further details on " +
        "this is property. " );
 
@@ -118,6 +126,7 @@ public class HierAgglomClustererParamSpaceGenerator
 //           to use ClusterParameterDefns.
 //         * Unsure how DISTANCE_THRESHOLD really works...  if < threshold movement does it stop or what?
 // 4/13/03 - Another stab at the DISTANCE_THRESHOLD words.   Asked Duane for confirmation.
-//         - Looked at code - think descr is okay now.   
+//         - Looked at code - think descr is okay now.
 //         - Ready for Basic.
+// 4/14/03 - made some more updates to properties docs after feedback from Duane
 // End QA Comments
