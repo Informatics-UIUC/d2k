@@ -287,7 +287,7 @@ public interface Table extends java.io.Serializable {
 	  * @param position the index of the column
 	  * @return true if the column contains only numeric values, false otherwise
 	  */
-	 public boolean isNumericColumn(int position);
+	 public boolean isColumnNumeric(int position);
 
 	 /**
 	  * Return the type of column located at the given position.

@@ -312,7 +312,7 @@ public class ChooseFieldTypes extends UIModule {
                 for(int i = 0; i< selected.length; i++) {
                     boolean b = true;
                     Integer idx = (Integer)indexLookup.get(selected[i]);
-                    if(!table.isNumericColumn(idx.intValue())) {
+                    if(!table.isColumnNumeric(idx.intValue())) {
                         b = ErrorDialog.showQuery(
                             table.getColumnLabel(idx.intValue())+" is not numeric.  Continue?",
                                "Warning!");

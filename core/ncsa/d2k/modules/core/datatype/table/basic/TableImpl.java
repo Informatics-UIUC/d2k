@@ -1290,7 +1290,7 @@ public class TableImpl extends AbstractTable implements MutableTable {
         getColumn(i).addRow(new Boolean(data[i]));
     }
 
-	public boolean isNumericColumn(int position) {
+	public boolean isColumnNumeric(int position) {
 		if(getColumn(position) instanceof NumericColumn)
 			return true;
 

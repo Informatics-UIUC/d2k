@@ -671,7 +671,7 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 					columnorder[j] = j;
 					//Column c = table.getColumn(j);
 					//if(c instanceof NumericColumn) {
-					if(table.isNumericColumn(j)) {
+					if(table.isColumnNumeric(j)) {
 						//NumericColumn nc = (NumericColumn)c;
 						MaxMin mm = getMaxMin(j);
 						//float max = (float)nc.getMax();
@@ -773,7 +773,7 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 					lookup = new HashMap();
 
 				//if(c instanceof NumericColumn) {
-				if(table.isNumericColumn(i)) {
+				if(table.isColumnNumeric(i)) {
 					//NumericColumn nc = (NumericColumn)c;
 					MaxMin mm = getMaxMin(i);
 					double max = mm.max;//nc.getMax();
@@ -979,7 +979,7 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 				int ascent = fm.getAscent();
 				for(int i = 0; i < columnorder.length; i++) {
 					//if(table.getColumn(columnorder[i]) instanceof NumericColumn) {
-					if(table.isNumericColumn(columnorder[i])) {
+					if(table.isColumnNumeric(columnorder[i])) {
 						String mx = nf.format(maxes[columnorder[i]]);
 						g2.drawString(mx,
 							columnlocations[i]+leftoffset-fm.stringWidth(mx)/2,
@@ -988,7 +988,7 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 				}
 				for(int i = 0; i < columnorder.length; i++) {
 					//if(table.getColumn(columnorder[i]) instanceof NumericColumn) {
-					if(table.isNumericColumn(columnorder[i])) {
+					if(table.isColumnNumeric(columnorder[i])) {
 						String mx = nf.format(mins[columnorder[i]]);
 						g2.drawString(mx,
 							columnlocations[i]+leftoffset-fm.stringWidth(mx)/2,
@@ -1264,7 +1264,7 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 				for(int i = 0; i < table.getNumColumns(); i++) {
 					//Column c = table.getColumn(i);
 					//if(c instanceof NumericColumn) {
-					if(table.isNumericColumn(i)) {
+					if(table.isColumnNumeric(i)) {
 						numericColumnLookup.put(table.getColumnLabel(i), new Integer(i));
 						numCols.add(table.getColumnLabel(i));
 					}
@@ -1434,7 +1434,7 @@ final class PCView extends JUserPane implements ActionListener, Printable  {
 						int col = fi.colNum;
 						boolean retVal;
 						//if(table.getColumn(col) instanceof NumericColumn)
-						if(table.isNumericColumn(col))
+						if(table.isColumnNumeric(col))
 							retVal = fi.evaluate(table.getDouble(i, col));
 						else
 							retVal = fi.evaluate(table.getString(i, col));
