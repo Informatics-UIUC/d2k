@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.io.file.input;
 
 import ncsa.d2k.core.modules.*;
 import java.io.*;
+import java.util.zip.DataFormatException;
 
 /**
  * Create an ARFF File Parser for the specified file.
@@ -75,6 +76,9 @@ public class CreateARFFParser extends InputModule {
         String fn = (String)pullInput(0);
         File file = null;
 
+        if(!fn.endsWith(".arff") && !fn.endsWith(".ARFF"))
+            throw new DataFormatException("File name must be of ARFF type and have an \"arff\" extension.");
+
         try {
             file = new File(fn);
         }
@@ -108,4 +112,5 @@ public class CreateARFFParser extends InputModule {
 // 2/14/03 - Handed off to QA by David Clutter
 // 2/12/03 - Ruth started QA process. added more to module description
 //           module description; added more specific exceptions.
+// 2/24/03   vered started second QA. added format check of input file name.
 // END QA Comments
