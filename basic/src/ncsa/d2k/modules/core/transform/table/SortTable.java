@@ -621,7 +621,9 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
  *
  * 11-04-03 Vered started QA process
  *          properties editor allows insertion of nominal values for property -
- *          Number of attributes to user for sorting. [bug 116]
+ *          Number of attributes to user for sorting. [bug 116] fixed in toolkit level
  * 12-05-03 missing values are sorted as regular values. the bug is actually in
- *          the Column's method sort(). [bug 158]
+ *          the Column's method sort(). [bug 158] fixed
+ * 12-11-03 bug 164 is also fixed
+ *          module is ready for basic.
  */
