@@ -34,7 +34,7 @@ public class SelectionFactory {
   }
 
   public static final int getRealDefault() {
-    return STOCHASTIC_UNIVERSAL_SAMPLING;
+    return TRUNCATION;
   }
 
   public static Selection[] createSelectionOptions() {

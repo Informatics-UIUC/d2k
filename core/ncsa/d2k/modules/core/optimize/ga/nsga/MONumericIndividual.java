@@ -25,7 +25,6 @@ public class MONumericIndividual extends MODoubleSolution
 
         /** the constraint. */
         //double constraint = 0.0;
-        
 
 
         /**
@@ -37,17 +36,17 @@ public class MONumericIndividual extends MODoubleSolution
                 //super (ranges, oc);
                 this(ranges, oc, 0);
         }
-        
+
         /**
                 Needs to know how many genes there are to construct.
                 @param ranges the range metadata for the parameters.
                 @param numObjectives the number of objectives values.
         */
-        public MONumericIndividual (DoubleRange [] ranges, 
+        public MONumericIndividual (DoubleRange [] ranges,
                                     ObjectiveConstraints [] oc, int numConstraints) {
                 super (ranges, oc, numConstraints);
         }
-        
+
 
         /**
                 returns true if the objectives need recomputed.
@@ -72,7 +71,7 @@ public class MONumericIndividual extends MODoubleSolution
 /*        public void setConstraint (double constr) {
                 this.constraint = constr;
         }*/
-       
+
 
 
         /**
@@ -141,13 +140,13 @@ public class MONumericIndividual extends MODoubleSolution
          */
         public Object clone () {
                 int numConstraints = constraints.length;
-                MONumericIndividual bi = new MONumericIndividual (this.ranges, 
+                MONumericIndividual bi = new MONumericIndividual (this.ranges,
                     objectiveConstraints, numConstraints);
                 System.arraycopy (this.parameters, 0, bi.getGenes (),
                                         0, this.parameters.length);
                 System.arraycopy (this.objectives, 0, bi.objectives,
                                         0, objectives.length);
-                System.arraycopy (this.constraints , 0, bi.constraints, 
+                System.arraycopy (this.constraints , 0, bi.constraints,
                                         0, constraints.length);
                 bi.setRank (this.rank);
                 bi.setCrowdingDistance (this.crowding);
@@ -239,6 +238,5 @@ public class MONumericIndividual extends MODoubleSolution
          */
         public void printFitness(int i) {
         }
-
 
 }

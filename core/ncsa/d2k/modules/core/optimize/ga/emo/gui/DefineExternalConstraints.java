@@ -372,25 +372,27 @@ public class DefineExternalConstraints extends UIModule {
     public void setInput(Object o, int i) {
       parameters = (Parameters)o;
     }
+  }
 
-    class Constraint implements Serializable {
-      String name;
-      String exec;
-      String input;
-      String output;
-      String weight;
+  private static class Constraint implements Serializable {
+ static final long serialVersionUID = -415474569233066569L;
+    String name;
+    String exec;
+    String input;
+    String output;
+    String weight;
 
-      Constraint(String n, String e, String i, String o, String w) {
-        name = n;
-        exec = e;
-        input = i;
-        output = o;
-        weight = w;
-      }
+    Constraint(String n, String e, String i, String o, String w) {
+      name = n;
+      exec = e;
+      input = i;
+      output = o;
+      weight = w;
+    }
 
-      public String toString() {
-        return name+" : "+exec+" "+input+" "+output+" "+weight;
-      }
+    public String toString() {
+      return name+" : "+exec+" "+input+" "+output+" "+weight;
     }
   }
+
 }

@@ -23,12 +23,12 @@ import java.util.*;
 
 /**
  * A visualization for a multi-objective population in EMO.  Four JTables are
- * used to show the current population, the last cumulative population, the 
+ * used to show the current population, the last cumulative population, the
  * cumulative popualtion from two runs ago, and the cumulative population from
  * three runs ago.  The fitness functions of these populations are displayed in
  * scatterplots.  The rows and columns of the JTables can be changed, and it is
  * possible to plot any combinations of fitness functions on the scatter plots.
- * 
+ *
  * The scatter plots in the JTables are FitnessPlots.  FitnessPlots allow the
  * user to select points by drawing a box around an area.  The "View Selected"
  * button can then be pressed to view the selected individuals in a table.
@@ -78,7 +78,7 @@ s += " Selection is only enabled on plots that are not currently being updated; 
 s += " the currently evaluating population must be paused in order for selection to";
 s += " be enabled.  The cumulative populations have selection enabled all the time,";
 s += " since they are not being updated continuously.";
-    return s;  
+    return s;
   }
 
   protected UserView createUserView() {
@@ -89,9 +89,15 @@ s += " since they are not being updated continuously.";
     return null;
   }
 
+  public void beginExecution() {
+    if(this.userView != null) {
+      ((MOView)userView).initView(this);
+    }
+  }
+
   protected class MOView
       extends JUserPane {
-    
+
     /** the fitness tables that hold the values of the FF to be graphed */
     protected FitnessTable[] fitnessTables;
     /** the populations: current, last cumulative run, etc */
@@ -99,7 +105,7 @@ s += " since they are not being updated continuously.";
     /** the gui components for the populations */
     protected RunView[] runViews;
 
-    protected boolean paused = false;
+    protected boolean paused;
 
     protected JButton continueButton;
     protected JButton pauseButton;
@@ -115,7 +121,7 @@ s += " since they are not being updated continuously.";
     protected static final int CUMUL_TWO = 2;
     protected static final int CUMUL_THREE = 3;
 
-    protected int run = 0;
+    protected int run;
 
     /** temporarily hold the very first pop, so that we can make a cumulative
      * from it and the second pop.
@@ -132,13 +138,16 @@ s += " since they are not being updated continuously.";
      * @param vm
      */
     public void initView(ViewModule vm) {
+      this.removeAll();
+      run = 0;
+      paused = false;
       // this will hold the populations
       populations = new NsgaPopulation[NUM_VIEWS];
       // this will hold the tables to be graphed
       fitnessTables = new FitnessTable[NUM_VIEWS];
       // this will hold the gui components
       runViews = new RunView[NUM_VIEWS];
-      
+
       // initialize everything
       for (int i = 0; i < NUM_VIEWS; i++) {
         populations[i] = null;
@@ -176,7 +185,7 @@ s += " since they are not being updated continuously.";
       });
       viewGenes = new JButton("View Genes");
       viewGenes.setToolTipText("View the genes of the current population");
-      // when View Genes is pressed, push the current pop 
+      // when View Genes is pressed, push the current pop
       // out on pipe 2
       viewGenes.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent ae) {
@@ -219,7 +228,7 @@ s += " since they are not being updated continuously.";
     /**
      * pause..  diable pause button.  enable continue button,
      * view decision variables, and view genes.  enable selection
-     * on the run view that shows the current pop 
+     * on the run view that shows the current pop
      */
     protected void pauseExecution() {
       // enable selection on the fitness plot

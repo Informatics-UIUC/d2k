@@ -37,17 +37,17 @@ public class MOBinaryIndividual extends MOBinarySolution
                 //super (ranges, oc);
                 this(ranges, oc, 0);
         }
-        
+
         /**
                 Needs to know how many genes there are to construct.
                 @param ranges the range metadata for the parameters.
                 @param numObjectives the number of objectives values.
         */
-        public MOBinaryIndividual (BinaryRange [] ranges, 
+        public MOBinaryIndividual (BinaryRange [] ranges,
                                    ObjectiveConstraints [] oc, int numConstraints) {
                 super (ranges, oc, numConstraints);
         }
-        
+
 
         /**
                 returns true if the objectives need recomputed.
@@ -72,7 +72,7 @@ public class MOBinaryIndividual extends MOBinarySolution
 /*	public void setConstraint (double constr) {
                 this.constraint = constr;
         }*/
-       
+
 
 
         /**
@@ -128,7 +128,7 @@ public class MOBinaryIndividual extends MOBinarySolution
                                         0, this.parameters.length);
                 System.arraycopy (bi.objectives, 0, this.objectives,
                                         0, objectives.length);
-                System.arraycopy(bi.constraints, 0, this.constraints, 
+                System.arraycopy(bi.constraints, 0, this.constraints,
                                  0, bi.constraints.length);
                 this.setRank (bi.rank);
                 this.setCrowdingDistance (bi.crowding);
@@ -141,13 +141,13 @@ public class MOBinaryIndividual extends MOBinarySolution
          */
         public Object clone () {
                 int numConstraints = constraints.length;
-                MOBinaryIndividual bi = new MOBinaryIndividual (this.ranges, 
+                MOBinaryIndividual bi = new MOBinaryIndividual (this.ranges,
                     objectiveConstraints, numConstraints);
                 System.arraycopy (this.parameters, 0, bi.getGenes (),
                                         0, this.parameters.length);
                 System.arraycopy (this.objectives, 0, bi.objectives,
                                         0, objectives.length);
-                System.arraycopy(this.constraints, 0, bi.constraints, 
+                System.arraycopy(this.constraints, 0, bi.constraints,
                                  0, this.constraints.length);
                 bi.setRank (this.rank);
                 bi.setCrowdingDistance (this.crowding);
@@ -241,7 +241,7 @@ public class MOBinaryIndividual extends MOBinarySolution
         }
 
       // moved to binary solution
-      
+
 /*        public double[] toDouble() {
           boolean [] params = (boolean[])this.getParameters ();
           double [] dparams = new double [params.length];
@@ -255,4 +255,5 @@ public class MOBinaryIndividual extends MOBinarySolution
           }
           return dparams;
         }*/
+
 }

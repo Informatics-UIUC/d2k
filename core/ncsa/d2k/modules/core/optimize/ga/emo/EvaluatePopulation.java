@@ -6,6 +6,7 @@ import java.util.*;
 import gnu.trove.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.optimize.ga.*;
 import ncsa.d2k.modules.core.optimize.util.*;
@@ -103,15 +104,38 @@ public class EvaluatePopulation
       // get the fitness functions
       fitnessFunctions = pop.getParameters().fitnessFunctions;
       // create a table to copy the population into
-      populationTable = pop.getParameters().decisionVariables.
-          createVariableNameTable();
-      populationTable = (MutableTable)populationTable.copy();
+      //populationTable = pop.getParameters().decisionVariables.
+      //    createVariableNameTable();
+      //populationTable = (MutableTable)populationTable.copy();
+      populationTable = new MutableTableImpl(0);
 
-      int numCol = populationTable.getNumColumns();
       int numVar = pop.getParameters().decisionVariables.getNumVariables();
-      if(numCol > numVar) {
-        populationTable.removeColumns(numVar, (numCol-numVar));
+      int size = ((Population)pop).size();
+
+      if(pop.getParameters().createBinaryIndividuals) {
+        int totalStrLen = (int)pop.getParameters().decisionVariables.getTotalStringLength();
+        populationTable.setNumColumns(totalStrLen);
+
+        int index = 0;
+        // add boolean columns for each variable
+        for(int i = 0; i < numVar; i++) {
+          int strLen = (int)pop.getParameters().decisionVariables.getVariableStringLength(i);
+          String name = pop.getParameters().decisionVariables.getVariableName(i);
+          for(int j = 0; j < strLen; j++) {
+            populationTable.setColumn(new boolean[size], index);
+            populationTable.setColumnLabel(name+" "+j, index);
+            index++;
+          }
+        }
       }
+      else {
+        populationTable.setNumColumns(numVar);
+        for(int i = 0; i < numVar; i++) {
+          populationTable.setColumn(new double[size], i);
+          populationTable.setColumnLabel(pop.getParameters().decisionVariables.getVariableName(i), i);
+        }
+      }
+
 
       // check to see if there are any fitness functions done by Constructions
       numFitnessVars = fitnessFunctions.getNumFitnessVariables();
@@ -367,12 +391,23 @@ public class EvaluatePopulation
     }
 
     int numOfvar = pop.getNumGenes();
+    if(!population.getParameters().createBinaryIndividuals) {
       for (int i = 0; i < pop.size(); i++) {
         double[] tabrows = pop.getMember(i).toDoubleValues();
         for (int j = 0; j < numOfvar; j++) {
           populationTable.setDouble(tabrows[j], i, j);
         }
       }
+    }
+    else {
+      for (int i = 0; i < pop.size(); i++) {
+        boolean[] tabrows = (boolean[])pop.getMember(i).getGenes();
+        for (int j = 0; j < numOfvar; j++) {
+          populationTable.setBoolean(tabrows[j], i, j);
+        }
+      }
+    }
+
     // copy real-valued variables directly into the table
     /*if (!binaryType) {
       for (int i = 0; i < pop.size(); i++) {

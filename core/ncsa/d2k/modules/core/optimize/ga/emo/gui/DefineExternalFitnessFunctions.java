@@ -457,29 +457,29 @@ public class DefineExternalFitnessFunctions
     public void setInput(Object o, int i) {
       parameters = (Parameters) o;
     }
+  }
 
-    class FitnessFunction
-        implements Serializable {
-      static final long serialVersionUID = 1824836916530132076L;
+  private static class FitnessFunction
+      implements Serializable {
+  static final long serialVersionUID = 889422659326392550L;
+    String name;
+    String exec;
+    String input;
+    String output;
+    String minmax;
 
-      String name;
-      String exec;
-      String input;
-      String output;
-      String minmax;
+    FitnessFunction(String n, String e, String i, String o, String m) {
+      name = n;
+      exec = e;
+      input = i;
+      output = o;
+      minmax = m;
+    }
 
-      FitnessFunction(String n, String e, String i, String o, String m) {
-        name = n;
-        exec = e;
-        input = i;
-        output = o;
-        minmax = m;
-      }
-
-      public String toString() {
-        //return "<html>"+name+" :<br>    "+exec+"<br>"+input+"<br>"+output+"<br>"+minmax+"</html>";
-        return name;
-      }
+    public String toString() {
+      //return "<html>"+name+" :<br>    "+exec+"<br>"+input+"<br>"+output+"<br>"+minmax+"</html>";
+      return name;
     }
   }
+
 }

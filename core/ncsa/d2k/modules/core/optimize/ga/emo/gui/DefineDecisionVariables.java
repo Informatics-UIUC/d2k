@@ -813,7 +813,7 @@ public class DefineDecisionVariables
    *
    * @author navarrob
    */
-  private class CachedRowValue
+  private static class CachedRowValue
       implements Serializable {
 
     static final long serialVersionUID = 7134596339214916408L;

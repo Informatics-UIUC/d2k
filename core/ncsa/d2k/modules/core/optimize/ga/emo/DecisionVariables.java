@@ -26,7 +26,7 @@ public class DecisionVariables {
   /** the table to hold the description of decision variables */
   private MutableTable table;
 
-  private MutableTable varNameTable;
+//  private MutableTable varNameTable;
 
   private Table seedTable;
 
@@ -144,7 +144,7 @@ public class DecisionVariables {
    *
    * @return the new mutable table with a column for each decision variable
    */
-  public MutableTable createVariableNameTable() {
+/*  public MutableTable createVariableNameTable() {
     if(varNameTable == null) {
       int numVars = getNumVariables();
       varNameTable = new MutableTableImpl(numVars);
@@ -155,5 +155,5 @@ public class DecisionVariables {
       }
     }
     return varNameTable;
-  }
+  }*/
 }

@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.optimize.ga.emo.gui;
 
 import java.util.*;
-
+import java.text.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.event.*;
@@ -68,25 +68,53 @@ public class InputParameters
     return null;
   }
 
+  private static final String OPTIMIZATION_TIPS =
+      "<p>1) For simple GA decrease precision of variables, which will further "+
+      "decrease string length. String length affects both the number of "+
+      "generations required for the GA to converge (which is about 2L) and the "+
+      "population size (since N > 1.4 L must be satisfied to avoid genetic "+
+      "drift, where N = pop size, L = string length). "+
+      "<p>2) For multiple objective GAs, start with a smaller population that "+
+      "fits within the computational time constraints and increase size to "+
+      "recommended population size by seeding the best from previous population "+
+      "run into the starting population for the new run. "+
+      "<p>3) Problem decomposition. Decrease the number of decision variables by "+
+      "fixing a few variables and solving for the others first. This is then "+
+      "followed by fixing the optimized variables and then solving for the "+
+      "variables that were fixed earlier. This will work for SGAs since "+
+      "population size and number of generations required for SGAs depends on "+
+      "the number of decision variables (i.e., the string length). "+
+      "<p>4) If the fitness function or constraint evaluations are "+
+      "computationally intensive, then recommend the following options:<br>"+
+      "  a) fit meta-models like neural networks to the physical model (Yan and Minsker, 2003)]<br>"+
+      "  b) use multiscale strategies that utilize the computational speed of "+
+      "the coarser numerical grids while still maintaining accuracy of the "+
+      "fine grids (Babbar and Minsker, 2003)."+
+      "<p>References:"+
+      "<p>Yan, S., and B. Minsker, A Dynamic Meta-Model Approach to Genetic "+
+      "Algorithm Solution of a Risk-Based Groundwater Remediation Design Model, EWRI WWERC, 2003. "+
+      "<p>Babbar, M., and B. Minsker, Multiscale Strategies for Solving Water "+
+      "Resources Management Problems with Genetic Algorithms, EWRI WWERC, 2003. ";
+
   public PropertyDescription[] getPropertiesDescriptions() {
     return new PropertyDescription[0];
   }
 
   public boolean isReady() {
-    if(!timing) 
+    if(!timing)
       return (getInputPipeSize(0) > 0);
     else
       return (getInputPipeSize(1) > 0);
   }
-  
+
   public void beginExecution() {
     timing = false;
   }
-  
+
   public Object[] getPulledInputs() {
-    Object[] inputs = new Object[2];  
-    if(timing) {
-      inputs[0] = pullInput(0);  
+    Object[] inputs = new Object[2];
+    if(!timing) {
+      inputs[0] = pullInput(0);
       inputs[1] = new NOP();
     }
     else {
@@ -95,9 +123,9 @@ public class InputParameters
     }
     return inputs;
   }
-  
-  private boolean timing = false;
-  private long startTime;
+
+  private transient boolean timing = false;
+  private transient long startTime;
 
   private CachedParams cachedParams;
   public void setCachedParams(CachedParams cp) {
@@ -113,7 +141,7 @@ public class InputParameters
    */
   private static class CachedParams
       implements java.io.Serializable {
-
+  static final long serialVersionUID = 9214510590471691289L;
     /** the number of variables in the problem */
     int numVariables;
     /** the number of objectives in the problem */
@@ -133,7 +161,7 @@ public class InputParameters
     String maxRunTime;
     /** the difference in time */
     String diff;
-    /** the number of solutions */ 
+    /** the number of solutions */
     String numSolutions;
 
     /** the name of the selected mutation type */
@@ -170,6 +198,7 @@ public class InputParameters
     transient private AdvSettingsPanel adv;
     /** the frame that holds the advanced settings */
     transient private JFrame advFrame;
+    transient private JFrame optFrame;
 
     /** the label in the TimePanel that shows the estimated run time */
     transient private JLabel estimatedRunTime;
@@ -183,6 +212,8 @@ public class InputParameters
     transient private Mutation selectedMutation;
     transient private Crossover selectedCrossover;
     transient private Selection selectedSelection;
+
+    transient private NumberFormat nf;
 
     private static final int OVERRIDE = 2;
     private static final int REC = 1;
@@ -218,7 +249,7 @@ public class InputParameters
       });
       done.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
-          done();
+          done(params, 0);
         }
       });
 
@@ -227,6 +258,9 @@ public class InputParameters
       pnl.add(done);
 
       add(pnl, BorderLayout.SOUTH);
+
+      nf = NumberFormat.getInstance();
+      nf.setMaximumFractionDigits(3);
     }
 
     /**
@@ -236,14 +270,14 @@ public class InputParameters
      * so that the next time this module is run the parameters can
      * be re-loaded.
      */
-    private void done() {
+    private void done(Parameters parameters, int index) {
       // gather all parameters
       for(int i = 0; i < adv.mutationRadio.length; i++) {
         if(adv.mutationRadio[i].isSelected()) {
-          params.mutation = adv.mutationRadio[i].mutation;
+          parameters.mutation = adv.mutationRadio[i].mutation;
 
           HashMap propLookup = new HashMap();
-          Property[] p = ((EMOFunction)params.mutation).getProperties();
+          Property[] p = ((EMOFunction)parameters.mutation).getProperties();
           if(p == null)
             continue;
 
@@ -290,10 +324,10 @@ public class InputParameters
 
       for(int i = 0; i < adv.crossoverRadio.length; i++) {
         if(adv.crossoverRadio[i].isSelected()) {
-          params.crossover = adv.crossoverRadio[i].crossover;
+          parameters.crossover = adv.crossoverRadio[i].crossover;
 
           HashMap propLookup = new HashMap();
-          Property[] p = ((EMOFunction)params.crossover).getProperties();
+          Property[] p = ((EMOFunction)parameters.crossover).getProperties();
           if(p == null)
             continue;
 
@@ -340,9 +374,9 @@ public class InputParameters
 
       for(int i = 0; i < adv.selectionRadio.length; i++) {
         if(adv.selectionRadio[i].isSelected()) {
-          params.selection = adv.selectionRadio[i].selection;
+          parameters.selection = adv.selectionRadio[i].selection;
           HashMap propLookup = new HashMap();
-          Property[] p = ((EMOFunction)params.selection).getProperties();
+          Property[] p = ((EMOFunction)parameters.selection).getProperties();
           if(p == null)
             continue;
 
@@ -399,7 +433,7 @@ public class InputParameters
         popSize = Double.parseDouble(
             (String) paramsModel.getValueAt(POP_SIZE, REC));
       }
-      params.populationSize = (int) popSize;
+      parameters.populationSize = (int) popSize;
 
       // if the overriden max gens is valid, use that
       try {
@@ -411,7 +445,7 @@ public class InputParameters
         popSize = Double.parseDouble(
             (String) paramsModel.getValueAt(MAX_GEN, REC));
       }
-      params.maxGenerations = (int) popSize;
+      parameters.maxGenerations = (int) popSize;
 
       // if the overriden tournament size is valid, use that
       try {
@@ -423,7 +457,7 @@ public class InputParameters
         popSize = Double.parseDouble(
             (String) paramsModel.getValueAt(TOURNAMENT, REC));
       }
-      params.selection.setTournamentSize( (int) popSize);
+      parameters.selection.setTournamentSize( (int) popSize);
 
       // if the overriden crossover rate is valid, use that
       try {
@@ -435,7 +469,7 @@ public class InputParameters
         popSize = Double.parseDouble(
             (String) paramsModel.getValueAt(CROSSOVER_RATE, REC));
       }
-      params.crossover.setCrossoverRate(popSize);
+      parameters.crossover.setCrossoverRate(popSize);
 
       // if the overriden mutation rate is valid, use that
       try {
@@ -447,7 +481,7 @@ public class InputParameters
         popSize = Double.parseDouble(
             (String) paramsModel.getValueAt(MUTATION_RATE, REC));
       }
-      params.mutation.setMutationRate(popSize);
+      parameters.mutation.setMutationRate(popSize);
 
       // if the overriden generation gap is valid, use that
       try {
@@ -459,8 +493,9 @@ public class InputParameters
         popSize = Double.parseDouble(
             (String) paramsModel.getValueAt(GEN_GAP, REC));
       }
-      params.crossover.setGenerationGap(popSize);
+      parameters.crossover.setGenerationGap(popSize);
 
+      parameters.createBinaryIndividuals = adv.binaryInd.isSelected();
       // get the number of solutions
       int numSol;
       try {
@@ -471,86 +506,95 @@ public class InputParameters
         numSol = 0;
       }
 
-      // save the values of parameters so the
-      // gui can show these values the next time the module is run
-      // the values are saved in a CachedParams object
-      CachedParams cp = new CachedParams();
+      if(index == 0) {
+        // save the values of parameters so the
+        // gui can show these values the next time the module is run
+        // the values are saved in a CachedParams object
+        CachedParams cp = new CachedParams();
 
-      // save the number of objectives
-      cp.numObjectives = numObjectives;
-      // save the number of decision variables
-      cp.numVariables = params.decisionVariables.getNumVariables();
-      // save the total string length
-      cp.totalStringLength = (int) params.decisionVariables.
-          getTotalStringLength();
-      // save the variable names
-      String[] varNames = new String[cp.numVariables];
-      for (int i = 0; i < cp.numVariables; i++) {
-        varNames[i] = params.decisionVariables.getVariableName(i);
-      }
-      cp.variableNames = varNames;
-
-      // save the recommended values from the table model
-      String[] recVals = paramsModel.data[REC];
-      String[] recCpy = new String[recVals.length];
-      System.arraycopy(recVals, 0, recCpy, 0, recVals.length);
-      cp.recommended = recCpy;
-
-      // save the overriden values from the table model
-      String[] overVals = paramsModel.data[OVERRIDE];
-      String[] overCpy = new String[recVals.length];
-      System.arraycopy(overVals, 0, overCpy, 0, overVals.length);
-      cp.override = overCpy;
-
-      // save the maximum run time
-      cp.maxRunTime = maxRunTime.getText();
-      // save the estimated time required
-      cp.estimatedTimeReq = estimatedTime.getText();
-      // save the difference
-      cp.diff = difference.getText();
-      cp.numSolutions = this.numSolutions.getText();
-
-      // need to save which type of mutation, sel, crossover selected
-      // save the name of the type selected
-      cp.mutName = ((EMOFunction)params.mutation).getName();
-      // we also keep a hash map for the extra properties of mutation
-      // key is prop name, the value is the property value
-      HashMap mutProps = new HashMap();
-      Property[] props = ((EMOFunction)params.mutation).getProperties();
-      if (props != null) {
-        for (int i = 0; i < props.length; i++) {
-          mutProps.put(props[i].getName(), props[i].getValue());
+        // save the number of objectives
+        cp.numObjectives = numObjectives;
+        // save the number of decision variables
+        cp.numVariables = params.decisionVariables.getNumVariables();
+        // save the total string length
+        cp.totalStringLength = (int) params.decisionVariables.
+            getTotalStringLength();
+        // save the variable names
+        String[] varNames = new String[cp.numVariables];
+        for (int i = 0; i < cp.numVariables; i++) {
+          varNames[i] = params.decisionVariables.getVariableName(i);
         }
-      }
-      cp.mutProps = mutProps;
+        cp.variableNames = varNames;
 
-      cp.crossName = ((EMOFunction)params.crossover).getName();
-      HashMap crossProps = new HashMap();
-      props = ((EMOFunction)params.crossover).getProperties();
-      if (props != null) {
-        for (int i = 0; i < props.length; i++) {
-          crossProps.put(props[i].getName(), props[i].getValue());
+        // save the recommended values from the table model
+        String[] recVals = paramsModel.data[REC];
+        String[] recCpy = new String[recVals.length];
+        System.arraycopy(recVals, 0, recCpy, 0, recVals.length);
+        cp.recommended = recCpy;
+
+        // save the overriden values from the table model
+        String[] overVals = paramsModel.data[OVERRIDE];
+        String[] overCpy = new String[recVals.length];
+        System.arraycopy(overVals, 0, overCpy, 0, overVals.length);
+        cp.override = overCpy;
+
+        // save the maximum run time
+        cp.maxRunTime = maxRunTime.getText();
+        // save the estimated time required
+        cp.estimatedTimeReq = estimatedTime.getText();
+        // save the difference
+        cp.diff = difference.getText();
+        cp.numSolutions = this.numSolutions.getText();
+
+        // need to save which type of mutation, sel, crossover selected
+        // save the name of the type selected
+        cp.mutName = ( (EMOFunction) params.mutation).getName();
+        // we also keep a hash map for the extra properties of mutation
+        // key is prop name, the value is the property value
+        HashMap mutProps = new HashMap();
+        Property[] props = ( (EMOFunction) params.mutation).getProperties();
+        if (props != null) {
+          for (int i = 0; i < props.length; i++) {
+            mutProps.put(props[i].getName(), props[i].getValue());
+          }
         }
-      }
-      cp.crossProps = crossProps;
+        cp.mutProps = mutProps;
 
-      cp.selName = ((EMOFunction)params.selection).getName();
-      HashMap selProps = new HashMap();
-      props = ((EMOFunction)params.selection).getProperties();
-      if (props != null) {
-        for (int i = 0; i < props.length; i++) {
-          selProps.put(props[i].getName(), props[i].getValue());
+        cp.crossName = ( (EMOFunction) params.crossover).getName();
+        HashMap crossProps = new HashMap();
+        props = ( (EMOFunction) params.crossover).getProperties();
+        if (props != null) {
+          for (int i = 0; i < props.length; i++) {
+            crossProps.put(props[i].getName(), props[i].getValue());
+          }
         }
+        cp.crossProps = crossProps;
+
+        cp.selName = ( (EMOFunction) params.selection).getName();
+        HashMap selProps = new HashMap();
+        props = ( (EMOFunction) params.selection).getProperties();
+        if (props != null) {
+          for (int i = 0; i < props.length; i++) {
+            selProps.put(props[i].getName(), props[i].getValue());
+          }
+        }
+        cp.selProps = selProps;
+
+        // need to save binary/real individuals
+        cp.binaryInd = adv.binaryInd.isSelected();
+
+        setCachedParams(cp);
       }
-      cp.selProps = selProps;
 
-      // need to save binary/real individuals
-      cp.binaryInd = adv.binaryInd.isSelected();
+      if(index == 1) {
+        timing = true;
+        parameters.populationSize = 2;
+        startTime = System.currentTimeMillis();
+      }
 
-      setCachedParams(cp);
-
-      pushOutput(params, 0);
-      viewDone("done");
+      pushOutput(parameters, index);
+      if(index == 0)
+        viewDone("done");
     }
 
     public void setInput(Object o, int i) {
@@ -575,17 +619,17 @@ public class InputParameters
         }
       }
       else {
-        long stopTime = System.currentTimeMillis();  
+        long stopTime = System.currentTimeMillis();
         timing = false;
-        
+
         // now we have the start and stop times.
         // set the estimated run time for a full population...
         long runtime = stopTime-startTime;
-        
-        // this is the runtime for a population of 2.  
+
+        // this is the runtime for a population of 2.
         // assuming linearity, multiply by (popsize/2) and by
         // the number of generations to get the time for the full pop
-        
+
         double popSize;
         // if the overriden population size is valid, use that
         try {
@@ -597,7 +641,7 @@ public class InputParameters
           popSize = Double.parseDouble(
               (String) paramsModel.getValueAt(POP_SIZE, REC));
         }
-  
+
         double gens;
         // if the overriden max gens is valid, use that
         try {
@@ -609,17 +653,17 @@ public class InputParameters
           gens = Double.parseDouble(
               (String) paramsModel.getValueAt(MAX_GEN, REC));
         }
-        double totalruntime = runtime*popSize*gens; 
-        
+        double totalruntime = runtime*popSize*gens;
+
         // the time is in milliseconds.
         // divide by 1000 to get the number of seconds
         double seconds = totalruntime/1000;
         // divide by 60 to get the number of minutes
         double mins = seconds/60;
-        
-        this.estimatedRunTime.setText(Double.toString(mins));
-        this.estimatedTime.setText(Double.toString(mins));
-        barPanel.setEstimatedRunTime(Double.toString(mins));
+
+        this.estimatedRunTime.setText(nf.format(mins));
+        this.estimatedTime.setText(nf.format(mins));
+        barPanel.setEstimatedRunTime(nf.format(mins));
         this.updateDifference();
       }
     }
@@ -941,11 +985,14 @@ public class InputParameters
         JButton estimate = new JButton("Estimate");
         estimate.addActionListener(new AbstractAction() {
           public void actionPerformed(ActionEvent e) {
-            timing = true;   
             // create a new params with a pop size of 2
             // get the start time
-            startTime = System.currentTimeMillis();
-            // push it out on output 1
+
+            Parameters p = new Parameters();
+            p.constraints = params.constraints;
+            p.fitnessFunctions = params.fitnessFunctions;
+            p.decisionVariables = params.decisionVariables;
+            done(p, 1);
           }
         });
         Constrain.setConstraints(timePanel, estimate, 0, 1, 1, 1,
@@ -1093,24 +1140,32 @@ public class InputParameters
         advFrame.getContentPane().add(adv);
         advFrame.pack();
         advFrame.setVisible(false);
+
+        optFrame = new JD2KFrame("Optimization Tips");
+        JEditorPane jep = new JEditorPane();
+        jep.setText(OPTIMIZATION_TIPS);
+        JScrollPane sp = new JScrollPane(jep);
+        optFrame.getContentPane().add(sp);
+        optFrame.pack();
+        optFrame.setVisible(false);
       }
     }
-    
+
     void updateDifference() {
-      String est = estimatedRunTime.getText();   
+      String est = estimatedRunTime.getText();
       String mx = specifiedMaxTime.getText();
-      
+
       try {
         double e = Double.parseDouble(est);
         double m = Double.parseDouble(mx);
-        
+
         if(e > m) {
           double diff = e - m;
           difference.setText("+"+diff);
         }
         else {
-          double diff = m-e;  
-          difference.setText(Double.toString(diff));
+          double diff = m-e;
+          difference.setText(nf.format(diff));
         }
       }
       catch(Exception e) {
@@ -1192,6 +1247,12 @@ public class InputParameters
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton btn = new JButton("Optimizing Tips");
+        btn.addActionListener(new AbstractAction() {
+          public void actionPerformed(ActionEvent ae) {
+            if(!optFrame.isVisible())
+              optFrame.setVisible(true);
+          }
+        });
         buttonPanel.add(btn);
         Constrain.setConstraints(this, buttonPanel, 0, 3, 1, 1,
                                  GridBagConstraints.HORIZONTAL,
@@ -1627,19 +1688,19 @@ public class InputParameters
 
     private class BarPanel
         extends JPanel {
-      
+
             public Dimension getPreferredSize() {
               return new Dimension(300, 100);
             }
-      
+
       BarPanel() {
         estimatedRunTime = -1;
         maxRunTime = -1;
       }
-      
+
       double estimatedRunTime;
       double maxRunTime;
-      
+
       void setEstimatedRunTime(String time) {
         try {
           estimatedRunTime = Double.parseDouble(time);
@@ -1648,7 +1709,7 @@ public class InputParameters
         catch(Exception e) {
         }
       }
-      
+
       void setMaxRunTime(String time) {
         try {
           maxRunTime = Double.parseDouble(time);
@@ -1657,39 +1718,39 @@ public class InputParameters
         catch(Exception e) {
         }
       }
-      
+
       protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
-        
+
+
         if( (estimatedRunTime > 0) && (maxRunTime > 0) ) {
           Graphics2D g2 = (Graphics2D)g;
-          double maximum;  
+          double maximum;
           if(estimatedRunTime > maxRunTime)
             maximum = estimatedRunTime;
           else
             maximum = maxRunTime;
-            
-          int width = this.getWidth(); 
+
+          int width = this.getWidth();
           int height = this.getHeight();
-          
-          int verticalOffset = (int)(height/8); 
-          int horizSize = (int)(.8*width); 
+
+          int verticalOffset = (int)(height/8);
+          int horizSize = (int)(.8*width);
           int horizOffset = (int)(.2*width);
-          
-          // draw the string  
+
+          // draw the string
           g2.setColor(Color.darkGray);
-          g2.drawString("estimated run time", horizOffset, verticalOffset); 
-          
+          g2.drawString("estimated run time", horizOffset, verticalOffset);
+
           g2.setColor(Color.lightGray);
-          g2.fill(new Rectangle2D.Double(horizOffset, 2*verticalOffset, 
-                                         horizSize*(estimatedRunTime/maximum), 
+          g2.fill(new Rectangle2D.Double(horizOffset, 2*verticalOffset,
+                                         horizSize*(estimatedRunTime/maximum),
                                          verticalOffset));
           g2.setColor(Color.darkGray);
           g2.drawString("max run time", horizOffset, 5*verticalOffset);
           g2.setColor(Color.lightGray);
-          g2.fill(new Rectangle2D.Double(horizOffset, 6*verticalOffset, 
-                                         horizSize*(maxRunTime/maximum), 
+          g2.fill(new Rectangle2D.Double(horizOffset, 6*verticalOffset,
+                                         horizSize*(maxRunTime/maximum),
                                          verticalOffset));
         }
       }

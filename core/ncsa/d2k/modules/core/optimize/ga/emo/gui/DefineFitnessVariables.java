@@ -6,6 +6,7 @@ import javax.swing.*;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
 import ncsa.d2k.modules.core.transform.attribute.*;
@@ -93,7 +94,34 @@ public class DefineFitnessVariables
     public void setInput(Object o, int i) {
       parameters = (Parameters) o;
 //      table = (MutableTable) data.varNames;
-      table = parameters.decisionVariables.createVariableNameTable();
+      DecisionVariables dv = parameters.decisionVariables;
+      int numVars = dv.getNumVariables();
+      table = new MutableTableImpl(numVars);
+
+      for (int j = 0; j < numVars; j++) {
+        table.setColumn(new double[0], j);
+        table.setColumnLabel(dv.getVariableName(j), j);
+      }
+      // add columns for any FF, FV, CV, or CF defined before this...
+      FitnessFunctions ff = parameters.fitnessFunctions;
+      for(int j = 0; j < ff.getNumFitnessVariables(); j++) {
+        table.addColumn(new double[0]);
+        table.setColumnLabel(ff.getFitnessVariableName(j), table.getNumColumns()-1);
+      }
+      for(int j = 0; j < ff.getNumFitnessFunctions(); j++) {
+        table.addColumn(new double[0]);
+        table.setColumnLabel(ff.getFitnessFunctionName(j), table.getNumColumns()-1);
+      }
+      Constraints con = parameters.constraints;
+      for(int j = 0; j < con.getNumConstraintVariables(); j++) {
+        table.addColumn(new double[0]);
+        table.setColumnLabel(con.getConstraintVariableName(j), table.getNumColumns()-1);
+      }
+      for(int j = 0; j < con.getNumConstraintFunctions(); j++) {
+        table.addColumn(new double[0]);
+        table.setColumnLabel(con.getConstraintFunctionName(j), table.getNumColumns()-1);
+      }
+
       this.initialize();
     }
 
