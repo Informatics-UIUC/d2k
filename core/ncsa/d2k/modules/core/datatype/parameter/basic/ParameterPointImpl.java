@@ -24,7 +24,7 @@ public class ParameterPointImpl extends ContinuousExampleSet implements Paramete
     return createFromData(names, values);
   }
 
-  public ParameterPoint createFromData (String [] names, double [] values) {
+  public ParameterPoint createFromData(String [] names, double [] values) {
 
     int numParameters = names.length;
     int numRows       = 1;

@@ -1,9 +1,10 @@
 package ncsa.d2k.modules.core.prediction.decisiontree.continuous;
-
+import ncsa.d2k.modules.core.datatype.parameter.*;
+import ncsa.d2k.modules.core.datatype.parameter.basic.*;
 import ncsa.d2k.core.modules.ComputeModule;
 
 public class DecisionTreeBiasGenerator extends ComputeModule
-  {
+{
   int     numBiasDimensions = 9;
 
   private int     MinDecompositionPopulation = 20;
@@ -42,63 +43,48 @@ public class DecisionTreeBiasGenerator extends ComputeModule
   public void    setUseLinearNodeModels (int value) {       this.UseLinearNodeModels = value;}
   public int getUseLinearNodeModels ()              {return this.UseLinearNodeModels;}
 
-  public String getModuleInfo()
-    {
+  public String getModuleInfo() {
     return "DecisionTreeBiasGenerator";
-    }
-  public String getModuleName()
-    {
+  }
+  public String getModuleName() {
     return "DecisionTreeBiasGenerator";
-    }
+  }
 
-  public String[] getInputTypes()
-    {
+  public String getInputName(int i) {
+    return "";
+  }
+  public String getInputInfo(int i) {
+    return "";
+  }
+  public String[] getInputTypes() {
     String [] in = {};
     return in;
-    }
+  }
 
-  public String[] getOutputTypes()
-    {
-    String [] out = {"[D",
-                     "[S",
-                     "[Ljava.lang.Class;"};
+  public String getOutputName(int i) {
+    switch (i) {
+      case 0: return "Control Parameters";
+      case 1: return "Function Inducer Class";
+      default: return "Error!";
+    }
+  }
+  public String getOutputInfo(int i) {
+    switch (i) {
+      case 0: return "Control Parameters";
+      case 1: return "Function Inducer Class";
+      default: return "Error!";
+    }
+  }
+  public String[] getOutputTypes() {
+    String [] out = {
+      "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
+      "java.lang.Class"
+    };
     return out;
-    }
+  }
 
-  public String getInputInfo(int i)
-    {
-    return "";
-    }
 
-  public String getInputName(int i)
-    {
-    return "";
-    }
-
-  public String getOutputInfo(int i)
-    {
-    switch (i)
-      {
-      case 0: return "Bias";
-      case 1: return "BiasNames";
-      case 2: return "FunctionInducerClass";
-      }
-    return "";
-    }
-
-  public String getOutputName(int i)
-    {
-    switch (i)
-      {
-      case 0: return "Bias";
-      case 1: return "BiasNames";
-      case 2: return "FunctionInducerClass";
-      }
-    return "";
-    }
-
-  public void doit() throws Exception
-    {
+  public void doit() throws Exception {
     double [] bias      = new double[numBiasDimensions];
     String [] biasNames = new String[numBiasDimensions];
 
@@ -135,19 +121,20 @@ public class DecisionTreeBiasGenerator extends ComputeModule
     bias[biasIndex] = UseLinearNodeModels;
     biasIndex++;
 
+    ParameterPointImpl parameterPoint = new ParameterPointImpl();
 
-    Class [] functionInducerClass = new Class[1];
+    parameterPoint.createFromData(biasNames, bias);
+
+    Class functionInducerClass = null;
     try {
-      functionInducerClass[0] = Class.forName("ncsa.d2k.modules.core.prediction.decisiontree.continuous.DecisionTreeInducerOpt");
+      functionInducerClass = Class.forName("ncsa.d2k.modules.core.prediction.decisiontree.continuous.DecisionTreeInducerOpt");
     }
     catch (Exception e) {
       System.out.println("could not find class");
       throw new Exception();
     }
 
-
-    this.pushOutput(bias,                 0);
-    this.pushOutput(biasNames,            1);
-    this.pushOutput(functionInducerClass, 2);
-    }
+    this.pushOutput(parameterPoint,       0);
+    this.pushOutput(functionInducerClass, 1);
   }
+}
