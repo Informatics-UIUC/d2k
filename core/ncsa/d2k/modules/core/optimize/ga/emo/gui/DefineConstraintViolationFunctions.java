@@ -4,17 +4,13 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
-import java.util.*;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.transform.attribute.*;
-import ncsa.d2k.modules.core.vis.widgets.*;
-import ncsa.gui.*;
-
-import ncsa.d2k.modules.core.datatype.table.transformations.Construction;
+import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
+import ncsa.d2k.modules.core.transform.attribute.*;
+import ncsa.gui.*;
 
 /**
  * Define the fitness functions.
@@ -25,11 +21,11 @@ import ncsa.d2k.modules.core.optimize.ga.emo.*;
  * @author not attributable
  * @version 1.0
  */
-public class DefineFitnessFunctions
+public class DefineConstraintViolationFunctions
     extends AttributeConstruction {
 
   public String getModuleName() {
-    return "Define Fitness Functions";
+    return "Define Constraint Violation Functions";
   }
 
   public String getModuleInfo() {
@@ -37,7 +33,7 @@ public class DefineFitnessFunctions
   }
 
   protected UserView createUserView() {
-    return new FFConstructionGUI();
+    return new ConstrViolationView();
   }
 
   public String[] getInputTypes() {
@@ -53,11 +49,11 @@ public class DefineFitnessFunctions
   }
 
   public String getInputName(int i) {
-    return "EMOParams";
+    return "Parameters";
   }
 
   public String getOutputName(int i) {
-    return "EMOParams";
+    return "Parameters";
   }
 
   public String getInputInfo(int i) {
@@ -68,9 +64,6 @@ public class DefineFitnessFunctions
     return "";
   }
 
-  private static final String MIN = "Min";
-  private static final String MAX = "Max";
-
   /** Return an array with information on the properties the user may update.
    *  @return The PropertyDescriptions for properties the user may update.
    */
@@ -79,40 +72,29 @@ public class DefineFitnessFunctions
       return pds;
   }
 
- private class FitnessFunctionConstruction extends Construction {
-
-    private boolean isMinimizing = false;
-
-    public FitnessFunctionConstruction(String label, String expression) {
+  private class ConstraintViolationFunction extends Construction {
+    ConstraintViolationFunction(String label, String expression) {
       super(label, expression);
     }
 
-    public boolean getIsMinimizing() {
-      return isMinimizing;
-    }
-
-    public void setIsMinimizing(boolean b) {
-      this.isMinimizing = b;
-    }
+    double weight;
   }
-
 
   /**
    * inner class, extends attributeConstruction's inner gui class
    */
-  protected class FFConstructionGUI
+  protected class ConstrViolationView
       extends ColumnConstructionGUI {
 
     //for use in determining time
     //private JButton timeButton;
     //for use in displaying fitness function
-    private JTable tableData;
-    private DefaultTableModel modelData;
-    private Parameters parameters;
+    protected JTable tableData;
+    protected DefaultTableModel modelData;
+    protected Parameters parameters;
 
     public void setInput(Object o, int i) {
       parameters = (Parameters) o;
-//      this.table = (MutableTable) data.varNames;
       this.table = parameters.decisionVariables.createVariableNameTable();
       this.initialize();
     }
@@ -162,7 +144,7 @@ public class DefineFitnessFunctions
       //columnModel = new DefaultComboBoxModel();
       //Strings array which represents the column labels of tableData
       final String[] names = {
-          "",
+          "Weight",
           "",
           //"Time"
       };
@@ -193,13 +175,16 @@ public class DefineFitnessFunctions
 
           if (c == 0) {
             Object[] cons = (Object[]) getLastCons();
-//            ( (EMOConstruction) cons[r]).setmyflag(1);
-            if (o.toString().equalsIgnoreCase(MIN)) {
-              ( (FitnessFunctionConstruction) cons[r]).setIsMinimizing(true);
+            // now parse the number
+            double num;
+            try {
+              num = Double.parseDouble((String)o);
             }
-            else {
-              ( (FitnessFunctionConstruction) cons[r]).setIsMinimizing(false);
+            catch(Exception e) {
+              // show error!
+              return;
             }
+            ( (ConstraintViolationFunction) cons[r]).weight = num;
           }
         }
       };
@@ -207,13 +192,9 @@ public class DefineFitnessFunctions
       Object[] last = (Object[])getLastCons();
       if(last != null ) {
         for (int i = 0; i < last.length; i++) {
-          FitnessFunctionConstruction constr = (FitnessFunctionConstruction) last[i];
-          if (constr.getIsMinimizing())
-            modelData.addRow(new Object[] {MIN, constr.label+" = "+
-                             constr.expression/*, new String()*/});
-          else
-            modelData.addRow(new Object[] {MAX, constr.label+" = "+
-                             constr.expression/*, new String()*/});
+          ConstraintViolationFunction constr = (ConstraintViolationFunction) last[i];
+            modelData.addRow(new Object[] {Double.toString(constr.weight),
+                             constr.label+" = "+ constr.expression});
         }
       }
 
@@ -254,7 +235,7 @@ public class DefineFitnessFunctions
        * display combo box
        */
 
-      setMaxMinColumn(tableData.getColumnModel().getColumn(0));
+      //setMaxMinColumn(tableData.getColumnModel().getColumn(0));
 
       /**
            *  GuiPanel removes all components on its panel, changed components to be added
@@ -376,7 +357,7 @@ public class DefineFitnessFunctions
        * with constraints (alignments, weights, etc.)
        */
       Constrain.setConstraints(rightPanel,
-                               new JLabel("Fitness Functions:  "), 0, 0, 1,
+                               new JLabel("Constraint Violation Functions:  "), 0, 0, 1,
                                1,
                                GridBagConstraints.NONE,
                                GridBagConstraints.NORTHWEST, 0, 0);
@@ -390,12 +371,12 @@ public class DefineFitnessFunctions
       //bottomPanel.removeAll();
     }
 
-    public void setMaxMinColumn(TableColumn column) {
+    /*public void setMaxMinColumn(TableColumn column) {
       JComboBox myBox = new JComboBox();
       myBox.addItem(MIN);
       myBox.addItem(MAX);
       column.setCellEditor(new DefaultCellEditor(myBox));
-    }
+    }*/
 
     // define actionlisteners
     public void actionPerformed(ActionEvent e) {
@@ -472,14 +453,14 @@ public class DefineFitnessFunctions
           table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
         }
 
-        FitnessFunctions ff = parameters.fitnessFunctions;
-        if(ff == null) {
-          ff = new FitnessFunctions();
-          parameters.fitnessFunctions = ff;
+        Constraints constraints = parameters.constraints;
+        if(constraints == null) {
+          constraints = new Constraints();
+          parameters.constraints = constraints;
         }
         for(int i = 0; i < tmp.length; i++) {
-          ff.addFitnessFunction((FitnessFunctionConstruction)tmp[i],
-                                ((FitnessFunctionConstruction)tmp[i]).getIsMinimizing());
+          constraints.addConstraintFunction((ConstraintViolationFunction)tmp[i],
+                                            ((ConstraintViolationFunction)tmp[i]).weight);
         }
 
         pushOutput(parameters, 0);
@@ -582,12 +563,13 @@ public class DefineFitnessFunctions
         /**
          * Add to table object array with: empty string, label of function,  function itself, and time stirng
          */
-        modelData.addRow(new Object[] {MIN, newNameField.getText()+" = "+
+        modelData.addRow(new Object[] {"", newNameField.getText()+" = "+
                          gui.getTextArea().getText()/*, new String()*/});
 
-        FitnessFunctionConstruction added = new FitnessFunctionConstruction(
+//        FitnessFunctionConstruction added = new FitnessFunctionConstruction(
+//            newNameField.getText(), gui.getTextArea().getText());
+        ConstraintViolationFunction added = new ConstraintViolationFunction(
             newNameField.getText(), gui.getTextArea().getText());
-        added.setIsMinimizing(true);
         newColumnModel.addElement(added);
         newColumnList.setMinimumSize(new Dimension(200, 200));
 

@@ -11,7 +11,7 @@ public class DecisionVariables {
 
   /////////////////////////////////////////////////////
   // constants used to index columns in the table
-  
+
   /** the name of the variable */
   private static final int NAME = 0;
   /** the minimum value of the variable */
@@ -26,8 +26,10 @@ public class DecisionVariables {
   /** the table to hold the description of decision variables */
   private MutableTable table;
 
+  private MutableTable varNameTable;
+
   /**
-   * constructor 
+   * constructor
    */
   public DecisionVariables() {
     table = new MutableTableImpl(5);
@@ -129,17 +131,19 @@ public class DecisionVariables {
    * Create a MutableTable with zero rows, and one column of doubles
    * for each decision variable.  A convenience for copying the individuals
    * in a population into a table and perform transformations on the table.
-   * 
+   *
    * @return the new mutable table with a column for each decision variable
    */
   public MutableTable createVariableNameTable() {
-    int numVars = getNumVariables();
-    MutableTable variableNameTable = new MutableTableImpl(numVars);
+    if(varNameTable == null) {
+      int numVars = getNumVariables();
+      varNameTable = new MutableTableImpl(numVars);
 
-    for(int i = 0; i < numVars; i++) {
-      variableNameTable.setColumn(new double[0], i);
-      variableNameTable.setColumnLabel(getVariableName(i), i);
+      for (int i = 0; i < numVars; i++) {
+        varNameTable.setColumn(new double[0], i);
+        varNameTable.setColumnLabel(getVariableName(i), i);
+      }
     }
-    return variableNameTable;
+    return varNameTable;
   }
 }

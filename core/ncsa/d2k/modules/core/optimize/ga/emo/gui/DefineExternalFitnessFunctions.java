@@ -85,24 +85,24 @@ public class DefineExternalFitnessFunctions
       extends JUserPane {
 
     /** the list model for the jlist that contains the FFs */
-    DefaultListModel definedFunctionsModel;
+    protected DefaultListModel definedFunctionsModel;
     /** the list that contains the defined FFs */
-    JList definedFunctions;
+    protected JList definedFunctions;
     /** remove the selected FF from the jlist */
-    JButton removeFunction;
+    protected JButton removeFunction;
 
     /** the name of the FF */
-    JTextField functionName;
+    protected JTextField functionName;
     /** the path to the foreign executable */
-    JTextField execPath;
+    protected JTextField execPath;
     /** the path to the input file */
-    JTextField inputFilePath;
+    protected JTextField inputFilePath;
     /** the path to the output file */
-    JTextField outputFilePath;
+    protected JTextField outputFilePath;
     /** minimize/maximize */
-    JComboBox min;
+    protected JComboBox min;
 
-    Parameters popInfo;
+    protected Parameters parameters;
 
     public Dimension getPreferredSize() {
       return new Dimension(600, 250);
@@ -379,7 +379,11 @@ public class DefineExternalFitnessFunctions
             tbl.setString(f.minmax, i, 4);
           }
               */
-          FitnessFunctions ff = popInfo.fitnessFunctions;
+          FitnessFunctions ff = parameters.fitnessFunctions;
+          if(ff == null) {
+            ff = new FitnessFunctions();
+            parameters.fitnessFunctions = ff;
+          }
           int numFunctions = functions.length;
 
           for(int i = 0; i < functions.length; i++) {
@@ -393,8 +397,8 @@ public class DefineExternalFitnessFunctions
           }
 
           // push out the pop info
-          pushOutput(popInfo, 0);
-          popInfo = null;
+          pushOutput(parameters, 0);
+          parameters = null;
           viewDone("Done");
         }
       });
@@ -433,7 +437,7 @@ public class DefineExternalFitnessFunctions
     }
 
     public void setInput(Object o, int i) {
-      popInfo = (Parameters) o;
+      parameters = (Parameters) o;
     }
 
     class FitnessFunction

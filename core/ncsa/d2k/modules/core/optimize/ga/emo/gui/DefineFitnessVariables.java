@@ -6,11 +6,9 @@ import javax.swing.*;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.transform.attribute.*;
-
-import ncsa.d2k.modules.core.datatype.table.transformations.Construction;
+import ncsa.d2k.modules.core.datatype.table.transformations.*;
 import ncsa.d2k.modules.core.optimize.ga.emo.*;
+import ncsa.d2k.modules.core.transform.attribute.*;
 
 public class DefineFitnessVariables
     extends AttributeConstruction {
@@ -36,11 +34,11 @@ public class DefineFitnessVariables
   }
 
   public String getInputName(int i) {
-    return "Population Info";
+    return "Parameters";
   }
 
   public String getOutputName(int i) {
-    return "Population Info";
+    return "Parameters";
   }
 
   public String getInputInfo(int i) {
@@ -60,20 +58,20 @@ public class DefineFitnessVariables
   }
 
   //inner class, extends attributeConstruction's inner gui class
-  public class DefineVarView
+  protected class DefineVarView
       extends ColumnConstructionGUI {
 
     // columnModel keeps track of all the already present columns in the table
     // as well as the new columns defined recently using the widget
     // It is used in the redoBox() function
-    private DefaultComboBoxModel columnModel;
+    protected DefaultComboBoxModel columnModel;
 
-    private Parameters data;
+    protected Parameters parameters;
 
     public void setInput(Object o, int i) {
-      data = (Parameters) o;
+      parameters = (Parameters) o;
 //      table = (MutableTable) data.varNames;
-      table = data.decisionVariables.createVariableNameTable();
+      table = parameters.decisionVariables.createVariableNameTable();
       this.initialize();
     }
 
@@ -177,56 +175,40 @@ public class DefineFitnessVariables
         }
       }
       else if (src == this.doneButton) {
-        //help.setVisible(false);
-        //pushOutput(new AttributeTransform(newColumnModel.toArray()), 0);
-        //myConstructions = new ArrEMOConstruction(ccwVar.getnewConstructions(),
-        //     ccwFit.getnewConstructions());
-
-        constructions = (Object[]) getLastCons();
-        if(constructions != null) {
-          Construction[] tmp = new Construction[constructions.length];
-          for (int i = 0; i < constructions.length; i++) {
-            tmp[i] = (Construction) constructions[i];
-
-            float[] tmpfloat = new float[0];
-            // add an empty column of floats to the table
-            table.addColumn(tmpfloat);
-            // set the label of the new column added to the table
-            table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
-          }
-
-          /*if (data.fitnessVariableConstructions == null) {
-            data.fitnessVariableConstructions = tmp;
-          }
-          // append the new constructions onto the older constructions
-          else {
-            Construction[] tmp2 = new Construction[tmp.length +
-                data.fitnessVariableConstructions.length];
-            int i = 0;
-            for (; i < data.fitnessVariableConstructions.length; i++) {
-              tmp2[i] = data.fitnessVariableConstructions[i];
-            }
-            int j = 0;
-            for (; i < tmp2.length; i++) {
-              tmp2[i] = tmp[j];
-              j++;
-            }
-            data.fitnessVariableConstructions = tmp2;
-          }*/
-
-          FitnessFunctions ff = data.fitnessFunctions;
-          for(int i = 0; i < tmp.length; i++) {
-            ff.addFitnessVariable(tmp[i]);
-          }
-        }
-
-        pushOutput(data, 0);
-        data = null;
-        viewDone("Done");
+        done();
       }
       else {
         super.actionPerformed(e);
       }
+    }
+
+    protected void done() {
+      constructions = (Object[]) getLastCons();
+      if(constructions != null) {
+        Construction[] tmp = new Construction[constructions.length];
+        for (int i = 0; i < constructions.length; i++) {
+          tmp[i] = (Construction) constructions[i];
+
+          float[] tmpfloat = new float[0];
+          // add an empty column of floats to the table
+          table.addColumn(tmpfloat);
+          // set the label of the new column added to the table
+          table.setColumnLabel(tmp[i].label, (table.getNumColumns() - 1));
+        }
+
+        FitnessFunctions ff = parameters.fitnessFunctions;
+        if(ff == null) {
+          ff = new FitnessFunctions();
+          parameters.fitnessFunctions = ff;
+        }
+        for(int i = 0; i < tmp.length; i++) {
+          ff.addFitnessVariable(tmp[i]);
+        }
+      }
+
+      pushOutput(parameters, 0);
+      parameters = null;
+      viewDone("Done");
     }
 
     /**

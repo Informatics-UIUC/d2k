@@ -38,11 +38,11 @@ public class DefineExternalConstraints extends UIModule {
   }
 
   public String getInputName(int i) {
-    return "EMOParams";
+    return "Parameters";
   }
 
   public String getOutputName(int i) {
-    return "EMOParams";
+    return "Parameters";
   }
 
   public String getModuleInfo() {
@@ -57,12 +57,12 @@ public class DefineExternalConstraints extends UIModule {
     return null;
   }
 
-  private Object[] fitnessFunctions;
-  public void setFitnessFunctions(Object[] o) {
-    fitnessFunctions = o;
+  private Object[] constraints;
+  public void setConstraints(Object[] o) {
+    constraints = o;
   }
-  public Object[] getFitnessFunctions() {
-    return fitnessFunctions;
+  public Object[] getConstraints() {
+    return constraints;
   }
 
   /*  Return an array with information on the properties the user may update.
@@ -72,18 +72,19 @@ public class DefineExternalConstraints extends UIModule {
     return new PropertyDescription[0];
   }
 
-  private class ExternalView extends JUserPane {
-    DefaultListModel definedFunctionsModel;
-    JList definedFunctions;
-    JButton removeFunction;
+  protected class ExternalView extends JUserPane {
+    protected DefaultListModel definedFunctionsModel;
+    protected JList definedFunctions;
+    protected JButton removeFunction;
 
-    JTextField functionName;
-    JTextField execPath;
-    JTextField inputFilePath;
-    JTextField outputFilePath;
-    JComboBox min;
+    protected JTextField functionName;
+    protected JTextField execPath;
+    protected JTextField inputFilePath;
+    protected JTextField outputFilePath;
+//    JComboBox min;
+    protected JTextField weight;
 
-    Parameters popInfo;
+    protected Parameters parameters;
 
     public Dimension getPreferredSize() {
       return new Dimension(600, 250);
@@ -111,7 +112,7 @@ public class DefineExternalConstraints extends UIModule {
       removeButtonPanel.add(removeFunction);
 
       // the list
-      Object[] ff = getFitnessFunctions();
+      Object[] ff = getConstraints();
         definedFunctionsModel = new DefaultListModel();
       if(ff != null) {
         for(int i = 0; i < ff.length; i++)
@@ -224,12 +225,11 @@ public class DefineExternalConstraints extends UIModule {
                                GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
 
-      Constrain.setConstraints(mainPanel, new JLabel("Minimize/Maximize"), 0, 4, 1, 1,
+      Constrain.setConstraints(mainPanel, new JLabel("Weight"), 0, 4, 1, 1,
                                GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
-      Object[] items = {"Minimize", "Maximize"};
-      min = new JComboBox(items);
-      Constrain.setConstraints(mainPanel, min, 1, 4, 1, 1,
+      weight = new JTextField(5);
+      Constrain.setConstraints(mainPanel, weight, 1, 4, 1, 1,
                                GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
 
@@ -262,11 +262,11 @@ public class DefineExternalConstraints extends UIModule {
                                           "Error", JOptionPane.ERROR_MESSAGE);
             return;
           }
-          String minmax = (String)min.getSelectedItem();
+          String wght = (String)weight.getText();
 
           // if we get to here, everything checks out ok
           // add the function
-          Constraint ff = new Constraint(nme, exec, input, output, minmax);
+          Constraint ff = new Constraint(nme, exec, input, output, wght);
           definedFunctionsModel.addElement(ff);
 
           functionName.setText("");
@@ -285,10 +285,10 @@ public class DefineExternalConstraints extends UIModule {
       done.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
           Object[] functions = definedFunctionsModel.toArray();
-          setFitnessFunctions(functions);
+          setConstraints(functions);
 
           // now create the table and add it to the pop info
-          MutableTableImpl tbl = new MutableTableImpl();
+/*          MutableTableImpl tbl = new MutableTableImpl();
           int numFunctions = functions.length;
           tbl.addColumn(new String[numFunctions]);
           tbl.addColumn(new String[numFunctions]);
@@ -308,7 +308,19 @@ public class DefineExternalConstraints extends UIModule {
             tbl.setString(f.exec, i, 1);
             tbl.setString(f.input, i, 2);
             tbl.setString(f.output, i, 3);
-            tbl.setString(f.minmax, i, 4);
+            tbl.setString(f.weight, i, 4);
+          }*/
+
+          Constraints constraints = parameters.constraints;
+          if(constraints == null) {
+            constraints = new Constraints();
+            parameters.constraints = constraints;
+          }
+          for(int i = 0; i < functions.length; i++) {
+            Constraint f = (Constraint)functions[i];
+            double wgh = 0;
+            constraints.addExternConstraint(f.name, f.exec, f.input, f.output,
+                                            wgh);
           }
 
           // push out the pop info
@@ -316,8 +328,8 @@ public class DefineExternalConstraints extends UIModule {
           //popInfo.useExternalFitnessEvaluation = true;
           //popInfo.externalFitnessInfo = tbl;
 
-          pushOutput(popInfo, 0);
-          popInfo = null;
+          pushOutput(parameters, 0);
+          parameters = null;
           viewDone("Done");
         }
       });
@@ -341,7 +353,7 @@ public class DefineExternalConstraints extends UIModule {
     }
 
     public void setInput(Object o, int i) {
-      popInfo = (Parameters)o;
+      parameters = (Parameters)o;
     }
 
     class Constraint implements Serializable {
@@ -349,18 +361,18 @@ public class DefineExternalConstraints extends UIModule {
       String exec;
       String input;
       String output;
-      String minmax;
+      String weight;
 
-      Constraint(String n, String e, String i, String o, String m) {
+      Constraint(String n, String e, String i, String o, String w) {
         name = n;
         exec = e;
         input = i;
         output = o;
-        minmax = m;
+        weight = w;
       }
 
       public String toString() {
-        return name+" : "+exec+" "+input+" "+output+" "+minmax;
+        return name+" : "+exec+" "+input+" "+output+" "+weight;
       }
     }
   }

@@ -9,12 +9,12 @@ import java.util.*;
 /**
  * Define the constraints to impose on a problem in EMO.  Both constraints
  * by formula and constraints by an external executable are supported.  Separate
- * counts of the number of constraints defined are kept for constraints defined 
+ * counts of the number of constraints defined are kept for constraints defined
  * by formula and constraints calculated by an executable.
- * 
+ *
  * This class does not evaluate the constraints on a population, just stores
  * the information about the constraints.
- * 
+ *
  * A constraint variable is a transformation on a table that creates a variable,
  * most likely to be used in the calculation of the constraints.
  */
@@ -28,7 +28,7 @@ public class Constraints {
 
   //////////////////////////////////////////////////////
   // constants defined to index columns in externalFunctions table
-  
+
   /** the name of the constraint */
   private static final int NAME = 0;
   /** the path to the executable for the constraint */
@@ -39,15 +39,15 @@ public class Constraints {
   private static final int OUTPUT = 2;
   /** the weight to assign to the constraint */
   private static final int WEIGHT = 3;
-  
+
   ///////////////////////////////////////////////////////
 
-  /** 
+  /**
    * a list of the variables used in constraint calculations.  these
    * are Constructions on a Table that contains a population
    */
   private List constraintVariables;
-  
+
   /**
    * a list of the functions used in constraint calculations.  these
    * are Constructions on a Table that contains a population
@@ -70,7 +70,7 @@ public class Constraints {
     constraintVariables = new ArrayList();
     constraintFunctions = new ArrayList();
   }
-  
+
   ////////////////////////////////////////////////////////////////////////////
   // support for constraints and constraint variables by transformations on a table
 
@@ -81,7 +81,7 @@ public class Constraints {
   public int getNumConstraintFunctions() {
     return constraintFunctions.size();
   }
-  
+
   /**
    * Get the number of constraint variables defined by a formula.
    * @return the number of constraint variables defined by formula
@@ -89,7 +89,7 @@ public class Constraints {
   public int getNumConstraintVariables() {
     return constraintVariables.size();
   }
-  
+
   /**
    * Add a constraint variable.
    * @param var the Construction that creates the constraint variable.
@@ -97,7 +97,7 @@ public class Constraints {
   public void addConstraintVariable(Construction var) {
     constraintVariables.add(var);
   }
-  
+
   /**
    * Add a constraint function
    * @param var the Construction that creates the constraint function.
@@ -106,20 +106,20 @@ public class Constraints {
     Constr con = new Constr(c, weight);
     constraintFunctions.add(con);
   }
-  
+
   /**
    * A class that ties together a constraint construction and a weight
-   */ 
-  private class Constr {
-    Construction con;  
+   */
+  private class Constr implements java.io.Serializable {
+    Construction con;
     double weight;
-    
+
     Constr(Construction c, double w) {
-      con = c;    
+      con = c;
       weight = w;
-    } 
+    }
   }
-  
+
   /**
    * Get the ith constraint variable
    * @param i the index
@@ -128,7 +128,7 @@ public class Constraints {
   public Construction getConstraintVariable(int i) {
     return (Construction)constraintVariables.get(i);
   }
-  
+
   /**
    * Get the name of the ith constraint variable
    * @param i the index
@@ -137,7 +137,7 @@ public class Constraints {
   public String getConstraintVariableName(int i) {
     return getConstraintVariable(i).label;
   }
-  
+
   /**
    * Get the ith constraint function
    * @param i the index
@@ -147,7 +147,7 @@ public class Constraints {
     Constr c = (Constr)constraintFunctions.get(i);
     return c.con;
   }
-  
+
   /**
    * Get the name of the ith constraint function
    * @param i the index
@@ -166,10 +166,10 @@ public class Constraints {
     Constr c = (Constr)constraintFunctions.get(i);
     return c.weight;
   }
-  
+
   //////////////////////////////////////////////////////////////////
   // support for constraints by executable
-  
+
   /**
    * Add a ccnstraint that is evaluated by executable.
    * @param nm the name of the constraint
@@ -187,7 +187,7 @@ public class Constraints {
     row[4] = exec;
     externalFunctions.addRow(row);
   }
-  
+
   /**
    * Get the number of constraints calculated by executables.
    * @return the number of constraints calculated by executables.
@@ -195,7 +195,7 @@ public class Constraints {
   public int getNumExternConstraints() {
     return externalFunctions.getNumRows();
   }
-  
+
   /**
    * Get the name of the ith constraint calculated by an executable
    * @param i the index
@@ -204,9 +204,9 @@ public class Constraints {
   public String getExternConstraintName(int i) {
     return externalFunctions.getString(i, NAME);
   }
-  
+
   /**
-   * Get the path to the input file for the ith constraint calculated by an 
+   * Get the path to the input file for the ith constraint calculated by an
    * executable
    * @param i the index
    * @return the path to the input file
@@ -214,7 +214,7 @@ public class Constraints {
   public String getExternConstraintInput(int i) {
     return externalFunctions.getString(i, INPUT);
   }
-  
+
   /**
    * Get the path to the output file for the ith constraint calculated by
    * an executable
@@ -224,7 +224,7 @@ public class Constraints {
   public String getExternConstraintOutput(int i) {
     return externalFunctions.getString(i, OUTPUT);
   }
-  
+
   /**
    * Get the path to the executable for the ith constraint.
    * @param i the index
@@ -233,7 +233,7 @@ public class Constraints {
   public String getExternConstraintExec(int i) {
     return externalFunctions.getString(i, EXEC);
   }
-  
+
   /**
    * Get the weight for the ith executable constraint
    * @param i the index
