@@ -661,7 +661,7 @@ abstract public class NsgaPopulation extends Population implements Serializable 
                          numGenes += ((BinaryRange) this.traits[i]).getNumBits();
                        numTraits = numGenes;
                }
-               System.out.println("numtraits :" + numTraits);
+               //System.out.println("numtraits :" + numTraits);
                int popSize = this.size();
                double [][] dc = new double [numTraits+numObjectives+2][popSize];
 

@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
 import java.awt.geom.*;
+import java.text.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 
@@ -38,19 +39,20 @@ public class ObjectiveScatterPlot extends JPanel implements MouseListener, Mouse
 
   protected NsgaPopulation population;
 
-  private PaintThread paintThread;
+  protected NumberFormat nf;
 
   public ObjectiveScatterPlot() {
     //population = null;
     setDoubleBuffered(false);
     table = null;
     population = null;
-    top = left = right = bottom = 15.0f;
+    top = left = right = bottom = 20.0f;
     ToolTipManager.sharedInstance().registerComponent(this);
     addMouseListener(this);
     addMouseMotionListener(this);
     startx = starty = endx = endy = -1;
-    paintThread = new PaintThread();
+    nf = NumberFormat.getInstance();
+    nf.setMaximumFractionDigits(1);
   }
 
   public void setBounds(int x, int y, int w, int h) {
@@ -60,6 +62,8 @@ public class ObjectiveScatterPlot extends JPanel implements MouseListener, Mouse
 
 
     if(w != 0 && h != 0) {
+      if(image != null)
+        image.flush();
       image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
       graphwidth = (float) w;
       graphheight = (float) h;
@@ -252,12 +256,6 @@ public class ObjectiveScatterPlot extends JPanel implements MouseListener, Mouse
     changed = true;
   }
 
-  private class PaintThread extends Thread {
-    public void run() {
-      repaint();
-    }
-  }
-
   public String getToolTipText(MouseEvent e) {
     int xloc = e.getX();
     int yloc = e.getY();
@@ -308,6 +306,31 @@ public class ObjectiveScatterPlot extends JPanel implements MouseListener, Mouse
       imgG2.draw(new Line2D.Double(left, top, left, graphheight-bottom));
       imgG2.draw(new Line2D.Double(left, graphheight-bottom,
           graphwidth-right, graphheight-bottom));
+
+      // draw the scale
+      g2.setFont(new Font("Arial", Font.PLAIN, 5));
+      FontMetrics fm = g2.getFontMetrics();
+
+      String x_min = nf.format(xMin);
+      imgG2.drawString(x_min, left-fm.stringWidth(x_min)/2, graphheight-bottom+fm.getHeight()+6);
+      String x_max = nf.format(xMax);
+      imgG2.drawString(x_max, graphwidth-right-fm.stringWidth(x_max)/2,
+                       graphheight-bottom+fm.getHeight()+6);
+
+      AffineTransform saveXForm = imgG2.getTransform();
+      String y_min = nf.format(yMin);
+      double x1 = left-fm.stringWidth(y_min)/2-2;
+      double y1 = graphheight-bottom+fm.getHeight()+6;
+      imgG2.rotate(Math.toRadians(270), x1, y1);
+      imgG2.drawString(y_min, (int)x1, (int)y1);
+      imgG2.setTransform(saveXForm);
+
+      String y_max = nf.format(yMax);
+      x1 = left-fm.stringWidth(y_min)/2-2;
+      y1 = top + 2*fm.stringWidth(y_max);
+      imgG2.rotate(Math.toRadians(270), x1, y1);
+      imgG2.drawString(y_max, (int)x1, (int)y1);
+      imgG2.setTransform(saveXForm);
 
       // draw population
       if(table != null) {

@@ -419,7 +419,7 @@ public class DefineDecisionVariables
               //else {
               int totalLength = 0;
               for (int i = 0; i < model.getRowCount(); i++) {
-                float numU, numL, numP, temp;
+                float numU, numL, numP, numBits;
 
                 int sLength;
                 numU = Float.parseFloat( (String) model.getValueAt(i, 3));
@@ -432,15 +432,21 @@ public class DefineDecisionVariables
                       JOptionPane.ERROR_MESSAGE);
                   break;
                 }
-                temp = (numU - numL) / numP;
-                temp = temp + 1;
-                temp = (float) Math.log( (double) temp);
-                double temp1 = 2.0;
-                temp = (float) (temp / Math.log(temp1));
-                sLength = (int) temp;
-                if ( (temp - sLength) > 0.00001) {
-                  sLength = sLength + 1;
-                }
+                numBits = (numU - numL + 1) / numP;
+                numBits = (float) Math.log( (double) numBits);
+                numBits = (float) (numBits / Math.log(2.0));
+
+
+                // now we know the number of bits required to represent
+                // a number in this interval
+
+                // the string length must be an integer, so we will need to
+                // round up if numBits is not an integer
+
+                sLength = (int)Math.floor(numBits);
+                if(sLength < numBits)
+                  sLength++;
+
                 totalLength += sLength;
                 model.setValueAt(new Integer(sLength), i, 5);
               }

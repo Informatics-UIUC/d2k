@@ -5,7 +5,7 @@ import java.util.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.optimize.ga.*;
-import ncsa.d2k.modules.projects.mbabbar.optimize.util.*;
+import ncsa.d2k.modules.core.optimize.util.*;
 
 /**
  * <p>Title: EvaluateExecutableFitness </p>
@@ -140,6 +140,9 @@ public class EvaluateExecutableFitness
 
   public void endExecution() {
     fitnessExecs = null;
+    execPathNames = null;
+    execInputFileNames = null;
+    execOutputFileNames = null;
   }
 
   /**
@@ -220,9 +223,14 @@ public class EvaluateExecutableFitness
                   //double [] genes = (double []) ((Individual) ni).getGenes ();
                  MOBinaryIndividual ni = (MOBinaryIndividual) popul.getMember(0);
                // double [] genes = (double []) ni.getGenes ();
-                 boolean [] genes = (boolean []) ni.getGenes ();
+                 //boolean [] genes = (boolean []) ni.getGenes ();
+
+                 //int numTraits = genes.length;
+                 int numTraits = 0;
+
+                  BinaryRange[] traits = (BinaryRange[])popul.getTraits();
+
                //  int [] genes = (int [])popul.getMember(0).getGenes ();
-                 int numTraits = genes.length;
 //                 System.out.println("genes length" + numTraits);
 //                 System.out.println("*****************************");
 
@@ -231,25 +239,71 @@ public class EvaluateExecutableFitness
                  // write population size in file
                  pw.println(popul.size ());
                  // write length of each gene/chromosome
-                 pw.println(numTraits);
+                 pw.println(traits.length);
                  // write genes
                  for ( int j = 0; j < popul.size (); j++ ){
                  //   genes = popul.getMember(j).getGenes().toString();
                  //   genes = (double [])((MONumericIndividual) popul.getMember(j)).getGenes ();
-                  genes = (boolean [])((MOBinaryIndividual) popul.getMember(j)).getGenes ();
-                    numTraits = genes.length;
+                 // genes = (boolean [])((MOBinaryIndividual) popul.getMember(j)).getGenes ();
+                 double[] genes = ((MOBinaryIndividual)popul.getMember(j)).toDouble();
+//                    numTraits = genes.length;
+
+                  // the max and precision are contained in the boundsAndPrecision table
+                  Table bounds = ((NsgaPopulation)popul).getPopulationInfo().boundsAndPrecision;
+
+/*System.out.println("************** Invdividual: ");
+                  for(int z = 0; z < genes.length; z++) {
+                          if(genes[z] == 1.0)
+                                  System.out.print(1);
+                          else
+                                  System.out.print(0);
+                          System.out.print(" ");
+                  }
+                  System.out.println("");
+*/
+                  int curPos = 0;
+                  for(int k = 0; k < traits.length; k++) {
+                    int numBits = traits[k].getNumBits();
+                    double num = 0.0d;
+                    double max = bounds.getDouble(k, 2);
+                    double min = bounds.getDouble(k, 1);
+                    double precision = bounds.getDouble(k, 3);
+
+                    double interval = (max-min)*precision;
+
+                    // this is one trait
+                    for(int l = 0; l < numBits; l++) {
+                        //System.out.println("genes[curpos]" + genes[curPos]);
+                      if (genes[curPos] != 0) {
+                        num = num + Math.pow(2.0, l);
+//    System.out.println("**** num: "+num+" k: "+k+" l: "+l+" g: "+genes[curPos]);
+                      }
+                      curPos++;
+                    }
+//                    System.out.print("cp: "+curPos+" num: "+num);
+
+                    // if it is above the max, scale it down
+                    num = num*precision +min;
+//System.out.println(" NUM: "+num+" i:"+interval+" mx: "+max+" mn: "+min+" p: "+precision);
+                    if(num > max)
+                      num = max;
+                    if(num < min)
+                      num = min;
+                    pw.print(num+SPACE);
+                  }
+
 
                     //if (popul.getMember(j).isDirty()){
                      // write to file
                     // System.out.println("numtraits :" + numTraits);
-                       for (int k =0; k < numTraits; k++){
+/*                       for (int k =0; k < numTraits; k++){
                          if (genes[k] == false){
                            // pw.print(genes[k] + "  ");
-                           pw.print(0 + "  ");
+                           pw.print(ZERO);
                          } else {
-                           pw.print(1 + "  ");
+                           pw.print(ONE);
                          }
-                       }
+                       }*/
                        pw.println();
                        //System.out.println("indiv id "+ j);
                     // }
@@ -269,7 +323,7 @@ public class EvaluateExecutableFitness
           catch (Exception e) {
 
                  e.printStackTrace();
-                 System.err.println("IOException");
+//                 System.err.println("IOException");
 //                 System.exit(1);
 
                  }
@@ -313,6 +367,7 @@ public class EvaluateExecutableFitness
       }
     }
 
+
     int fitnessID = 0;
     for (int i = 0; i < getNumFitnessExecs(); i++) {
 
@@ -325,18 +380,18 @@ public class EvaluateExecutableFitness
       double[] fitness = new double[popul.size()];
 
       try {
-//System.out.println(" calling executable : "+ execPathNames[i]+" "+i);
         if (rows.contains(new Integer(i))) {
+//System.out.println("Exec: "+execPathNames[i]);
           ExecRunner er = new ExecRunner();
           //er.setMaxRunTimeSecs(0);
           er.exec(execPathNames[i].toString());
-//        System.out.println("<STDOUT>\n" + er.getOutString() + "</STDOUT>");
-//        System.out.println("<STDERR>\n" + er.getErrString() + "</STDERR>");
+        //System.out.println("<STDOUT>\n" + er.getOutString() + "</STDOUT>");
+        //System.out.println("<STDERR>\n" + er.getErrString() + "</STDERR>");
         }
 
 
         // Exit nicely
-        // System.exit(0);
+         //System.exit(0);
 
         // Obtain fitnesses after evaluation is over
         // reading fitness of all individuals from all output files
@@ -415,7 +470,7 @@ public class EvaluateExecutableFitness
             // System.out.println("numtraits :" + numTraits);
             for (int k = 0; k < numTraits; k++) {
               //if (genes[k] == false){
-              pw.print(genes[k] + "  ");
+              pw.print(genes[k] + SPACE);
               // pw.print(0 + "  ");
               //} else {
               // pw.print(1 + "  ");
@@ -447,6 +502,10 @@ public class EvaluateExecutableFitness
     }
 
   }
+
+  private static final String SPACE = " ";
+  private static final String ONE = "1 ";
+  private static final String ZERO = "0 ";
 
   /*
    * This read the fitness of individuals from output files for different

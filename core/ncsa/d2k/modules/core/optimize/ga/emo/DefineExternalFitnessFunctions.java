@@ -23,11 +23,11 @@ public class DefineExternalFitnessFunctions extends UIModule {
   }
 
   public String getInputInfo(int i) {
-    return "";
+    return "A data structure to hold the information about the fitness functions.";
   }
 
   public String getOutputInfo(int i) {
-    return "";
+    return "A data structure to hold the information about the fitness functions.";
   }
 
   public String getModuleInfo() {
@@ -50,8 +50,16 @@ public class DefineExternalFitnessFunctions extends UIModule {
     return fitnessFunctions;
   }
 
+  /*  Return an array with information on the properties the user may update.
+   *  @return The PropertyDescriptions for properties the user may update.
+   */
+  public PropertyDescription[] getPropertiesDescriptions() {
+    return new PropertyDescription[0];
+  }
+
   private class ExternalView extends JUserPane {
     DefaultListModel definedFunctionsModel;
+    JList definedFunctions;
     JButton removeFunction;
 
     JTextField functionName;
@@ -61,10 +69,21 @@ public class DefineExternalFitnessFunctions extends UIModule {
 
     EMOPopulationInfo popInfo;
 
+    public Dimension getPreferredSize() {
+      return new Dimension(600, 250);
+    }
+
     public void initView(ViewModule vm) {
       // the remove button
       JPanel removeButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
       removeFunction = new JButton("Remove");
+      removeFunction.addActionListener(new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          Object[] vals = definedFunctions.getSelectedValues();
+          for(int i = 0; i < vals.length; i++)
+            definedFunctionsModel.removeElement(vals[i]);
+        }
+      });
       removeButtonPanel.add(removeFunction);
 
       // the list
@@ -74,8 +93,9 @@ public class DefineExternalFitnessFunctions extends UIModule {
         for(int i = 0; i < ff.length; i++)
           definedFunctionsModel.addElement(ff[i]);
       }
-      JList definedFunctions = new JList(definedFunctionsModel);
+      definedFunctions = new JList(definedFunctionsModel);
       JScrollPane scroll = new JScrollPane(definedFunctions);
+      scroll.setPreferredSize(new Dimension(200, 200));
       JPanel listPanel = new JPanel(new BorderLayout());
       listPanel.add(scroll, BorderLayout.CENTER);
       listPanel.add(removeButtonPanel, BorderLayout.SOUTH);
@@ -140,7 +160,7 @@ public class DefineExternalFitnessFunctions extends UIModule {
       });
 
       Constrain.setConstraints(mainPanel, new JLabel("Function Name"), 0, 0, 1,
-                               1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                               1, GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
       functionName = new JTextField(20);
       Constrain.setConstraints(mainPanel, functionName, 1, 0, 1, 1,
@@ -148,39 +168,39 @@ public class DefineExternalFitnessFunctions extends UIModule {
                                1, 1);
 
       Constrain.setConstraints(mainPanel, new JLabel("Path to Executable"), 0, 1,
-                               1, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                               1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
       execPath = new JTextField(20);
       Constrain.setConstraints(mainPanel, execPath, 1, 1, 1, 1,
                                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
                                1, 1);
       Constrain.setConstraints(mainPanel, selectExec, 2, 1, 1, 1,
-                               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                               GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
 
       Constrain.setConstraints(mainPanel, new JLabel("Input File"), 0, 2, 1, 1,
-                               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                               GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
       inputFilePath = new JTextField(20);
       Constrain.setConstraints(mainPanel, inputFilePath, 1, 2, 1, 1,
                                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
                                1, 1);
       Constrain.setConstraints(mainPanel, selectInput, 2, 2, 1, 1,
-                               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                               GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
 
       Constrain.setConstraints(mainPanel, new JLabel("Output File"), 0, 3, 1, 1,
-                               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                               GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
       outputFilePath = new JTextField(20);
       Constrain.setConstraints(mainPanel, outputFilePath, 1, 3, 1, 1,
                                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
                                1, 1);
       Constrain.setConstraints(mainPanel, selectOutput, 2, 3, 1, 1,
-                               GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                               GridBagConstraints.NONE, GridBagConstraints.WEST,
                                1, 1);
 
-      JButton add = new JButton("Add");
+      JButton add = new JButton("Add Fitness Function");
       add.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
           // add the ff
@@ -222,7 +242,7 @@ public class DefineExternalFitnessFunctions extends UIModule {
         }
       });
 
-      Constrain.setConstraints(mainPanel, add, 3, 4, 1, 1,
+      Constrain.setConstraints(mainPanel, add, 1, 4, 1, 1,
                                GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
                                1, 1);
 
@@ -269,8 +289,8 @@ public class DefineExternalFitnessFunctions extends UIModule {
           viewCancel();
         }
       });
-      buttonPanel.add(done);
       buttonPanel.add(abort);
+      buttonPanel.add(done);
 
       JPanel top = new JPanel(new BorderLayout());
       top.add(mainPanel, BorderLayout.CENTER);

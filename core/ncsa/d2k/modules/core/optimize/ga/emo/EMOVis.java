@@ -52,6 +52,18 @@ public class EMOVis
     return null;
   }
 
+  /*  Return an array with information on the properties the user may update.
+   *  @return The PropertyDescriptions for properties the user may update.
+   */
+  public PropertyDescription[] getPropertiesDescriptions() {
+    return new PropertyDescription[0];
+  }
+
+  private int runNumber = 0;
+  public void endExecution() {
+    runNumber = 0;
+  }
+
   private static final String SMALL_MULT = "Small Multiples of Scatterplots";
   private static final String PAR_COOR = "Parallel Coordinates";
 
@@ -93,6 +105,9 @@ public class EMOVis
     private PopInfo lastCumulativePopInfo;
     private PopInfo twoCumulativeAgoInfo;
 
+    abstract class Runner
+        implements Runnable {};
+
     public void initView(ViewModule vm) {
       // the type of view
       viewType = new JComboBox();
@@ -107,55 +122,58 @@ public class EMOVis
       continueButton.setEnabled(false);
       continueButton.addActionListener(new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
-          // reset the twoCumulativeAgo pop to be the lastCumulativePop
-          twoCumulativeAgo = lastCumulativePop;
-          // reset the lastCumulativePop to be the cumulativePop
-          lastCumulativePop = cumulativePop;
+              // reset the twoCumulativeAgo pop to be the lastCumulativePop
+              twoCumulativeAgo = lastCumulativePop;
+              // reset the lastCumulativePop to be the cumulativePop
+              lastCumulativePop = cumulativePop;
 
-          // if cumulativePop already exists, reset it to be
-          // a junction of the currentPop and the cumulativePop
-          if(cumulativePop != null) {
-            cumulativePop = new NewNsgaPopulation(currentPop, cumulativePop);
-            ((NewNsgaPopulation)cumulativePop).filtering();
-          }
-          // otherwise, if this is the second population,
-          // create a cumulativePop that is the junction of the
-          // first and second populations
-          else if(firstPop != null && firstPop != currentPop) {
-            cumulativePop = new NewNsgaPopulation(currentPop, firstPop);
-            ((NewNsgaPopulation)cumulativePop).filtering();
-            firstPop = null;
-          }
+              // if cumulativePop already exists, reset it to be
+              // a junction of the currentPop and the cumulativePop
+              if (cumulativePop != null) {
+                cumulativePop = new NewNsgaPopulation(cumulativePop, currentPop);
+                ( (NewNsgaPopulation) cumulativePop).filtering();
+              }
+              // otherwise, if this is the second population,
+              // create a cumulativePop that is the junction of the
+              // first and second populations
+              else if (firstPop != null && firstPop != currentPop) {
+                cumulativePop = new NewNsgaPopulation(firstPop, currentPop);
+                ( (NewNsgaPopulation) cumulativePop).filtering();
+                firstPop = null;
+              }
 
-          if(twoCumulativeAgo != null) {
-            new Thread() {
-              public void run() {
+              if (twoCumulativeAgo != null) {
+                new Thread("twoCumulative") {
+                  public void run() {
                 twoCumulativeAgoInfo.setPopulation(twoCumulativeAgo, null);
+                twoCumulativeAgoInfo.setRunNumber(runNumber - 2);
+                  }
+                }.start();
               }
-            }.start();
-          }
-          if(lastCumulativePop != null) {
-            new Thread() {
-              public void run() {
+              if (lastCumulativePop != null) {
+                new Thread("lastCumulative") {
+                  public void run() {
                 lastCumulativePopInfo.setPopulation(lastCumulativePop, null);
+                lastCumulativePopInfo.setRunNumber(runNumber - 1);
+                  }
+                }.start();
               }
-            }.start();
-          }
-          if(cumulativePop != null) {
-            new Thread() {
-              public void run() {
+              if (cumulativePop != null) {
+                new Thread("cumulative") {
+                  public void run() {
                 cumulativePopInfo.setPopulation(cumulativePop, null);
+                cumulativePopInfo.setRunNumber(runNumber);
+                  }
+                }.start();
               }
-            }.start();
-          }
 
-          // send this to EMOGeneratePopulation to double the pop size
-          // for the next run
-          pushOutput(new EMOPopulationInfo(), 0);
-          pushOutput(currentPop, 1);
-          continueButton.setEnabled(false);
-          // the next input should be a new population
-          newPop = true;
+              // send this to EMOGeneratePopulation to double the pop size
+              // for the next run
+              pushOutput(new EMOPopulationInfo(), 0);
+              pushOutput(currentPop, 1);
+              continueButton.setEnabled(false);
+              // the next input should be a new population
+              newPop = true;
         }
       });
       stopButton = new JButton("Stop");
@@ -170,13 +188,13 @@ public class EMOVis
 
       // current
       currentPopInfo = new CurrentPopInfo();
-      currentPopInfo.setPreferredSize(new Dimension(350,375));
+      currentPopInfo.setPreferredSize(new Dimension(350, 375));
       cumulativePopInfo = new PopInfo();
-      cumulativePopInfo.setPreferredSize(new Dimension(350,375));
+      cumulativePopInfo.setPreferredSize(new Dimension(350, 375));
       lastCumulativePopInfo = new PopInfo();
-      lastCumulativePopInfo.setPreferredSize(new Dimension(350,375));
+      lastCumulativePopInfo.setPreferredSize(new Dimension(350, 375));
       twoCumulativeAgoInfo = new PopInfo();
-      twoCumulativeAgoInfo.setPreferredSize(new Dimension(350,375));
+      twoCumulativeAgoInfo.setPreferredSize(new Dimension(350, 375));
 
       JPanel pnl = new JPanel();
       pnl.setLayout(new GridLayout(2, 2));
@@ -203,12 +221,13 @@ public class EMOVis
     public void setInput(Object o, int z) {
       NsgaPopulation pop = (NsgaPopulation) o;
 
-      if(firstTime) {
+      if (firstTime) {
         // get the names of the objectives
-        ObjectiveConstraints[] con = (ObjectiveConstraints[])pop.getObjectiveConstraints();
+        ObjectiveConstraints[] con = (ObjectiveConstraints[]) pop.
+            getObjectiveConstraints();
 
         String[] names = new String[con.length];
-        for(int i = 0; i < names.length; i++) {
+        for (int i = 0; i < names.length; i++) {
           names[i] = con[i].getName();
 //System.out.println("name: "+names[i]);
         }
@@ -220,7 +239,8 @@ public class EMOVis
       }
 
       // the first generation of a new population
-      if(newPop) {
+      if (newPop) {
+        runNumber++;
         // reset the maximum number of generations
         maxGen = pop.getMaxGenerations();
         maxGen--;
@@ -246,7 +266,8 @@ public class EMOVis
       //}
 
       // create the table
-      MutableTable currentPopTable = (MutableTable) DefaultTableFactory.getInstance().createTable();
+      final MutableTable currentPopTable = (MutableTable) DefaultTableFactory.
+          getInstance().createTable();
       for (int i = 0; i < numObjs; i++) {
         //currentPopTable.addColumn(new float[numRankZero]);
         currentPopTable.addColumn(new float[numSolutions]);
@@ -261,25 +282,33 @@ public class EMOVis
       for (int i = 0; i < numSolutions; i++) {
         // if it is rank 0
 //        if(nis[i].getRank() == 0) {
-          // copy each objective into the table
-          for (int j = 0; j < numObjs; j++)
-            currentPopTable.setFloat((float)nis[i].getObjective(j), i, j);
+        // copy each objective into the table
+        for (int j = 0; j < numObjs; j++) {
+          currentPopTable.setFloat( (float) nis[i].getObjective(j), i, j);
 //          curRow++;
 //        }
+        }
       }
 
-      if (currentPop != null)
-       currentPopInfo.setPopulation(currentPop, currentPopTable);
+      if (currentPop != null) {
+        new Thread("current") {
+          public void run() {
+            currentPopInfo.setPopulation(currentPop, currentPopTable);
+          }
+        } .start();
+      }
 
       // if we are at max gens, enable the continue button
       if (currentGen == maxGen) {
-        if(firstPop == null && cumulativePop == null)
+        if (firstPop == null && cumulativePop == null) {
           firstPop = currentPop;
+        }
         continueButton.setEnabled(true);
       }
       // otherwise, pass the population through
-      else
+      else {
         pushOutput(currentPop, 2);
+      }
     }
 
     private class PopInfo
@@ -292,13 +321,15 @@ public class EMOVis
 
       String RUN = "Run: ";
       String POP_SIZE = "Population Size: ";
-      String NUM_SOL = "Number of Solutions: ";
-      String CUMUL = "Cumulative";
+      String NUM_SOL = "Number of Nondominated Solutions: ";
+      String CUMUL = "Cumulative ";
 
       boolean isCumulative = false;
 
       ObjectiveModel tableModel;
       ObjectiveMatrix scatterPlot;
+
+      int run;
 
       PopInfo() {
         runNumber = new JLabel(RUN);
@@ -312,7 +343,7 @@ public class EMOVis
         labels.add(numSolutions);
 
         scatterPlot = new ObjectiveMatrix();
-        tableModel = (ObjectiveModel)scatterPlot.jTable.getModel();
+        tableModel = (ObjectiveModel) scatterPlot.jTable.getModel();
 
         this.setLayout(new BorderLayout());
         labels.setBorder(new EmptyBorder(0, 15, 0, 0));
@@ -320,17 +351,33 @@ public class EMOVis
         add(scatterPlot, BorderLayout.CENTER);
       }
 
+      void setRunNumber(int r) {
+        runNumber.setText(CUMUL+RUN + r);
+      }
+
       void setPopulation(NsgaPopulation p, MutableTable table) {
         if (!isCumulative) {
-          runNumber.setText(RUN);
+          runNumber.setText(RUN + run);
         }
         popSize.setText(POP_SIZE + p.getMembers().length);
-        numSolutions.setText(NUM_SOL);
 
-        if(table != null)
+        if (p != null) {
+          NsgaSolution[] nis = (NsgaSolution[]) p.getMembers();
+          int numRankZero = 0;
+          for (int i = 0; i < nis.length; i++) {
+            if (nis[i].getRank() == 0) {
+              numRankZero++;
+            }
+          }
+          numSolutions.setText(NUM_SOL + numRankZero);
+        }
+
+        if (table != null) {
           tableModel.setPopulationTable(table);
-        else
+        }
+        else {
           tableModel.setPopulation(p);
+        }
       }
     }
 
@@ -349,7 +396,7 @@ public class EMOVis
         labels.add(numSolutions);
 
         scatterPlot = new ObjectiveMatrix();
-        tableModel = (ObjectiveModel)scatterPlot.jTable.getModel();
+        tableModel = (ObjectiveModel) scatterPlot.jTable.getModel();
 
         this.setLayout(new BorderLayout());
         labels.setBorder(new EmptyBorder(0, 15, 0, 0));
@@ -359,15 +406,27 @@ public class EMOVis
 
       void setPopulation(NsgaPopulation p, MutableTable table) {
         if (!isCumulative) {
-          runNumber.setText(RUN);
+          runNumber.setText(RUN + EMOVis.this.runNumber);
         }
         popSize.setText(POP_SIZE + p.getMembers().length);
-        numSolutions.setText(NUM_SOL);
 
-        if(table != null)
+        if (p != null) {
+          NsgaSolution[] nis = (NsgaSolution[]) p.getMembers();
+          int numRankZero = 0;
+          for (int i = 0; i < nis.length; i++) {
+            if (nis[i].getRank() == 0) {
+              numRankZero++;
+            }
+          }
+          numSolutions.setText(NUM_SOL + numRankZero);
+        }
+
+        if (table != null) {
           tableModel.setPopulationTable(table);
-        else
+        }
+        else {
           tableModel.setPopulation(p);
+        }
       }
     }
 
@@ -413,7 +472,7 @@ public class EMOVis
         //col.setHeaderRenderer(renderer);
 //        col.setHeaderEditor(new DefaultCellEditor(combo));
 
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
           tblModel.setColumnSelection(i, names[i]);
           col = (EditableHeaderTableColumn) jTable.getColumnModel().getColumn(i);
           col.setHeaderEditor(new DefaultCellEditor(combo));
@@ -479,7 +538,8 @@ public class EMOVis
         TableColumnModel columnModel = jTable.getColumnModel();
         jTable.setTableHeader(new EditableHeader(columnModel));
 
-        String[] items = {"ff", "fg"};
+        String[] items = {
+            "ff", "fg"};
         JComboBox combo = new JComboBox(items);
 
         EditableHeaderTableColumn col;
@@ -495,8 +555,6 @@ public class EMOVis
         //col.setHeaderRenderer(renderer);
         col.setHeaderEditor(new DefaultCellEditor(combo));
 
-
-
         //jTable.getTableHeader().setReorderingAllowed(false);
         //jTable.getTableHeader().setResizingAllowed(false);
 
@@ -508,14 +566,14 @@ public class EMOVis
         // JLabels...so create them and find the longest
         // preferred width
         /*JLabel tempLabel = new JLabel();
-        for (int i = 0; i < numRows; i++) {
+                 for (int i = 0; i < numRows; i++) {
           tempLabel.setText(
               jTable.getModel().getValueAt(i, 0).toString());
           if (tempLabel.getPreferredSize().getWidth() > longest) {
             longest = (int) tempLabel.getPreferredSize().getWidth();
           }
           tempLabel.setText("");
-        }*/
+                 }*/
 
         TableColumn column;
         // set the default column widths
@@ -546,7 +604,7 @@ public class EMOVis
           prefHeight = 2 * ROW_HEIGHT;
                  }*/
         jTable.setPreferredScrollableViewportSize(new Dimension(
-            ROW_WIDTH*2, ROW_HEIGHT*2));
+            ROW_WIDTH * 2, ROW_HEIGHT * 2));
 
         // put the row headers in the viewport
         JViewport jv = new JViewport();
@@ -621,7 +679,8 @@ public class EMOVis
 
         public void setHeaderValue(Object value) {
           super.setHeaderValue(value);
-          ObjectiveMatrix.this.tblModel.setColumnSelection(this.getModelIndex()-1, (String)value);
+          ObjectiveMatrix.this.tblModel.setColumnSelection(this.getModelIndex() -
+              1, (String) value);
         }
 
         public void copyValues(TableColumn base) {
@@ -747,9 +806,9 @@ public class EMOVis
           }
         }
 
-/*        public boolean editCellAt(int index) {
-          return editCellAt(index);
-        }*/
+        /*        public boolean editCellAt(int index) {
+                  return editCellAt(index);
+                }*/
 
         public boolean editCellAt(int index, EventObject e) {
           if (cellEditor != null && !cellEditor.stopCellEditing()) {
@@ -916,10 +975,11 @@ public class EMOVis
 
       ObjectiveModel() {
         plots = new ObjectiveScatterPlot[2][2];
-        for(int i = 0; i < 2; i++)
-          for(int j = 0; j < 2; j++) {
+        for (int i = 0; i < 2; i++) {
+          for (int j = 0; j < 2; j++) {
             plots[i][j] = new ObjectiveScatterPlot();
           }
+        }
 
         columnSelections = new int[2];
         rowSelections = new int[2];
@@ -930,13 +990,13 @@ public class EMOVis
         try {
           val = ( (Integer) nameToIndexMap.get(value)).intValue();
         }
-        catch(Exception e) {
+        catch (Exception e) {
           return;
         }
         rowSelections[index] = val;
 
         // now, for all the plots in this row, update the objectives
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
           plots[index][i].setObjectives(val, columnSelections[i]);
         }
         fireTableDataChanged();
@@ -947,13 +1007,13 @@ public class EMOVis
         try {
           val = ( (Integer) nameToIndexMap.get(value)).intValue();
         }
-        catch(Exception e) {
+        catch (Exception e) {
           return;
         }
         columnSelections[index] = val;
 
         // now, for all the plots in this column, update the objectives
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
           plots[i][index].setObjectives(rowSelections[i], val);
         }
         fireTableDataChanged();
@@ -962,29 +1022,33 @@ public class EMOVis
       void setObjectiveNames(String[] names) {
         objectiveNames = names;
         nameToIndexMap = new HashMap(names.length);
-        for(int i = 0; i < names.length; i++)
+        for (int i = 0; i < names.length; i++) {
           nameToIndexMap.put(names[i], new Integer(i));
 
-        for(int i = 0; i < 2; i++)
+        }
+        for (int i = 0; i < 2; i++) {
           setRowSelection(i, objectiveNames[i]);
+        }
       }
 
       void setPopulationTable(MutableTable popTable) {
-        for(int i = 0; i < plots.length; i++)
-          for(int j = 0; j < plots[i].length; j++) {
-            ((ObjectiveScatterPlot)plots[i][j]).setTable(popTable);
-            ((ObjectiveScatterPlot)plots[i][j]).setObjectives(rowSelections[i],
+        for (int i = 0; i < plots.length; i++) {
+          for (int j = 0; j < plots[i].length; j++) {
+            ( (ObjectiveScatterPlot) plots[i][j]).setTable(popTable);
+            ( (ObjectiveScatterPlot) plots[i][j]).setObjectives(rowSelections[i],
                 columnSelections[j]);
+          }
         }
         fireTableDataChanged();
       }
 
       void setPopulation(NsgaPopulation p) {
-        for(int i = 0; i < plots.length; i++)
-          for(int j = 0; j < plots[i].length; j++) {
-            ((ObjectiveScatterPlot)plots[i][j]).setPopulation(p);
-            ((ObjectiveScatterPlot)plots[i][j]).setObjectives(rowSelections[i],
+        for (int i = 0; i < plots.length; i++) {
+          for (int j = 0; j < plots[i].length; j++) {
+            ( (ObjectiveScatterPlot) plots[i][j]).setPopulation(p);
+            ( (ObjectiveScatterPlot) plots[i][j]).setObjectives(rowSelections[i],
                 columnSelections[j]);
+          }
         }
         //this.fireTableDataChanged();
         fireTableDataChanged();
@@ -1018,10 +1082,12 @@ public class EMOVis
 
       public Object getValueAt(int row, int col) {
         if (col == 0) {
-          if(objectiveNames == null)
+          if (objectiveNames == null) {
             return "";
-          else
-            return objectiveNames[ rowSelections[row] ];
+          }
+          else {
+            return objectiveNames[rowSelections[row]];
+          }
         }
         else {
           return plots[row][col - 1];
@@ -1033,7 +1099,7 @@ public class EMOVis
           //rowheaders[row] = (String) value;
           //ScatterPlotWidget.this.setup();
           //ScatterPlotWidget.this.revalidate();
-          setRowSelection(row, (String)value);
+          setRowSelection(row, (String) value);
         }
       }
 
@@ -1052,5 +1118,5 @@ public class EMOVis
         return false;
       }
     } // Objective Model
-  }  // EMOVisPane
+  } // EMOVisPane
 } // EMO2

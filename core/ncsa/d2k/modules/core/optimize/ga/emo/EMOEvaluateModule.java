@@ -28,27 +28,49 @@ public class EMOEvaluateModule
     return types;
   }
 
-/*  private double[] decode(BinaryIndividual binaryInd){
+  //private double[] decode(binary[] binaryInd){
+/*  private double[] decode(MOBinaryIndividual binaryInd){
     double[] doubleInd;
 
     int i,l,k,m,j,iparam,nparam;
 
-    //nparam = string length
+    nparam = binaryInd.getNumBits();
+
     l=1;
-    for(k = 0; k < nparam; k++) { // where nparam is the string length
-       iparam = 0;
-       m = 1;
-       for(j = m; j <= m+ig2(k)-1; m++){
-          l = l+1;
-          iparam = iparam + binaryInd[j]*(2*(m+ig2[k]-1-j));
+    for(k=0; k<nparam; k++) { // where nparam is the string length
+       iparam=0;
+       m=1;
+       for(j=m; j<=m+ig2(k)-1; m++){
+          l=l+1;
+          iparam=iparam+binaryInd[j]*(2**(m+ig2[k]-1-j))
       }
       doubleInd[k] =g0[k]+g1[k]*(double)iparam;
     }
    }*/
 
-  MutableTable table;
-  NsgaPopulation population;
-  int numCols;
+   // g0 = lower bound?
+   // g1 = precision?
+
+  //
+  //  g0       = lower bound values of the parameter array to be optimized.
+  //  g1       = the increment by which the parameter array is increased
+  //             from the lower bound values in the g0 array.  The minimum
+  //             parameter value is g0 and the maximum parameter value
+  //             equals g0+g1*(2**g2-1), i.e. g1 is the incremental value
+  //             between min and max.
+  //  ig2      = array of the number of bits per parameter, i.e. the number
+  //             of possible values per parameter.  For example, ig2=2 is
+  //            equivalent to 4 (=2**2) possibilities, ig2=4 is equivalent
+  //            to 16 (=2**4) possibilities.
+
+  private MutableTable table;
+  private NsgaPopulation population;
+  private int numCols;
+
+  public void endExecution() {
+    table = null;
+    population = null;
+  }
 
   /**
      Do the evaluation, using the evaluate function provided by the population

@@ -21,8 +21,8 @@ public class EMOGeneratePopulation
 
     pds[0] = new PropertyDescription(
         "nonDominatedFronts",
-        "Number of nondominated fronts",
-        "The number of nondominated fronts desired");
+        "Number of nondominated solutions",
+        "The number of nondominated solutions desired");
 
     pds[1] = new PropertyDescription(
         "useRecommendedPopSize",
@@ -376,6 +376,7 @@ public class EMOGeneratePopulation
       }
       pop = new ConstrainedNsgaPopulation(xyz, oc,
            this.populationSize, this.getTargetFitness());
+      pop.setMaxGenerations(this.maxGenerations);
       pop.setPopulationInfo(popInfo);
     }
     else {
@@ -423,7 +424,6 @@ public class EMOGeneratePopulation
 //    pop.getPopulationInfo().varNames = variableNames;
       //set the maximum number of generation
       pop.setMaxGenerations(this.maxGenerations);
-
       // remove all columns that are created by EMOConstructions
       if (fitvarConstructions != null) {
         for (int i = 0; i < fitvarConstructions.length; i++) {
