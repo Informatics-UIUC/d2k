@@ -40,7 +40,7 @@ public class SQLHTree extends ComputeModule
   static String NOTHING = "";
   static String DELIMITER = "\t";
   static String ELN = "\n";
-  static String NA = "ZZZZZ";
+  static String NA = "____";
   // String for the list of column names seperated by ","
   String columnStr;
 
@@ -562,7 +562,34 @@ public class SQLHTree extends ComputeModule
     return (false);
   }
 
-  /** order the columns based on cardinality. This will put the column with
+  /** determine whether the column needs binning
+   *  @param colName the column to check
+   *  @return true if the column has been binned, false otherwise
+   */
+  protected boolean isBinnedColumn(String colName) {
+    for (int binIdx = 0; binIdx < bins.length; binIdx++) {
+      if (bins[binIdx].label.equals(colName))
+        return (true);
+    }
+    return (false);
+  }
+
+  /** determine the maximum length of the value in the column
+   *  @param colName the column to check
+   *  @return the maximum length of the value
+   */
+   protected int maxBinSize(String colName) {
+     int maxlen = 0;
+     for (int binIdx = 0; binIdx < bins.length; binIdx++) {
+       if (bins[binIdx].label.equals(colName)) {
+         int len = bins[binIdx].name.length();
+         if (len > maxlen)
+           maxlen = len;
+       }
+     }
+     return maxlen;
+   }
+   /** order the columns based on cardinality. This will put the column with
    *  less unique values to the higher level in the HTree. This is important for
    *  the efficiency.
    */
@@ -1042,9 +1069,14 @@ public class SQLHTree extends ComputeModule
             tableQry = tableQry + ",";
           }
           String ctype = tableSet.getString("TYPE_NAME").toUpperCase();
+          // A binned Categorical column may have a value that is larger than original data.
           int csize = tableSet.getInt("COLUMN_SIZE");
           colNumber ++;
           if (ctype.indexOf("CHAR")>=0) {
+            // determine the column size using the max length of binned value.
+            if (isBinnedColumn(cname)) {
+              csize = maxBinSize(cname);
+            }
             tableQry = tableQry + cname + " VARCHAR(" +
                      csize + ")";
           }
