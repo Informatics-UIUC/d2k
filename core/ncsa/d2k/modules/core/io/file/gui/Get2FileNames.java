@@ -363,9 +363,9 @@ public class Get2FileNames extends UIModule {
                     String file1 = filename1.getText();
                     setFile0Path(file);
                     setFile1Path(file1);
-                    System.out.println("PUSH: "+file);
+                    //System.out.println("PUSH: "+file);
                     pushOutput(file, 0);
-                    System.out.println("PUSH1: "+file1);
+                    //System.out.println("PUSH1: "+file1);
                     pushOutput(file1, 1);
                     viewDone("Done");
                 }
