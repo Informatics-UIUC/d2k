@@ -27,3 +27,6 @@ File Parser, d2k.modules.core.io.file.input.ARFFFileParser, Output,  An ARFF Fil
 Java Object, java.lang.Object, Output, The object that was deserialized, InputSerializedObject (Input Serialized Object)
 Java Object, java.lang.Object, Input,  The object to be serialized,      OutputSerializedObject (Output Serialized Object)
 
+Input Table,   d2k.modules.core.datatype.table.basic.TableImpl, Original Table to be operated on,   MergeTableRows (Merge Table Rows)
+Output Table,  d2k.modules.core.datatype.table.basic.TableImpl, Resulting Table after merges,       MergeTableRows (Merge Table Rows)
+
