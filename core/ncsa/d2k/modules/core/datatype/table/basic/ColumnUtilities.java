@@ -1,5 +1,7 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 
+import ncsa.d2k.modules.core.datatype.table.*;
+
 /**
 	Useful methods that are used on Columns.
 */
@@ -190,6 +192,7 @@ final public class ColumnUtilities {
             }
         }
         return true;
+
     }
 
 
@@ -222,5 +225,315 @@ final public class ColumnUtilities {
 	    return new StringColumn(size);
     }
 
+	/**
+		CopyColumn
+		
+		make a copy of the column data in a Table (the interface kind of Table) and return
+		it as a Column (The package 'basic' kind of Column)
 
+		@param sourceTable the table to copy the column out of
+		@param colIndex which column in the table to copy
+		@author pgroves
+	*/
+	public static Column copyColumn(Table sourceTable, int colIndex){
+		int type=sourceTable.getColumnType(colIndex);
+		int numRows=sourceTable.getNumRows();
+		Column c;
+		switch(type){
+			case (ColumnTypes.INTEGER) : {
+				int[] dat=new int[numRows];
+				sourceTable.getColumn(dat, colIndex);
+				c= new IntColumn(dat);
+				break;
+			}
+			case (ColumnTypes.FLOAT) : {
+				float[] dat=new float[numRows];	
+				sourceTable.getColumn(dat, colIndex);
+				c= new FloatColumn(dat);
+				break;
+			}
+			case (ColumnTypes.SHORT) : {
+				short[] dat=new short[numRows];
+				sourceTable.getColumn(dat, colIndex);
+				c= new ShortColumn(dat);
+				break;
+			}
+			case (ColumnTypes.LONG) : {
+				long[] dat=new long[numRows];	
+				sourceTable.getColumn(dat, colIndex);
+				c= new LongColumn(dat);
+				break;
+			}
+			case (ColumnTypes.STRING) : {
+				String[] dat=new String[numRows];	
+				sourceTable.getColumn(dat, colIndex);
+				c= new StringColumn(dat);
+				break;
+			}
+			case (ColumnTypes.CHAR_ARRAY) : {
+				char[][] dat=new char[numRows][];
+				sourceTable.getColumn(dat, colIndex);
+				c= new CharArrayColumn(dat);
+				break;
+			}
+			case (ColumnTypes.BYTE_ARRAY) : {
+				byte[][] dat=new byte[numRows][];
+				sourceTable.getColumn(dat, colIndex);
+				c= new ByteArrayColumn(dat);
+				break;
+			}
+			case (ColumnTypes.BOOLEAN) : {
+				boolean[] dat=new boolean[numRows];
+				sourceTable.getColumn(dat, colIndex);
+				c= new BooleanColumn(dat);
+				break;
+			}
+			case (ColumnTypes.OBJECT) : {
+				Object[] dat=new Object[numRows];	
+				sourceTable.getColumn(dat, colIndex);
+				c= new ObjectColumn(dat);
+				break;
+			}
+			case (ColumnTypes.BYTE) : {
+				byte[] dat=new byte[numRows];
+				sourceTable.getColumn(dat, colIndex);
+				c= new ByteColumn(dat);
+				break;
+			}
+			case (ColumnTypes.CHAR) : {
+				char[] dat=new char[numRows];	
+				sourceTable.getColumn(dat, colIndex);
+				c= new CharColumn(dat);
+				break;
+			}
+			case (ColumnTypes.DOUBLE) : {
+				double[] dat=new double[numRows];
+				sourceTable.getColumn(dat, colIndex);
+				c= new DoubleColumn(dat);
+				break;
+
+			}
+			default : {
+				System.err.println("ColumnUtilities:CopyColumn: Invalid Column Type");
+				c= new ObjectColumn(numRows);
+			}
+		}
+		c.setLabel(sourceTable.getColumnLabel(colIndex));
+		c.setComment(sourceTable.getColumnComment(colIndex));
+		return c;
+	}
+	/**
+       Create a column given the type and size.
+       @param type the type of column to create
+       @param size the initial size of the column
+       @return a new, empty column
+    */
+    public static Column createColumn(int type, int size) {
+		Column c;
+		switch(type){
+			case (ColumnTypes.INTEGER) : {
+				c= new IntColumn(size);
+				break;
+			}
+			case (ColumnTypes.FLOAT) : {
+				c= new FloatColumn(size);
+				break;
+			}
+			case (ColumnTypes.SHORT) : {
+				c= new ShortColumn(size);
+				break;
+			}
+			case (ColumnTypes.LONG) : {
+				c= new LongColumn(size);
+				break;
+			}
+			case (ColumnTypes.STRING) : {
+				c= new StringColumn(size);
+				break;
+			}
+			case (ColumnTypes.CHAR_ARRAY) : {
+				c= new CharArrayColumn(size);
+				break;
+			}
+			case (ColumnTypes.BYTE_ARRAY) : {
+				c= new ByteArrayColumn(size);
+				break;
+			}
+			case (ColumnTypes.BOOLEAN) : {
+				c= new BooleanColumn(size);
+				break;
+			}
+			case (ColumnTypes.OBJECT) : {
+				c= new ObjectColumn(size);
+				break;
+			}
+			case (ColumnTypes.BYTE) : {
+				c= new ByteColumn(size);
+				break;
+			}
+			case (ColumnTypes.CHAR) : {
+				c= new CharColumn(size);
+				break;
+			}
+			case (ColumnTypes.DOUBLE) : {
+				c= new DoubleColumn(size);
+				break;
+
+			}
+			default : {
+				System.err.println(	"ColumnUtilities:CopyColumn"+
+									": Invalid Column Type");
+				c= new ObjectColumn();
+			}
+		}
+		c.setLabel("");
+		return c;
+	}
+
+	/**
+		This is for creating a subset from a Table interface object
+		and putting it into a TableImpl object
+
+		@param tbl the original table 
+		@param colIndex which column to make a subset of
+		@param subset the indices of the rows from the original 
+						column to put in the new column
+		@return a new Column object of the same datatype as the
+				original column of tbl w/ the entries being the
+				subset values				
+
+		@author pgroves 5/30/02		
+	*/
+	public static Column createColumnSubset(Table tbl, int colIndex, 
+											int[] subset){
+		int type=tbl.getColumnType(colIndex);
+		int size=subset.length;
+		
+		Column col=ColumnUtilities.createColumn(type,size);
+		col.setLabel(tbl.getColumnLabel(colIndex));
+		col.setComment(tbl.getColumnLabel(colIndex));
+		switch(type){
+			case (ColumnTypes.DOUBLE) : {
+				for(int i=0; i<size;i++){
+					col.setDouble(tbl.getDouble(subset[i],colIndex),i);
+				}
+				break;
+			}
+			case (ColumnTypes.INTEGER) : {
+				for(int i=0; i<size;i++){
+					col.setInt(tbl.getInt(subset[i],colIndex),i);
+				}
+				break;
+			}
+			case (ColumnTypes.FLOAT) : {
+				for(int i=0; i<size;i++){
+					col.setFloat(tbl.getFloat(subset[i],colIndex), i);
+				}
+				break;
+			}
+			case (ColumnTypes.SHORT) : {
+				for(int i=0; i<size;i++){
+					col.setShort(tbl.getShort(subset[i],colIndex),i);
+				}
+				break;
+			}
+			case (ColumnTypes.LONG) : {
+				for(int i=0; i<size;i++){
+					col.setLong(tbl.getLong(subset[i],colIndex),i);
+				}
+				break;
+			}
+			case (ColumnTypes.STRING) : {
+				for(int i=0; i<size;i++){
+					col.setString(tbl.getString(subset[i],colIndex),i);
+				}
+				break;
+			}
+			case (ColumnTypes.CHAR_ARRAY) : {
+				for(int i=0; i<size;i++){
+					col.setChars(tbl.getChars(subset[i],colIndex),i);
+				}
+				break;
+			}
+			case (ColumnTypes.BYTE_ARRAY) : {
+				for(int i=0; i<size;i++){
+					col.setBytes(tbl.getBytes(subset[i],colIndex),i);
+				}
+				break;
+			}
+			case (ColumnTypes.BOOLEAN) : {
+				for(int i=0; i<size;i++){
+					col.setBoolean(tbl.getBoolean(subset[i],colIndex),i);
+				}
+				break;
+			}
+			case (ColumnTypes.OBJECT) : {
+				for(int i=0; i<size;i++){
+					col.setObject(tbl.getObject(subset[i],colIndex),i);
+				}
+				break;
+			}
+			case (ColumnTypes.BYTE) : {
+				for(int i=0; i<size;i++){
+					col.setByte(tbl.getByte(subset[i],colIndex),i);
+				}
+				break;
+			}
+			case (ColumnTypes.CHAR) : {
+				for(int i=0; i<size;i++){
+					col.setChar(tbl.getChar(subset[i],colIndex),i);
+				}
+				break;
+			}
+			default : {
+			}
+		}
+		return col;
+
+
+	}
+	/* DONT DELETE THIS! every function needs to cut and
+		paste this switch
+	
+		switch(type){
+			case (ColumnTypes.DOUBLE) : {
+				break;
+			}
+			case (ColumnTypes.INTEGER) : {
+				break;
+			}
+			case (ColumnTypes.FLOAT) : {
+				break;
+			}
+			case (ColumnTypes.SHORT) : {
+				break;
+			}
+			case (ColumnTypes.LONG) : {
+				break;
+			}
+			case (ColumnTypes.STRING) : {
+				break;
+			}
+			case (ColumnTypes.CHAR_ARRAY) : {
+				break;
+			}
+			case (ColumnTypes.BYTE_ARRAY) : {
+				break;
+			}
+			case (ColumnTypes.BOOLEAN) : {
+				break;
+			}
+			case (ColumnTypes.OBJECT) : {
+				break;
+			}
+			case (ColumnTypes.BYTE) : {
+				break;
+			}
+			case (ColumnTypes.CHAR) : {
+				break;
+			}
+			default : {
+			}
+		}
+	*/
 }
