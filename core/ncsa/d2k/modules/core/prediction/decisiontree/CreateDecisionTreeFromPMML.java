@@ -295,7 +295,7 @@ public class CreateDecisionTreeFromPMML extends InputModule implements DecisionT
   public String getModuleInfo() {
     String s = "<p>Overview: Create a DecisionTreeModel from a PMML file."+
         "<p>Detailed Description: Parse an XML file containing a PMML "+
-        "description of a decision tree predictive model.  A NaiveBayesModel "+
+        "description of a decision tree predictive model.  A DecisionTreeModel "+
         "is generated from the contents of this file.  The PMML description "+
         "must adhere to the PMML 2.0 DTD."+
         "<p>Data Type Restrictions: The PMML file must conform to the PMML 2.0 "+
