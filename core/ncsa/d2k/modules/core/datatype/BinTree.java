@@ -460,7 +460,7 @@ public final class BinTree extends HashMap implements Serializable, Cloneable {
         return b.getCondition(an);
     }
 
-	private final void printAll() {
+	public final void printAll() {
 		System.out.println("UNKNOWN CLASSES: "+unknownClasses);
 		Iterator i = keySet().iterator();
 		while(i.hasNext()) {
