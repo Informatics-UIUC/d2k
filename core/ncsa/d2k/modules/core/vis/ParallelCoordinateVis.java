@@ -1,1490 +1,1764 @@
 package ncsa.d2k.modules.core.vis;
 
-import java.io.*;
-import java.awt.*;
-import java.awt.event.*; // needed for PCVisMain
-import java.awt.image.*; // ""
-import javax.swing.*;    // ""
+import javax.swing.*;
 import javax.swing.table.*;
-import java.awt.geom.*;  // "" & Control
-import java.text.NumberFormat;
-import ncsa.d2k.util.datatype.*;
-import ncsa.d2k.infrastructure.modules.*;
-import ncsa.d2k.infrastructure.views.UserView;
-import ncsa.d2k.controller.userviews.*;
-import ncsa.d2k.controller.userviews.swing.*;
-import ncsa.d2k.gui.JD2KFrame;
-
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.print.*;
+import java.awt.geom.*;
+import java.awt.image.*;
 import java.util.*;
+import java.text.NumberFormat;
+import java.io.File;
+
+import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.infrastructure.views.UserView;
+import ncsa.d2k.util.datatype.*;
 
 import ncsa.gui.Constrain;
+import ncsa.gui.JOutlinePanel;
+import ncsa.gui.DisposeOnCloseListener;
+
+import ncsa.d2k.gui.JD2KFrame;
+
+import ncsa.d2k.modules.core.vis.widgets.*;
 
 /**
-	Given a VerticalTable, plot its data in parallel.  If an ExampleTable
-	is used, only its inputs and outputs will be plotted.  Columns may be
-	added or removed using the menu.  The columns displayed may be swapped
-	by clicking on the column's name and dragging it to the new location.
-	In addition, lines may be highlighted by clicking on them.  The
-	highlighted line will appear in red.  The row that corresponds to
-	the selected line can be viewed in the InfoFrame, which is accesible
-	via the menu.
-*/
+ * Plots the data in a VerticalTable on parallel axes.
+ */
 public class ParallelCoordinateVis extends VisModule {
 
-	static final int INT_TYPE = 0;
-	static final int DOUBLE_TYPE = 1;
-	static final int STRING_TYPE = 2;
-	static final float TOLERANCE = (float)2.005;
+	public String getModuleInfo() {
+		return "Plots the data in a VerticalTable on parallel axes.";
+	}
 
-   public String getModuleInfo() {
-	   StringBuffer sb = new StringBuffer("Given a VerticalTable, plot its data");
-	   sb.append(" in parallel.  If an ExampleTable is used, only its inputs and");
-	   sb.append(" outputs will be plotted.  Columns may be added or removed using");
-	   sb.append(" the menu.  The columns displayed may be swapped by clicking on");
-	   sb.append(" the column's name and dragging it to the new location.  In");
-	   sb.append(" addition, lines may be highlighted by clicking on them.  The");
-	   sb.append(" highlighted line will appear in red.  The row that corresponds");
-	   sb.append(" to the selected line can be viewed in the InfoFrame, which is");
-	   sb.append(" accesible via the menu.");
-	   return sb.toString();
-   }
+	public String getInputInfo(int i) {
+		return "A table to plot.";
+	}
 
-   public String[] getInputTypes() {
-      String[] inputTypes = {"ncsa.d2k.util.datatype.VerticalTable"};
-      return inputTypes;
-   }
+	public String getOutputInfo(int i) {
+		return "";
+	}
 
-   public String getInputInfo(int index) {
-      if (index == 0)
-         return "The VerticalTable to be visualized.";
-      else
-         return "There is no such input.";
-   }
+	public String[] getInputTypes() {
+		String[] i = {"ncsa.d2k.util.datatype.VerticalTable"};
+		return i;
+	}
 
-   public String[] getOutputTypes() { return null; }
-   public String getOutputInfo(int index) { return null; }
-   public String[] getFieldNameMapping() { return null; }
+	public String[] getOutputTypes() {
+		return null;
+	}
 
-   protected UserView createUserView() {
-      return new PCVis();
-   }
+	public UserView createUserView() {
+		return new PCView();
+	}
 
-    // PCVisMain & PCVisControl?
-   protected class PCVis extends JUserPane implements Serializable {
+	public String[] getFieldNameMapping() {
+		return null;
+	}
 
-      //PCVisControl visleft;
-      PCVisMain visright;
+	/** The length of the line used for the gradient paint */
+	private static final int LINE_LENGTH = 250;
 
-		JMenuBar menu;
+	/** color wheel */
+	private static final Color[] colors = {new Color(71, 74, 98),
+		new Color(191, 191, 115), new Color(111, 142, 116),
+		new Color(178, 198, 181), new Color(153, 185, 216),
+		new Color(96, 93, 71), new Color(146, 205, 163),
+		new Color(203, 84, 84), new Color(217, 183, 170),
+		new Color(140, 54, 57), new Color(203, 136, 76)};
 
-      public void initView(ViewModule m) {
-      }
+	private static final String GREATER_THAN = ">";
+	private static final String LESS_THAN = "<";
+	private static final String GREATER_THAN_EQUAL_TO = ">=";
+	private static final String LESS_THAN_EQUAL_TO = "<=";
+	private static final String NOT_EQUAL_TO = "!=";
+	private static final String EQUAL_TO = "==";
 
-		public Object getMenu() {
-			return menu;
+	private static final int MAX_MENU_ITEMS = 15;
+	private static final String MORE = "More..";
+	private static final int BAR_WIDTH = 20;
+	private static final int HALF_WIDTH = 10;
+	private static final String HIGH = "High";
+	private static final String LOW = "Low";
+
+	private static final Color defaultHighColor = Color.red;//colors[0];
+	private static final Color defaultLowColor = Color.yellow;//colors[colors.length-1];
+	private static final Color yellowish = new Color(255, 255, 240);
+	private static final Color grayish = new Color(219, 217, 206);
+	private static final float TOLERANCE = 2.005f;
+
+	private static final String zoomicon = File.separator+"images"+File.separator+"zoom.gif";
+	private static final String refreshicon = File.separator+"images"+File.separator+"home.gif";
+	private static final String printicon = File.separator+"images"+File.separator+"printit.gif";
+	private static final String tableicon = File.separator+"images"+File.separator+"table.gif";
+	private static final String filtericon = File.separator+"images"+File.separator+"filter.gif";
+	private static final String EMPTY_STRING = " ";
+
+	private static final Dimension buttonsize = new Dimension(25, 25);
+
+	private static final HashMap uniqueValues(SimpleColumn sc) {
+		HashMap hm = new HashMap();
+		for(int k = 0; k < sc.getNumRows(); k++) {
+			String s = sc.getString(k);
+			if(!hm.containsKey(s)) {
+				int sz = hm.size();
+				sz++;
+				hm.put(s, new Integer(sz));
+			}
 		}
-
-      public void setInput(Object o, int i) {
-         if (i == 0) {
-			VerticalTable t = (VerticalTable)o;
-         	visright = new PCVisMain(t);
-            //visright.initialize((VerticalTable) o);
-			setLayout(new BorderLayout());
-			add(visright, BorderLayout.CENTER);
-         }
-      }
-   //}
-
-/*public class PCVisControl extends JPanel
-   implements Serializable {
-
-   Font font_default = new Font("Helvetica", Font.PLAIN, 14);
-
-   public void update(Graphics g) { }
-
-   public void paint(Graphics g) {
-
-      Graphics2D g2 = (Graphics2D) g;
-
-      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                          RenderingHints.VALUE_ANTIALIAS_ON);
-
-      Dimension d = getSize();
-      int w = d.width, h = d.height;
-
-      g2.setFont(font_default);
-      FontMetrics m = g2.getFontMetrics();
-
-      g2.setPaint(new Color(32, 32, 192));
-      g2.fill(new Rectangle2D.Double(0, 0, w, h));
-
-      g2.setPaint(Color.white);
-      g2.drawString("...", 25, 50);
-
-   }
-
-   public Dimension getMinimumSize() {
-      return new Dimension(200, 400);
-   }
-
-   public Dimension getPreferredSize() {
-      return getMinimumSize();
-   }
-
-}*/
+		return hm;
+	}
 
 	/**
-	*/
-	class PCVisMain extends JPanel
-		implements MouseListener, MouseMotionListener, ActionListener, Serializable {
+	 *
+	 */
+	class PCView extends JUserPane implements ActionListener, Printable  {
+		/** the indices of the columns to show */
+		volatile int[] columnorder;
+		/** the locations of the columns */
+		volatile float[] columnlocations;
 
-		// the number of rows and columns in the table
-		int rows, cols;
-		// the heights of the lines, zoom heights of the lines, and bounds of the columns
-		float[][] heights, zheights, bounds;
+		int imagewidth;
 
-		// the location of the lines at the current size
-		float[][] ylocations;
+		boolean zoomin;
 
-		// the index of the column that is the key
-		int keycol;
-		// the number of unique items in the key column
-		int numUnique;
-		// a table with the unique items from the key column and their uids,
-		// which are the indices into the color table
-		HashMap uniqueColorMap;
-		// the indices of the columns to show, and the types of columns
-		int[] order, types;
-		// most of the vis is kept as a buffered image
-		BufferedImage buffer;
-		// if this is set to true, the buffer will be redrawn
-		boolean redrawBuffer = false;
+		/** the table with the data */
+		VerticalTable table;
+		JMenuBar menuBar;
 
-		// the color id for each row of the table
-		int[] colorid;
-		// a boolean matrix with a location for each line.  If it is set to false,
-		// the line will not be drawn
-		boolean[][] linemap;
-		// has one spot for each row.  if it is true for a row, the lines for that row will
-		// be painted red, to show selection
-		boolean[] selectedlines;
+		/** the choose colors menu */
+		JMenu chooseColors;
+		/** the area that shows the lines */
+		MainArea ma;
 
-		// the legend
-		JFrame legend;
+		JButton refreshButton;
+		JButton filterButton;
+		JToggleButton zoom;
+		JButton showTable;
+		JButton printButton;
+		JCheckBoxMenuItem useAntialias;
+		JMenuItem miClearSelected;
+		ColorMenuItem miSelectedColor;
+		Color selectedColor = Color.red;
+		JMenuItem helpItem;
 
-		// the menu items
-		IdCheckBoxMenuItem[] colNames;
-		UniqueMenuItem[] uniqueColors;
-		KeyCheckBoxMenuItem[] keys;
-		JCheckBoxMenuItem useAntiAlias;
-		JMenuItem showLegend;
-		JMenuItem showInfo;
-		JMenuItem clearSelected;
+		int currentKeyColumn;
 
-		boolean initialized = false, painted = false, zoomed = false,
-			mouseband = false, mousedrag = false;
-		int grid, ascent, descent, colw, colh, lastw = -1, lasth = -1,
-			mousex, mousey, lastx, lasty, selectedcol,
-			zgrid, zx, zy, zw, zh, leftof, leftamt, rightof, rightamt, pad;
-		float factx, facty;
+		Filter filter;
+		JMenuItem miFilter;
+		JMenuItem miShowTable;
+		JMenuItem miPrint;
 
-		// the table to show
-		VerticalTable vt;
-
-		// the color table
-		Color[] ctable = {new Color(253, 204, 138), new Color(148, 212, 161),
-			new Color(153, 185, 216), new Color(189, 163, 177),
-			new Color(213, 213, 157), new Color(193,  70,  72),
-			new Color( 29, 136, 161), new Color(187, 116, 130),
-			new Color(200, 143,  93), new Color(127, 162, 133)};
-
-		Font font_default = new Font("Helvetica", Font.PLAIN, 14);
-
-		JFrame infoFrame;
-		JTable infoTable;
+		Color highColor;
+		Color lowColor;
+		HashMap [] colorsLookup;
+		/** true if the row should be drawn */
+		boolean [] linemap;
+		boolean [] selectedlines;
 		InfoTableModel infoModel;
-		JScrollPane scrollPane;
+		JTable infoTable;
+		Legend legend;
+
+		double[] mins;
+		double[] maxes;
+
+  		public void initView(ViewModule m) {}
+
+		NumberFormat nf;
+		Dimension defaultSize;
+		JScrollPane jsp;
+
+		HelpWindow helpWindow;
 
 		/**
-		*/
-		class IdCheckBoxMenuItem extends JCheckBoxMenuItem {
-			int id;
+		 * Input arrived
+		 */
+		public void setInput(Object o, int i) {
+			table = (VerticalTable)o;
+			selectedlines = new boolean[table.getNumRows()];
+			legend = new Legend();
+			nf = NumberFormat.getInstance();
+			nf.setMaximumFractionDigits(2);
 
-			IdCheckBoxMenuItem(String s, boolean b, int i) {
-				super(s, b);
-				id = i;
+			// create the menus
+			menuBar = new JMenuBar();
+			JMenu opt = new JMenu("Options");
+			JMenu helpMenu = new JMenu("Help");
+			helpItem = new JMenuItem("About ParallelCoordinateVis..");
+			helpItem.addActionListener(this);
+			helpMenu.add(helpItem);
+			menuBar.add(opt);
+			menuBar.add(helpMenu);
+			JMenu displaycols = new JMenu("Display Columns");
+
+			int numItems = 0;
+			JMenu curMenu = displaycols;
+			for(int j = 0; j < table.getNumColumns(); j++) {
+				DisplayColumnMenuItem dcmi = new
+					DisplayColumnMenuItem(table.getColumnLabel(j),
+					j);
+				dcmi.addActionListener(this);
+				dcmi.setSelected(true);
+				if(numItems == MAX_MENU_ITEMS) {
+					JMenu nextMenu = new JMenu(MORE);
+					curMenu.insert(nextMenu, 0);
+					nextMenu.add(dcmi);
+					curMenu = nextMenu;
+					numItems = 1;
+				}
+				else {
+					curMenu.add(dcmi);
+					numItems++;
+				}
 			}
+			opt.add(displaycols);
+
+			int keycol = table.getNumColumns()-1;
+			JMenu keyMenu = new JMenu("Key Column");
+			curMenu = keyMenu;
+			numItems = 0;
+			ButtonGroup bg = new ButtonGroup();
+			for(int j = 0; j < table.getNumColumns(); j++) {
+				KeyColumnMenuItem dcmi = new
+					KeyColumnMenuItem(table.getColumnLabel(j),
+					j);
+				if(j == keycol)
+					dcmi.setSelected(true);
+				bg.add(dcmi);
+				dcmi.addActionListener(this);
+				if(numItems == MAX_MENU_ITEMS) {
+					JMenu nextMenu = new JMenu(MORE);
+					curMenu.insert(nextMenu, 0);
+					nextMenu.add(dcmi);
+					curMenu = nextMenu;
+					numItems = 1;
+				}
+				else {
+					curMenu.add(dcmi);
+					numItems++;
+				}
+			}
+			opt.add(keyMenu);
+
+			chooseColors = new JMenu("Choose Colors");
+			opt.add(chooseColors);
+			ImageIcon hi = new ImageIcon(new ColorComponent(selectedColor).getImage());
+			miSelectedColor = new ColorMenuItem("Selected Line Color", hi, selectedColor);
+			miSelectedColor.addActionListener(this);
+			opt.add(miSelectedColor);
+			opt.addSeparator();
+			useAntialias = new JCheckBoxMenuItem("Use Antialiasing", false);
+			useAntialias.addActionListener(this);
+			opt.add(useAntialias);
+			//miFilter = new JMenuItem("Filters..");
+			//miFilter.addActionListener(this);
+			//opt.add(miFilter);
+			miClearSelected = new JMenuItem("Clear Selected Lines");
+			miClearSelected.addActionListener(this);
+			opt.add(miClearSelected);
+			//miShowTable = new JMenuItem("Show Table");
+			//miShowTable.addActionListener(this);
+			//opt.add(miShowTable);
+			miPrint = new JMenuItem("Print..");
+			miPrint.addActionListener(this);
+			opt.add(miPrint);
+
+			ma = new MainArea(this);
+			ma.setKeyColumn(keycol);
+			ma.setPreferredSize(new Dimension(500, 400));
+			jsp = new JScrollPane(ma);
+			//jsp.setPreferredSize(new Dimension(500, 400));
+
+			Image im = getImage(filtericon);
+			ImageIcon icon = null;
+			if(im != null)
+				icon = new ImageIcon(im);
+			if(icon != null) {
+				filterButton = new JButton(icon);
+				filterButton.setMaximumSize(buttonsize);
+				filterButton.setPreferredSize(buttonsize);
+			}
+			else
+				filterButton = new JButton("F");
+			filterButton.addActionListener(this);
+			filterButton.setToolTipText("Filter");
+
+			im = null;
+			icon = null;
+			im = getImage(refreshicon);
+			if(im != null)
+				icon = new ImageIcon(im);
+			if(icon != null) {
+				refreshButton = new JButton(icon);
+				refreshButton.setMaximumSize(buttonsize);
+				refreshButton.setPreferredSize(buttonsize);
+			}
+			else
+				refreshButton = new JButton("R");
+			refreshButton.addActionListener(this);
+			refreshButton.setToolTipText("Reset View");
+
+			im = null;
+			icon = null;
+			im = getImage(zoomicon);
+			if(im != null)
+				icon = new ImageIcon(im);
+			if(icon != null) {
+				zoom = new JToggleButton(icon);
+				zoom.setMaximumSize(buttonsize);
+				zoom.setPreferredSize(buttonsize);
+			}
+			else
+				zoom = new JToggleButton("Z");
+
+			zoom.addActionListener(this);
+			zoom.setToolTipText("Zoom");
+
+			im = null;
+			icon = null;
+			im = getImage(tableicon);
+			if(im != null)
+				icon = new ImageIcon(im);
+			if(icon != null) {
+				showTable = new JButton(icon);
+				showTable.setMaximumSize(buttonsize);
+				showTable.setPreferredSize(buttonsize);
+			}
+			else
+				showTable = new JButton("T");
+			showTable.addActionListener(this);
+			showTable.setToolTipText("Show Table");
+
+			im = null;
+			icon = null;
+			im = getImage(printicon);
+			if(im != null)
+				icon = new ImageIcon(im);
+			if(icon != null) {
+				printButton = new JButton(icon);
+				printButton.setMaximumSize(buttonsize);
+				printButton.setPreferredSize(buttonsize);
+			}
+			else
+				printButton = new JButton("P");
+			printButton.addActionListener(this);
+			printButton.setToolTipText("Print");
+
+			JPanel bp = new JPanel();
+			bp.add(refreshButton);
+			bp.add(filterButton);
+			bp.add(printButton);
+			bp.add(zoom);
+			bp.add(showTable);
+
+			JPanel bq = new JPanel();
+			bq.setLayout(new BoxLayout(bq, BoxLayout.Y_AXIS));
+			bq.add(Box.createGlue());
+			bq.add(bp);
+			bq.add(Box.createGlue());
+			JPanel header = new JPanel();
+			header.setLayout(new BorderLayout());
+			header.add(new JPanel(), BorderLayout.CENTER);
+			header.add(bq, BorderLayout.EAST);
+
+			setLayout(new BorderLayout());
+			//add(jsp, BorderLayout.CENTER);
+			//add(bp, BorderLayout.NORTH);
+			infoModel = new InfoTableModel();
+			infoTable = new JTable(infoModel);
+			JScrollPane tableScroll = new JScrollPane(infoTable);
+			tableScroll.setPreferredSize(new Dimension(350, 75));
+			//legend.setMinimumSize(new Dimension(100, 75));
+			JScrollPane legendScroll = new JScrollPane(legend);
+			JLabel llabel = new JLabel("Legend");
+			llabel.setFont(infoTable.getFont());
+			JViewport jv = new JViewport();
+			jv.setView(llabel);
+			legendScroll.setColumnHeader(jv);
+			//legendScroll.setPreferredSize(new Dimension(100, 75));
+
+			/*JPanel bk = new JPanel();
+			bk.setLayout(new BorderLayout());
+			bk.add(tableScroll, BorderLayout.CENTER);
+			bk.add(legendScroll, BorderLayout.EAST);
+			*/
+			JSplitPane split2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				tableScroll, legendScroll);
+			split2.setDividerSize(4);
+			//split2.setDividerLocation(.6d);
+
+			JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+				jsp, split2);
+			split.setOneTouchExpandable(true);
+			split.setDividerSize(8);
+			split.setResizeWeight(1);
+			//split.setDividerLocation(.9d);
+			//add(ma, BorderLayout.CENTER);
+			add(header, BorderLayout.NORTH);
+			add(split, BorderLayout.CENTER);
+			filter = new Filter(ma);
+			helpWindow = new HelpWindow();
+		}
+
+		public Object getMenu() {
+			return menuBar;
 		}
 
 		/**
-			Used to choose the key column
+			Add a line to the selected set.
 		*/
-		class KeyCheckBoxMenuItem extends JCheckBoxMenuItem {
-			int id;
-
-			KeyCheckBoxMenuItem(String s, boolean b, int i) {
-				super(s, b);
-				id = i;
-			}
+		private void addSelection(int row) {
+			infoModel.addInfoRow(row);
 		}
 
 		/**
+			Remove a line from the selected set.
 		*/
-		class UniqueMenuItem extends JMenuItem {
+		private void removeSelection(int row) {
+			infoModel.removeInfoRow(row);
+			infoTable.validate();
+			//scrollPane.validate();
+		}
+
+		/**
+		 * Identifies which columns to display
+		 */
+		class DisplayColumnMenuItem extends JCheckBoxMenuItem {
 			int id;
-			UniqueMenuItem(String s, int i) {
+			DisplayColumnMenuItem(String s, int i) {
 				super(s);
 				id = i;
 			}
 		}
 
 		/**
-			Constructor
-		*/
-		PCVisMain(VerticalTable t) {
-			addMouseListener(this);
-			addMouseMotionListener(this);
-			setDoubleBuffered(false);
-			initialize(t);
+		 * Identifies which is the key column
+		 */
+		class KeyColumnMenuItem extends JCheckBoxMenuItem {
+			int id;
+			KeyColumnMenuItem(String s, int i) {
+				super(s);
+				id = i;
+			}
 		}
 
 		/**
-			Initialize
-		*/
-		void initialize(VerticalTable table) {
-			vt = table;
-
-			// if it is an ExampleTable, we only show the inputs and outputs
-			// by default
-			if(vt instanceof ExampleTable) {
-				int[] ins = ((ExampleTable)vt).getInputFeatures();
-				int[] outs = ((ExampleTable)vt).getOutputFeatures();
-
-				if(ins == null)
-					ins = new int[0];
-				if(outs == null)
-					outs = new int[0];
-				order = new int[ins.length+outs.length];
-
-				// copy the inputs and outputs to the order array
-				// these are the columns that will be displayed by default
-				int idx = 0;
-				for(int id = 0; id < ins.length; id++) {
-					order[idx] = ins[id];
-					idx++;
-				}
-				for(int id = 0; id < outs.length; id++) {
-					order[idx] = outs[id];
-					idx++;
-				}
-
-				// the key column is the first output column
-				if(outs.length > 0)
-					keycol = outs[0];
-				// or the last column of the table if there are no outputs
-				else
-					keycol = vt.getNumColumns()-1;
+		 * Identifies which colors to use
+		 */
+		class ColorMenuItem extends JMenuItem {
+			Color c;
+			ColorMenuItem(String s, Icon i, Color c) {
+				super(s, i);
 			}
-			// otherwise it's just a plain VerticalTable
-			// use all the columns and use the last column as the key
-			else {
-				order = new int[vt.getNumColumns()];
-				for(int id = 0; id < order.length; id++)
-					order[id] = id;
-				keycol = vt.getNumColumns() - 1;
-			}
-
-			cols = table.getNumColumns();
-			rows = table.getNumRows();
-
-			heights = new float[cols][rows];
-			ylocations = new float[cols][rows];
-			zheights = new float[cols][rows];
-			bounds = new float[cols][2];
-			types = new int[cols];
-			linemap = new boolean[order.length-1][rows];
-			selectedlines = new boolean[rows];
-			colorid = new int[rows];
-
-			// get the type of each column
-			for (int i = 0; i < cols; i++) {
-				Column col = table.getColumn(i);
-
-				if (col instanceof IntColumn) {
-					types[i] = INT_TYPE;
-
-					bounds[i][0] = (float) ((IntColumn)col).getMin();
-					bounds[i][1] = (float) ((IntColumn)col).getMax();
-				}
-				else if (col instanceof DoubleColumn) {
-					types[i] = DOUBLE_TYPE;
-
-					bounds[i][0] = (float) ((DoubleColumn)col).getMin();
-					bounds[i][1] = (float) ((DoubleColumn)col).getMax();
-				}
-				else {
-					types[i] = STRING_TYPE;
-
-					bounds[i][0] = (float)-9999.2;
-					bounds[i][1] = (float)-9999.1;
-				}
-			}
-
-			// now find all the unique items in the key column
-			findUniqueColors();
-
-			// calculate the heights of all items
-			for (int i = 0; i < order.length; i++)
-				calcHeights(order[i]);
-
-			// determine which lines are overlapping
-			calcLineMap();
-
-			// create the menus
-			menu = new JMenuBar();
-			JMenu m1 = new JMenu("Options");
-			JMenu m2 = new JMenu("Display Columns");
-			colNames = new IdCheckBoxMenuItem[vt.getNumColumns()];
-
-			// make a menu item for each column
-			// this allows the user to show/hide a column
-			for(int j = 0; j < vt.getNumColumns(); j++) {
-
-				colNames[j] = new IdCheckBoxMenuItem(vt.getColumnLabel(j),
-					orderContains(j), j);
-				colNames[j].addActionListener(this);
-				m2.add(colNames[j]);
-			}
-			m1.add(m2);
-
-			// make a menu item for each unique item in the key column
-			// this will allow the user to change the color of a class of lines
-			JMenu m3 = new JMenu("Choose Colors");
-			uniqueColors = new UniqueMenuItem[numUnique];
-			Iterator it = uniqueColorMap.keySet().iterator();
-			int idx = 0;
-			while(it.hasNext()) {
-				String s = (String)it.next();
-				Integer in = (Integer)uniqueColorMap.get(s);
-				uniqueColors[idx] = new UniqueMenuItem(s, in.intValue());
-				uniqueColors[idx].addActionListener(this);
-				m3.add(uniqueColors[idx]);
-			}
-	   		m1.add(m3);
-
-			// make a menu for each column
-			// this allows the user to choose the key column
-			JMenu m4 = new JMenu("Choose Key Column");
-			keys = new KeyCheckBoxMenuItem[vt.getNumColumns()];
-			for(int j = 0; j < vt.getNumColumns(); j++) {
-				keys[j] = new KeyCheckBoxMenuItem(vt.getColumnLabel(j), j==keycol, j);
-				keys[j].addActionListener(this);
-				m4.add(keys[j]);
-			}
-			m1.add(m4);
-
-			// a checkbox item to toggle antialiasing
-	   		m1.addSeparator();
-	   		useAntiAlias = new JCheckBoxMenuItem("Use Antialiasing", false);
-	   		m1.add(useAntiAlias);
-	   		useAntiAlias.addActionListener(this);
-			showLegend = new JMenuItem("Show Legend");
-			showLegend.addActionListener(this);
-			m1.add(showLegend);
-			showInfo = new JMenuItem("Show Selection Info");
-			m1.add(showInfo);
-			showInfo.addActionListener(this);
-			clearSelected = new JMenuItem("Clear Selected Lines");
-			clearSelected.addActionListener(this);
-			m1.add(clearSelected);
-			menu.add(m1);
-
-			// create the info frame, which shows the selected rows
-			createInfoFrame();
-		}
-
-		boolean orderContains(int i) {
-			for(int j = 0; j < order.length; j++)
-				if(order[j] == i)
-					return true;
-			return false;
 		}
 
 		/**
-			Find all the unique entries in the key column.  Assign each
-			one an id, starting from 0. This will be the index into the color table.
-		*/
-		private void findUniqueColors() {
-			// now find all the unique items in the key column
-			uniqueColorMap = new HashMap();
-			int uid = 0;
-			for(int j = 0; j < rows; j++) {
-				String s = vt.getString(j, keycol);
-				Integer in = (Integer)uniqueColorMap.get(s);
-				if(in == null) {
-					uniqueColorMap.put(s, new Integer(uid));
-					colorid[j] = uid;
-					uid++;
-				}
-				else
-					colorid[j] = in.intValue();
+		 * Action listener for menu items
+		 */
+		public void actionPerformed(ActionEvent e) {
+			Object src = e.getSource();
+			// update the key column
+			if(src instanceof KeyColumnMenuItem) {
+				int id = ((KeyColumnMenuItem)src).id;
+				ma.setKeyColumn(id);
+				ma.updateImage();
 			}
-			numUnique = uniqueColorMap.size();
-		}
-
-		/**
-			Calculate the heights of the lines in a given column
-		*/
-		private void calcHeights(int x) {
-			switch (types[x]) {
-
-				case INT_TYPE:
-					for (int i = 0; i < rows; i++)
-						heights[x][i] = (vt.getFloat(i, x) - bounds[x][0]) /
-						(bounds[x][1] - bounds[x][0]);
-					break;
-
-				case DOUBLE_TYPE:
-					for (int i = 0; i < rows; i++)
-						heights[x][i] = (vt.getFloat(i, x) - bounds[x][0]) /
-						(bounds[x][1] - bounds[x][0]);
-					break;
-
-				case STRING_TYPE:
-					// if it is the key column, we already know the number of unique items
-					if(x == keycol) {
-						for (int i = 0; i < rows; i++)
-							heights[x][i] = 1 -
-							(float) (colorid[i] + 1) /
-							(float) (numUnique + 1);
+			// update the columns to display
+			else if(src instanceof DisplayColumnMenuItem) {
+				DisplayColumnMenuItem dcmi = (DisplayColumnMenuItem)src;
+				int id = dcmi.id;
+				// if selected, add it to the list of columns
+				if(dcmi.getState()) {
+					int[] newcolorder = new int[columnorder.length+1];
+					float[] newcolloc = new float[columnlocations.length+1];
+					for(int i = 0; i < columnorder.length; i++) {
+						newcolorder[i] = columnorder[i];
+						newcolloc[i] = columnlocations[i];
 					}
-					else {
-						// find the number unique in this column
-						HashMap hm = new HashMap();
-						int idx = 0;
-						for(int i = 0; i < rows; i++)
-						if(hm.get(vt.getString(i, x)) == null) {
-							hm.put(vt.getString(i, x), new Integer(idx));
+					newcolorder[newcolorder.length-1] = id;
+					newcolloc[newcolorder.length-1] = imagewidth;
+
+					// find a better way to set column locations
+					for(int i = 0; i < newcolloc.length-1; i++) {
+						newcolloc[i] *= ((float)columnlocations.length)/((float)newcolloc.length);
+					}
+					columnorder = newcolorder;
+					columnlocations = newcolloc;
+				}
+
+				// if not selected, remove it from the list
+				else {
+					int[] newcolorder = new int[columnorder.length-1];
+					float[] newcolloc = new float[columnlocations.length-1];
+					int idx = 0;
+					for(int i = 0; i < columnorder.length; i++) {
+						if(columnorder[i] != id) {
+							newcolorder[idx] = columnorder[i];
+							newcolloc[idx] = columnlocations[i];
 							idx++;
 						}
-						int uni = hm.size();
-
-						for(int i = 0; i < rows; i++) {
-							heights[x][i] = 1 -
-							(float) (((Integer)hm.get(vt.getString(i, x))).floatValue()+1) /
-							(float) (uni + 1);
-						}
 					}
-					break;
+					columnorder = newcolorder;
+					columnlocations = newcolloc;
+				}
+				ma.updateImage();
 			}
+			// zooming
+			else if(src == zoom) {
+				if(zoomin)
+					zoomin = false;
+				else
+					zoomin = true;
+			}
+			// change the colors
+			else if(src instanceof ColorMenuItem) {
+				ColorMenuItem cmi = (ColorMenuItem)src;
+				String text = cmi.getText();
+				Color oldColor = cmi.c;
+				Color newColor = JColorChooser.showDialog(this,
+					"Choose", oldColor);
+
+				if(cmi == miSelectedColor) {
+					ImageIcon hi = new ImageIcon(new ColorComponent(newColor).getImage());
+					cmi.setIcon(hi);
+					selectedColor = newColor;
+					ma.updateImage();
+					return;
+				}
+				if(newColor != null) {
+					colorsLookup[currentKeyColumn].put(text, newColor);
+					ma.setKeyColumn(currentKeyColumn);
+					ma.updateImage();
+				}
+			}
+			// antialias the lines
+			else if(src == useAntialias) {
+				ma.image = null;
+				ma.repaint();
+				ma.updateImage();
+			}
+			// show the filter
+			else if(src == miFilter || src == filterButton) {
+				filter.setState(Frame.NORMAL);
+				filter.setVisible(true);
+				//ma.updateImage();
+			}
+			else if(src == miClearSelected) {
+				boolean found = false;
+				for(int i = 0; i < selectedlines.length; i++) {
+					if(selectedlines[i]) {
+						found = true;
+						removeSelection(i);
+					}
+					selectedlines[i] = false;
+				}
+				// only redraw buffer if we actually cleared any lines
+				if(found)
+					ma.updateImage();
+			}
+			else if(src == miShowTable || src == showTable) {
+				JD2KFrame frame = new JD2KFrame("Table");
+				VerticalTableMatrix vtm = new VerticalTableMatrix(table);
+				frame.getContentPane().add(vtm);
+				frame.addWindowListener(new DisposeOnCloseListener(frame));
+				frame.pack();
+				frame.show();
+			}
+			// print
+			else if(src == miPrint || src == printButton) {
+				PrinterJob pj = PrinterJob.getPrinterJob();
+				pj.setPrintable(this);
+				if(pj.printDialog()) {
+					try {
+						pj.print();
+					}
+					catch(Exception ex) {
+						ex.printStackTrace();
+					}
+				}
+			}
+			else if(src == refreshButton) {
+				int wid = jsp.getWidth();
+				int hei = jsp.getHeight();
+				ma.setPreferredSize(new Dimension(wid, hei));
+				jsp.revalidate();
+			}
+			else if(src == helpItem)
+				helpWindow.setVisible(true);
 		}
 
 		/**
-			Calculate the zoom heights
-		*/
-		private void calcZHeights(int x) {
-			for (int i = 0; i < rows; i++) {
-				zheights[x][i] = (float)((float)1 / (float)facty) *
-					((float)heights[x][i] -
-					((float)1 - (float)(zy + zh - colw)/
-					(float)(lasth - 2*colw - colh)));
-			}
+		 * Print this component.
+		 */
+		public int print(Graphics g, PageFormat pf, int pi)
+			throws PrinterException {
+
+			double pageHeight = pf.getImageableHeight();
+			double pageWidth = pf.getImageableWidth();
+
+			double cWidth = getWidth();
+			double cHeight = getHeight();
+
+			double scale = 1;
+			if(cWidth >= pageWidth)
+				scale = pageWidth/cWidth;
+			if(cHeight >= pageHeight)
+				scale = Math.min(scale, pageHeight/cHeight);
+
+			double cWidthOnPage = cWidth*scale;
+			double cHeightOnPage = cHeight*scale;
+
+			if(pi >= 1)
+				return Printable.NO_SUCH_PAGE;
+
+			Graphics2D g2 = (Graphics2D)g;
+			g2.translate(pf.getImageableX(), pf.getImageableY());
+			g2.scale(scale, scale);
+			print(g2);
+			return Printable.PAGE_EXISTS;
 		}
 
-		//int numSaved = 0;
-
 		/**
-			The line map is a matrix of boolean values.  There is one spot for each potential
-			line to be drawn.  If two lines overlap, (ie their begin and end points are the
-			same) we set its value in the matrix to false.  Then only the first line at
-			that location will be drawn.
-		*/
-		private void calcLineMap() {
-			HashMap lineCache = new HashMap();
-			linemap = new boolean[order.length-1][vt.getNumRows()];
-			for(int i = 0; i < linemap.length; i++) {
-				for(int j = 0; j < linemap[0].length; j++) {
-					/*double d1;
-					double d2;
-					if(types[i] == INT_TYPE || types[i] == DOUBLE_TYPE)
-						d1 = vt.getDouble(j, i);
-					else
-						d1 = (double)colorid[j];
-					if(types[i+1] == INT_TYPE || types[i+1] == DOUBLE_TYPE)
-						d2 = vt.getDouble(j, i);
-					else
-						d2 = (double)colorid[j];
-					*/
+		 * Draw the lines as a buffered image.  Everything else is painted
+		 * directly on this.
+		 */
+		class MainArea extends JPanel implements MouseListener, MouseMotionListener {
+			PCView app;
+			int selectedcol;
+			boolean mousedrag;
+			int mousex;
+			int mousey;
+			boolean firsttime;
 
-					//PCLine p1 = new PCLine(heights[order[i]][j], heights[order[i+1]][j]);
-					Point2D.Float p1 = new Point2D.Float(heights[order[i]][j], heights[order[i+1]][j]);
-					//PCLine p1 = new PCLine(d1, d2);
-					if(lineCache.containsKey(p1))  {
-						if(colorid[j] == -1)
-							linemap[i][j] = true;
-						else {
-							linemap[i][j] = false;
-							//numSaved++;
-						}
+			// the weights of the lines, scaled to between the
+			// max and min for a column
+			float [][] weights;
+			// the actual heights of the lines
+			float [][] heights;
+
+			// the color of a row
+			Color [] linecolor;
+
+			int leftoffset;
+			int topoffset;
+			int imageheight;
+
+			int imagebottom;
+			int barheight;
+			int imagetop;
+
+			BufferedImage image;
+
+			MainArea(PCView a) {
+				app = a;
+				firsttime = true;
+				mousedrag = false;
+				columnorder = new int[table.getNumColumns()];
+				columnlocations = new float[table.getNumColumns()];
+				weights = new float[table.getNumColumns()][table.getNumRows()];
+				heights = new float[table.getNumColumns()][table.getNumRows()];
+				mins = new double[table.getNumColumns()];
+				maxes = new double[table.getNumColumns()];
+				for(int j = 0; j < columnorder.length; j++) {
+					columnorder[j] = j;
+					Column c = table.getColumn(j);
+					if(c instanceof NumericColumn) {
+						NumericColumn nc = (NumericColumn)c;
+						float max = (float)nc.getMax();
+						float min = (float)nc.getMin();
+						mins[j] = min;
+						maxes[j] = max;
+						for(int k = 0; k < nc.getNumRows(); k++)
+							weights[j][k] = (max-nc.getFloat(k))/(max-min);
 					}
 					else {
-						linemap[i][j] = true;
-						lineCache.put(p1, p1);
+						SimpleColumn sc = (SimpleColumn)c;
+						HashMap hm = uniqueValues(sc);
+						for(int k = 0; k < sc.getNumRows(); k++) {
+							Integer ii = (Integer)hm.get(sc.getString(k));
+							weights[j][k] = ii.floatValue()/(hm.size()+1);
+						}
 					}
 				}
-				lineCache.clear();
-			}
-			//System.out.println("numSaved: "+numSaved);
-			//numSaved = 0;
-		}
-
-		/**
-			Get the color to draw.
-		*/
-		private Color getColor(int x) {
-			return ctable[x % ctable.length];
-		}
-
-		/**
-			Change a color in the color table.
-		*/
-		private void setColor(int x, Color c) {
-			ctable[x % ctable.length] = c;
-		}
-
-		int ydist;
-
-		public void setBounds(int x, int y, int w, int h) {
-			super.setBounds(x, y, w, h);
-
-			// recalculate the ylocations for all lines
-	  		if(painted) {
-      			ydist = h - 2*colw - colh;
-
-				// calculate the ylocations for each line
-				for (int i = 0; i < order.length; i++)
-					//for (int j = 0; j < rows; j++)
-					//	ylocations[i][j] = ydist*heights[order[i]][j];
-					calcYLocations(i);
+				linemap = new boolean[table.getNumRows()];
+				for(int j = 0; j < linemap.length; j++)
+					linemap[j] = true;
+				linecolor = new Color[table.getNumRows()];
+				colorsLookup = new HashMap[table.getNumColumns()];
+				addMouseListener(this);
+				addMouseMotionListener(this);
 			}
 
-			// create new image
-      		buffer = new BufferedImage(w, h, BufferedImage.TYPE_4BYTE_ABGR);
-			lastw = w;
-			lasth = h;
+			int oldwidth;
+			int oldheight;
+			int sidebuffer;
 
-			grid = (int) ((w - 2*pad - colw) / (order.length - 1));
+			/**
+			 * Set the size of this.
+			 */
+			public void setBounds(int x, int y, int w, int h) {
+				int oldimagewidth = imagewidth;
 
-			//if (grid < 2*colw)
-			//	grid = 2*colw;
-			if(grid < colw)
-				grid = colw + 6;
-			redrawBuffer = true;
-		}
+				if(w != oldwidth || h != oldheight) {
+					oldwidth = w;
+					oldheight = h;
+					sidebuffer = (int)(.025*w);
+					leftoffset = (int)(.075*w);
+					topoffset = (int)(.05*h);
+					imagetop = (int)(.1*h);
+					imageheight = (int)(.55*h);
+					imagewidth = (int)(.85*w);
+					imagebottom = imagetop+imageheight+topoffset;
+					barheight = (int)(.25*h);
 
-		/**
-			Paint the vis onto the screen.  The default view is an image that is blitted
-			to the screen.  The image is only redrawn when the columns change or the
-			size changes.  The zoomed view is drawn to the screen here however.
-		*/
-		public void paint(Graphics g) {
-			Graphics2D g2 = (Graphics2D) g;
+					float newratio = (float)imagewidth/(float)oldimagewidth;
 
-			if(useAntiAlias.getState())
+					if(firsttime) {
+						int wid = (int)(imagewidth/(columnlocations.length-1));
+						for(int i = 0; i < columnlocations.length; i++) {
+							columnlocations[i] = (float)i*wid;
+						}
+						firsttime = false;
+					}
+					// scale the current columnlocations
+					else {
+						for(int i = 0; i < columnlocations.length; i++)
+							columnlocations[i] *= newratio;
+					}
+
+					for(int j = 0; j < columnorder.length; j++) {
+						for(int k = 0; k < table.getNumRows(); k++) {
+							heights[j][k] = weights[j][k]*imageheight;
+						}
+					}
+					updateImage();
+				}
+
+				super.setBounds(x, y, w, h);
+			}
+
+			/**
+			 * Create a buffered image used for the gradient paint.
+			 */
+			BufferedImage getGradientImage(Color low, Color high) {
+				BufferedImage bi = new BufferedImage(2, 101,
+					BufferedImage.TYPE_INT_RGB);
+				Graphics2D g2 = (Graphics2D)bi.getGraphics();
+				g2.setPaint(new GradientPaint(0, 0, low,
+					2, 101, high));
+				g2.fill(new Rectangle(0, 0, 2, 101));
+				return bi;
+			}
+
+			/**
+			 * Set the column that determines the line colors.
+			 */
+			void setKeyColumn(int i) {
+				currentKeyColumn = i;
+				// update the linecolors
+				Column c = table.getColumn(i);
+
+				HashMap lookup = colorsLookup[i];
+				if(lookup == null)
+					lookup = new HashMap();
+
+				if(c instanceof NumericColumn) {
+					NumericColumn nc = (NumericColumn)c;
+					double max = nc.getMax();
+					double min = nc.getMin();
+
+					Color h = (Color)lookup.get(HIGH);
+					if(h == null)
+						h = defaultHighColor;
+					Color l = (Color)lookup.get(LOW);
+					if(l == null)
+						l = defaultLowColor;
+
+					// get the high and low color here
+					BufferedImage gradient = getGradientImage(l, h);
+					for(int j = 0; j < table.getNumRows(); j++) {
+						// now create a new GradientPaint
+						// based on the shadecolumn get the shader value
+						double shaderVal = nc.getDouble(j);
+						// find where the shader value lies between min and max
+						double percent = (max-shaderVal)/(max-min);
+						Color col = new Color(gradient.getRGB(1,
+							100-(int)Math.abs(percent*100)));
+						linecolor[j] = col;
+					}
+					chooseColors.removeAll();
+					lookup.put(HIGH, h);
+					ImageIcon hi = new ImageIcon(new ColorComponent(h).getImage());
+					ColorMenuItem hm = new ColorMenuItem(HIGH, hi, h);
+					hm.addActionListener(app);
+					lookup.put(LOW, l);
+					ImageIcon li = new ImageIcon(new ColorComponent(l).getImage());
+					ColorMenuItem lm = new ColorMenuItem(LOW, li, l);
+					lm.addActionListener(app);
+					chooseColors.add(hm);
+					chooseColors.add(lm);
+				}
+				else {
+					SimpleColumn sc = (SimpleColumn)c;
+
+					int idx = 0;
+					//linecolor = new Color[table.getNumRows()];
+					for(int j = 0; j < sc.getNumRows(); j++) {
+						String s = sc.getString(j);
+						if(lookup.containsKey(s)) {
+							Color col = (Color)lookup.get(s);
+							linecolor[j] = col;
+						}
+						else {
+							lookup.put(s, colors[idx%colors.length]);
+							linecolor[j] = colors[idx%colors.length];
+							idx++;
+						}
+					}
+					chooseColors.removeAll();
+					int numItems = 0;
+					JMenu curMenu = chooseColors;
+					Iterator iter = lookup.keySet().iterator();
+					while(iter.hasNext()) {
+						String text = (String)iter.next();
+						Color col = (Color)lookup.get(text);
+						ImageIcon li = new ImageIcon(new ColorComponent(col).getImage());
+						ColorMenuItem cmi = new ColorMenuItem(text, li, col);
+						cmi.addActionListener(app);
+						if(numItems == MAX_MENU_ITEMS) {
+							JMenu nextMenu = new JMenu(MORE);
+							curMenu.insert(nextMenu, 0);
+							nextMenu.add(cmi);
+							curMenu = nextMenu;
+							numItems = 1;
+						}
+						else {
+							curMenu.add(cmi);
+							numItems++;
+						}
+					}
+				}
+				legend.updateLegend(lookup);
+				colorsLookup[i] = lookup;
+			}
+
+			/**
+			 * Redraw the lines.
+			 */
+			void updateImage() {
+				image = null;
+				new CreateImageThread(this).start();
+			}
+
+			/**
+			 * Draw the lines on a buffered image in a separate thread
+			 * and then paint the image on the screen.
+			 */
+			class CreateImageThread extends Thread {
+				MainArea app;
+
+				CreateImageThread(MainArea a) {
+					app = a;
+				}
+
+				public void run() {
+					BufferedImage img = new BufferedImage(imagewidth,
+						imageheight, BufferedImage.TYPE_INT_RGB);
+					Graphics2D g2 = (Graphics2D)img.getGraphics();
+					if(useAntialias.getState())
+						g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+							RenderingHints.VALUE_ANTIALIAS_ON);
+					g2.setPaint(yellowish);
+					g2.fill(new Rectangle(0, 0, imagewidth, imageheight));
+
+					// draw the lines
+					for(int i = 0; i < columnorder.length-1; i++) {
+						for(int j = 0; j < table.getNumRows(); j++) {
+							if(linemap[j] && !selectedlines[j]) {
+								g2.setPaint(linecolor[j]);
+								g2.draw(new Line2D.Float(
+									columnlocations[i],
+									heights[columnorder[i]][j],
+									columnlocations[i+1],
+									heights[columnorder[i+1]][j]));
+							}
+							g2.setPaint(Color.black);
+							g2.draw(new Line2D.Float(
+								columnlocations[i],
+								0,
+								columnlocations[i],
+								imageheight));
+						}
+					}
+
+					// loop through again to draw the selected lines
+					// this is done so that the selected lines will be
+					// drawn on top of the other lines
+					g2.setPaint(selectedColor);
+					for(int i = 0; i < columnorder.length-1; i++) {
+						for(int j = 0; j < table.getNumRows(); j++) {
+							if(linemap[j] && selectedlines[j]) {
+								g2.draw(new Line2D.Float(
+									columnlocations[i],
+									heights[columnorder[i]][j],
+									columnlocations[i+1],
+									heights[columnorder[i+1]][j]));
+							}
+						}
+					}
+
+					g2.setPaint(Color.black);
+					// get the last one
+					g2.draw(new Line2D.Float(
+						columnlocations[columnlocations.length-1],
+						0,
+						columnlocations[columnlocations.length-1],
+						imageheight));
+
+					image = img;
+					app.repaint();
+				}
+			}
+
+			public void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				Graphics2D g2 = (Graphics2D)g;
 				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
-			else
-				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_OFF);
 
-				Dimension d = getSize();
-				int w = d.width, h = d.height;
+				g2.setPaint(yellowish);
+				g2.fill(new Rectangle(leftoffset-sidebuffer, topoffset,
+					imagewidth+2*sidebuffer, imageheight+2*topoffset));
 
-				// set the font
-				g2.setFont(font_default);
-				FontMetrics m = g2.getFontMetrics();
-
-				if (!painted) {
-					painted = true;
-					ascent = m.getAscent();
-					descent = m.getDescent();
-					colw = ascent + descent + 10;
-
-					colh = 0;
-					for(int i = 0; i < cols; i++) {
-						if(m.stringWidth(vt.getColumnLabel(i)) > colh)
-							colh = m.stringWidth(vt.getColumnLabel(i));
-					}
-
-					colh += 10;
-					//colh = 100;
-					pad = 15;
-					grid = (int) ((w - 2*pad - colw) / (order.length - 1));
-					//if (grid < 2*colw)
-					//	grid = 2*colw;
-					if(grid < colw)
-						grid = colw + 6;
-
-					ydist = h - 2*colw - colh;
-					// calculate the ylocations for each line
-					for (int i = 0; i < order.length; i++)
-						//for (int j = 0; j < rows; j++)
-						//	ylocations[i][j] = ydist*heights[order[i]][j];
-						calcYLocations(i);
+				g2.setPaint(Color.black);
+				if(image != null)
+					g2.drawImage(image, leftoffset, imagetop, this);
+				// draw something else while the image is being drawn
+				else {
+					g2.setPaint(yellowish);
+					g2.fill(new Rectangle(leftoffset, imagetop,
+						imagewidth, imageheight));
 				}
 
-      			int xpos, ypos;
-      			if (!zoomed) {
-         			if (redrawBuffer) {
-            			drawBuffer(w, h);
-						redrawBuffer = false;
-         			}
+				g2.setPaint(Color.black);
+				AffineTransform fontRotate = new AffineTransform();
+				fontRotate.setToRotation(300);
+				Font f = g2.getFont();
+				Font rotatedFont = f.deriveFont(fontRotate);
+				g2.setFont(rotatedFont);
+				Paint oldPaint = g2.getPaint();
 
-					// draw the image on the screen
-					g2.drawImage(buffer, 0, 0, this);
+				for(int i = 0; i < columnlocations.length; i++) {
+					drawBar(g2, columnlocations[i], table.getColumnLabel(columnorder[i]));
+				}
+				g2.setFont(f);
+				g2.setPaint(oldPaint);
 
-					// draw a box if the user is zooming
-					if (mouseband) {
-						g2.setColor(Color.black);
+				if(mousedrag) {
+					g2.setPaint(Color.green);
+					g2.draw(new Line2D.Float(
+						columnlocations[selectedcol]+leftoffset,
+						topoffset, columnlocations[selectedcol]+leftoffset,
+						imagebottom));
+				}
 
-						if (mousex - lastx >= 0 && mousey - lasty >= 0)
-							g2.draw(new Rectangle2D.Float(lastx, lasty,
-								mousex - lastx, mousey - lasty));
-						else if (mousex - lastx >= 0 && mousey - lasty < 0)
-							g2.draw(new Rectangle2D.Float(lastx, mousey,
-								mousex - lastx, lasty - mousey));
-						else if (mousex - lastx < 0 && mousey - lasty >= 0)
-							g2.draw(new Rectangle2D.Float(mousex, lasty,
-								lastx - mousex, mousey - lasty));
-						else
-							g2.draw(new Rectangle2D.Float(mousex, mousey,
-								lastx - mousex, lasty - mousey));
+				g2.setPaint(Color.black);
+				FontMetrics fm = g2.getFontMetrics();
+				int ascent = fm.getAscent();
+				for(int i = 0; i < columnorder.length; i++) {
+					if(table.getColumn(columnorder[i]) instanceof NumericColumn) {
+						String mx = nf.format(maxes[columnorder[i]]);
+						g2.drawString(mx,
+							columnlocations[i]+leftoffset-fm.stringWidth(mx)/2,
+							2*topoffset-(topoffset-ascent)/2);
 					}
-					// draw a red dashed line if the user is moving columns
-					if (mousedrag) {
-						g2.setPaint(Color.red);
-						g2.draw(new Rectangle2D.Float(pad + grid*selectedcol,
-							h - colh, colw - 1, colh - 1));
+				}
+				for(int i = 0; i < columnorder.length; i++) {
+					if(table.getColumn(columnorder[i]) instanceof NumericColumn) {
+						String mx = nf.format(mins[columnorder[i]]);
+						g2.drawString(mx,
+							columnlocations[i]+leftoffset-fm.stringWidth(mx)/2,
+							imagebottom-(topoffset-ascent)/2);
+					}
+				}
+				g2.draw(new Rectangle(leftoffset-sidebuffer, topoffset,
+					imagewidth+2*sidebuffer, imageheight+2*topoffset));
+				g2.draw(new Line2D.Double(leftoffset-sidebuffer, 2*topoffset,
+					leftoffset+imagewidth+sidebuffer, 2*topoffset));
+				g2.draw(new Line2D.Double(leftoffset-sidebuffer,
+					imagebottom-topoffset, leftoffset+imagewidth+sidebuffer,
+					imagebottom-topoffset));
+			}
 
-						float dash[] = {10.0f};
-						g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT,
-							BasicStroke.JOIN_MITER, 10.0f,
-							dash, 0.0f));
-						g2.draw(new Line2D.Float(mousex, colw, mousex, h - colw - colh));
-						g2.setStroke(new BasicStroke(1.0f));
+			void drawBar(Graphics2D g2, float location, String name) {
+				int buffer = (int)(.1*barheight);
 
-						xpos = pad;
+				Rectangle r = new Rectangle(
+					leftoffset+((int)location-HALF_WIDTH),
+					imagebottom+buffer, BAR_WIDTH, barheight-buffer);
+				g2.setPaint(grayish);
+				g2.fill(r);
+				g2.setPaint(Color.black);
+				g2.draw(r);
 
-						for (int i = 0; i < order.length; i++) {
-							if (i != selectedcol && mousex > xpos && mousex < xpos + colw) {
-								g2.draw(new Rectangle2D.Float(pad + grid*i, h - colh,
-									colw - 1, colh - 1));
-							}
-							xpos += grid;
+				FontMetrics fm = g2.getFontMetrics();
+				int wid = fm.getHeight();
+
+				int xloc = (int)(leftoffset+location+HALF_WIDTH-(wid/2));
+				int yloc = (int)(imagebottom+barheight);
+
+				g2.drawString(name, (int)xloc, (int)yloc);
+			}
+
+			public void mousePressed(MouseEvent e) {
+				int cx = e.getX();
+				int cy = e.getY();
+
+				// if it is inside the image, calc location
+				if(cx >= leftoffset && cx <= (leftoffset+imagewidth) &&
+					cy >= 2*topoffset && cy <= imagebottom-topoffset)
+					calcLocation(cx-leftoffset, cy-2*topoffset);
+
+				boolean found = false;
+				for(int i = 0; i < columnlocations.length; i++) {
+
+					if(cx >= (columnlocations[i]-HALF_WIDTH+leftoffset) &&
+						cx <= (columnlocations[i]+HALF_WIDTH+leftoffset)) {
+
+						if(cy >= imagebottom && cy <= imagebottom+barheight) {
+							found = true;
+							selectedcol = i;
+							break;
 						}
+					}
+				}
+				if(found) {
+					mousedrag = true;
+					mousex = cx;
+					mousey = cy;
+				}
+				else {
+					if(zoomin) {
+						if(!e.isMetaDown()) {
+							Dimension d = this.getPreferredSize();
+							this.setPreferredSize(new Dimension((int)(d.width*1.1),
+								(int)(d.height*1.1)));
+							this.revalidate();
+						}
+						else {
+							Dimension d = this.getPreferredSize();
+							this.setPreferredSize(new Dimension((int)(d.width*.9),
+								(int)(d.height*.9)));
+							this.revalidate();
+						}
+					}
 				}
 			}
-			// we are zoomed
-			else {
-				g2.setPaint(Color.white);
-				g2.fill(new Rectangle2D.Float(0, 0, w, h));
 
-				if (leftof == -1 || rightof == -1)
+			public void mouseReleased(MouseEvent e) {
+				if(mousedrag) {
+					updateImage();
+					mousedrag = false;
+				}
+			}
+			public void mouseClicked(MouseEvent e) {}
+			public void mouseEntered(MouseEvent e) {}
+			public void mouseExited(MouseEvent e) {}
+			public void mouseMoved(MouseEvent e) {}
+			public void mouseDragged(MouseEvent e) {
+				if(mousedrag) {
+					float newloc = e.getX()-leftoffset;
+					//if(newloc < leftoffset)
+					if(newloc < 0)
+						newloc = 0;
+					if(newloc+leftoffset > getWidth()-leftoffset)
+						newloc = imagewidth-2;
+
+					// now loop through the columnlocations and swap if necessary
+
+					//moving right
+					if(newloc > columnlocations[selectedcol]) {
+						for(int i = selectedcol+1; i < columnlocations.length; i++) {
+							if(newloc > columnlocations[i]) {
+								swap(selectedcol, i);
+								selectedcol = i;
+							}
+						}
+					}
+
+					// moving left
+					else {
+						for(int i = selectedcol-1; i >= 0; i--) {
+							if(newloc < columnlocations[i]) {
+								swap(selectedcol, i);
+								selectedcol = i;
+							}
+						}
+					}
+
+					columnlocations[selectedcol] = newloc;
+					repaint();
+				}
+			}
+
+			void swap(int one, int two) {
+				int temp = columnorder[one];
+				float temploc = columnlocations[one];
+				columnorder[one] = columnorder[two];
+				columnlocations[one] = columnlocations[two];
+				columnorder[two] = temp;
+				columnlocations[two] = temploc;
+			}
+
+			/**
+			 * Calculate the lines that contain the point (x1, y1).
+			 * If a line is found, the lines are redrawn and the selected
+			 * lines are painted the selected color.
+			 */
+			private void calcLocation(float x1, float y1) {
+				// find the two columns that this point
+				// lies between
+
+				int col1 = -1;
+				int col2 = -1;
+				// find the two columns that the point lies between
+				for(int i = 0; i < columnlocations.length-1; i++) {
+					if(columnlocations[i] <= x1
+						&& columnlocations[i+1] >= x1) {
+						col1 = i;
+						col2 = 	i+1;
+						break;
+					}
+				}
+
+				boolean found = false;
+				if(col1 != -1 && col2 != -1) {
+					float xl = columnlocations[col1];
+					float xr = columnlocations[col2];
+					for(int i = 0; i < table.getNumRows(); i++) {
+						float yl =
+							heights[columnorder[col1]][i];
+						float yr =
+							heights[columnorder[col2]][i];
+
+						if( (y1 < (yl+TOLERANCE)) && (y1 > (yr-TOLERANCE)) ||
+							(y1 < (yr+TOLERANCE)) && (y1 > (yl-TOLERANCE))) {
+
+							float m = (yr-yl)/(xr-xl);
+							float b = yr-m*xr;
+							if( Math.abs((y1-(m*x1)-b)) <= TOLERANCE && linemap[i]) {
+								selectedlines[i] = !selectedlines[i];
+								if(selectedlines[i])
+									addSelection(i);
+								else
+									removeSelection(i);
+								found = true;
+							}
+						}
+					}
+				}
+				if(found)
+					ma.updateImage();
+			}
+		}
+
+		/**
+		 * A small square with a black outline.  The color of the
+		 * square is given in the constructor.
+		 */
+		class ColorComponent extends JComponent {
+			private final int DIM = 12;
+			Color bkgrd;
+
+			ColorComponent(Color c) {
+				super();
+				setOpaque(true);
+				bkgrd = c;
+			}
+
+			public Dimension getPreferredSize() {
+				return new Dimension(DIM, DIM);
+			}
+
+			public Dimension getMinimumSize() {
+				return new Dimension(DIM, DIM);
+			}
+
+			public void paint (Graphics g) {
+				g.setColor (bkgrd);
+				g.fillRect (0, 0, DIM-1, DIM-1);
+				g.setColor (Color.black);
+				g.drawRect (0, 0, DIM-1, DIM-1);
+			}
+
+			void setBkgrd(Color c) {
+				bkgrd = c;
+			}
+
+			BufferedImage getImage() {
+				BufferedImage image = new BufferedImage(DIM, DIM,
+					BufferedImage.TYPE_INT_RGB);
+				Graphics g = image.getGraphics();
+				paint(g);
+				return image;
+			}
+		}
+
+		/**
+		 * Filtering lines.
+		 */
+		class Filter extends JD2KFrame implements ActionListener {
+			HashMap numericColumnLookup;
+			HashMap stringColumnLookup;
+
+			JComboBox numColumns;
+			JComboBox strColumns;
+			JComboBox numOps;
+			JComboBox strOps;
+			JTextField numValue;
+			JTextField strValue;
+			JButton numAdd;
+			JButton strAdd;
+
+			JButton cancel;
+			JButton done;
+			JButton update;
+
+			JList filterList;
+			JButton remove;
+
+			DefaultListModel listModel;
+
+			MainArea ma;
+
+			Filter(MainArea m) {
+				super("Filter");
+				setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+				ma = m;
+				//setSize(300, 200);
+				//JPanel bg = new JPanel();
+				//showLines = new boolean[table.getNumRows()];
+				//for(int i = 0; i < linemap.length; i++)
+				//	showLines[i] = true;
+
+				numericColumnLookup = new HashMap();
+				stringColumnLookup = new HashMap();
+
+				LinkedList numCols = new LinkedList();
+				LinkedList strCols = new LinkedList();
+
+				for(int i = 0; i < table.getNumColumns(); i++) {
+					Column c = table.getColumn(i);
+					if(c instanceof NumericColumn) {
+						numericColumnLookup.put(c.getLabel(), new Integer(i));
+						numCols.add(c.getLabel());
+					}
+					else {
+						stringColumnLookup.put(c.getLabel(), new Integer(i));
+						strCols.add(c.getLabel());
+					}
+				}
+
+				JOutlinePanel num = new JOutlinePanel("Numeric");
+				//num.setLayout(new GridLayout(2, 3));
+				num.setLayout(new GridBagLayout());
+
+				numColumns = new JComboBox();
+				Iterator i = numCols.iterator();
+				while(i.hasNext())
+					numColumns.addItem(i.next());
+				numCols.clear();
+				numOps = new JComboBox();
+				numOps.addItem(GREATER_THAN);
+				numOps.addItem(LESS_THAN);
+				numOps.addItem(GREATER_THAN_EQUAL_TO);
+				numOps.addItem(LESS_THAN_EQUAL_TO);
+				numOps.addItem(EQUAL_TO);
+				numOps.addItem(NOT_EQUAL_TO);
+				numValue = new JTextField(5);
+				numAdd = new JButton("Add");
+				numAdd.addActionListener(this);
+
+				/*num.add(numColumns);
+				num.add(numOps);
+				num.add(numValue);
+				num.add(new JPanel());
+				num.add(numAdd);
+				num.add(new JPanel());
+				*/
+				Constrain.setConstraints(num, numColumns, 0, 0, 1, 1,
+					GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+					1, 1);
+				Constrain.setConstraints(num, numOps, 1, 0, 1, 1,
+					GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+					1, 1);
+				Constrain.setConstraints(num, numValue, 2, 0, 1, 1,
+					GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+					1, 1);
+				Constrain.setConstraints(num, numAdd, 1, 1, 1, 1,
+					GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+					1, 1);
+
+				JPanel str = new JOutlinePanel("String");
+				//str.setLayout(new GridLayout(2, 3));
+				str.setLayout(new GridBagLayout());
+
+				strColumns = new JComboBox();
+				i = strCols.iterator();
+				while(i.hasNext())
+					strColumns.addItem(i.next());
+				strCols.clear();
+				strOps = new JComboBox();
+				strOps.addItem(EQUAL_TO);
+				strOps.addItem(NOT_EQUAL_TO);
+				strValue = new JTextField(5);
+				strAdd = new JButton("Add");
+				strAdd.addActionListener(this);
+
+				/*str.add(strColumns);
+				str.add(strOps);
+				str.add(strValue);
+				str.add(new JPanel());
+				str.add(strAdd);
+				str.add(new JPanel());
+				*/
+				Constrain.setConstraints(str, strColumns, 0, 0, 1, 1,
+					GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+					1, 1);
+				Constrain.setConstraints(str, strOps, 1, 0, 1, 1,
+					GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+					1, 1);
+				Constrain.setConstraints(str, strValue, 2, 0, 1, 1,
+					GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+					1, 1);
+				Constrain.setConstraints(str, strAdd, 1, 1, 1, 1,
+					GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+					1, 1);
+
+				JPanel one = new JPanel();
+		//one.setLayout(new GridLayout(2, 1));
+				/*one.setLayout(new BoxLayout(one, BoxLayout.Y_AXIS));
+				one.add(num);
+				one.add(Box.createGlue());
+				one.add(str);
+				*/
+				one.setLayout(new GridBagLayout());
+				Constrain.setConstraints(one, num, 0, 0, 1, 1,
+					GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+					1, 1);
+				Constrain.setConstraints(one, new JPanel(), 0, 1, 1, 1,
+					GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+					1, 1);
+				Constrain.setConstraints(one, str, 0, 2, 1, 1,
+					GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+					1, 1);
+				JScrollPane jsp = new JScrollPane(one);
+				jsp.setMinimumSize(jsp.getPreferredSize());
+				//bg.setLayout(new BorderLayout());
+				//bg.add(one, BorderLayout.CENTER);
+
+				filterList = new JList();
+				listModel = new DefaultListModel();
+				JLabel lbl = new JLabel("Current Filters");
+				Dimension d = lbl.getPreferredSize();
+				//filterList.setFixedCellWidth(d.width);
+				filterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				filterList.setModel(listModel);
+				JScrollPane jsp1 = new JScrollPane(filterList);
+				JViewport jview = new JViewport();
+				jview.setView(lbl);
+				jsp1.setColumnHeader(jview);
+				JPanel two = new JPanel();
+				two.setLayout(new BorderLayout());
+				two.add(jsp1, BorderLayout.CENTER);
+				remove = new JButton("Remove");
+				remove.addActionListener(this);
+				JPanel rp = new JPanel();
+				rp.add(remove);
+				two.add(rp, BorderLayout.SOUTH);
+				//bg.add(two, BorderLayout.EAST);
+				JSplitPane bg = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+					/*one*/jsp, two);
+
+				cancel = new JButton("Cancel");
+				cancel.addActionListener(this);
+				done = new JButton("Done");
+				done.addActionListener(this);
+				update = new JButton("Update");
+				update.addActionListener(this);
+
+				JPanel buttonPanel = new JPanel();
+				buttonPanel.add(cancel);
+				buttonPanel.add(done);
+				buttonPanel.add(update);
+
+				JPanel whole = new JPanel();
+				whole.setLayout(new BorderLayout());
+				whole.add(bg, BorderLayout.CENTER);
+				whole.add(buttonPanel, BorderLayout.SOUTH);
+
+				getContentPane().add(whole);
+				pack();
+				setVisible(false);
+			}
+
+			/**
+			 * Update the lines to show based on the current filteritems.
+			 */
+			void updateLineMap() {
+				Object[] filters = listModel.toArray();
+				if(filters.length == 0) {
+					for(int i = 0; i < table.getNumRows(); i++)
+						linemap[i] = true;
 					return;
-
-				int gridnum = rightof - leftof;
-
-				zgrid = (int) (w /
-					((float)leftamt/(float)grid +
-					gridnum + (float)rightamt/(float)grid));
-
-				xpos = (int) (zgrid * leftamt / grid);
-
-				for (int i = leftof; i <= rightof; i++) {
-						for (int j = 0; j < rows; j++) {
-							if (i == leftof && i > 0) {
-								g2.setPaint(getColor(colorid[j]));
-								if(selectedlines[j])
-									g2.setPaint(Color.red);
-								g2.draw(new Line2D.Float(xpos,
-									h - h*zheights[order[i]][j],
-									xpos - zgrid,
-									h - h*zheights[order[i-1]][j]));
-							}
-
-							if (i != order.length - 1) {
-								g2.setPaint(getColor(colorid[j]));
-								if(selectedlines[j])
-									g2.setPaint(Color.red);
-								g2.draw(new Line2D.Float(xpos,
-									h - h*zheights[order[i]][j],
-									xpos + zgrid,
-									h - h*zheights[order[i+1]][j]));
-							}
-
-							g2.setPaint(Color.darkGray);
-							g2.draw(new Line2D.Float(xpos, 0, xpos, h));
+				}
+				for(int i = 0; i < table.getNumRows(); i++) {
+					boolean start = true;
+					for(int j = 0; j < filters.length; j++) {
+						FilterItem fi = (FilterItem)filters[j];
+						int col = fi.colNum;
+						boolean retVal;
+						if(table.getColumn(col) instanceof NumericColumn)
+							retVal = fi.evaluate(table.getDouble(i, col));
+						else
+							retVal = fi.evaluate(table.getString(i, col));
+						start = start && retVal;
 					}
-					xpos += zgrid;
+					linemap[i] = start;
+				}
+			}
+
+			/**
+			 * Listen for button presses.
+			 */
+			public void actionPerformed(ActionEvent e) {
+				Object src = e.getSource();
+				if(src == strAdd) {
+					String colLabel = strColumns.getSelectedItem().toString();
+					String op = strOps.getSelectedItem().toString();
+					String value = strValue.getText();
+					int colNum = ((Integer)stringColumnLookup.get(colLabel)).intValue();
+					FilterItem fi = new StringFilterItem(colLabel, colNum,
+						op, value);
+					listModel.addElement(fi);
+					strValue.setText(EMPTY_STRING);
+				}
+				else if(src == numAdd) {
+					String colLabel = numColumns.getSelectedItem().toString();
+					String op = numOps.getSelectedItem().toString();
+					String value = numValue.getText();
+					int colNum = ((Integer)numericColumnLookup.get(colLabel)).intValue();
+					double d = 0;
+					try {
+						d = Double.parseDouble(value);
+					}
+					catch(Exception ex) {
+					}
+					FilterItem fi = new NumericFilterItem(colLabel, colNum,
+						op, d);
+					listModel.addElement(fi);
+					numValue.setText(EMPTY_STRING);
+				}
+				else if(src == remove) {
+					int selected = filterList.getSelectedIndex();
+					if(selected != -1)
+						listModel.remove(selected);
+				}
+				else if(src == cancel) {
+					listModel.removeAllElements();
+					for(int i = 0; i < oldFilters.length; i++) {
+						listModel.addElement(oldFilters[i]);
+					}
+					oldFilters = null;
+					setVisible(false);
+				}
+				else if(src == done) {
+					updateLineMap();
+					ma.updateImage();
+					oldFilters = null;
+					setVisible(false);
+				}
+				else if(src == update) {
+					updateLineMap();
+					ma.updateImage();
+					oldFilters = listModel.toArray();
+				}
+			}
+
+			Object[] oldFilters;
+
+			public void setVisible(boolean f) {
+				if(f)
+					oldFilters = listModel.toArray();
+				super.setVisible(f);
+			}
+
+			/**
+			 * Base class for filters.
+			 */
+			abstract class FilterItem {
+				String label;
+				int colNum;
+				String op;
+
+				abstract boolean evaluate(String s);
+				abstract boolean evaluate(double d);
+			}
+
+			/**
+			 * Filter out items for numeric columns
+			 */
+			class NumericFilterItem extends FilterItem {
+				double value;
+
+				NumericFilterItem(String l, int c, String o, double v) {
+					label = l;
+					colNum = c;
+					op = o;
+					value = v;
 				}
 
-				if (gridnum == -1) {
-					xpos = -1 * (int) (zgrid * (rightamt - zw) / grid);
-
-					for (int j = 0; j < rows; j++) {
-						g2.setPaint(getColor(colorid[j]));
-						g2.draw(new Line2D.Float(xpos,
-							h - h*zheights[order[rightof]][j],
-							xpos + zgrid,
-							h - h*zheights[order[leftof]][j]));
+				boolean evaluate(String s) {
+					double d = 0;
+					try {
+						d = Double.parseDouble(s);
 					}
+					catch(Exception e) {
+						return false;
+					}
+					return evaluate(d);
+				}
+
+				boolean evaluate(double d) {
+					if(op == GREATER_THAN)
+						//return value > d;
+						return value < d;
+					else if(op == GREATER_THAN_EQUAL_TO)
+						//return value >= d;
+						return value <= d;
+					else if(op == LESS_THAN)
+						//return value < d;
+						return value > d;
+					else if(op == LESS_THAN_EQUAL_TO)
+						//return value <= d;
+						return value >= d;
+					else if(op == EQUAL_TO)
+						//return value == d;
+						return value != d;
+					else if(op == NOT_EQUAL_TO)
+						//return value != d;
+						return value == d;
+					return false;
+				}
+
+				/**
+				*/
+				public String toString() {
+					StringBuffer sb = new StringBuffer(label);
+					sb.append(EMPTY_STRING);
+					sb.append(op);
+					sb.append(EMPTY_STRING);
+					sb.append(value);
+					return sb.toString();
+				}
+			}
+
+			/**
+			 * Filter out items for non-numeric columns.
+			 * String equality and inequality is used
+			 */
+			class StringFilterItem extends FilterItem {
+				String value;
+
+				StringFilterItem(String l, int c, String o, String v) {
+					label = l;
+					colNum = c;
+					op = o;
+					value = v;
+				}
+
+				/**
+					Return true if the item should be shown
+				*/
+				boolean evaluate(String s) {
+					if(op == EQUAL_TO)
+						return value.trim().equals(s.trim());
+					else if(op == NOT_EQUAL_TO)
+						return !value.trim().equals(s.trim());
+					return false;
+				}
+
+				boolean evaluate(double d) {
+					String s;
+					try {
+						s = Double.toString(d);
+					}
+					catch(Exception e) {
+						return false;
+					}
+					return evaluate(s);
+				}
+
+				public String toString() {
+					StringBuffer sb = new StringBuffer(label);
+					sb.append(EMPTY_STRING);
+					sb.append(op);
+					sb.append(EMPTY_STRING);
+					sb.append(value);
+					return sb.toString();
 				}
 			}
 		}
 
-   /**
-		Draw the default view to the screen.
-   */
-   private void drawBuffer(int x, int y) {
-      if (x < 1)
-         x = 1;
-      if (y < 1)
-         y = 1;
-
-      Graphics2D bg2 = buffer.createGraphics();
-
-		if(useAntiAlias.getState())
-			bg2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
-		else
-			bg2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_OFF);
-
-      bg2.setFont(font_default);
-      FontMetrics m = bg2.getFontMetrics();
-
-      bg2.setPaint(Color.white);
-      bg2.fill(new Rectangle2D.Float(0, 0, x, y));
-
-      /*if (y < (2*colw + colh)) {
-         bg2.setPaint(Color.black);
-         bg2.drawString("Please enlarge the window.", 5, ascent + 5);
-         return;
-      }*/
-
-      int xpos = pad + (int)(.5*colw);
-      int ypos = y - colw - colh;
-      //int ydist = y - 2*colw - colh;
-
-      AffineTransform normalXform = bg2.getTransform();
-      AffineTransform rightXform = new AffineTransform();
-      rightXform.translate(xpos, y);
-      rightXform.rotate(Math.toRadians(-90));
-
-	  // draw the data lines
-      for (int i = 0; i < order.length-1; i++) {
-         for (int j = 0; j < rows; j++) {
-
-            //if (i != order.length - 1) {
-			if(linemap[i][j]) {
-				bg2.setPaint(getColor(colorid[j]));
-              	bg2.draw(new Line2D.Float(xpos,
-					//ypos-ydist*heights[order[i]][j],
-					ypos-ylocations[order[i]][j],
-					xpos + grid,
-					//ypos-ydist*heights[order[i+1]][j]));
-					ypos-ylocations[order[i+1]][j]));
-			}
-			//}
-            bg2.setPaint(Color.darkGray);
-            bg2.draw(new Line2D.Float(xpos, 0, xpos, y));
-         }
-         xpos += grid;
-      }
-
-		// get the last line
-		bg2.draw(new Line2D.Float(xpos, 0, xpos, y));
-
-		xpos = pad + (int)(.5*colw);
-		bg2.setPaint(Color.red);
-
-	  // draw the selected lines.  this is done outside the main loop so that
-	  // we will always draw the selected line on top
-      for (int i = 0; i < order.length-1; i++) {
-         for (int j = 0; j < rows; j++) {
-			if(selectedlines[j]) {
-              	bg2.draw(new Line2D.Float(xpos,
-					ypos-ylocations[order[i]][j],
-					xpos + grid,
-					ypos-ylocations[order[i+1]][j]));
-			}
-         }
-         xpos += grid;
-		}
-
-      bg2.setPaint(Color.white);
-      bg2.fill(new Rectangle2D.Float(0, 0, x, 1));
-      bg2.fill(new Rectangle2D.Double(0, 0, 1, colw));
-
-      bg2.setPaint(Color.lightGray);
-      bg2.fill(new Rectangle2D.Float(1, 1, x - 1, colw - 1));
-
-      bg2.setPaint(Color.darkGray);
-      bg2.fill(new Rectangle2D.Float(0, colw - 1, x, 1));
-      bg2.fill(new Rectangle2D.Float(x - 1, 0, 1, colw));
-
-
-      bg2.setPaint(Color.white);
-      bg2.fill(new Rectangle2D.Float(0, ypos, x, 1));
-      bg2.fill(new Rectangle2D.Double(0, ypos, 1, colw));
-
-      bg2.setPaint(Color.lightGray);
-      bg2.fill(new Rectangle2D.Float(1, ypos + 1, x - 2, colw - 2));
-      bg2.setPaint(Color.darkGray);
-      bg2.fill(new Rectangle2D.Float(0, ypos + colw - 1, x, 1));
-      bg2.fill(new Rectangle2D.Float(x - 1, ypos, 1, colw));
-
-
-      bg2.setPaint(Color.white);
-      bg2.fill(new Rectangle2D.Double(0, ypos + colw, x, y));
-
-      bg2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                           RenderingHints.VALUE_ANTIALIAS_ON);
-
-      xpos = pad + (int)(.5*colw);
-      String foo;
-	  FontMetrics fm = bg2.getFontMetrics();
-      for (int i = 0; i < order.length; i++) {
-
-         if (types[order[i]] != STRING_TYPE) {
-
-            bg2.setPaint(Color.black);
-            //foo = Float.toString(bounds[order[i]][1]);
-			foo = prettyFloat(bounds[order[i]][1]);
-            bg2.drawString(foo,
-                           xpos - (int)(.5*m.stringWidth(foo)),
-                           colw - 5 - descent);
-            //foo = Float.toString(bounds[order[i]][0]);
-			foo = prettyFloat(bounds[order[i]][0]);
-            bg2.drawString(foo,
-                           xpos - (int)(.5*m.stringWidth(foo)),
-                           y - colh - 5 - descent);
-         }
-
-         bg2.setPaint(Color.darkGray);
-         bg2.draw(new Line2D.Float(xpos - (int)(.5*colw), y - colh,
-                                    xpos - (int)(.5*colw), y));
-         bg2.draw(new Line2D.Float(xpos + (int)(.5*colw), y - colh,
-                                    xpos + (int)(.5*colw), y));
-         bg2.setPaint(Color.lightGray);
-         bg2.fill(new Rectangle2D.Float(xpos - (int)(.5*colw) + 1,
-                                         y - colh,
-                                         colw - 1, colh));
-
-         bg2.setPaint(Color.black);
-         bg2.transform(rightXform);
-         bg2.drawString(vt.getColumnLabel(order[i]), (colh-fm.stringWidth(vt.getColumnLabel(order[i])))/2, 5);
-         bg2.setTransform(normalXform);
-
-         rightXform.translate(0, grid);
-
-         xpos += grid;
-      }
-   }
-
-	String prettyFloat(float f) {
-		NumberFormat nf = NumberFormat.getInstance();
-		//nf.setMinimumFractionDigits(3);
-		nf.setMaximumFractionDigits(5);
-		StringBuffer sb = new StringBuffer(nf.format(f));
-		return sb.toString();
-	}
-
-	public void update(Graphics g) {
-	}
-
-	/**
-		Cache the ylocations, because they change
-		infrequently.
-	*/
-	private void calcYLocations(int i) {
-		for (int j = 0; j < rows; j++)
-			ylocations[i][j] = ydist*heights[order[i]][j];
-	}
-
-   public void mouseClicked(MouseEvent e) {
-      int cx = e.getX(), cy = e.getY();
-
-	  // increase/decrease bounds when it is clicked on
-      if (cy <= colw) {
-         int xpos = pad;
-         for (int i = 0; i < cols; i++) {
-
-            if (cx >= xpos && cx <= xpos + colw && types[order[i]] != STRING_TYPE) {
-
-               if (e.isAltDown())
-                  bounds[order[i]][1] += 1;
-               else if (e.isMetaDown())
-                  bounds[order[i]][1] -= 1;
-
-               calcHeights(order[i]);
-			   calcYLocations(order[i]);
-               //drawBuffer(lastw, lasth);
-			   redrawBuffer = true;
-               repaint();
-               return;
-
-            }
-
-            xpos += grid;
-         }
-      }
-      else if (cy > colw && cy < lasth - colh - colw) {
-            int xpos = pad;
-            boolean found = false;
-
-            for (int i = 0; i < cols; i++) {
-
-               if (!found && cx >= xpos && cx <= xpos + colw) {
-                  found = true;
-                  selectedcol = i;
-               }
-			//repaint();
-               xpos += grid;
-            }
-
-		/*int pixel = buffer.getRGB(cx, cy);
- 		int red = (pixel >> 16) & 0xff;
- 		int green = (pixel >> 8) & 0xff;
- 		int blue = (pixel) & 0xff;
-
-		if(red != 255 && green != 255 && blue != 255) {
+		/**
+			A small window into the table we are visualizing.
+			This only shows the rows that are selected.
 		*/
-			found = false;
-			int idx = 0;
-      		xpos = pad + (int)(.5*colw);
-			while(!found && idx < cols) {
-				if(cx >= xpos && cx <= (xpos + grid)) {
-		  			calcLocation(idx, cx, cy);
-					found = true;
-				}
-				xpos += grid;
-				idx++;
-			}
-	//	}
-	  }
-	  // increase/decrease bounds when it is clicked on
-      else if (cy >= lasth - colh - colw && cy <= lasth - colh) {
-         int xpos = pad;
-         for (int i = 0; i < cols; i++) {
+		class InfoTableModel extends DefaultTableModel {
+			ArrayList rows;
 
-            if (cx >= xpos && cx <= xpos + colw && types[order[i]] != STRING_TYPE) {
-
-               if (e.isAltDown())
-                  bounds[order[i]][0] += 1;
-               else if (e.isMetaDown())
-                  bounds[order[i]][0] -= 1;
-
-               calcHeights(order[i]);
-			   calcYLocations(order[i]);
-               //drawBuffer(lastw, lasth);
-			   redrawBuffer = true;
-               repaint();
-               return;
-            }
-
-            xpos += grid;
-
-         }
-      }
-   }
-
-   public void mouseEntered(MouseEvent e) { }
-   public void mouseExited(MouseEvent e) { }
-
-   /**
-   		Prepare to zoom or move columns when the mouse is pressed.
-		Repaint is called to provide some feedback to the user (ie
-		draw a box around the selected area or highlight the selected
-		column in red)
-	*/
-   public void mousePressed(MouseEvent e) {
-
-      if (zoomed) {
-         zoomed = false;
-         mouseband = false;
-         mousedrag = false;
-         repaint();
-         return;
-      }
-      else {
-         int cx = e.getX(), cy = e.getY();
-
-         if (cy > colw && cy < lasth - colh - colw) {
-            mouseband = true;
-            lastx = cx; lasty = cy; mousex = cx; mousey = cy;
-            repaint();
-            return;
-         }
-         else if (cy > lasth - colh) {
-            int xpos = pad;
-            boolean found = false;
-
-            for (int i = 0; i < cols; i++) {
-
-               if (!found && cx >= xpos && cx <= xpos + colw) {
-                  found = true;
-                  selectedcol = i;
-               }
-				repaint();
-               xpos += grid;
-
-            }
-
-            if (found) {
-               mousedrag = true;
-               mousex = cx; mousey = cy;
-               repaint();
-               return;
-
-            }
-         }
-      }
-   }
-
-   /**
-   		Zoom the view if the user originally pressed in the line area,
-		or change the order of the columns if the user originally pressed
-		in the column label area.
-	*/
-   public void mouseReleased(MouseEvent e) {
-      int cx = e.getX(), cy = e.getY();
-
-      if (mouseband) {
-         if (mousex > lastx) {
-            zx = lastx; zw = mousex - lastx;
-         }
-         else {
-            zx = mousex; zw = lastx - mousex;
-         }
-
-         if (mousey > lasty) {
-            zy = lasty; zh = mousey - lasty;
-         }
-         else {
-            zy = mousey; zh = lasty - mousey;
-         }
-
-         int diffx = Math.abs(zw),
-             diffy = Math.abs(zh);
-
-         if (diffx < 2 || diffy < 2) {
-            mouseband = false;
-			//drawBuffer(lastw, lasth);
-            repaint();
-            return;
-         }
-         else {
-            factx = (float) diffx / (float) grid;
-            facty = (float) diffy / (float) (lasth - 2*colw - colh);
-
-            boolean foundleft = false;
-            int xpos = pad + (int)(.5*colw);
-            leftof = -1;
-            rightof = -1;
-
-            for (int i = 0; i < cols; i++) {
-
-               if (!foundleft && zx < xpos) {
-                  foundleft = true;
-                  leftof = i;
-                  leftamt = xpos - zx;
-               }
-
-               if ((zx + zw) > xpos) {
-                  rightof = i;
-                  rightamt = zx + zw - xpos;
-               }
-
-               xpos += grid;
-            }
-
-            zoomed = true;
-
-            for (int i = leftof - 1; i <= rightof + 1; i++)
-               if (i >= 0 && i < cols)
-                  calcZHeights(order[i]);
-
-            repaint();
-            return;
-         }
-      }
-      else if (mousedrag) {
-         int xpos = pad, colfound = -1, temp;
-         boolean found = false;
-         for (int i = 0; i < cols; i++) {
-
-            if (!found && cx >= xpos && cx <= xpos + colw) {
-               found = true;
-               colfound = i;
-            }
-
-            xpos += grid;
-
-         }
-
-		 // if it was found, switch the columns
-         if (found) {
-            temp = order[selectedcol];
-            order[selectedcol] = order[colfound];
-            order[colfound] = temp;
-
-            //drawBuffer(lastw, lasth);
-			 redrawBuffer = true;
-			 // we must recalculate the line map when we move columns
-			 calcLineMap();
-         }
-
-         mousedrag = false;
-
-         repaint();
-      }
-   }
-
-   /**
-		Keep track of where the mouse is when we are dragging or zooming, so
-		that we can paint the feedback at the appropriate location.
-   */
-   public void mouseDragged(MouseEvent e) {
-
-      int cx = e.getX(), cy = e.getY();
-
-      if (mouseband)
-         if (cx > 0 && cx < lastw && cy > colw && cy < lasth - colh - colw) {
-            mousex = cx; mousey = cy;
-            repaint();
-            return;
-         }
-      if (mousedrag)
-         if (cx > 0 && cx < lastw) {
-            mousex = cx; mousey = cy;
-            repaint();
-            return;
-         }
-   }
-
-   public void mouseMoved(MouseEvent e) { }
-
-	/**
-		Handle the menu items.
-	*/
-	public void actionPerformed(ActionEvent e) {
-		Object src = e.getSource();
-
-		// add or remove a column from the display
-		if(src instanceof IdCheckBoxMenuItem) {
-			IdCheckBoxMenuItem mi = (IdCheckBoxMenuItem)src;
-			// get the id
-			int id = mi.id;
-			// it is true, add id to the end of the order list
-			if(mi.getState()) {
-				int[] tmpOrder = new int[order.length+1];
-				for(int i = 0; i < order.length; i++)
-					tmpOrder[i] = order[i];
-				tmpOrder[tmpOrder.length-1] = id;
-				order = tmpOrder;
-			}
-			// it is false, remove id from the order list and shrink it
-			else {
-				int[] tmpOrder = new int[order.length-1];
-				int curIdx = 0;
-				for(int i = 0; i < order.length; i++)
-					if(order[i] != id) {
-						tmpOrder[curIdx] = order[i];
-						curIdx++;
-					}
-				order = tmpOrder;
+			InfoTableModel() {
+				rows = new ArrayList();
 			}
 
-      		//for (int i = 0; i < order.length; i++)
-         	//	calcHeights(order[i]);
+			void addInfoRow(int i) {
+				rows.add(new Integer(i));
+				fireTableDataChanged();
+			}
 
-			// since the number of columns shown has changed, change the grid size
-			grid = (int) ((lastw - 2*pad - colw) / (order.length - 1));
+			void removeInfoRow(int i) {
+				rows.remove(new Integer(i));
+				fireTableDataChanged();
+			}
 
-			if (grid < 2*colw)
-               grid = 2*colw;
+			public int getColumnCount() {
+				return table.getNumColumns();
+			}
 
-			// since we changed the order, we must recalculate the line map,
-	   		calcLineMap();
-			// we must redraw the buffer
-			redrawBuffer = true;
-			repaint();
+			public int getRowCount() {
+				if(rows == null)
+					return 0;
+				return rows.size();
+			}
+
+			public String getColumnName(int i) {
+				return table.getColumnLabel(i);
+			}
+
+			public Object getValueAt(int row, int col) {
+				Integer i = (Integer)rows.get(row);
+				return table.getString(i.intValue(), col);
+			}
+
+			public boolean isCellEditable(int row, int col) {
+				return false;
+			}
 		}
-		// change the color of one of the classes
-		else if(src instanceof UniqueMenuItem) {
-			UniqueMenuItem mi = (UniqueMenuItem)src;
-			// get the id
-			int id = mi.id;
 
-			Color oldColor = getColor(id);
-			StringBuffer sb = new StringBuffer("Choose ");
-			sb.append(mi.getText());
-			sb.append(" Color");
-			Color newColor = JColorChooser.showDialog(this, sb.toString(), oldColor);
-			if(newColor != null) {
-				setColor(id, newColor);
-				// we must redraw the buffer
-				redrawBuffer = true;
-				// get rid of the legend since we changed colors
-				if(legend != null) {
-					legend.setVisible(false);
-					legend.dispose();
-					legend = null;
+		/**
+		 * Show the colors for each class name and its percentage of
+		 * the composite
+		 */
+		class Legend extends JPanel {
+			Legend() {
+				setLayout(new GridBagLayout());
+				setBackground(yellowish);
+			}
+
+			void updateLegend(HashMap lk) {
+				removeAll();
+				/*JLabel leg = new JLabel("LEGEND");//new AALabel("LEGEND");
+				leg.setBackground(yellowish);
+				Constrain.setConstraints (this, leg, 1, 0, 1, 1,
+					GridBagConstraints.HORIZONTAL,
+					GridBagConstraints.NORTH, 1.0, 0.0,
+					new Insets(2, 4, 2, 0));
+				*/
+				Iterator it = lk.keySet().iterator();
+
+				int i = 0;
+				while(it.hasNext()) {
+					String text = (String)it.next();
+					Color c = (Color)lk.get(text);
+
+					Insets ii = new Insets(4, 8, 4, 0);
+					Insets i2 = new Insets(4, 8, 4, 0);
+
+					JLabel ll = new JLabel(text);
+					ColorComponent cc = new ColorComponent(c);
+					Constrain.setConstraints (this, cc, 0, i, 1, 1,
+						GridBagConstraints.NONE,
+						GridBagConstraints.NORTH, 0.0, 0.0, ii);
+					Constrain.setConstraints (this, ll, 1, i, 1, 1,
+						GridBagConstraints.HORIZONTAL,
+						GridBagConstraints.NORTH, 1.0, 0.0, i2);
+					i++;
 				}
+				revalidate();
 				repaint();
 			}
 		}
-		// change the key column
-		else if(src instanceof KeyCheckBoxMenuItem) {
-			KeyCheckBoxMenuItem mi = (KeyCheckBoxMenuItem)src;
-			int id = mi.id;
+	}
 
-			if(id != keycol) {
-				keycol = id;
-				for(int i = 0; i < keys.length; i++) {
-					keys[i].setState(keycol == i);
-				}
-				findUniqueColors();
-				redrawBuffer = true;
-				// get rid of the legend since we changed colors
-				if(legend != null) {
-					legend.setVisible(false);
-					legend.dispose();
-					legend = null;
-				}
-				repaint();
-			}
-		}
-		// toggle anti-aliasing
-		else if(src == useAntiAlias) {
-			redrawBuffer = true;
-			repaint();
-		}
-		// show the legend
-		else if(src == showLegend) {
-			if(legend == null)
-				createLegend();
-			legend.show();
-		}
-		// clear the selected lines
-		else if(src == clearSelected) {
-			boolean found = false;
-			for(int i = 0; i < rows; i++) {
-				if(selectedlines[i]) {
-					found = true;
-					removeSelection(i);
-				}
-				selectedlines[i] = false;
-			}
-			// only redraw buffer if we actually cleared any lines
-			if(found) {
-				redrawBuffer = true;
-				repaint();
-			}
-		}
-		// show the info about the selected lines
-		else if(src == showInfo) {
-			if(infoFrame == null)
-				createInfoFrame();
-			infoFrame.show();
+	class HelpWindow extends JD2KFrame {
+		HelpWindow() {
+			super("About ParallelCoordinateVis");
+			JEditorPane jep = new JEditorPane("text/html", getHelpString());
+			jep.setBackground(yellowish);
+			getContentPane().add(new JScrollPane(jep));
+			setSize(400, 200);
 		}
 	}
 
-
-	/**
-		Create info frame.  This shows information
-		about the currently selected lines in a
-		JTable.
-	*/
-	private void createInfoFrame() {
-		infoFrame = new JD2KFrame("Selection Info");
-		infoModel = new InfoTableModel();
-		infoTable = new JTable(infoModel);
-		scrollPane = new JScrollPane(infoTable);
-		infoFrame.getContentPane().add(scrollPane);
-		infoFrame.pack();
-	}
-
-	/**
-		Add a line to the selected set.
-	*/
-	private void addSelection(int row) {
-		infoModel.addInfoRow(row);
-		//scrollPane.validate();
-	}
-
-	/**
-		Remove a line from the selected set.
-	*/
-	private void removeSelection(int row) {
-		infoModel.removeInfoRow(row);
-		infoTable.validate();
-		//scrollPane.validate();
-	}
-
-	/**
-		A small window into the table we are visualizing.
-		This only shows the rows that are selected.
-	*/
-	class InfoTableModel extends DefaultTableModel {
-		ArrayList rows;
-
-		InfoTableModel() {
-			rows = new ArrayList();
-		}
-
-		void addInfoRow(int i) {
-			rows.add(new Integer(i));
-			fireTableDataChanged();
-		}
-
-		void removeInfoRow(int i) {
-			rows.remove(new Integer(i));
-			fireTableDataChanged();
-		}
-
-		public int getColumnCount() {
-			return vt.getNumColumns();
-		}
-
-		public int getRowCount() {
-			if(rows == null)
-				return 0;
-			return rows.size();
-		}
-
-		public String getColumnName(int i) {
-			return vt.getColumnLabel(i);
-		}
-
-		public Object getValueAt(int row, int col) {
-			Integer i = (Integer)rows.get(row);
-			return vt.getString(i.intValue(), col);
-		}
-
-		public boolean isCellEditable(int row, int col) {
-			return false;
-		}
-	}
-
-	/**
-		Create the legend, which shows which colors correspond
-		to which items.
-	*/
-	private void createLegend() {
-		JPanel pnl = new JPanel();
-		pnl.setLayout(new GridBagLayout());
-
-		Iterator it = uniqueColorMap.keySet().iterator();
-		int i = 0;
-		while(it.hasNext()) {
-			String s = (String)it.next();
-			Integer in = (Integer)uniqueColorMap.get(s);
-
-			Color c = getColor(in.intValue());
-			Constrain.setConstraints (pnl, new ColorComponent(c), 0, i, 1, 1,
-				GridBagConstraints.NONE, GridBagConstraints.NORTH, 0.0, 0.0);
-			Constrain.setConstraints (pnl, new JLabel (s), 1, i, 1, 1,
-				GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTH, 1.0, 0.0);
-			i++;
-		}
-
-		legend = new JD2KFrame("Legend");
-		legend.getContentPane().add(pnl);
-		legend.pack();
-	}
-
-	public Dimension getMinimumSize() {
-      return new Dimension(400, 400);
-   	}
-
-   public Dimension getPreferredSize() {
-      return getMinimumSize();
-   }
-
-	/**
-		Calculates the line(s) that contain point (x3, y3).  If
-		a line is found, it will be displayed as red.
-	*/
-	private void calcLocation(int col, float x3, float y3) {
-		float x1 = pad + (int)(.5*colw) + col*grid;
-		float x2 = x1 + grid;
-		float ypos = lasth - colw - colh;//-y3;
-
-		y3 = -1*y3;
-
-		boolean found = false;
-
-		for(int i = 0; i < rows; i++) {
-			float y1 = -1*(ypos-ylocations[order[col]][i]);
-			float y2 = -1*(ypos-ylocations[order[col+1]][i]);
-
-			if( ( ( (y1-TOLERANCE) > y3) && ((y2-TOLERANCE) > y3) ) ||
-				( ( (y1+TOLERANCE) < y3) && ((y2+TOLERANCE) < y3) ) )
-				;
-			else {
-				float m = (y2-y1)/(x2-x1);
-				float yint = (-1*m*x1+y1);
-
-				if(Math.abs( (m*x3)+yint-y3) <= TOLERANCE) {
-					found = true;
-					if(selectedlines[i])
-						removeSelection(i);
-					else
-						addSelection(i);
-					selectedlines[i] = !selectedlines[i];
-				}
-			}
-		}
-		// only redraw if one was found
-		if(found) {
-			redrawBuffer = true;
-			repaint();
-		}
-	}
-
-	}
-
-	/**
-		A small square with a black outline.  The color of the background
-		is given in the constructor.
-	*/
-	class ColorComponent extends JComponent {
-		private final int DIM = 12;
-		Color bkgrd;
-
-		ColorComponent(Color c) {
-			super();
-			setOpaque(true);
-			bkgrd = c;
-		}
-
-		public Dimension getPreferredSize() {
-			return new Dimension(DIM, DIM);
-		}
-
-		public Dimension getMinimumSize() {
-			return new Dimension(DIM, DIM);
-		}
-
-		public void paint (Graphics g) {
-			g.setColor (bkgrd);
-			g.fillRect (0, 0, DIM-1, DIM-1);
-			g.setColor (Color.black);
-			g.drawRect (0, 0, DIM-1, DIM-1);
-		}
-	}
-
+	private static final String getHelpString() {
+		StringBuffer s = new StringBuffer("<html>");
+		s.append("<h2>ParallelCoordinateVis</h2>");
+		s.append("ParallelCoordinateVis shows the data contained in a VerticalTable ");
+		s.append("on parallel axes.  For NumericColumns, the maximum will be at ");
+		s.append("the top of the graph and the minimum will be at the bottom. ");
+		s.append("For any other column, each unique value will be mapped to a ");
+		s.append("point on its axis.  These points will be spaced equally over ");
+		s.append("the axis.<br><br>");
+		s.append("The lines in the graph are colored according to the key column, ");
+		s.append("which is set to be the last column by default.  The key column ");
+		s.append("can be changed by using the menu.  When a NumericColumn is chosen ");
+		s.append("as the key column, the lines will be shaded by a smooth gradient ");
+		s.append("based on the maximum and minimum values of the key column.  For ");
+		s.append("other columns, each unique item in the column will be assigned ");
+		s.append("a unique value and the lines will be colored according to this ");
+		s.append("value.  The colors can be changed using the menu.<br><br>");
+		s.append("A user can select a line in the graph to highlight by clicking on ");
+		s.append("it.  The data for the row of the table that this line corresponds ");
+		s.append("to will be displayed in the lower left corner.  If multiple lines pass ");
+		s.append("through this point, each one will be highlighted.  Lines can be ");
+		s.append("unselected by clicking on them again or using an item in the menu ");
+		s.append("to clear all selected lines.<br><br>");
+		s.append("The columns can be rearranged by clicking on the box that contains ");
+		s.append("their names and dragging the box to a new location.");
+		s.append("<h3>Menu Options</h3>");
+		s.append("<ul><li>Display Columns: Choose which columns to show or hide.");
+		s.append("<li>Key Column: Choose the key column.");
+		s.append("<li>Choose Colors: Choose the colors for this key column.  When ");
+		s.append("the key column is numeric, choose the high and low colors for the ");
+		s.append("gradient.  Otherwise, a color can be chosen for each unique item ");
+		s.append("in the column.");
+		s.append("<li>Selected Line Color: Choose the color for the highlighted lines.");
+		s.append("<li>Use Antialiasing: Toggle antialiasing on and off.  When ");
+		s.append("antialiasing is on, the lines will appear much smoother.  This ");
+		s.append("will slow the rendering speed, however.");
+		s.append("<li>Clear Selected Lines: Clear all the selected lines.");
+		s.append("<li>Print: Print this visualization.</ul>");
+		s.append("<h3>Toolbar Buttons</h3>");
+		s.append("<ul><li>Reset View: Reset the view to the default size.");
+		s.append("<li>Filter: Display the filter window, which allows the user ");
+		s.append("to determine which lines are displayed in the graph.");
+		s.append("<li>Print: Print this visualization.");
+		s.append("<li>Zoom: When this button is pressed, left-click the ");
+		s.append("graph to zoom in, or right-click the graph to zoom out.");
+		s.append("<li>Show Table: Show the VerticalTable that is being graphed.");
+		s.append("</ul></html>");
+		return s.toString();
 	}
 }

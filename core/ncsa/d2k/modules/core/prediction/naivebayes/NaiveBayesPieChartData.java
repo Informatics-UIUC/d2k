@@ -10,8 +10,7 @@ import java.io.Serializable;
    greatest, so calling getRatio(0) will return the smallest ratio, and
    so on.
 */
-public class NaiveBayesPieChartData extends VerticalTable
-   implements Serializable {
+class NaiveBayesPieChartData extends VerticalTable implements Serializable {
 
    /** The total number of tallies in this pie */
    int total;

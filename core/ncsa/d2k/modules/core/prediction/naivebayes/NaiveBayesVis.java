@@ -14,7 +14,7 @@ import ncsa.d2k.infrastructure.modules.*;
 import ncsa.d2k.infrastructure.views.UserView;
 import ncsa.d2k.controller.userviews.swing.*;
 import ncsa.gui.Constrain;
-
+import ncsa.d2k.gui.JD2KFrame;
 
 /**
  * An evidence visualization for a NaiveBayesModel.
@@ -22,7 +22,7 @@ import ncsa.gui.Constrain;
 public class NaiveBayesVis extends VisModule {
 
 	public String getInputInfo(int i) {
-		return "";
+		return "A NaiveBayesModel to visualize.";
 	}
 
 	public String getOutputInfo(int i) {
@@ -30,7 +30,8 @@ public class NaiveBayesVis extends VisModule {
 	}
 
 	public String getModuleInfo() {
-		return "";
+		return "An evidence visualization for a NaiveBayesModel.  The model performs "+
+			"any necessary calculations.";
 	}
 
 	public String[] getInputTypes() {
@@ -85,11 +86,11 @@ public class NaiveBayesVis extends VisModule {
 	private static final int PREF_HEAD = 100;
 	private static final String MAX_ATTRIBUTE_ERROR = "100.00% error";
 
-	private static final String zoomicon = File.separator+"images"+File.separator+"search.gif";
-	private static final String refreshicon = File.separator+"images"+File.separator+"homeview.gif";
-	private static final String printicon = File.separator+"images"+File.separator+"print.gif";
+	private static final String zoomicon = File.separator+"images"+File.separator+"zoom.gif";
+	private static final String refreshicon = File.separator+"images"+File.separator+"home.gif";
+	private static final String printicon = File.separator+"images"+File.separator+"printit.gif";
 
-	private static final Dimension buttonsize = new Dimension(20, 20);
+	private static final Dimension buttonsize = new Dimension(25, 25);
 
 	/**
 		Sort an array of Strings.
@@ -135,6 +136,7 @@ public class NaiveBayesVis extends VisModule {
 		transient ColorMenuItem[] colorItems;
 		transient AttributeMenuItem[] attributeItems;
 		transient JCheckBoxMenuItem miPercentage;
+		transient JMenuItem helpItem;
 
 		transient JToggleButton zoom;
 		transient JButton printButton;
@@ -185,6 +187,8 @@ public class NaiveBayesVis extends VisModule {
 		transient NaiveBayesPieChartData[][] row_data;
 		transient double[] predictor_values;
 		transient int mouse_pos_y;
+
+		HelpWindow helpWindow;
 
 		/**
 		 * Print this component.
@@ -238,6 +242,7 @@ public class NaiveBayesVis extends VisModule {
 			predictor_values = new double[attribute_names.length];
 			int longest = 0;
 			longest_bin_name = "";
+			longest_attribute_name = "";
 			// get the row data
 			for(int j = 0; j < attribute_names.length; j++) {
 				row_data[j] = model.getData(attribute_names[j]);
@@ -335,6 +340,8 @@ public class NaiveBayesVis extends VisModule {
 			else
 				refreshView = new JButton("R");
 			refreshView.addActionListener(this);
+			refreshView.setToolTipText("Reset View");
+
 			im = getImage(printicon);
 			ImageIcon pi = null;
 			if(im != null)
@@ -343,6 +350,8 @@ public class NaiveBayesVis extends VisModule {
 				printButton = new JButton(pi);
 			else printButton = new JButton("P");
 			printButton.addActionListener(this);
+			printButton.setToolTipText("Print");
+
 			im = getImage(zoomicon);
 			ImageIcon zi = null;
 			if(im != null)
@@ -353,6 +362,7 @@ public class NaiveBayesVis extends VisModule {
 				zoom = new JToggleButton("Z");
 
 			zoom.addActionListener(this);
+			zoom.setToolTipText("Zoom");
 
 			if(ri != null && zi != null && pi != null) {
 				zoom.setMaximumSize(buttonsize);
@@ -474,6 +484,13 @@ public class NaiveBayesVis extends VisModule {
 			m1.addSeparator();
 			m1.add(miPrint = new JMenuItem("Print.."));
 			miPrint.addActionListener(this);
+
+			JMenu helpMenu = new JMenu("Help");
+			helpItem = new JMenuItem("About NaiveBayesVis..");
+			helpMenu.add(helpItem);
+			helpItem.addActionListener(this);
+			menuBar.add(helpMenu);
+			helpWindow = new HelpWindow();
 		}
 
 
@@ -718,8 +735,11 @@ public class NaiveBayesVis extends VisModule {
 				gp.revalidate();
 				hp.revalidate();
 			}
+			else if(src == helpItem) {
+				//new HelpWindow();
+				helpWindow.setVisible(true);
+			}
 		}
-
 
 
 		Color getColor(String s) {
@@ -1540,6 +1560,54 @@ public class NaiveBayesVis extends VisModule {
 		nf.setMinimumFractionDigits(2); nf.setMaximumFractionDigits(2);
 		StringBuffer sb = new StringBuffer(nf.format(doub));
 		sb.append(PERCENT_SIGN);
+		return sb.toString();
+	}
+
+	final class HelpWindow extends JD2KFrame {
+		HelpWindow() {
+			super("About NaiveBayesVis");
+			JEditorPane jep = new JEditorPane("text/html", getHelpString());
+			jep.setBackground(yellowish);
+			getContentPane().add(new JScrollPane(jep));
+			setSize(400, 200);
+		}
+	}
+
+	private static final String getHelpString() {
+		StringBuffer sb = new StringBuffer("<html>");
+		sb.append("<h2>NaiveBayesVis</h2>");
+		sb.append("NaiveBayesVis provides an evidence visualization for a ");
+		sb.append("NaiveBayesModel.  Evidence items can be selected by clicking ");
+		sb.append("on an item and the conclusion will update its predictions.  The ");
+		sb.append("predictions are shown in the conclusion graph and in the ");
+		sb.append("Legend.<br><br>");
+		sb.append("The evidence can be zoomed or scaled.  To scale the ");
+		sb.append("evidence, right-click the mouse and drag toward the northwest ");
+		sb.append("or southwest corners.");
+		sb.append("<h3>Menu Options</h3>");
+		sb.append("<ul><li>Views: Display the evidence and composite as either");
+		sb.append(" pie charts or bar charts.");
+		sb.append("<li>Sort Attributes By: Sort the attributes by either the");
+		sb.append(" best predictor or alphabetical order.  The best predictor is");
+		sb.append(" the attribute that induces the largest error when omitted.");
+		sb.append("<li>Sort Evidence By: Sort the evidence by the number of ");
+		sb.append(" items in its category or in alphabetical order.");
+		sb.append("<li>Show Attributes: Select which attributes to display.");
+		sb.append("<li>Set Colors: Select the colors for the outputs.");
+		sb.append("<li>Show Predictor Values: Display the error induced when ");
+		sb.append("the attribute was ommited from a prediction calculation.");
+		sb.append("<li>Show Bin Weight Percentage: Show the weights assigned to ");
+		sb.append(" each evidence item as a percentage or display a bar with its ");
+		sb.append(" weight relative to all other items in its row.");
+		sb.append("<li>Print: Print this visualization.");
+		sb.append("</ul>");
+		sb.append("<h3>Toolbar Buttons</h3>");
+		sb.append("<ul><li>Reset View: Reset the evidence to the default size.");
+		sb.append("<li>Print: Print this visualization.");
+		sb.append("<li>Zoom: When this button is pressed, left-click the ");
+		sb.append("evidence to zoom in, or right-click the evidence to zoom out.");
+		sb.append("</ul>");
+		sb.append("</html>");
 		return sb.toString();
 	}
 }
