@@ -13,8 +13,11 @@ import java.util.*;
 /*&%^2 Do not modify this section. */
 /**
 	ReadQueryResults.java
-
 */
+//  Modified by Dora Cai on 02/13/03: correct SQL syntax error, add codes to
+//  handle null value in Varchar fields.
+
+
 public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
 /*#end^2 Continue editing. ^#&*/
 {
@@ -67,7 +70,18 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<html>  <head>      </head>  <body>    This method given the array of fields name, a jdbc connection wrapper, the     table name and the where clause (or null) for the query, will fully     populate the table.  </body></html>";
+          String s = "<p>Overview: ";
+          s += "This module constructs a SQL statement, and retrieves data from a database. </p>";
+          s += "<p>Detailed Description: ";
+          s += "This module constructs a SQL query based on 4 inputs: the database ";
+          s += "connection object, the selected table, the selected fields, and ";
+          s += "the query condition. This module then executes the query and retrieve ";
+          s += "the data from the specified database. This module can be used to display ";
+          s += "database data, or to prepare the database data set for feeding into ";
+          s += "mining processes. </p>";
+          s += "<p>Restrictions: ";
+          s += "We currently only support Oracle databases. </p>";
+          return s;
 	}
 
 	/**
@@ -90,7 +104,9 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
 
 		////////////////////////////
 		// Get the number of entries in the table.
-		String query = "SELECT COUNT("+fieldArray[0]+") FROM "+tableList;
+                // the following query does not work if fieldArray[0] contains missing values
+		//String query = "SELECT COUNT("+fieldArray[0]+") FROM "+tableList;
+		String query = "SELECT COUNT(*) FROM "+tableList;
 		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		int count = 0;
@@ -108,7 +124,7 @@ System.out.println ("---- Entries - "+count);
 		if (whereClause.length() == 0)
 			whereClause = null;
 		if (whereClause != null)
-			query += " WHERE "+whereClause+" DESC";
+			query += " WHERE "+whereClause;
 
 		// Get the number of columns selected.
 		stmt = con.createStatement();
@@ -150,12 +166,16 @@ System.out.println ("---- Entries - "+count);
 				case Types.CHAR:
 				case Types.VARCHAR:
 				case Types.LONGVARCHAR:
-					ByteArrayColumn byteC = new ByteArrayColumn (count);
-					byteC.setLabel (fieldArray[i]);
+					//ByteArrayColumn byteC = new ByteArrayColumn (count);
+					StringColumn byteC = new StringColumn (count);
+                                        byteC.setLabel (fieldArray[i]);
 					vt.setColumn (byteC, i);
 					break;
 				default:
-					System.out.println ("Data type not known:"+types[i]);
+                                        byteC = new StringColumn (count);
+                                        byteC.setLabel (fieldArray[i]);
+                                        vt.setColumn (byteC, i);
+                                        break;
 			}
 		}
 
@@ -168,31 +188,39 @@ System.out.println ("---- Entries - "+count);
 
 		// Now populate the table.
 		for (int where = 0; rs.next (); where++)
-			for (int i = 0 ; i < numColumns ; i++)
+			for (int i = 0 ; i < numColumns ; i++) {
 				switch (types[i]) {
 					case Types.TINYINT:
 					case Types.SMALLINT:
 					case Types.INTEGER:
 					case Types.BIGINT:
-						vt.setInt (rs.getInt (i+1), where, i);
+                                                vt.setInt (rs.getInt (i+1), where, i);
 						break;
 					case Types.DOUBLE:
-						vt.setDouble (rs.getDouble (i+1), where, i);
+       					        vt.setDouble (rs.getDouble (i+1), where, i);
 						break;
 					case Types.NUMERIC:
 					case Types.DECIMAL:
 					case Types.FLOAT:
 					case Types.REAL:
-						vt.setFloat (rs.getFloat (i+1), where, i);
+                                                vt.setFloat (rs.getFloat (i+1), where, i);
 						break;
 					case Types.CHAR:
 					case Types.VARCHAR:
 					case Types.LONGVARCHAR:
-						vt.setBytes (rs.getBytes (i+1), where, i);
+                                                if (rs.getString(i+1) == null) {
+                                                  vt.setString(" ", where, i);
+                                                }
+                                                else
+						  vt.setString (rs.getString (i+1), where, i);
 						break;
+                                        default:
+                                                vt.setString(" ", where, i);
+                                                break;
 				}
-		for (int i = 0 ; i < numColumns; i++)
-			System.out.println (vt.getColumnLabel (i));
+                              }
+		//for (int i = 0 ; i < numColumns; i++)
+			//System.out.println (vt.getColumnLabel (i));
 		this.pushOutput (vt, 0);
 	}
 /*&%^8 Do not modify this section. */
@@ -203,7 +231,7 @@ System.out.println ("---- Entries - "+count);
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "Read Table";
+		return "ReadQueryResults";
 	}
 
 	/**
@@ -214,13 +242,13 @@ System.out.println ("---- Entries - "+count);
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "Connection Wrapper";
+				return "Database Connection";
 			case 1:
-				return "Field Names";
+				return "Selected Fields";
 			case 2:
-				return "Table Name";
+				return "Selected Table";
 			case 3:
-				return "Where Clause";
+				return "Query Condition";
 			default: return "NO SUCH INPUT!";
 		}
 	}
