@@ -291,7 +291,7 @@ public class SQLBinAttributes extends UIModule {
      JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-          System.out.println("Error occurred in getCounts.");
+          System.out.println("Error occoured in getCounts.");
           return counts;
         }
       }
@@ -446,7 +446,7 @@ public class SQLBinAttributes extends UIModule {
             JOptionPane.showMessageDialog(msgBoard,
                   e.getMessage(), "Error",
                   JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error occurred in getTotalRows.");
+            System.out.println("Error occoured in getTotalRows.");
             return 0;
           }
         }
@@ -470,7 +470,7 @@ public class SQLBinAttributes extends UIModule {
             JOptionPane.showMessageDialog(msgBoard,
                   e.getMessage(), "Error",
                   JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error occurred in getMMTValues.");
+            System.out.println("Error occoured in getMMTValues.");
           }
         }
 
@@ -511,7 +511,7 @@ public class SQLBinAttributes extends UIModule {
             JOptionPane.showMessageDialog(msgBoard,
                   e.getMessage(), "Error",
                   JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error occurred in getColTypes.");
+            System.out.println("Error occoured in getColTypes.");
             return null;
           }
         }
@@ -1129,7 +1129,7 @@ public class SQLBinAttributes extends UIModule {
        JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error occurred in uniqueValues.");
+            System.out.println("Error occoured in uniqueValues.");
             return null;
           }
         }
@@ -1157,7 +1157,9 @@ public class SQLBinAttributes extends UIModule {
          *  @return the difference between max and min
          */
         private double getInterval () {
-            int colIdx = numericColumnLabels.getSelectedIndex();
+// !:
+//            int colIdx = numericColumnLabels.getSelectedIndex();
+int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue())).intValue();
             double max = binCounts.getMax(colIdx);
             double min = binCounts.getMin(colIdx);
             return  max - min;
@@ -1392,7 +1394,7 @@ public class SQLBinAttributes extends UIModule {
              JOptionPane.showMessageDialog(msgBoard,
                     e.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
-                  System.out.println("Error occurred in addFromWeight.");
+                  System.out.println("Error occoured in addFromWeight.");
               }
             }
         }

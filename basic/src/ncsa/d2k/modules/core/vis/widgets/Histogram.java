@@ -107,6 +107,7 @@ public class Histogram extends JPanel {
       Iterator iter = lookup.keySet().iterator();
         while(iter.hasNext()) {
             String columnLabel = (String)iter.next();
+
             Integer columnIndex = (Integer)lookup.get(columnLabel);
 
             NameIndex ni = new NameIndex();
@@ -156,7 +157,9 @@ public class Histogram extends JPanel {
    }
 
    public int getSelection() {
-      return ((Integer)columnLookup.get(columnSelect.getSelectedItem())).intValue();
+// !:
+      return columnSelect.getSelectedIndex();
+// return ((Integer)columnLookup.get(columnSelect.getSelectedItem())).intValue();
    }
 
    public double getPercentage() {

@@ -1018,7 +1018,9 @@ public class BinAttributes extends UIModule {
      * Get the range of the first selected column.
      */
     private double getInterval () {
-      int colIdx = numericColumnLabels.getSelectedIndex();
+// !:
+// int colIdx = numericColumnLabels.getSelectedIndex();
+      int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue())).intValue();
       double max = Double.NEGATIVE_INFINITY, min = Double.POSITIVE_INFINITY;
       for (int i = 0; i < tbl.getNumRows(); i++) {
         double d = tbl.getDouble(i, colIdx);
