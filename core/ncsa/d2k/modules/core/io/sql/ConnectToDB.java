@@ -18,44 +18,6 @@ import ncsa.gui.*;
 
 public class ConnectToDB extends UIModule {
 
-    /**
-
-     * Returns an array of description objects for each property of the
-
-     * Module.
-
-     * @return an array of description objects for each property of the
-
-     * Module.
-
-     */
-
-/*
-
-    public PropertyDescription [] getPropertiesDescriptions () {
-
-        PropertyDescription[] retVal = new PropertyDescription[7];
-
-        retVal[0] = new PropertyDescription("url", "url", "hello");
-
-        retVal[1] = new PropertyDescription("username", "un", "hello1");
-
-        retVal[2] = new PropertyDescription("password", "pw", "hello2");
-
-        retVal[3] = new PropertyDescription("machine", "mm", "hello3");
-
-        retVal[4] = new PropertyDescription("port", "pt", "hello4");
-
-        retVal[5] = new PropertyDescription("dbInstance", "db", "hello5");
-
-        retVal[6] = new PropertyDescription("driver", "drv", "hello6");
-
-        return retVal;
-
- }
-
- */
-
 /**
 
  *** Variables ***
@@ -138,7 +100,7 @@ public class ConnectToDB extends UIModule {
 
        Return an array containing the input types to this module.
 
-  @return The input types.
+      @return The input types.
 
   */
 
@@ -156,7 +118,7 @@ public class ConnectToDB extends UIModule {
 
        @return The output types.
 
-       */
+    */
 
     public String[] getOutputTypes() {
 
@@ -224,7 +186,7 @@ public class ConnectToDB extends UIModule {
 
             case(0):
 
-                return "DBConnection";
+                return "Database Connection";
 
             default:
 
@@ -252,11 +214,11 @@ public class ConnectToDB extends UIModule {
 
     public PropertyDescription [] getPropertiesDescriptions () {
       PropertyDescription [] pds = new PropertyDescription [7];
-      pds[0] = new PropertyDescription ("dbInstance", "Database Instance", "The database to connect.");
-      pds[1] = new PropertyDescription ("machine", "Machine Name", "The server this database is running on.");
-      pds[2] = new PropertyDescription ("username", "User Name", "The login account to use.");
-      pds[3] = new PropertyDescription ("password", "Password", "The password to use.");
-      pds[4] = new PropertyDescription ("port", "Connection Port", "The connection Port to use.");
+      pds[0] = new PropertyDescription ("username", "User Name", "The login account to use.");
+      pds[1] = new PropertyDescription ("password", "Password", "The password to use.");
+      pds[2] = new PropertyDescription ("machine", "Machine Name", "The server this database is running on.");
+      pds[3] = new PropertyDescription ("port", "Connection Port", "The connection Port to use.");
+      pds[4] = new PropertyDescription ("dbInstance", "Database Instance", "The database to connect.");
       pds[5] = new PropertyDescription ("url", "Connection URL", "The connection URL to use (for MicroSoft SQLServer).");
       pds[6] = new PropertyDescription ("driver", "JDBC Driver", "The JDBC driver to use.");
       return pds;
@@ -591,88 +553,6 @@ public class ConnectToDB extends UIModule {
 
         private JButton bDo = new JButton("Done");
 
-
-
-        /** The module that creates this view.  We need a reference to it so
-
-     we can get and set its properties. */
-
-
-
-    /**
-
-    Perform initializations here.
-
-    @param mod The module that created this UserView
-
-    */
-
-
-
-   /** A text field to show the username */
-
-   //      private JTextField tfU = new JTextField();
-
-
-
-   /** A password field to show (hidden) the password */
-
-   //       private JPasswordField pfPa = new JPasswordField(30);
-
-
-
-   /** A text field to show the machine */
-
-//        private JTextField tfM = new JTextField();
-
-
-
-/** A text field to show the port */
-
-//       private JTextField tfPo = new JTextField();
-
-
-
-/** A text field to show the dbInstance */
-
-//        private JTextField tfdbI = new JTextField();
-
-
-
-/** A text field to show the driver */
-
-//        private JTextField tfD = new JTextField();
-
-
-
-/** A button to Abort */
-
-//        private JButton bAb = new JButton("Abort");
-
-
-
-/** A button to Okay */
-
-//        private JButton bDo = new JButton("Done");
-
-
-
-/** The module that creates this view.  We need a reference to it so
-
-     we can get and set its properties. */
-
-    //ConnectToDB parentModule;
-
-
-
-    /**
-
-    Perform initializations here.
-
-    @param mod The module that created this UserView
-
-    */
-
         public void initView(ViewModule mod) {
 
             /**
@@ -686,20 +566,6 @@ public class ConnectToDB extends UIModule {
             JPanel p = new JPanel();
 
             p.setLayout(new GridBagLayout());
-
-            //          super.initView(mod); //DO NOT CALL SUPER
-
-            //parentModule = (ConnectToDB)mod;
-
-
-
-//            JPanel placeholder = new JPanel();
-
-//            JPanel p = new JPanel();
-
-//            p.setLayout(new GridBagLayout());
-
-
 
             cbV = new JComboBox( Vendors );
 
@@ -719,13 +585,7 @@ public class ConnectToDB extends UIModule {
 
                     if (newSelection == "Oracle") {
 
-                        //tfU.setText("smathur");
-
                         tfPo.setText("1521");
-
-                        //tfM.setText("bernoulli.ncsa.uiuc.edu");
-
-                        //tfdbI.setText("d2k");
 
                         tfD.setText("oracle.jdbc.driver.OracleDriver");
 
@@ -733,13 +593,7 @@ public class ConnectToDB extends UIModule {
 
                     else if (newSelection == "MySQL") {
 
-                        //tfU.setText("d2ktest");
-
                         tfPo.setText("1520");
-
-                        //tfM.setText("lorax.ncsa.uiuc.edu");
-
-                        //tfdbI.setText("d2ktesting");
 
                         tfD.setText("org.gjt.mm.mysql.Driver");
 
@@ -747,13 +601,7 @@ public class ConnectToDB extends UIModule {
 
                     else if (newSelection == "SQLServer") {
 
-                        //tfU.setText("d2k-test");
-
                         tfPo.setText("1433");
-
-                        //tfM.setText("zax.ncsa.uiuc.edu");
-
-                        //tfdbI.setText("master");
 
                         tfD.setText("com.microsoft.jdbc.sqlserver.SQLServerDriver");
 
@@ -778,18 +626,6 @@ public class ConnectToDB extends UIModule {
 
 
             // Add username
-
-            /*lU = new JLabel("Username");
-
-            Constrain.setConstraints(p, lU, 0, 1, 1, 1,
-
-                                     GridBagConstraints.NONE,
-
-                                     GridBagConstraints.WEST, 1, 1);
-
-                                     */
-
-
 
             // try to display the last username chosen
 
@@ -1027,167 +863,6 @@ public class ConnectToDB extends UIModule {
 
 
 
-            /*Constrain.setConstraints(p, tfU, 1, 1, 2, 1,
-
-                                     GridBagConstraints.HORIZONTAL,
-
-                                     GridBagConstraints.WEST, 4, 1);
-
-
-
-            // Add password
-
-            lPa = new JLabel("Password");
-
-            Constrain.setConstraints(p, lPa, 0, 2, 1, 1,
-
-                                     GridBagConstraints.NONE,
-
-                                     GridBagConstraints.WEST, 1, 1);
-
-
-
-            // try to display the last password chosen
-
-            s = getPassword();
-
-            if(s != null)
-
-                pfPa.setText(s);
-
-
-
-            Constrain.setConstraints(p, pfPa, 1, 2, 2, 1,
-
-                                     GridBagConstraints.HORIZONTAL,
-
-                                     GridBagConstraints.WEST, 4, 1);
-
-
-
-            // Add machine
-
-            lM = new JLabel("Machine");
-
-            Constrain.setConstraints(p, lM, 0, 3, 1, 1,
-
-                                     GridBagConstraints.NONE,
-
-                                     GridBagConstraints.WEST, 1, 1);
-
-
-
-            // try to display the last machine chosen
-
-            s = getMachine();
-
-            if(s != null) {
-
-                tfM.setText(s);
-
-            }
-
-            Constrain.setConstraints(p, tfM, 1, 3, 2, 1,
-
-                                     GridBagConstraints.HORIZONTAL,
-
-                                     GridBagConstraints.WEST, 4, 1);
-
-
-
-            // Add port
-
-            lPo = new JLabel("Port");
-
-            Constrain.setConstraints(p, lPo, 0, 4, 1, 1,
-
-                                     GridBagConstraints.NONE,
-
-                                     GridBagConstraints.WEST, 1, 1);
-
-
-
-            // try to display the last port chosen
-
-            s = getPort();
-
-            if(s != null) {
-
-                tfPo.setText(s);
-
-            }
-
-            Constrain.setConstraints(p, tfPo, 1, 4, 2, 1,
-
-                                     GridBagConstraints.HORIZONTAL,
-
-                                     GridBagConstraints.WEST, 4, 1);
-
-
-
-            // Add dbInstance
-
-            ldbI = new JLabel("dbInstance");
-
-            Constrain.setConstraints(p, ldbI, 0, 5, 1, 1,
-
-                                     GridBagConstraints.NONE,
-
-                                     GridBagConstraints.WEST, 1, 1);
-
-
-
-            // try to display the last dbInstance chosen
-
-            s = getDbInstance();
-
-            if(s != null) {
-
-                tfdbI.setText(s);
-
-            }
-
-
-
-            Constrain.setConstraints(p, tfdbI, 1, 5, 2, 1,
-
-                                     GridBagConstraints.HORIZONTAL,
-
-                                     GridBagConstraints.WEST, 4, 1);
-
-
-
-            // Add driver
-
-            lD = new JLabel("driver");
-
-            Constrain.setConstraints(p, lD, 0, 6, 1, 1,
-
-                                     GridBagConstraints.NONE,
-
-                                     GridBagConstraints.WEST, 1, 1);
-
-
-
-            // try to display the last driver chosen
-
-            s = getDriver();
-
-
-
-            if(s != null)
-
-                tfD.setText(s);
-
-
-
-            Constrain.setConstraints(p, tfD, 1, 6, 2, 1,
-
-                                     GridBagConstraints.HORIZONTAL,
-
-                                     GridBagConstraints.WEST, 4, 1);
-
-            */
 
 
 
@@ -1290,66 +965,6 @@ public class ConnectToDB extends UIModule {
                  String _driver = tfD.getText();
 
                  /*parentModule.*/setDriver(_driver);
-
-
-
-                  /**
-
-                   * Use the Driver to set up the corresponding URL
-
-                   */
-
-
-
-/*                  if ( _driver.equals("oracle.jdbc.driver.OracleDriver")) {
-
-                      //OracleConnection dbi = new OracleConnection(out, getDbInstance().trim());
-
-                      OracleDBConnection oc = new OracleDBConnection(getUrl().trim(),
-
-                              getDriver().trim(),
-
-                              getUsername().trim(),
-
-                              getPassword().trim());
-
-                      pushOutput (oc, 0);
-
-                  }
-
-                  else if ( _driver.equals("org.gjt.mm.mysql.Driver")) {
-
-                      MySQLDBConnection mc = new MySQLDBConnection(getUrl().trim(),
-
-                              getDriver().trim(),
-
-                              getUsername().trim(),
-
-                              getPassword().trim(),
-
-                              getDbInstance().trim());
-
-                      pushOutput (mc, 0);
-
-                  }
-
-                  else if (_driver == "com.microsoft.jdbc.sqlserver.SQLServerDriver") {
-
-                      SQLServerDBConnection sc = new SQLServerDBConnection(getUrl().trim(),
-
-                              getDriver().trim(),
-
-                              getUsername().trim(),
-
-                              getPassword().trim());
-
-                      pushOutput (sc, 0);
-
-                  }
-
-                  viewDone("Done");
-
-                  */
 
 
 
