@@ -94,9 +94,6 @@ public class SQLHTree extends ComputeModule
     int sameValueIdx;
   }
 
-  public void CalulateCount() {
-  }
-
   public String getOutputInfo (int i) {
     switch(i) {
       case 0: return "JDBC data source to make database connection.";
@@ -110,8 +107,8 @@ public class SQLHTree extends ComputeModule
       case 0: return "JDBC data source to make database connection.";
       case 1: return "Field Names";
       case 2: return "Table Name";
-      case 3: return "Where Clause";
-      case 4: return "Bin Transform";
+      case 3: return "Query Condition (Optional)";
+      case 4: return "Bin Transform (Optional)";
       default: return "No such input";
     }
   }
@@ -120,20 +117,31 @@ public class SQLHTree extends ComputeModule
     String s = "<p> Overview: ";
       s += "This module computes a cube table from a selected database table. </p>";
       s += "<p> Detailed Description: ";
-      s += "This module first makes a connection to a database, retrieves the ";
-      s += "data from a specified database table for the specified columns, ";
-      s += "where clause, and  bin definitions, and then computes a data cube. ";
-      s += "You can control the cube construction by two parameters: 'maximum ";
-      s += "rule size' and 'minimum support'. The 'maximum rule size' is the ";
+      s += "This module takes 5 inputs: a database connection, a database table ";
+      s += "name, a list of selected attributes, a user specified query condition, ";
+      s += "and a binning transform schema. The last two inputs are optional. ";
+      s += "The input <i>Query Condition</i> is used to subsetting or filtering ";
+      s += "your data set. If you are only interesting in the subset of your data, ";
+      s += "you should link the module <i>SQLFilterConstruction</i> to this input port. ";
+      s += "The input <i>Bin Transform</i> is used to group values. For the ";
+      s += "attributes that have many distinct values, especially for the continuous ";
+      s += "numeric attributes, you usually need to group values into several bins. ";
+      s += "You can perform this task by linking the module <i>SQLBinColumns</i> to ";
+      s += "this input port. </p>";
+      s += "<p>This module first makes a connection to a database, retrieves the ";
+      s += "data from a specified database table for the specified attributes, ";
+      s += "and then computes a data cube. ";
+      s += "You can control the cube construction by two parameters: <i>maximum ";
+      s += "rule size</i> and <i>minimum support</i>'. The <i>maximum rule size</i> is the ";
       s += "maximum number of items in a rule. To avoid the exponential computation, ";
-      s += "only up to 5 items per rule are allowed. The 'minimum support' is used ";
+      s += "only up to 5 items per rule are allowed. The <i>minimum support</i> is used ";
       s += "to control the usefulness of discovered rules. A support of 2% ";
       s += "for a rule means that 2% of data under analysis support this rule. ";
-      s += "By setting 'minimum support' lower, you would get more trivial rules. ";
-      s += "However, by setting 'minimum support' too high, you might loose some ";
+      s += "By setting <i>minimum support</i> lower, you would get more trivial rules. ";
+      s += "However, by setting <i>minimum support</i> too high, you might loose some ";
       s += "important rules. ";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle databases. Due to the intensive ";
+      s += "We currently only support Oracle and SQLServer databases. Due to the intensive ";
       s += "computation involved in constructing a data cube, the memory and CPU requirements ";
       s += "may substantially increase when more attributes and more unique values for them  ";
       s += "are included. We suggest you only choose a data set that has less ";
@@ -155,9 +163,9 @@ public class SQLHTree extends ComputeModule
             case 2:
                 return "Selected Table";
             case 3:
-                return "Query Condition";
+                return "Query Condition (Optional)";
             case 4:
-                return "Bin Transform";
+                return "Bin Transform (Optional)";
             default:
                 return  "No such input";
         }
@@ -190,7 +198,7 @@ public class SQLHTree extends ComputeModule
 
   // this property is the min acceptable support score.
   public void setSupport (double i)  throws PropertyVetoException {
-  	if( i < 0 || i  >100) throw new PropertyVetoException ("Support must be between 0 and 100", null);
+          if( i < 0 || i  >100) throw new PropertyVetoException ("Support must be between 0 and 100", null);
     support = i;
   }
   public double getSupport () {
@@ -211,7 +219,7 @@ public class SQLHTree extends ComputeModule
                      "[Ljava.lang.String;",
                      "java.lang.String",
                      "java.lang.String",
-                     "ncsa.d2k.modules.core.datatype.table.transforms.BinTransform"};
+                     "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform"};
     return in;
   }
 
@@ -232,14 +240,48 @@ public class SQLHTree extends ComputeModule
     return null;
   }
 
+  public boolean isReady() {
+    if (isInputPipeConnected(3) && !isInputPipeConnected(4)) {
+      return (getInputPipeSize(0)>0 &&
+              getInputPipeSize(1)>0 &&
+              getInputPipeSize(2)>0 &&
+              getInputPipeSize(3)>0);
+    }
+    else if (!isInputPipeConnected(3) && isInputPipeConnected(4)) {
+      return (getInputPipeSize(0)>0 &&
+              getInputPipeSize(1)>0 &&
+              getInputPipeSize(2)>0 &&
+              getInputPipeSize(4)>0);
+    }
+    else if (!isInputPipeConnected(3) && !isInputPipeConnected(4)) {
+      return (getInputPipeSize(0)>0 &&
+              getInputPipeSize(1)>0 &&
+              getInputPipeSize(2)>0);
+    }
+    return super.isReady();
+  }
+
   public void doit() {
     cw = (ConnectionWrapper)pullInput(0);
     fieldNames = (String[])pullInput(1);
-    tableName = (String)pullInput(2);
-    cubeTableName = tableName + "_CUBE";
-    whereClause = (String)pullInput(3);
-    BinTransform btf = (BinTransform)pullInput(4);
-    bins = btf.getBinDescriptors();
+    tableName = ((String)pullInput(2)).toUpperCase();
+    //String userName = System.getProperty("user.name").toUpperCase();
+    //cubeTableName = userName + "_" + tableName + "_CUBE";
+    if (isInputPipeConnected(3)) {
+      whereClause = (String)pullInput(3);
+      if (whereClause.length()==0)
+        whereClause = null;
+    }
+    else if (!isInputPipeConnected(3)) {
+      whereClause = null;
+    }
+    if (isInputPipeConnected(4)) {
+      BinTransform btf = (BinTransform)pullInput(4);
+      bins = btf.getBinDescriptors();
+    }
+    else if (!isInputPipeConnected(4)) {
+      bins = new BinDescriptor[0];
+    }
     columnList = new ArrayList();
     baseHeadTbl = new ArrayList();
     hTree = new ArrayList();
@@ -263,27 +305,32 @@ public class SQLHTree extends ComputeModule
         }
 
         initBaseHeadTbl();
+        //printBaseHeadTbl();  // for debugging
         buildHTree();
         //printColumnList();  // for debugging
         //printBaseHeadTbl();  // for debugging
         //printHTree();  // for debugging
 
-        createCubeTable();
-        saveBaseHeadTbl();
-        createLocalHeadTbls();
-        prefixList = new int[ruleSize];
-        initPrefixList();
-        computeTree();
-        if (getCubeRowCount(cubeTableName) > 0) {
-          this.pushOutput(cw, 0);
-          this.pushOutput(cubeTableName, 1);
+        if (createCubeTable()) {
+          saveBaseHeadTbl();
+          createLocalHeadTbls();
+          prefixList = new int[ruleSize];
+          initPrefixList();
+          computeTree();
+          if (getCubeRowCount(cubeTableName) > 0) {
+            this.pushOutput(cw, 0);
+            this.pushOutput(cubeTableName, 1);
+          }
+          else {
+            JOptionPane.showMessageDialog(msgBoard,
+                "There is no rule discovered in the data set. You may like to adjust " +
+                "Minimum Support in SQLHTree module, and run again.", "Error",
+                JOptionPane.ERROR_MESSAGE);
+            System.out.println("There is no data in the data set.");
+          }
         }
         else {
-          JOptionPane.showMessageDialog(msgBoard,
-          "There is no rule discovered in the data set. You may like to adjust " +
-          "Minimum Support in SQLHTree module, and run again.", "Error",
-          JOptionPane.ERROR_MESSAGE);
-          System.out.println("There is no data in the data set.");
+          System.out.println("fail to create a cube table");
         }
       }
     }
@@ -303,6 +350,9 @@ public class SQLHTree extends ComputeModule
       con = cw.getConnection();
       Statement cntStmt;
       String sb = new String("select count(*) from " + table);
+      if (whereClause != null) {
+        sb = sb + " where " + whereClause;
+      }
       cntStmt = con.createStatement ();
       ResultSet tableSet = cntStmt.executeQuery(sb);
       tableSet.next();
@@ -418,13 +468,13 @@ public class SQLHTree extends ComputeModule
         uniqCount = uniqSet.getInt(1);
         uniqStmt.close();
         // if uniqCount/totalRow > maxUniqRatio, inform users to binning the column
-        if ((double)uniqCount/(double)totalRow <= maxUniqRatio)
+        if ((double)uniqCount/(double)totalRow <= maxUniqRatio || uniqCount < 100)
           return (uniqCount);
         else {
           JOptionPane.showMessageDialog(msgBoard,
             "There are too many unique values in the column " +
-            fieldNames[col] + ". In order to discover interesting rules, " +
-            "you should group the values in the column.", "Error",
+            fieldNames[col] +
+            ". You should group the values in the column using the module SQLBinColumns.", "Error",
             JOptionPane.ERROR_MESSAGE);
           System.out.println("Column " + fieldNames[col] + " need to be binned.");
           return (0);
@@ -627,6 +677,9 @@ public class SQLHTree extends ComputeModule
           columnStr = columnStr + ", " + ((Column)columnList.get(colIdx)).columnName;
       }
       sb = sb + columnStr + " from " + tableName;
+      if (whereClause != null) {
+        sb = sb + " where " + whereClause;
+      }
       treeStmt = con.createStatement ();
       ResultSet tableSet = treeStmt.executeQuery(sb);
       while (tableSet.next()) {
@@ -873,90 +926,164 @@ public class SQLHTree extends ComputeModule
 
   /** create a database table to save the cube data
    */
-  protected void createCubeTable() {
+  protected boolean createCubeTable() {
+    Statement countStmt;
+    Statement tableStmt;
+    Statement columnStmt;
+    Statement alterStmt;
+    String sb;
+    String tableQry;
+    //String columnQry;
+    ResultSet result;
+    ResultSet columnResult;
     try {
-      con = cw.getConnection();
-      Statement countStmt;
-      Statement tableStmt;
-      Statement columnStmt;
-      Statement alterStmt;
-      String sb;
-      String tableQry;
-      String columnQry;
-      ResultSet result;
-      ResultSet tableResult;
-      ResultSet columnResult;
-      // if the cube table already exists, drop the table first
-      sb = new String("select count(1) from all_tables where table_name = '" + cubeTableName.toUpperCase() + "'");
-      countStmt = con.createStatement();
-      ResultSet tableSet = countStmt.executeQuery(sb);
-      tableSet.next();
-      int rowCount = tableSet.getInt(1);
-      countStmt.close();
+      // To support concurrent user environment, include user's OS login and DB login in cube table name
+      String userDBName = cw.getConnection().getMetaData().getUserName().toUpperCase();
+      if (userDBName.length() > 5)
+        userDBName = userDBName.substring(0,5);
+      String userOSName = System.getProperty("user.name").toUpperCase();
+      if (userOSName.length() > 5)
+        userOSName = userOSName.substring(0,5);
+      cubeTableName = userOSName + "_" + userDBName + "_" + tableName + "_CUBE";
+      if (foundTable(cubeTableName)) {
+        JOptionPane inputBoard = new JOptionPane();
+        inputBoard.setInitialValue(cubeTableName);
 
-      if (rowCount > 0) {
-        sb = new String("drop table " + cubeTableName);
-        countStmt = con.createStatement();
-        result = countStmt.executeQuery(sb);
-        countStmt.close();
-      }
+        Object tempObj = JOptionPane.showInputDialog(inputBoard,
+        " The cube table " + cubeTableName + " exists. \n You can either create a new cube " +
+        "table \n with a different name, or overwrite \n the current cube table.",
+        "Cube Table Name", JOptionPane.QUESTION_MESSAGE,
+        null, null, inputBoard.getInitialValue());
 
-      // Create an empty cube table. The table has the selected columns + count column
-      // Convert all numeric data types to character data type
-      tableQry = new String("create table " + cubeTableName + "(");
-      columnQry = new String("select column_name, data_type, data_length from all_tab_columns ");
-      columnQry = columnQry + "where table_name = '" + tableName + "' order by column_id";
-      columnStmt = con.createStatement();
-      columnResult = columnStmt.executeQuery(columnQry);
-      int colNumber = 0;
-      while (columnResult.next()) {
-        if (isChosenColumn(columnResult.getString(1))) {
-          if (colNumber > 0) {
-            tableQry = tableQry + ",";
-          }
-          colNumber ++;
-          if (columnResult.getString(2).equals("VARCHAR2")) {
-          tableQry = tableQry + columnResult.getString(1) + " VARCHAR2(" +
-                     columnResult.getString(3) + ")";
-          }
-          else if (columnResult.getString(2).equals("NUMBER")) {
-            tableQry = tableQry + columnResult.getString(1) + " VARCHAR2(30)";
-          }
-          else if (columnResult.getString(2).equals("DATE")) {
-            tableQry = tableQry + columnResult.getString(1) + " VARCHAR2(30)";
+        if (tempObj == null) {
+          JOptionPane.showMessageDialog(msgBoard,
+              "The cube table cannot be created because the cube table name is not specified.", "Error",
+              JOptionPane.ERROR_MESSAGE);
+          return false;
+        }
+
+        while (tempObj.toString().toUpperCase().indexOf("CUBE") < 0) {
+          JOptionPane.showMessageDialog(msgBoard,
+              "The cube table must contain the word 'CUBE'.", "Error",
+              JOptionPane.ERROR_MESSAGE);
+          tempObj = JOptionPane.showInputDialog(inputBoard,
+          " The cube table " + cubeTableName + " exists. \n You can either create a new cube " +
+          "table \n with a different name, or overwrite \n the current cube table.",
+          "Cube Table Name", JOptionPane.QUESTION_MESSAGE,
+          null, null, inputBoard.getInitialValue());
+        }
+
+        if (tempObj == null) {
+          JOptionPane.showMessageDialog(msgBoard,
+              "The cube table cannot be created because the cube table name is not specified.", "Error",
+              JOptionPane.ERROR_MESSAGE);
+          return false;
+        }
+
+        if (tempObj.toString().equals(cubeTableName)) {
+          sb = new String("drop table " + cubeTableName);
+          countStmt = con.createStatement();
+          countStmt.executeUpdate(sb);
+          //result = countStmt.executeQuery(sb);
+          countStmt.close();
+        }
+        else {
+          cubeTableName = tempObj.toString();
+          // Check the new cubeTableName. If it exists, then drop it.
+          if (foundTable(cubeTableName)) {
+            sb = new String("drop table " + cubeTableName);
+            countStmt = con.createStatement();
+            countStmt.executeUpdate(sb);
+            //result = countStmt.executeQuery(sb);
+            countStmt.close();
           }
         }
       }
-      tableQry = tableQry + ")";
-
-      tableStmt = con.createStatement();
-      result = tableStmt.executeQuery(tableQry);
-      tableStmt.close();
+      con = cw.getConnection();
+      // Create an empty cube table. The table has the selected columns + count column
+      // Convert all numeric data types to character data type
+      tableQry = new String("create table " + cubeTableName + "(");
+      DatabaseMetaData dbmd = con.getMetaData();
+      ResultSet tableSet = dbmd.getColumns (null,null,tableName,"%");
+      int colNumber = 0;
+      while (tableSet.next()) {
+        String cname = tableSet.getString("COLUMN_NAME").toUpperCase();
+        if (isChosenColumn(cname)) {
+          if (colNumber > 0) {
+            tableQry = tableQry + ",";
+          }
+          String ctype = tableSet.getString("TYPE_NAME").toUpperCase();
+          int csize = tableSet.getInt("COLUMN_SIZE");
+          colNumber ++;
+          if (ctype.indexOf("CHAR")>=0) {
+            tableQry = tableQry + cname + " VARCHAR(" +
+                     csize + ")";
+          }
+          else if (ctype.indexOf("DECIMAL")>=0 ||
+                   ctype.indexOf("FLOAT")>=0 ||
+                   ctype.indexOf("INT")>=0 ||
+                   ctype.indexOf("NUMBER")>=0 ||
+                   ctype.indexOf("NUMERIC")>=0) {
+            tableQry = tableQry + cname + " VARCHAR(30)";
+          }
+          else {
+            tableQry = tableQry + cname + " VARCHAR(30)";
+          }
+        }
+      }
       // add two columns to the cube table, one column for saving the size of the item set, another for saving counts
-      sb = new String("alter table " + cubeTableName + " add (set_size number, cnt number)");
-      alterStmt = con.createStatement();
-      result = alterStmt.executeQuery(sb);
-      alterStmt.close();
+      tableQry = tableQry + ", SET_SIZE NUMERIC(9), CNT NUMERIC(9))";
+      tableStmt = con.createStatement();
+      tableStmt.executeUpdate(tableQry);
+      //result = tableStmt.executeQuery(tableQry);
+      tableStmt.close();
       // insert a record to the cube table. This record is the most aggregated record. There is
       // no value for all columns except the column cnt which is the total number of rows in the
       // data set.
-      sb = new String ("insert into " + cubeTableName + " (cnt) values (" + totalRow + ")");
+      sb = new String ("insert into " + cubeTableName + " (CNT) values (" + totalRow + ")");
       alterStmt = con.createStatement();
-      result = alterStmt.executeQuery(sb);
+      alterStmt.executeUpdate(sb);
       alterStmt.close();
+      return true;
     }
     catch (Exception e){
       JOptionPane.showMessageDialog(msgBoard,
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
         System.out.println("Error occoured in createCubeTable.");
+      return false;
     }
+  }
+
+  protected boolean foundTable(String aCubeTable) {
+    try {
+      con = cw.getConnection();
+      DatabaseMetaData metadata = null;
+      metadata = con.getMetaData();
+      String[] types = {"TABLE"};
+      ResultSet tableNames = metadata.getTables(null,"%",aCubeTable,types);
+      while (tableNames.next()) {
+        String aTable = tableNames.getString("TABLE_NAME");
+        if (aTable.length() > 0)
+          return true;
+        else
+          return false;
+      }
+    }
+    catch (Exception e){
+      JOptionPane.showMessageDialog(msgBoard,
+        e.getMessage(), "Error",
+        JOptionPane.ERROR_MESSAGE);
+        System.out.println("Error occoured in tableFound.");
+      return false;
+    }
+    return false;
   }
 
   protected boolean isChosenColumn(String columnName) {
     boolean match = false;
     for (int colIdx = 0; colIdx < columnList.size(); colIdx++) {
-      if (((Column) columnList.get(colIdx)).columnName.equals(columnName)) {
+      if (((Column) columnList.get(colIdx)).columnName.toUpperCase().equals(columnName)) {
         match = true;
         break;
       }
@@ -990,7 +1117,7 @@ public class SQLHTree extends ComputeModule
             String sb;
             ResultSet result;
             stmt = con.createStatement();
-            result = stmt.executeQuery(insertStr);
+            stmt.executeUpdate(insertStr);
             stmt.close();
           }
         }
@@ -1247,7 +1374,7 @@ public class SQLHTree extends ComputeModule
             String sb;
             ResultSet result;
             stmt = con.createStatement();
-            result = stmt.executeQuery(queryStr);
+            stmt.executeUpdate(queryStr);
             stmt.close();
           }
         }
@@ -1312,4 +1439,3 @@ public class SQLHTree extends ComputeModule
     System.out.println("...");
   }
 }
-
