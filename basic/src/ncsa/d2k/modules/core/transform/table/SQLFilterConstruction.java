@@ -62,6 +62,17 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      s += "This module allows the user to specify the query condition ";
      s += "that filters rows from a database table. Details can be found ";
      s += "in the module's online help. </p>";
+
+     s += "<P><U>NOTE</U>:<br>When running the module in Headless mode (when 'Supress User Interface Display' is set to true):<br>";
+     s += "It is highly recommneded to set the filter using the first GUI of this module, ";
+     s += "and only then run it in a Headless mode.<BR>Should you choose to set the filter manually, ";
+     s += "the query must be in an sql format according to the foloowing:";
+     s += "<UL> <li>'!=' should be replaced with '&gt;&lt;'</li>";
+     s += "<li>'==' should be replaced with '='</li>";
+     s += "<li>'&&' should be replaced with 'and'</li>";
+     s += "<li>'||' should be replaced with 'or'</li>";
+     s += "<li>'null' should be uppercased - 'NULL'</li></ul>";
+
      s += "<P>Missing Values Handling: When the filter expression is edited via " +
          "the properties editor and 'Supress User Interface Display' is set to true, " +
      "if the user whishes to include missing values " +
@@ -153,6 +164,66 @@ public class SQLFilterConstruction extends HeadlessUIModule {
                         "This property is used when the module runs with GUI.");
       return pds;
    }
+
+
+   //vered - headless conversion support
+   //moved this method from FilterConstructionGUI into SQLFilterConstruction
+   //so that the doit method can use it as well. (for validation of expression purposes)
+   /** create an ExampleTable object to hold the meta information.
+  *  @return an object of Example table
+  */
+ private ExampleTable createMetaTable() {
+   // build an ArrayList to keep the column name.
+   colNames = new ArrayList();
+   // build an ArrayList to keep the column type.
+   colTypes = new ArrayList();
+   DatabaseMetaData metadata = null;
+
+   try {
+     Connection con = cw.getConnection();
+     metadata = con.getMetaData();
+     ResultSet columns = metadata.getColumns(null,"%",tableName,"%");
+     while (columns.next()) {
+       String columnName = columns.getString("COLUMN_NAME");
+       String columnType = columns.getString("TYPE_NAME").toUpperCase();
+       colNames.add(columnName);
+       colTypes.add(columnType);
+     }
+   }
+   catch (Exception e) {
+     JOptionPane.showMessageDialog(msgBoard,
+     e.getMessage(), "Error",
+     JOptionPane.ERROR_MESSAGE);
+     System.out.println("Error occurred in createMeatTable.");
+   }
+
+   Column[] cols = new Column[colNames.size()];
+   for (int colIdx = 0; colIdx < colNames.size(); colIdx++) {
+     cols[colIdx] = new ObjectColumn(1);
+     cols[colIdx].setLabel(colNames.get(colIdx).toString());
+     if(ColumnTypes.isEqualNumeric(colTypes.get(colIdx).toString()))
+      cols[colIdx].setIsScalar(true);
+     else
+      cols[colIdx].setIsScalar(false);
+   }
+   // create an Table to hold the meta data
+   MutableTableImpl aTable = new MutableTableImpl(cols);
+   for (int colIdx = 0; colIdx < colNames.size(); colIdx++) {
+     if (cols[colIdx].getIsScalar()) {
+       aTable.setColumnIsScalar(true,colIdx);
+       aTable.setColumnIsNominal(false,colIdx);
+     }
+     else {
+       aTable.setColumnIsScalar(false,colIdx);
+       aTable.setColumnIsNominal(true,colIdx);
+     }
+   }
+
+   ExampleTable et = aTable.toExampleTable();
+   return et;
+ }
+
+   //end headless conversion support
 
 /******************************************************************************/
 /* GUI                                                                        */
@@ -366,59 +437,6 @@ public class SQLFilterConstruction extends HeadlessUIModule {
 
       }
 
-  /** create an ExampleTable object to hold the meta information.
-   *  @return an object of Example table
-   */
-  private ExampleTable createMetaTable() {
-    // build an ArrayList to keep the column name.
-    colNames = new ArrayList();
-    // build an ArrayList to keep the column type.
-    colTypes = new ArrayList();
-    DatabaseMetaData metadata = null;
-
-    try {
-      Connection con = cw.getConnection();
-      metadata = con.getMetaData();
-      ResultSet columns = metadata.getColumns(null,"%",tableName,"%");
-      while (columns.next()) {
-        String columnName = columns.getString("COLUMN_NAME");
-        String columnType = columns.getString("TYPE_NAME").toUpperCase();
-        colNames.add(columnName);
-        colTypes.add(columnType);
-      }
-    }
-    catch (Exception e) {
-      JOptionPane.showMessageDialog(msgBoard,
-      e.getMessage(), "Error",
-      JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occurred in createMeatTable.");
-    }
-
-    Column[] cols = new Column[colNames.size()];
-    for (int colIdx = 0; colIdx < colNames.size(); colIdx++) {
-      cols[colIdx] = new ObjectColumn(1);
-      cols[colIdx].setLabel(colNames.get(colIdx).toString());
-      if(ColumnTypes.isEqualNumeric(colTypes.get(colIdx).toString()))
-       cols[colIdx].setIsScalar(true);
-      else
-       cols[colIdx].setIsScalar(false);
-    }
-    // create an Table to hold the meta data
-    MutableTableImpl aTable = new MutableTableImpl(cols);
-    for (int colIdx = 0; colIdx < colNames.size(); colIdx++) {
-      if (cols[colIdx].getIsScalar()) {
-        aTable.setColumnIsScalar(true,colIdx);
-        aTable.setColumnIsNominal(false,colIdx);
-      }
-      else {
-        aTable.setColumnIsScalar(false,colIdx);
-        aTable.setColumnIsNominal(true,colIdx);
-      }
-    }
-
-    ExampleTable et = aTable.toExampleTable();
-    return et;
-  }
 
       public void actionPerformed(ActionEvent e) {
 
@@ -608,7 +626,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
 
    public void doit()throws Exception{
      //pulling input...
-     ConnectionWrapper cw = (ConnectionWrapper) pullInput(0);
+     /*ConnectionWrapper*/ cw = (ConnectionWrapper) pullInput(0);
      String tableName = (String) pullInput(1);
 
      if(queryCondition == null)
@@ -627,23 +645,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      //getting all attributes names.
      HashMap availableAttributes = StaticMethods.getAvailableAttributes(cw, tableName);
 
-     /*//connecting to data base and getting all the available attributes
-     //in the given table name.
-     Connection con = cw.getConnection();
-     HashMap availableAttributes = new HashMap();
-     DatabaseMetaData metadata = con.getMetaData();
-     ResultSet columns = metadata.getColumns(null,"%",tableName,"%");
-     int counter = 0;
 
-
-
-     //populating the map
-     while (columns.next()) {
-       String columnName = columns.getString("COLUMN_NAME");
-       availableAttributes.put(columnName , new Integer(counter));
-       counter++;
-     }//while column
-*/
      if(availableAttributes.size() == 0){
        //this means either the table was not found in the data base, or that
        //it has no columns. the query condition will be empty anyway
@@ -655,69 +657,628 @@ public class SQLFilterConstruction extends HeadlessUIModule {
     //   return;
      }
 
-     //goodCondition = ExpressionParser.parseExpression(queryCondition, availableAttributes, true);
+
+//validting the expression:
+     //creating a metadata table
+     ExampleTable et = this.createMetaTable();
+     //creating a validator
+      FilterExpression expression = new FilterExpression(et, getIncludeMissingValues());
+      //replacing the special signs of sql (or, and, = with the regular)
+      String cond = replaceSigns(queryCondition);
+
+//validating the expression....
+        expression.setExpression(cond);
 
 
-/*
-     StringTokenizer tok = new StringTokenizer(queryCondition);
-     //parsing the condition, each sub condition that holds a valid
-     //attribute name will be copied into goodCondition
 
-     boolean first = true; //is it the first sub expression
-
- //assuming the expression could be malformed.
- //if it is the first one to be parsed and it has at least 3 more tokens
-        //then there is still yet another sub expression to parse.
-        //if it is not the first one - at least 4 tokens are needed.
-
-     while((first && tok.countTokens() >= 3) || (!first && tok.countTokens() >= 4)){
-
-
-     boolean added = false;  //whether a sub expression was added of not.
-
-     String joint = null;
-     if(!first){ //meaning the following token is "and" or "or".
-       joint = tok.nextToken();
-       goodCondition += " " + joint + " ";
-     }//if !first
-     else first = false;
-
-      //parsing the 3 tokens that make the sub expression.
-      String leftHand = tok.nextToken();
-      String relation = tok.nextToken();
-      String rightHand = tok.nextToken();
-
-      //if the right hand operand is the attribute - swaping between them.
-      if(availableAttributes.containsKey(rightHand)){
-        String temp = leftHand;
-        leftHand = rightHand;
-        rightHand = temp;
-      }//if contains key
-
-      //checking that leftHand is an attribute.
-      if(availableAttributes.containsKey(leftHand)){
-        //adding the parsed tokens to the good condition
-        goodCondition += leftHand + " " + relation + " " + rightHand;
-        added = true;
-
-      }//if contains key
-
-       if(!added && joint != null){
-         //now the joint that was added should be taken off
-         int index = goodCondition.lastIndexOf(joint);
-         String temp = goodCondition.substring(0, index);
-         goodCondition = temp;
-       }//if !added
-
-     }//while has more tokens
- */
-
-//assuming that the module that will execute this query, will validate it first.
 
      pushOutput(queryCondition,0);
 
 
+   }//doit
+
+   //supporting methods int he validation of the expression
+
+   public static final String[] toReplace = {"or", "and", "=", "null"};
+   public static final String[] replaceWith = {"||", "&&", "==", "NULL"};
+
+   /**
+    * looks for "or" "and" and single '=' int he String <codE>query</codE>
+    * and replaces them with "||" "&&" and "=="
+    * @param query - and SQL query expression
+    * @return - the expression replaced
+    */
+/*   private String replaceSqlSigns(String query){
+     String retVal = "";
+
+
+//vered debug
+  //   System.out.println("\n\noriginal query: " + query);
+     //end debug
+     retVal = replaceSigns(query);
+
+
+     //vered debug
+  //   System.out.println("replaced query: " + retVal);
+     //end debug
+
+
+
+
+     return retVal;
    }
+*/
+
+   /**
+    * replaces single '=' with a double one in the String <code>str</code>
+    * only if the '=' stands alone (could be part of "!=" or "<=")
+    * @param str - an expression
+    * @return - the expression with double '=' instead of single ones.
+    */
+  /* private String replaceEqualSigns(String str){
+
+     //vered debug
+   //  System.out.println("\n\nreplacing equal signs. original string: " + str);
+     //end debug
+
+     StringTokenizer tok = new StringTokenizer(str, "=", true);
+     String retVal = "";
+
+     while(tok.hasMoreTokens()){
+       String currTok = tok.nextToken();
+
+
+      //vered debug
+  //    System.out.println("current token: " + currTok);
+      //end debug
+
+
+       if(currTok.equals("=")){
+         char ch = retVal.charAt(retVal.length()-1);
+
+         //vered debug
+      //      System.out.println("last character in ret val is: " + ch );
+            //end debug
+
+         switch(ch){
+           case '!':
+           case '<':
+           case '>':
+
+            //vered debug
+      //      System.out.println("doint nothign special");
+            //end debug
+
+             retVal += currTok;
+             break;
+          default:
+
+
+            String next = tok.nextToken();
+            if(next.equals("=")){
+              retVal += "==";
+//vered debug
+        //         System.out.println("discovered a double equal sign");
+
+                 //end debug
+
+
+            }
+            else {
+              retVal += "==" + next;
+
+                 //vered debug
+        //         System.out.println("replacing single eaula with couble one");
+        //         System.out.println("and adding the next token: " + next);
+                 //end debug
+
+            }
+         }//switch
+       }//if this is equal
+
+       else{
+         retVal += currTok;
+         //vered debug
+   //      System.out.println("addign current token");
+                       //end debug
+
+       }
+
+     }//while
+
+     //vered debug
+ //    System.out.println("the returned string (by replace equal signs): " + retVal );
+
+                 //end debug
+
+
+     return retVal;
+   }//replaceEqualSigns
+
+   */
+
+   /**
+   * looks for <code>toReplace</code> strings in <code>query</code> and replaces
+   * them with <codE>replaceWith</code>. the replacement will take place only if
+   * <codE>toReplace</codE> is not already a part of a word.
+   * @param query - an sql expression
+   * @return - the expression with the substrings replaced.
+   */
+/*  private String replaceSqlSigns(String query, String toReplace, String replaceWith){
+
+    //vered debug
+ //   System.out.println("\n\nreplacing sql signs. original string: " + query);
+//    System.out.println("looking for string: " + toReplace);
+ //   System.out.println("the replacing string: " + replaceWith);
+    //end debug
+
+
+    String retVal = "";
+
+    int index  = query.indexOf(toReplace);
+    String str = query;
+
+    while(index != -1){
+      int currIdx = 0;
+
+      //vered - debug
+   //   System.out.println("looking in substring: " + str);
+  //    System.out.println("index of " + toReplace + ": " + index);
+      //end debug
+
+      if(standAlone(str, index, toReplace)){
+
+
+        retVal += str.substring(currIdx, index - 1) + replaceWith;
+
+        //vered - debug
+ //   System.out.println("it stands alone");
+ //   System.out.println("retVal is now: " + retVal);
+    //end debug
+
+      }
+
+
+      else{
+        retVal += str.substring(currIdx, (index - 1 + toReplace.length()));
+
+        //vered - debug
+//  System.out.println("it does not stand alone");
+//  System.out.println("retVal is now: " + retVal);
+  //end debug
+
+      }
+
+        currIdx += index-currIdx + toReplace.length();
+         str = str.substring(currIdx);
+        index = str.indexOf(toReplace);
+
+    }
+retVal += str;
+    //vered - debug
+
+// System.out.println("returned string by replaceSqlSigns: " + retVal);
+ //end debug
+
+    return retVal;
+  }*/
+
+
+
+  /**
+   * returns true if <doe>lookFor</code> is not a part of a word in <code>str</code>
+   * @param str - a String containing <codE>lookFor</code> at inex <codE>index</codE>
+   * @param index - first index of <codE>lookFor</codE> in <codE>str</codE>
+   * @param lookFor - substring of <code>str</codE>
+   * @return - true if <codE>lookFor</code> is not a part of a word, false otherwise.
+   */
+  private boolean standAlone(String str, int index, String lookFor){
+    //special cases it is in the beginning of the string or at the end of it.
+
+    //debug
+ //   System.out.print("\n\n\tinside standAlone: index = " + index);
+ //   System.out.println("\tlooking for string = " + lookFor);
+ //   System.out.println("\tinside string = " + str);
+    //end debug
+
+    if(index == 0) return false;
+    if( (index  + lookFor.length() ) >= str.length() ) return false;
+
+    char before = str.charAt(index-1);
+    char after = str.charAt(index + lookFor.length());
+
+    //debug
+ //  System.out.println("\tthe character before is = " + before);
+
+ //  System.out.println("\tthe character after is = " + after);
+   //end debug
+
+
+    if(( before == ')' || isWhiteSpace(before) )&&
+        (after == '(' || isWhiteSpace(after)) )
+       return true;
+
+    return false;
+
+  }
+
+  /**
+   * returns true if <codE>ch</codE> is a white space.
+   * @param ch - a character to be observed
+   * @return - true if ch is a white space. false otherwise.
+   */
+   private boolean isWhiteSpace(char ch){
+     switch(ch){
+       case ' ':
+       case '\t':
+       case '\n':
+       case '\r':
+       case '\f':
+         return true;
+      default: return false;
+     }
+   }//iswhiteSpace
+
+
+
+   private String replaceSigns(String str){
+     String retVal = "";
+     StringTokenizer tok = new StringTokenizer(str, "=orORandANDullULL<>", true);
+
+     int lastIndex = 0;
+     int newIndex = 0;
+
+     while(tok.hasMoreTokens()){
+       String currTok = tok.nextToken();
+       newIndex += currTok.length();
+
+       //vered - debug
+ //      System.out.println("current token: " + currTok);
+       //end debug
+
+
+       switch(currTok.charAt(0)){
+         case 'o':
+         case 'O':
+
+           //expecting to find R
+           String are = "";
+           if (tok.hasMoreTokens())
+             are = tok.nextToken();
+
+
+           newIndex += are.length();
+
+  //vered - debug
+ //  System.out.println("parsed another token: " + are);
+  //end debug
+
+           if (are.equalsIgnoreCase("r")) {
+             //if found R
+             if (this.standAlone(str, lastIndex, currTok + are)) {
+
+               //vered - debug
+     //          System.out.println("it stands alone replacing it with ||");
+               //end debug
+
+               //if it really an or operator replacing it.
+               retVal += " || ";
+             } //if stands alone
+
+             //else adding the tokens
+             else{
+               //vered - debug
+     //          System.out.println("it does not stand alone appending tokens");
+               //end debug
+
+               retVal += currTok + are;
+             }//not stand alone
+           } //if are
+
+           //we did not find R - adding tokens.
+           else{
+             //vered - debug
+      //       System.out.println("it is not an R, appending tokens");
+             //end debug
+
+             retVal += currTok + are;
+           }//not are
+
+           lastIndex = newIndex;
+
+          //debug
+     //     System.out.println("retVal is now: " + retVal);
+           break;
+
+         case 'a':
+         case 'A':
+           //expecting to find N
+           String an = "";
+
+           if (tok.hasMoreTokens())
+             an = tok.nextToken();
+
+           newIndex += an.length();
+
+           //vered - debug
+    //       System.out.println("parsed another token: " + an);
+           //end debug
+
+
+           if (an.equalsIgnoreCase("n")) {
+
+             //expecting to find D
+
+             String di = "";
+             if (tok.hasMoreTokens())
+               di = tok.nextToken();
+
+             newIndex += di.length();
+
+             //vered - debug
+       //      System.out.println("parsed another token: " + di);
+             //end debug
+
+             if (di.equalsIgnoreCase("d")) {
+               //found AND
+               if (this.standAlone(str, lastIndex, currTok + an + di)) {
+
+                 //vered - debug
+        //         System.out.println("it stands alone replacing it with &&");
+                 //end debug
+
+
+                 //if it is really AND operator replacing it
+                 retVal += " && ";
+               } //if stands alone
+
+               //this is part of an attribute name - appending the tokens
+               else{
+                 //vered - debug
+        //         System.out.println("it does not stand alone , appending tokens");
+                 //end debug
+
+                 retVal += currTok + an + di;
+               }//not stand alone
+
+             } //if di
+
+             //we did not find D - appending tokens
+             else{
+              //vered - debug
+    //          System.out.println("it was not D , appending tokens");
+              //end debug
+
+              retVal += currTok + an + di;
+             }//not D
+
+
+
+           } //if equals N
+
+           //we did not find N - appending tokens
+           else{
+             //vered - debug
+     //         System.out.println("it was not N , appending tokens");
+             //end debug
+
+             retVal += currTok + an;
+           }//not N
+
+
+           lastIndex = newIndex;
+           //debug
+    //        System.out.println("retVal is now: " + retVal);
+           break;
+
+         case 'n':
+         case 'N':
+
+           //expecting to find NULL
+
+           String you = "";
+           if (tok.hasMoreTokens())
+             you = tok.nextToken();
+
+           newIndex += you.length();
+
+           //vered - debug
+     //      System.out.println("parsed another token: " + you);
+           //end debug
+
+           //expecting U
+            if(you.equalsIgnoreCase("u")){
+
+              String el1 = "";
+              if (tok.hasMoreTokens())
+                el1 = tok.nextToken();
+
+              newIndex += el1.length();
+
+             //vered - debug
+     //        System.out.println("parsed another token: " + el1);
+             //end debug
+
+              //expecting L
+              if (el1.equalsIgnoreCase("l")) {
+
+                String el2 = "";
+                if (tok.hasMoreTokens())
+                  el2 = tok.nextToken();
+
+                newIndex += el2.length();
+
+                //vered - debug
+           //     System.out.println("parsed another token: " + el2);
+                //end debug
+
+
+                //expecting another L
+                if (el2.equalsIgnoreCase("l")) {
+
+                  //found the word NULL
+                  if (standAlone(str, lastIndex, currTok + you + el1 + el2)) {
+
+                    //vered - debug
+             //       System.out.println("it stands alone replacing it with NULL");
+                    //end debug
+
+                    //if it stands alone replacing it with upeercase.
+                    retVal += " NULL ";
+                  } //if stands alone
+
+                  //it is not the token NULL - appending all tokens
+                  else{
+                    //vered - debug
+         //           System.out.println("it does not stand alone , appending tokens");
+                    //end debug
+
+                    retVal += currTok + you + el1 + el2;
+                  }//not stand alone
+                } //if el2
+
+                //l2 was not an L, appending all tokens
+                else{
+                  //vered - debug
+          //        System.out.println("it was not L, appending tokens");
+                  //end debug
+
+                  retVal += currTok + you + el1 + el2;
+                }//not L2
+
+              } //if el1
+
+              //el1 was not an L - appending 3 first tokens
+              else{
+                //vered - debug
+     //           System.out.println("it was not L , appending tokens");
+                //end debug
+
+                retVal += currTok + you + el1;
+              }//not L1
+            }//if you
+
+            //you was not U - appending first 2 tokens.
+            else {
+             //vered - debug
+        //     System.out.println("it was not U , appending tokens");
+             //end debug
+
+              retVal += currTok + you;
+            }//not you
+
+            lastIndex = newIndex;
+
+            //debug
+       //     System.out.println("retVal is now: " + retVal);
+              break;
+
+            case '=':
+                char ch = retVal.charAt(retVal.length()-1);
+
+                //vered - debug
+             //    System.out.println("last char in retVal is: " + ch);
+                //end debug
+
+
+                if (ch == '<' || ch == '>') {
+
+                  //vered - debug
+        //          System.out.println("appending the equal sign");
+                  //end debug
+
+
+                  retVal += currTok;
+                }//this is not a single equal sign
+
+                else{
+                  String equ = "";
+                  if(tok.hasMoreTokens())
+                   equ = tok.nextToken();
+
+                  newIndex += equ.length();
+
+                  //vered - debug
+            //      System.out.println("parsed another token: " + equ);
+                  //end debug
+
+                  if (equ.equals("=")) {
+
+                    //vered - debug
+              //      System.out.println("no need to replace with double equal. just appending");
+                    //end debug
+
+                    retVal += currTok + equ;
+                  }//this is a legal double equal sign
+                  else {
+                    //vered - debug
+          //          System.out.println("replacing the single equal with a double and appending the other token");
+                    //end debug
+
+                    retVal += "==" + equ;
+                  }//a single equal sign
+
+                }//the char before is not < or >
+
+                  lastIndex = newIndex;
+                //debug
+        //        System.out.println("retVal is now: " + retVal);
+                break;
+
+
+
+          case '<':
+
+            //looking for >
+               String greater = "";
+               if(tok.hasMoreTokens()){
+                    greater = tok.nextToken();
+               }
+
+               //debug
+             //  System.out.println("parsed another token: " + greater);
+
+
+               newIndex += greater.length();
+
+               if(greater.equals(">")){
+
+
+                  retVal += " != ";
+                  }
+                else{
+
+
+                  retVal += currTok + greater;
+                  }//not >
+
+                  lastIndex = newIndex;
+
+
+
+                  break;
+
+            default:
+              retVal += currTok;
+              lastIndex += currTok.length();
+
+            break;
+
+
+       }//switch
+     }//while
+     return retVal;
+
+
+   }
+
+
+
+
+
+//end of supporting methods int he validation of the expression
+
+
    //headless conversion support
 
 }
@@ -728,4 +1289,61 @@ public class SQLFilterConstruction extends HeadlessUIModule {
   *
   * 01-26-03: vered
   * bug 201 is fixed. updated module info.
+  *
+  * 02-11-04: vered
+  * added a validation of the expression inside the doit method.
+  * validating is done by FilterExpression, thus it is identical to the one done by
+  * the GUI of this class.
+  * for this reason I added methods that convert the sql condition back to the
+  * regular one that can be parsed by FilterExpression.
+  * for this reason, documentation was added to the module info,
+  *  directing the user how to use the properties editor manually, it at all.
   */
+
+
+
+ /**
+  *
+            private boolean[] getIsScalar(HashMap attMap) {
+              // build an ArrayList to keep the column name.
+              //colNames = new ArrayList();
+              // build an ArrayList to keep the column type.
+              colTypes = new ArrayList();
+              DatabaseMetaData metadata = null;
+
+              try {
+                Connection con = cw.getConnection();
+                metadata = con.getMetaData();
+                ResultSet columns = metadata.getColumns(null,"%",tableName,"%");
+                while (columns.next()) {
+                 // String columnName = columns.getString("COLUMN_NAME");
+                  String columnType = columns.getString("TYPE_NAME").toUpperCase();
+                //  colNames.add(columnName);
+                  colTypes.add(columnType);
+                }
+              }
+              catch (Exception e) {
+
+                System.out.println("Error occurred in getIsScalar.");
+                e.printStackTrace();
+              }
+
+              //Column[] cols = new Column[colNames.size()];
+              boolean[] retVal = new boolean [colTypes.size()];
+              for (int colIdx = 0; colIdx < colTypes.size(); colIdx++) {
+                //cols[colIdx] = new ObjectColumn(1);
+                //cols[colIdx].setLabel(colNames.get(colIdx).toString());
+
+                System.out.println("retrieving type of column index " + colIdx);
+
+
+                if(ColumnTypes.isEqualNumeric(colTypes.get(colIdx).toString()))
+                 retVal[colIdx] = true;
+                else
+                 retVal[colIdx] = false;
+              }
+
+              return retVal;
+            }
+
+ */
