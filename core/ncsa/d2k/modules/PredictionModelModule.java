@@ -38,7 +38,7 @@ abstract public class PredictionModelModule extends ModelModule
 	 *	@return the input types
 	 */
 	public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.util.datatype.ExampleTable"};
+		String[] in = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
 	}
 
@@ -65,7 +65,7 @@ abstract public class PredictionModelModule extends ModelModule
 	 *	@return the output types
 	 */
 	public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.util.datatype.PredictionTable"};
+		String[] out = {"ncsa.d2k.modules.core.datatype.table.PredictionTable"};
 		return out;
 	}
 
