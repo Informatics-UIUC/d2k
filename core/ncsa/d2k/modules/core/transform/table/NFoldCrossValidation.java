@@ -164,27 +164,8 @@ public class NFoldCrossValidation extends ncsa.d2k.core.modules.DataPrepModule {
 	}
 
 	public String getModuleInfo(){
-		return "<p>      Overview: This module provides the mechanism by which N-fold cross       validation"+
-			" can be performed. It will produce the number of test and       training tables the user specifies"+
-			" in the properties.    </p>    <p>      Detailed Description: For each table input, this modules"+
-			" will execute n       times where n is the number of folds specified in the <i>Number Folds</i>"+
-			"       property. At each execution, it will produce one test table and one       train table."+
-			" The data is initially divided into n equally sized chunks       of data, that is each chunk"+
-			" contains nearly the same number of examples.       Each time the module executes, it will hold"+
-			" out a different chunk of the       data for testing. This hold out data should be about 1/n"+
-			" of the data,       and this will constitute the test data. The training data will be the  "+
-			"     other chunks of data combined into a single test table. This should       represent n-1/n"+
-			" of the entire dataset. The number of folds is also       output, but this value is only output"+
-			" once, the first time the module       executes.    </p>    <p>      Data Type Restrictions:"+
-			" This module has no explicit data type       restrictions, however the majority of the supervised"+
-			" learning algorithms       are only prepared to deal with floating point numbers, so data  "+
-			"     conversion may be need to be done, and if so, it should be done upstream       from this"+
-			" module. Otherwise, it will be done repeated, that is, on each       fold.    </p>    <p>  "+
-			"    Scalability: The memory requirements of the original data set will       likely dwarf the"+
-			" memory requirements of this module. This module will       require an array of integers with"+
-			" one entry for each row of the original       table.    </p>    <p>      Trigger Criteria: When"+
-			" this module receives an input, it will execute <i>       Number Folds</i> times, where <i>Number"+
-			" Folds</i> is the property the       user sets.    </p>";
+		return "This module has been REPLACED by NFoldTrainTest.   Be aware that the output port order is different on the "+
+	               "new module.   This module will be REMOVED soon. ";
 	}
 
 	/**
@@ -234,7 +215,7 @@ public class NFoldCrossValidation extends ncsa.d2k.core.modules.DataPrepModule {
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "N-Fold Cross Validation";
+		return "SEE MODULE INFO - USE NEW MODULE";
 	}
 
 	/**
