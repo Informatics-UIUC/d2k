@@ -626,7 +626,7 @@ public class AttributeConstruction extends UIModule {
 /* the type used to store column constructions                                */
 /******************************************************************************/
 
-   private class Construction {
+   private class Construction implements java.io.Serializable {
 
       String label, expression;
 
