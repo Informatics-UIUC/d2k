@@ -57,8 +57,11 @@ public class SaveFileToDB extends UIModule
     JTable dbTableDef;
     JTable vtTableDef;
 
-    /* maximum number in vertical tables */
-    int maxNumRow;
+    /* maximum number of rows in meta table (the number of columns in vt table) */
+    int maxNumRow = 900;
+    /* maximum number of rows in the data table. If the data table has rows more */
+    /* than maxDataRow, suggest user use Database utility to load data           */
+    int maxDataRow = 100000;
     /* character used to initialize tables */
     static String  NOTHING = "";
 
@@ -67,11 +70,21 @@ public class SaveFileToDB extends UIModule
        @return A description of this module.
     */
     public String getModuleInfo() {
-	return "This module takes an Oracle database Connection and a vertical " +
-               "table as the input, and save the data from "+
-               "the vertical table to a database table. There are two options are " +
-               "provided. You can either create a new database table to save the data, " +
-               "or append the data to an existing database table.";
+      String s = "<p> Overview: ";
+      s += "This module saves data from an data table to a database table. </p>";
+      s += "<p> Detailed Description: ";
+      s += "This module takes an Oracle database Connection and an example ";
+      s += "table as the input, and save the data from ";
+      s += "the data table to a database table. There are two options " ;
+      s += "provided. You can either create a new database table to save the data, ";
+      s += "or append the data to an existing database table. you may only ";
+      s += "append data to a database table you have been granted to. If you ";
+      s += "cannot find the database table you want to add data, please report the ";
+      s += "problem to your database administrator. </p>";
+      s += "<p> Restrictions: ";
+      s += "We currently only support Oracle database.";
+
+      return s;
     }
     /**
        Provide the module name.
@@ -106,12 +119,18 @@ public class SaveFileToDB extends UIModule
         switch(i)
         {
           case 0: return "JDBC data source to make database connection.";
-          case 1: return "The Table to upload to database.";
+          case 1: return "The table to upload to database.";
           default: return "No such input.";
         }
     }
     public String getInputName (int i) {
-        return null;
+      switch(i) {
+              case 0:
+                      return "Database Connection";
+              case 1:
+                      return "Data Table";
+              default: return "NO SUCH INPUT!";
+      }
     }
     /**
         Return the info for a particular output.
@@ -121,6 +140,7 @@ public class SaveFileToDB extends UIModule
     public String getOutputInfo (int i) {
         return null;
     }
+
     public String getOutputName (int i) {
         return null;
     }
@@ -146,7 +166,7 @@ public class SaveFileToDB extends UIModule
        are null, default values are used.
     */
     public class TableNameView extends JUserInputPane
-	implements ActionListener {
+        implements ActionListener {
 
         /* variables for createTable tab */
         JButton createTableBtn;
@@ -158,19 +178,17 @@ public class SaveFileToDB extends UIModule
         JButton cancelAppendBtn;
 
 
-	public Dimension getPreferredSize() {
+        public Dimension getPreferredSize() {
             return new Dimension (500, 500);
         }
         /**
-	   Perform initializations here.
-	   @param mod The module that created this UserView
-	*/
-	public void initView(ViewModule mod) {
+           Perform initializations here.
+           @param mod The module that created this UserView
+        */
+        public void initView(ViewModule mod) {
             removeAll();
             cw = (ConnectionWrapper)pullInput(0);
             vt = (TableImpl)pullInput(1);
-            /* the number of rows in vt JTables is determined by inputed vertical table */
-            maxNumRow = vt.getNumColumns();
 
             /* layout the createTable tab */
             JPanel createTablePanel = new JPanel();
@@ -181,7 +199,6 @@ public class SaveFileToDB extends UIModule
             newTableInfo.setLayout (new GridBagLayout());
 
             /* Table with scrollbar for editing the new database table definition */
-            /* the number of columns is determined by the number of columns in input vt */
             newModel = new MetaTableModel(maxNumRow,3,true);
             newTableDef = new JTable(newModel);
             JScrollPane pane = new JScrollPane(newTableDef);
@@ -192,7 +209,6 @@ public class SaveFileToDB extends UIModule
 
             /* Use input information on VerticalTable as the default column definition */
             setUpColumnDefault(newTableDef);
-
             /* The second column "Data Type" has comboBox for choosing data type */
             setUpDataTypeCombo(newTableDef.getColumnModel().getColumn(1));
 
@@ -235,8 +251,8 @@ public class SaveFileToDB extends UIModule
             JOutlinePanel dbTableInfo = new JOutlinePanel("DB Table Information");
             dbTableInfo.setLayout (new GridBagLayout());
             /* Table with scrollbar for viewing the existing table definition */
-            /* the database table has up to 100 columns and not editable */
-            dbModel = new MetaTableModel(900,3,false);
+            /* the database table is not editable */
+            dbModel = new MetaTableModel(maxNumRow,3,false);
             dbTableDef = new JTable(dbModel);
             JScrollPane dbPane = new JScrollPane(dbTableDef);
             dbTableDef.setPreferredScrollableViewportSize(new Dimension(250,125));
@@ -249,7 +265,6 @@ public class SaveFileToDB extends UIModule
             vtTableInfo.setLayout (new GridBagLayout());
 
             /* Table with scrollbar for viewing the VT table definition */
-            /* the number of columns in VT table is determined by number of columns in vt input */
             vtModel = new MetaTableModel(maxNumRow,3,false);
             vtTableDef = new JTable(vtModel);
             JScrollPane vtPane = new JScrollPane(vtTableDef);
@@ -281,10 +296,10 @@ public class SaveFileToDB extends UIModule
             setLayout(new BorderLayout());
             add(jtp, BorderLayout.CENTER);
 
-	} /* end of initView */
+        } /* end of initView */
 
         /** Fill up column information based on the input vertical table
-	    @param newTable The JTable to fill up the column information
+            @param newTable The JTable to fill up the column information
         */
         protected void setUpColumnDefault(JTable newTable) {
             String sLength;
@@ -312,7 +327,7 @@ public class SaveFileToDB extends UIModule
             if (c instanceof StringColumn)
                 return "string";
             else if(c instanceof IntColumn)
-		return "int";
+                return "int";
             else if(c instanceof FloatColumn)
                 return "float";
             else if(c instanceof DoubleColumn)
@@ -320,17 +335,17 @@ public class SaveFileToDB extends UIModule
             else if(c instanceof LongColumn)
                 return "long";
             else if(c instanceof ShortColumn)
-		return "short";
-	    else if(c instanceof BooleanColumn)
-		return "boolean";
-	    else if(c instanceof ObjectColumn)
-		return "object";
-	    else if(c instanceof ByteArrayColumn)
-		return "byte[]";
-	    else if(c instanceof CharArrayColumn)
-		return "char[]";
-	    else
-		return "unknown";
+                return "short";
+            else if(c instanceof BooleanColumn)
+                return "boolean";
+            else if(c instanceof ObjectColumn)
+                return "object";
+            else if(c instanceof ByteArrayColumn)
+                return "byte[]";
+            else if(c instanceof CharArrayColumn)
+                return "char[]";
+            else
+                return "unknown";
         }
 
         /** get maximum length of the string column from the vertical table
@@ -369,52 +384,104 @@ public class SaveFileToDB extends UIModule
             }
         }
 
-	/**
-	   This method is called when inputs arrive to the
-	   ViewModule.
-	   @param input The input
-	   @param index The index of the input
-	*/
-	public void setInput(Object input, int index) {
+        /**
+           This method is called when inputs arrive to the
+           ViewModule.
+           @param input The input
+           @param index The index of the input
+        */
+        public void setInput(Object input, int index) {
           if (index == 0) {
             cw = (ConnectionWrapper)input;
           }
           else if (index == 1) {
             vt = (TableImpl)input;
+            newTableName.setText(NOTHING);
+            chosenTableName.setText(NOTHING);
             newModel.initTableModel(maxNumRow,3);
             newModel.fireTableDataChanged();
             setUpColumnDefault(newTableDef);
             setUpDataTypeCombo(newTableDef.getColumnModel().getColumn(1));
+            dbModel.initTableModel(maxNumRow,3);
+            dbModel.fireTableDataChanged();
             vtModel.initTableModel(maxNumRow,3);
             vtModel.fireTableDataChanged();
             setUpColumnDefault(vtTableDef);
           }
-	}
+        }
 
         /* this method is fired when a button or enter key is pressed */
         public void actionPerformed(ActionEvent e) {
             Object src = e.getSource();
             if (src == createTableBtn) {
-                if (doCreateTable()) {
+                // check the first row in the data table. If the first row contains
+                // the strings of data type, the user has not set the property "typeRow"
+                // correctly in data loading.
+                for (int idx = 0; idx < vt.getNumColumns(); idx++) {
+                  if (vt.getString(0,idx).equals("double") ||
+                      vt.getString(0,idx).equals("string")) {
+                    JOptionPane.showMessageDialog(msgBoard,
+                      "The data table has problems. You did not set the property 'typeRow' " +
+                      "correctly for reading data.",
+                      "Information", JOptionPane.INFORMATION_MESSAGE);
+                    viewAbort();
+                    return;
+                  }
+                }
+                if (vt.getNumRows() >= maxDataRow) {
+                  JOptionPane.showMessageDialog(msgBoard,
+                     "There are more than " + maxDataRow + " rows to load. For more " +
+                     "efficient data loading, please use " +
+                     "the utility the database vendor provides.", "Error",
+                     JOptionPane.ERROR_MESSAGE);
+                  System.out.println("Too many data to load. Please use database utility.");
+                  viewAbort();
+                }
+                else if (doCreateTable()) {
                   doInsertTable(newTableName.getText(), newTableDef);
                 }
             }
             else if (src == appendTableBtn) {
+              // check the first row in the data table. If the first row contains
+              // the strings of data type, the user has not set the property "typeRow"
+              // correctly in data loading.
+              for (int idx = 0; idx < vt.getNumColumns(); idx++) {
+                if (vt.getString(0,idx).equals("double") ||
+                    vt.getString(0,idx).equals("string")) {
+                  JOptionPane.showMessageDialog(msgBoard,
+                    "The data table has problems. You did not set the property 'typeRow' " +
+                    "correctly for reading data.",
+                    "Information", JOptionPane.INFORMATION_MESSAGE);
+                  viewAbort();
+                  return;
+                }
+              }
               /* user may not hit Enter key in the field chosenTableName before
                  clicking appendTableBtn. We need to force firing getDBTableDef */
-              dbModel.initTableModel(900,3);
+              dbModel.initTableModel(maxNumRow,3);
               dbModel.fireTableDataChanged();
               getDBTableDef();
-              boolean pass = doValidate(dbTableDef, vtTableDef);
-              if (pass) {
-                doInsertTable(chosenTableName.getText(), vtTableDef);
+              if (vt.getNumRows() >= maxDataRow) {
+                JOptionPane.showMessageDialog(msgBoard,
+                   "There are more than " + maxDataRow + " rows to load. For more " +
+                   "efficient data loading, please use " +
+                   "the utility the database vendor provides.", "Error",
+                   JOptionPane.ERROR_MESSAGE);
+                System.out.println("Too many data to load. Please use database utility.");
+                viewAbort();
+              }
+              else {
+                boolean pass = doValidate(dbTableDef, vtTableDef);
+                if (pass) {
+                  doInsertTable(chosenTableName.getText(), vtTableDef);
+                }
               }
             }
             else if (src == chosenTableName) {
               if (chosenTableName.getText()!= null && chosenTableName.getText()!=NOTHING)
               {
                 /* wipe out previously loaded table definition */
-                dbModel.initTableModel(900,3);
+                dbModel.initTableModel(maxNumRow,3);
                 dbModel.fireTableDataChanged();
                 getDBTableDef();
               }
@@ -432,7 +499,6 @@ public class SaveFileToDB extends UIModule
 
       /** connect to a database and retrieve the list of available tables */
       protected void doBrowse() {
-          //query = "select table_name from all_tables where owner not like '%SYS%'";
           query = "select table_name from user_tables";
           try {
               bt = new BrowseTables(cw, query);
@@ -446,7 +512,7 @@ public class SaveFileToDB extends UIModule
                   {
                     chosenTableName.setText(btw.getChosenRow());
                     /* wipe out previously loaded table definition */
-                    dbModel.initTableModel(900,3);
+                    dbModel.initTableModel(maxNumRow,3);
                     dbModel.fireTableDataChanged();
                     getDBTableDef();
                   }
@@ -461,7 +527,9 @@ public class SaveFileToDB extends UIModule
       }
     } /* end of TableNameView */
 
-    /** create a database table based on user's input */
+    /** create a database table based on user's input
+     *  @return true if the table is created successfully, otherwise false
+     */
     protected boolean doCreateTable () {
       try {
           System.out.println("TableName is: " + newTableName.getText());
@@ -582,7 +650,7 @@ public class SaveFileToDB extends UIModule
         newTableName.setText(NOTHING);
         chosenTableName.setText(NOTHING);
         newModel.initTableModel(maxNumRow,3);
-        dbModel.initTableModel(900,3);
+        dbModel.initTableModel(maxNumRow,3);
         vtModel.initTableModel(maxNumRow,3);
         viewAbort();
       }
@@ -601,7 +669,7 @@ public class SaveFileToDB extends UIModule
           Connection con = cw.getConnection ();
           Statement stmt;
           String sb = new String("select column_name, data_type, data_length " +
-            "from all_tab_columns where table_name = '" +
+            "from user_tab_columns where table_name = '" +
             chosenTableName.getText().toUpperCase() + "' order by column_id");
           stmt = con.createStatement ();
           ResultSet tableSet = stmt.executeQuery(sb);
@@ -665,7 +733,7 @@ public class SaveFileToDB extends UIModule
         if (!isLengthMatch(dbTable.getValueAt(i,2),vtTable.getValueAt(i,2))) {
           JOptionPane.showMessageDialog(msgBoard,
                 "The column " + (i+1) +
-                " in vertical table is too big. Data cannot be " +
+                " in data table is too big. Data cannot be " +
                 "appended. ", "Error", JOptionPane.ERROR_MESSAGE);
           System.out.println("column is too big.");
           return (false);
