@@ -274,7 +274,14 @@ public class SQLGetClusterBarChartFromCube extends UIModule {
       else if (src == displayBtn) {
         Object[] values = selectedModel.toArray();
         String[] retVal = new String[values.length];
-        if (retVal.length != 2) {
+        if (useCodeBook.getState() && bookName.getText().length()<=0) {
+          // The user has not chosen a code book yet
+          JOptionPane.showMessageDialog(msgBoard,
+            "You must choose a code book.", "Error",
+            JOptionPane.ERROR_MESSAGE);
+          System.out.println("There is no code book selected.");
+        }
+        else if (retVal.length != 2) {
           JOptionPane.showMessageDialog(msgBoard,
           "You must choose two features from the selected table.", "Error",
           JOptionPane.ERROR_MESSAGE);
