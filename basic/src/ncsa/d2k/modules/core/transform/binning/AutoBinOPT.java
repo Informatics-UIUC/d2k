@@ -93,11 +93,11 @@ public class AutoBinOPT
   }
 
   protected ExampleTable tbl;
-  protected NumberFormat nf; 
+  protected NumberFormat nf;
 
   int[] inputs;
   int[] outputs;
-   
+
   public void doit() throws Exception {
     tbl = (ExampleTable) pullInput(0);
     ParameterPoint pp = (ParameterPoint) pullInput(1);
@@ -106,17 +106,17 @@ public class AutoBinOPT
     outputs = tbl.getOutputFeatures();
 
     if ((inputs == null) || (inputs.length == 0))
-	throw new Exception(getAlias() + 
+	throw new Exception(getAlias() +
 			    ": Please select the input features, they are missing.");
-    
+
     if (outputs == null || outputs.length == 0)
-	throw new Exception(getAlias() + 
+	throw new Exception(getAlias() +
 			    ": Please select an output feature, it is missing");
-    
-    if(tbl.isColumnScalar(outputs[0])) 
-	throw new Exception(getAlias() + 
+
+    if(tbl.isColumnScalar(outputs[0]))
+	throw new Exception(getAlias() +
 			    ": Output feature must be nominal. Please transform it.");
-    
+
     nf = NumberFormat.getInstance();
     nf.setMaximumFractionDigits(3);
 
@@ -168,7 +168,7 @@ public class AutoBinOPT
     pushOutput(bt, 0);
   }
 
- 
+
 
   protected BinDescriptor[] numberOfBins(int num) throws Exception {
     List bins = new ArrayList();
@@ -263,7 +263,10 @@ public class AutoBinOPT
         // now find the bin maxes...
         // loop through the sorted data.  the next max will lie at
         // data[curLoc+weight] items
-        int curIdx = 0;
+
+        //vered - changed the following line, from 0 to -1, so the first bin won't
+        //have too many items in it.
+        int curIdx = -1;
         while (curIdx < vals.length - 1) {
           curIdx += weight;
           if (curIdx > vals.length - 1) {
@@ -341,7 +344,7 @@ public class AutoBinOPT
     //return bt;
   }
 
-    
+
   /**
    * put your documentation comment here
    * @param idx
@@ -353,7 +356,7 @@ public class AutoBinOPT
   protected BinDescriptor createTextualBin(int idx, String name, String[] vals) {
     return new TextualBinDescriptor(idx, name, vals, tbl.getColumnLabel(idx));
   }
-  */ 
+  */
 
   /**
    * Create a numeric bin that goes from min to max.
@@ -416,3 +419,11 @@ public class AutoBinOPT
 // QA comments Anca:
 //added check for input/output attribute selections - since ChooseAttribute does not guarantee selections
 //moved create*BinDescriptor methods to BinDescriptorFactory
+
+
+/**
+* 11-18-03 Vered - changed line 169 so that curIdx = -1 and not 0.
+*          this makes the first bin not to be too large if there isn't any
+*          good reason for it. (beforehand, the first bin was by default of
+*          size weight+1, even if all values were unique.
+*/
