@@ -18,6 +18,7 @@ public class BoxPlotPane extends JPanel {
    // Constants
    double BORDER = 25;
    double BUFFER = 5;
+   double MAX_HEIGHT = 300;  // added 7/03;  See QA notes.
 
    // Scale constants
    double SCALETICKWIDTH = 5;
@@ -67,8 +68,22 @@ public class BoxPlotPane extends JPanel {
       fquartile = statistics.getFirstQuartile();
       tquartile = statistics.getThirdQuartile();
 
-      sminimum = minimum;
-      smaximum = maximum;
+      // If the min == max, make sure that value is positioned in the
+      // middle of the scale.  Otherwise, make the scale range from min
+      // to max.  If we don't do this, later you divide by zero and plot
+      // is messed up.
+      if ( minimum == maximum ) {
+         if ( minimum == 0 ) {
+             sminimum = -1;
+             smaximum = 1;
+         } else {
+             sminimum = minimum - minimum;
+             smaximum = maximum + maximum;
+         }
+      } else {
+         sminimum = minimum;
+         smaximum = maximum;
+      }
    }
 
    public void paintComponent(Graphics graphic) {
@@ -76,12 +91,17 @@ public class BoxPlotPane extends JPanel {
 
       width = getWidth();
       height = getHeight();
+      // Make sure plot is at 'top' of tabbed pane display area.
+      // See QA comments for details.
+      if ( height > MAX_HEIGHT ) {
+          height = MAX_HEIGHT;
+      }
       ratio = (height-2*BORDER)/(smaximum-sminimum);
       minimumoffset = sminimum*ratio;
 
       nformat = NumberFormat.getInstance();
-      nformat.setMaximumFractionDigits(1);
-      nformat.setMinimumFractionDigits(1);
+      nformat.setMaximumFractionDigits(2);
+      nformat.setMinimumFractionDigits(2);
       metrics = graphic.getFontMetrics();
 
       drawScale(graphic);
@@ -155,6 +175,26 @@ public class BoxPlotPane extends JPanel {
       y += ascent;
       graphic.drawString("Third Quartile: " + nformat.format(tquartile), (int) x, (int) y);
       y += 2*ascent;
+
    }
 
 }
+
+// Start QA Comments
+//
+// 7/03 - Ruth's changes:
+//        Added MAX_HEIGHT and use that if height returned is too large.
+//        This was added because with lots and lots of tabs otherwise get
+//        boxplot that's stretched across many screens.  This fix is not optimal
+//        because the "display" part of the tabbed pane is still really tall...
+//        it does make sure the plot is in the top part of the display with this
+//        change.  Something better would be great but I couldn't find it.  See
+//        comments in BoxPlot - when Java 1.4 available there is a Tab Layout
+//        option that allows the tabs to be scrolled & gets around the 'huge
+//        display' problem.  For now this was the best I could do.
+//      - Changed so 2 digits printed instead of 1 in number formatting.
+//      - Test for case where max == min and if so, plot a scale that is bigger
+//        than the min-max range.  Originally plotted lines "off the top" of the
+//        scale in this case as division by 0 was happening.
+//
+// End QA Comments
