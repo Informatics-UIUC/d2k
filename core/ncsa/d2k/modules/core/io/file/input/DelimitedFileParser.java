@@ -666,7 +666,7 @@ public class DelimitedFileParser implements FlatFileParser {
                         thisRow[counter] = newBytes;
                         counter++;
                     } else {
-                        this.addBlank(rowNum, i);
+                        this.addBlank(rowNum, counter);
                         thisRow[counter] = new char[0];
                         counter++;
                     }
