@@ -82,7 +82,8 @@ public final class DecisionTreeVis
         "<p>Detailed Description: Given a ViewableDTModel, display the structure " +
         "and contents of the nodes of the decision tree.  The <i>Navigator</i> " +
         "on the left shows a small view of the entire tree.  The main area " +
-        "shows an expanded view of the tree.";
+        "shows an expanded view of the tree. For more information look up the help " +
+	"provided in the UI of the module";
     return s;
   }
 

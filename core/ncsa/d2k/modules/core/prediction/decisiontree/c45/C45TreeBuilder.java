@@ -11,6 +11,7 @@ import ncsa.d2k.util.*;
 import java.util.*;
 import java.io.Serializable;
 import java.text.NumberFormat;
+import java.beans.PropertyVetoException;
 
 /**
  Build a C4.5 decision tree.  The tree is build recursively, always choosing
@@ -23,9 +24,12 @@ import java.text.NumberFormat;
  parent will be turned into a leaf itself.
  @author David Clutter
  */
+
 public class C45TreeBuilder extends C45TreeBuilderOPT {
 
-  public void setMinimumRatioPerLeaf(double d) {
+  public void setMinimumRatioPerLeaf(double d) throws PropertyVetoException {
+	if( d < 0 || d > 1)
+	    throw new PropertyVetoException("minimumRatioPerLeaf must be between 0 and 1",null);
     super.setMinimumRatioPerLeaf(d);
   }
 
@@ -141,6 +145,6 @@ public class C45TreeBuilder extends C45TreeBuilderOPT {
     }
     DecisionTreeNode rootNode = buildTree(exampleSet, atts);
     pushOutput(rootNode, 0);
-    pushOutput(table, 1);
+    //pushOutput(table, 1);
   }
 }

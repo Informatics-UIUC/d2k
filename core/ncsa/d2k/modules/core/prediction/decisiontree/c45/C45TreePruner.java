@@ -57,8 +57,7 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
 	}
 
 	public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode",
-			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+	    String[] out = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode"};
 		return out;
 	}
 
@@ -66,8 +65,6 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
 		switch(i) {
 			case(0):
 				return "A Decision Tree containing the pruned tree.";
-			case(1):
-				return "The input ExampleTable, unchanged.";
 			default:
 				return "";
 		}
@@ -149,7 +146,7 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
 		rootNode.setTraining(false);
 		// push the pruned tree out
 		pushOutput(rootNode, 0);
-		pushOutput(et, 1);
+		//pushOutput(et, 1);
 	}
 
 	/**

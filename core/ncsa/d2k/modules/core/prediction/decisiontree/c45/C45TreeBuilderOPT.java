@@ -11,6 +11,7 @@ import ncsa.d2k.util.*;
 import java.util.*;
 import java.io.Serializable;
 import java.text.NumberFormat;
+import java.beans.PropertyVetoException;
 
 /**
  Build a C4.5 decision tree.  The tree is build recursively, always choosing
@@ -133,9 +134,11 @@ public class C45TreeBuilderOPT
     return minimumRecordsPerLeaf;
   }*/
 
-  protected void setMinimumRatioPerLeaf(double d) {
-    minimumRatioPerLeaf = d;
-  }
+    protected void setMinimumRatioPerLeaf(double d) throws PropertyVetoException {
+	if( d < 0 || d > 1)
+	    throw new PropertyVetoException("minimumRatioPerLeaf must be between 0 and 1",null);
+	minimumRatioPerLeaf = d;
+    }
 
   protected double getMinimumRatioPerLeaf() {
     return minimumRatioPerLeaf;
@@ -714,7 +717,7 @@ public class C45TreeBuilderOPT
       return "The root of the decision tree built by this module.";
     }
     else {
-      return "The ExampleTable used to build the tree, unchanged.";
+      return " ";
     }
   }
 
@@ -723,7 +726,7 @@ public class C45TreeBuilderOPT
       return "Decision Tree Root";
     }
     else {
-      return "Example Table";
+      return "";
     }
   }
 
@@ -736,8 +739,8 @@ public class C45TreeBuilderOPT
 
   public String[] getOutputTypes() {
     String[] out = {
-        "ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode",
-        "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+        "ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode" };
+
     return out;
   }
 
@@ -816,7 +819,6 @@ public class C45TreeBuilderOPT
     }
     DecisionTreeNode rootNode = buildTree(exampleSet, atts);
     pushOutput(rootNode, 0);
-    pushOutput(table, 1);
   }
 
   /**

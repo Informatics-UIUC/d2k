@@ -16,7 +16,7 @@ public class CreateDTModel
         "<p>Detailed Description: Create a DecisionTreeModel from " +
         "<i>Decision Tree Root</i>.  The <i>Example Table</i> must " +
         "be the same set of examples used to construct the decision tree." +
-        "<p>Data Type Restrictions: none" +
+        "<p>Data Type Restrictions: Output feature must be nominal." +
         "<p>Data Handling: This module will create a PredictionTable " +
         "from <i>Example Table</i> and proceed to make a prediction " +
         "for each example in <i>Example Table</i>." +
