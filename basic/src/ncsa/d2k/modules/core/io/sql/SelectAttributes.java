@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.io.sql;
 
 import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.core.transform.StaticMethods;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -291,7 +292,10 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
         public void doit() throws Exception{
 
           Vector availableAttributes = (Vector)pullInput(0);
-          int numTarget = 0;  //counter for elements in intersection of selectedAttributes and availableAttributes.
+        /*
+         the following is now in StaticMethods.
+
+         int numTarget = 0;  //counter for elements in intersection of selectedAttributes and availableAttributes.
           for(int i=0; i<selectedAttributes.length; i++)
             if(availableAttributes.contains(selectedAttributes[i]))
               numTarget++;
@@ -303,7 +307,8 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
               targetAttributes[j] = selectedAttributes[i];
               j++;
             }//if
-
+*/
+         String[] targetAttributes = StaticMethods.getIntersection(selectedAttributes, availableAttributes);
           pushOutput(targetAttributes, 0);
 
 

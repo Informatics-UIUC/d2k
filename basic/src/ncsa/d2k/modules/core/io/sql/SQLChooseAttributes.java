@@ -24,6 +24,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import ncsa.d2k.modules.core.transform.StaticMethods;
+
 
 public class SQLChooseAttributes extends HeadlessUIModule {
   JOptionPane msgBoard = new JOptionPane();
@@ -598,7 +600,10 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 
       /* inputFeatures holds the target input columns ids, as they are in the
        table in the database.*/
-      inputFeatures = getTargetColumns(availableColumnMap, selectedInputNames);
+
+//the following line was commented out and replaced by calling to a static method.
+ //     inputFeatures = getTargetColumns(availableColumnMap, selectedInputNames);
+        inputFeatures = StaticMethods.getIntersectIds(selectedInputNames, availableColumnMap);
 
       if(inputFeatures.length == 0)
         throw new Exception("None of the input names which were selected on the previous run " +
@@ -676,9 +681,10 @@ public class SQLChooseAttributes extends HeadlessUIModule {
            type.equals("number") ||
            type.equals("NUMERIC") ||
            type.equals("numeric"))
-         cols[selectedColumn].setIsScalar(true);
-       else           throw new Exception("\nSQLChooseAttributes:\n" +
+         throw new Exception("\nSQLChooseAttributes:\n" +
                       "You cannot choose a numeric column as the output column");
+
+       else cols[selectedColumn].setIsScalar(false);
       selectedOutput[i] = selectedColumn;
       selectedColumn++;
 
@@ -792,7 +798,7 @@ for (int colId = 0; colId < Id2ColumnNameMap.size(); colId++) {
     for(int i=0; i<desired.length; i++)
       if (available.containsKey(desired[i]))
         count++;
-      else System.out.println("\n\nSQLChooseAttributes:\n The chaosed table does not contain a column named " + desired[i] +
+      else System.out.println("\n\nSQLChooseAttributes:\n The chosen table does not contain a column named " + desired[i] +
                               ". This column won't be included in the output of this module.\n");
 
 
