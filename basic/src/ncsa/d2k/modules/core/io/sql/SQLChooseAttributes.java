@@ -84,8 +84,8 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 
   public String getInputName(int i) {
     switch (i) {
-      case 0: return "DatabaseConnection";
-      case 1: return "DataTableName";
+      case 0: return "Database Connection";
+      case 1: return "Data Table Name";
       default: return "NoInput";
     }
   }
@@ -519,13 +519,13 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 
     //validating table's name
     if(_table == null || _table.length() ==0)
-      throw new Exception("Table name is in valid.");
+      throw new Exception(getAlias() + ": the input Data Table Name is in valid.");
 
     //validating that inputs and outputs were selected on previous run
-    if(selectedInputNames == null)
-      throw new Exception("No input names were selected on a gui run. You must select at least one input name.");
-    if(selectedOutputNames == null)
-      throw new Exception("No output names were selected on a gui run. You must select one output name.");
+    if(selectedInputNames == null || selectedOutputNames == null ||
+       selectedOutputNames.length == 0 || selectedInputNames.length == 0)
+      throw new Exception (this.getAlias()+" has not been configured correctly. Before running headless, run with the gui and configure the parameters.");
+
 
     con = cw.getConnection();
     DatabaseMetaData metadata = con.getMetaData();
@@ -554,7 +554,7 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 
 
      if(counter == 0)
-       throw new Exception("Table " + _table + " is either not in the database or has no columns in it");
+       throw new Exception(getAlias() +": Table " + _table + " is either not in the database or has no columns in it");
 
 
 
@@ -564,8 +564,8 @@ public class SQLChooseAttributes extends HeadlessUIModule {
         inputFeatures = StaticMethods.getIntersectIds(selectedInputNames, availableColumnMap);
 
       if(inputFeatures.length == 0)
-        throw new Exception("None of the input names which were selected on the previous run " +
- "doesn't appear in the selected table. Cannot proceed without any valid input names.");
+        throw new Exception(getAlias() +": None of the configured input names " +
+ "appear in the selected table. Cannot proceed without any valid input names.");
 
       /* selectedInput holds the input columns ids, of the output example table.*/
       selectedInput = new int[inputFeatures.length];
@@ -590,7 +590,7 @@ public class SQLChooseAttributes extends HeadlessUIModule {
               selectedOutputNames[0])).intValue();
           finalSelectedOutput = selectedOutputNames[0];
         }
-        else throw new Exception ("\n\nSQLChooseAttributes:\nThe selected output " +
+        else throw new Exception (getAlias() +": The selected output " +
         "feature is not available in the data base table. cannot proceed.\n");
 
 
@@ -639,8 +639,7 @@ public class SQLChooseAttributes extends HeadlessUIModule {
            type.equals("number") ||
            type.equals("NUMERIC") ||
            type.equals("numeric"))
-         throw new Exception("\nSQLChooseAttributes:\n" +
-                      "You cannot choose a numeric column as the output column");
+         throw new Exception(getAlias() +": You cannot choose a numeric column as the output column");
 
        else cols[selectedColumn].setIsScalar(false);
       selectedOutput[i] = selectedColumn;
@@ -678,8 +677,9 @@ public class SQLChooseAttributes extends HeadlessUIModule {
       numRows = countSet.getInt(1);
     }
     catch (Exception e){
-      e.printStackTrace();
-      System.out.println("Error occurred in createExampleTable.");
+
+      System.out.println(getAlias() +": Error occurred in createExampleTable.");
+      throw e;
     }
    // table.setNumRows(numRows);
 

@@ -30,7 +30,18 @@ import java.awt.*;
 import java.awt.event.*;
 
 import ncsa.d2k.modules.core.io.file.input.FlatFileParser;
-
+/**
+ *
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2003</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ *
+ * @todo: add validity test to the properties editor - test that isOracle and isSql
+ * have oposite values.
+ */
 public class SaveFileToDB extends HeadlessUIModule
        implements java.io.Serializable {
 
@@ -942,19 +953,24 @@ public class SaveFileToDB extends HeadlessUIModule
          //validation tests...
 
          if(tableName == null || tableName.length() == 0)
-           throw new Exception( "Table name is missing or was not set properly.\n");
+           throw new Exception(this.getAlias()+  ": Table name is missing or was not set properly. " +
+                               "Before running headless set the table name property using the "+
+                               "properties editor, or through running this itinerary with GUI.");
+         if(isOracle != !isSql)
+           throw new Exception(this.getAlias() + " was configured incorrectly. " +
+                               "Property SQL Server must be different that Oracle Server.");
 
          // check the first row in the data table. If the first row contains
          // the strings of data type, the user has not set the property "typeRow"
          // correctly in data loading.
            if(checkTypeRow())
-             throw new Exception ("The data table has problems. You did not set the property 'typeRow' " +
+             throw new Exception (this.getAlias()+ ": The data table has problems. You did not set the property 'typeRow' " +
                "correctly for reading data.");
 
          //checking the the table is not larger than allowed.
 
          if (vt.getNumRows() >= maxDataRow)
-             throw new Exception ("There are more than " + maxDataRow + " rows to load. For more " +
+             throw new Exception (this.getAlias()+ ": There are more than " + maxDataRow + " rows to load. For more " +
                 "efficient data loading, please use " +
                 "the utility the database vendor provides.");
 
@@ -969,14 +985,14 @@ public class SaveFileToDB extends HeadlessUIModule
     while (tableNames.next()) {
       String aTable = tableNames.getString("TABLE_NAME");
       if(createNewTable && aTable.equalsIgnoreCase(tableName))
-        throw new Exception("A table named " + tableName + " already exists in " +
+        throw new Exception(this.getAlias()+ ": A table named " + tableName + " already exists in " +
       "the database. Cannot create new table with this name.");
       if(!createNewTable && aTable.equalsIgnoreCase(tableName)) found = true;
 
       }//while
 
       if(!found && !createNewTable)
-        throw new Exception("Table " + tableName + " was not found in the database. " +
+        throw new Exception(this.getAlias()+ ": Table " + tableName + " was not found in the database. " +
                             "Cannot append the table content.");
 
         //end validation tests.
@@ -1006,7 +1022,7 @@ public class SaveFileToDB extends HeadlessUIModule
                doInsertTableHeadless();
            }
            else{
-             System.out.println("\n\nSaveFileToDB:\nThe number of columns does not match. Data cannot be appended.\n");
+             System.out.println(this.getAlias()+ ": The number of columns does not match. Data cannot be appended.\n");
            }
         }//else
 
@@ -1051,7 +1067,7 @@ public class SaveFileToDB extends HeadlessUIModule
                   if( !( sType.indexOf("varchar") >= 0)){
 
 
-                    System.out.println("\nSaveFilreToDB:\nThe data type of column " + (i+1) +
+                    System.out.println(this.getAlias()+ ": The data type of column " + (i+1) +
                      " does not match. Data cannot be " + "appended.\n");
 
                     return false;
@@ -1064,7 +1080,7 @@ public class SaveFileToDB extends HeadlessUIModule
                 case ColumnTypes.LONG: if( !( sType.indexOf("numeric") >= 0) && !( sType.indexOf("number") >= 0)) {
 
 
-                    System.out.println("\nSaveFilreToDB:\nThe data type of column " + (i+1) +
+                    System.out.println(this.getAlias()+ ": The data type of column " + (i+1) +
                      " does not match. Data cannot be " + "appended.\n");
                      return false;
                   }
@@ -1077,7 +1093,7 @@ public class SaveFileToDB extends HeadlessUIModule
              if(!(ColumnMaxLength[i].equals("0"))) {
                if (Integer.valueOf(dbTable.getValueAt(i, 2).toString()).intValue() <
                    Integer.valueOf(ColumnMaxLength[i]).intValue()){
-                 System.out.println("\nSaveFilreToDB:\nThe length of column " + (i+1) +
+                 System.out.println(this.getAlias()+ ": The length of column " + (i+1) +
                      " does not match. Data cannot be " + "appended.\n");
                  return false;
                }//inner if - comparing length
@@ -1113,8 +1129,8 @@ public class SaveFileToDB extends HeadlessUIModule
 
 
                 if (ColumnMaxLength[i] == null || ColumnMaxLength[i].equals("0")){
-                  System.out.println("\n\nSavefileToDB:\n" +
-                        "Column length is not provided for column no. " + i+1 + ". Table cannot be created.");
+                  System.out.println(this.getAlias()+
+                        ": Column length is not provided for column no. " + i+1 + ". Table cannot be created.");
                   return false;
                 }
 
@@ -1157,8 +1173,8 @@ public class SaveFileToDB extends HeadlessUIModule
                     break;
                   case ColumnTypes.BOOLEAN: sb = sb + "varchar(" + "5)";
                     break;
-                    default:   System.out.println("\n\nSavefileToDB:\n" +
-                        "Invalid data type. Table cannot be created");
+                    default:   System.out.println(this.getAlias()+
+                        ": Invalid data type. Table cannot be created");
                         return (false);
                 }//switch
 
@@ -1176,12 +1192,12 @@ public class SaveFileToDB extends HeadlessUIModule
               stmt.executeUpdate(sb);
               //ResultSet result = stmt.executeQuery(sb);
               stmt.close();
-              System.out.println("Table " + tableName + " has been created");
+              System.out.println(this.getAlias()+ ": Table " + tableName + " has been created");
            }
            catch (Exception e){
              e.printStackTrace();
-              System.out.println("\n\nSavefileToDB:\n" +
-                                 "Error occurred in doCreateTableHeadLess.");
+              System.out.println(this.getAlias()+
+                                 ": Error occurred in doCreateTableHeadLess.");
                return (false);
           }
           return (true);
@@ -1225,7 +1241,7 @@ public class SaveFileToDB extends HeadlessUIModule
                  stmt.close();
                } /* end of for rowIdx */
 
-               System.out.println("\n\nSaveFileToDB:\nData has been loaded.\n\n");
+               System.out.println(this.getAlias()+ ": nData has been loaded.\n\n");
              /*  JOptionPane.showMessageDialog(msgBoard,
                      "Data has been loaded.", "Information",
                      JOptionPane.INFORMATION_MESSAGE);
@@ -1238,7 +1254,7 @@ public class SaveFileToDB extends HeadlessUIModule
              }
              catch (Exception e){
                e.printStackTrace();
-               throw new Exception("SaveFileToDB:\nError occurred in doInsertTableHeadless.");
+               throw new Exception(this.getAlias()+ ": Error occurred in doInsertTableHeadless.");
 
              }
            }//doInsertTableHeadless
@@ -1282,7 +1298,7 @@ public class SaveFileToDB extends HeadlessUIModule
 
            /* if rIdx == 0, that indicate the tableSet is empty, the db table does not exist */
            if (rIdx == 0) {
-             System.out.println("\n\nSaveFileToDBTable:\nTable " + tableName + " does not exist.");
+             System.out.println(this.getAlias()+ ": Table " + tableName + " does not exist.");
            }//if rIdx
          }//while tableNames
 

@@ -492,20 +492,14 @@ public class ConnectToDB extends HeadlessUIModule {
         public void doit() throws Exception{
 
           //checking that the properties are not null
-          if(dbInstance == null)
-            throw new Exception ("Database Instance property was not set. Cannot connect to database");
-   //       if(this.dbVendor == null)
-     //       throw new Exception ("Database Vendor property was not set. Cannot connect to database");
-          if(this.driver == null)
-            throw new Exception ("Driver property was not set. Cannot connect to database");
-          if(this.machine == null)
-            throw new Exception ("Machine property was not set. Cannot connect to database");
-          if(this.password == null)
-            throw new Exception ("Password was not set. It should be set via a GUI run of this itinerary. Cannot connect to database");
-          if(this.port == null)
-            throw new Exception ("Port property was not set. Cannot connect to database");
-          if(this.username == null)
-            throw new Exception ("User Name property was not set. Cannot connect to database");
+          if(password != null &&( dbInstance == null || driver == null || machine == null ||
+              port == null || username == null))
+             throw new Exception(this.getAlias() + " has not been configured. Before running headless set the properties using the properties editor window.");
+
+
+          if(password == null)
+            throw new Exception (this.getAlias()+": password property has not been configured. Before running headless, run with the gui and configure the parameters.");
+
 
 
 
@@ -567,7 +561,7 @@ public class ConnectToDB extends HeadlessUIModule {
                     }
 
                     else {
-                      System.out.println("no match driver");
+                      System.out.println(this.getAlias() +": no match driver was found for driver " + driver);
                         //pushOutput(null, 0);
                       //viewDone("Done");
                     }

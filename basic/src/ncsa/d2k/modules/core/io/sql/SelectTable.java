@@ -235,9 +235,11 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
           Vector available = (Vector) pullInput(0);
 
           if (selectedTable == null || selectedTable.length() == 0)
-               throw new Exception("\n\nSelectTable:\nInvalid name for selected table.\n");
+               throw new Exception (this.getAlias()+" has not been configured. Before running headless,  " +
+                                    "either configure the parameters via the properties editor " +
+                                    "or run with the gui and configure the parameters.");
           if(!available.contains(selectedTable))
-            throw new Exception("The selected table - " + selectedTable + " was not found in the input list of available tables.");
+            throw new Exception(getAlias() + ": The selected table - " + selectedTable + " was not found in the input list of available tables.");
 
            else
              pushOutput(selectedTable, 0);

@@ -785,6 +785,13 @@ public class SelectDBTables extends HeadlessUIModule {
       DBConnection dbc = (DBConnection)pullInput(0);
       String[] availableTables = dbc.getTableNames();
 
+if(selectedTablesNames == null || selectedTablesNames.length == 0 ||
+         selectedColumnsNames == null || selectedColumnsNames.length == 0)
+        throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+
+if(selectedTablesNames.length != selectedColumnsNames.length )
+  throw new Exception (this.getAlias()+" has been configured incorrectly. Before running headless, run with the gui and reconfigure the parameters.");
+
 
 
 
@@ -796,7 +803,7 @@ public class SelectDBTables extends HeadlessUIModule {
     String[] targetTables = getPositive(isTargetTable, selectedTablesNames);
 
     if(targetTables == null || targetTables.length == 0)
-      throw new Exception ("None of the selected tables in in the given data base.");
+      throw new Exception (this.getAlias()+": None of the selected tables is in the given data base.");
 
     //targetColumns[i] will hold the available columns for targetTables[i] that were also selected.
     String[][] targetColumns = new String[targetTables.length][];
@@ -835,6 +842,10 @@ public class SelectDBTables extends HeadlessUIModule {
       String[][] finalColumns = null;     //will hold names of final columns for the final target tables.
 
       if(counter < toBeRemoved.length){ //meaning some tables should be removed
+        if(counter == 0)
+          throw new Exception (getAlias() + ": None of the selected tables had any matching " +
+                               "columns in the database to their configured columns.");
+
         finalTables = new String[counter];
         finalColumns = new String[counter][];
         for(int i=0, j=0; i<toBeRemoved.length; i++)

@@ -292,6 +292,9 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
         public void doit() throws Exception{
 
           Vector availableAttributes = (Vector)pullInput(0);
+          if(selectedAttributes == null || selectedAttributes.length == 0)
+            throw new Exception(getAlias() + " has not been configured. Before running " +
+                                "headless configure the properties via running with GUI.");
         /*
          the following is now in StaticMethods.
 
@@ -309,7 +312,10 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
             }//if
 */
          String[] targetAttributes = StaticMethods.getIntersection(selectedAttributes, availableAttributes);
-          pushOutput(targetAttributes, 0);
+         if(targetAttributes.length == 0)
+           throw new Exception(getAlias() + ": None of the selected attributes matched the input attributes. Quiting.");
+
+         pushOutput(targetAttributes, 0);
 
 
         }//doit
