@@ -24,8 +24,15 @@ public class TableViewer extends UIModule  {
       @return A description of this module.
    */
    public String getModuleInfo() {
-      return "<html>  <head>      </head>  <body>    A table viewer. This displays the contents of a Table. The table is then     passed along as the output.  </body></html>";
-   }
+          String s = "<p> Overview: ";
+          s += "A table viewer. </p>";
+          s += "<p> Detailed Description: ";
+          s += "This module displays the contents of a Table. The table is then ";
+          s += "passed along as the output. </p>";
+
+          return s;
+    }
+
 
     /**
        Return the name of this module.
