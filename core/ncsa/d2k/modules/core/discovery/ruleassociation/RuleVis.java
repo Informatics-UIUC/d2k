@@ -311,8 +311,8 @@ class RuleVisView extends ncsa.d2k.controller.userviews.swing.JUserPane implemen
 			////////////////////////////////////////////////////////////////////////
 			// Create the cell renderers images, then compute the width and height of the
 			// cells.
-			Image a = module.getImage (RuleVis.IMAGE_LOC+"checkmark-blue.gif");
-			Image b = module.getImage (RuleVis.IMAGE_LOC+"box-beige.gif");
+			Image a = module.getImage (/*RuleVis.IMAGE_LOC+*/"/images/rulevis/checkmark-blue.gif");
+			Image b = module.getImage (/*RuleVis.IMAGE_LOC+*/"/images/rulevis/box-beige.gif");
 
 			int imgHeight = b.getHeight (this) > a.getHeight(this) ?
 					b.getHeight (this) : a.getHeight (this);
