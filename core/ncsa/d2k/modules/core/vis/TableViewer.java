@@ -24,16 +24,16 @@ public class TableViewer extends UIModule  {
       @return A description of this module.
    */
    public String getModuleInfo() {
-		return "<html>  <head>      </head>  <body>    A table viewer. This displays the contents of a Table. The table is then     passed along as the output.  </body></html>";
-	}
+      return "<html>  <head>      </head>  <body>    A table viewer. This displays the contents of a Table. The table is then     passed along as the output.  </body></html>";
+   }
 
     /**
        Return the name of this module.
        @return The name of this module.
     */
     public String getModuleName() {
-		return "TableViewer";
-	}
+      return "TableViewer";
+   }
 
     /**
        Return a String array containing the datatypes the inputs to this
@@ -41,9 +41,9 @@ public class TableViewer extends UIModule  {
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
-		return types;
-	}
+      String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+      return types;
+   }
 
     /**
        Return a String array containing the datatypes of the outputs of this
@@ -51,9 +51,9 @@ public class TableViewer extends UIModule  {
        @return The datatypes of the outputs.
     */
    public String[] getOutputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
-		return types;
-	}
+      String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
+      return types;
+   }
 
     /**
        Return a description of a specific input.
@@ -61,11 +61,11 @@ public class TableViewer extends UIModule  {
        @return The description of the input
     */
     public String getInputInfo(int i) {
-		switch (i) {
-			case 0: return "The Table to display.";
-			default: return "No such input";
-		}
-	}
+      switch (i) {
+         case 0: return "The Table to display.";
+         default: return "No such input";
+      }
+   }
 
     /**
        Return the name of a specific input.
@@ -73,12 +73,12 @@ public class TableViewer extends UIModule  {
        @return The name of the input
     */
     public String getInputName(int i) {
-		switch(i) {
-			case 0:
-				return "Table";
-			default: return "NO SUCH INPUT!";
-		}
-	}
+      switch(i) {
+         case 0:
+            return "Table";
+         default: return "NO SUCH INPUT!";
+      }
+   }
 
     /**
        Return the description of a specific output.
@@ -86,11 +86,11 @@ public class TableViewer extends UIModule  {
        @return The description of the output.
     */
     public String getOutputInfo(int i) {
-		switch (i) {
-			case 0: return "The Table that was displayed.  No changes are made to the table by this module.";
-			default: return "No such output";
-		}
-	}
+      switch (i) {
+         case 0: return "The Table that was displayed.  No changes are made to the table by this module.";
+         default: return "No such output";
+      }
+   }
 
     /**
        Return the name of a specific output.
@@ -98,12 +98,12 @@ public class TableViewer extends UIModule  {
        @return The name of the output
     */
     public String getOutputName(int i) {
-		switch(i) {
-			case 0:
-				return "Table";
-			default: return "NO SUCH OUTPUT!";
-		}
-	}
+      switch(i) {
+         case 0:
+            return "Table";
+         default: return "NO SUCH OUTPUT!";
+      }
+   }
 
     /**
        Not used.
@@ -192,7 +192,7 @@ public class TableViewer extends UIModule  {
       */
       protected void finishUp() {
          pushOutput(table, 0);
-		 viewDone("Done");
+       viewDone("Done");
       }
 
       /**
@@ -217,12 +217,13 @@ public class TableViewer extends UIModule  {
          String delimiter = "\t";
          String newLine = "\n";
          String fileName;
-         int retVal = chooser.showOpenDialog(null);
+         int retVal = chooser.showSaveDialog(null);
          if(retVal == JFileChooser.APPROVE_OPTION)
             fileName = chooser.getSelectedFile().getAbsolutePath();
          else
             return;
          try {
+            /*
             FileWriter fw = new FileWriter(fileName);
 
             // write the column labels
@@ -256,6 +257,8 @@ public class TableViewer extends UIModule  {
             }
             fw.flush();
             fw.close();
+            */
+            WriteTableToFile.writeTable(table, delimiter, fileName, true, true);
          }
          catch(IOException e) {
             e.printStackTrace();
