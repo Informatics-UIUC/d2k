@@ -147,7 +147,7 @@ public class DBTable extends AbstractTable implements Table {
      * @return the boolean value at (row, column)
      */
     public boolean getBoolean(int row, int column){
-        return false;
+        return new Boolean(dataSource.getTextData(row, column)).booleanValue();
     }
 
     /**
@@ -458,8 +458,19 @@ public class DBTable extends AbstractTable implements Table {
 	  * @return true if the column contains only numeric values, false otherwise
 	  */
 	 public boolean isColumnNumeric(int position){
-             return isNominal[position];
+        int type = getColumnType(position);
+        switch(type) {
+            case(ColumnTypes.BYTE):
+            case(ColumnTypes.DOUBLE):
+            case(ColumnTypes.FLOAT):
+            case(ColumnTypes.INTEGER):
+            case(ColumnTypes.LONG):
+            case(ColumnTypes.SHORT):
+                return true;
+            default:
+                return false;
         }
+     }
 
 	 /**
 	  * Return the type of column located at the given position.
