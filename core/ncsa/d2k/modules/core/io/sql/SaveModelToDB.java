@@ -54,7 +54,7 @@ public class SaveModelToDB extends UIModule {
   }
 
   public String getModuleInfo () {
-    String text = "Save the model to a database table.";
+    String text = "Save a data mining model to a database table.";
     return text;
   }
 
@@ -410,13 +410,9 @@ public class SaveModelToDB extends UIModule {
       qryStr = "select model_object from model_master where model_name = '" +
                modelName.getText() + "' for update";
       ResultSet rset = stmt.executeQuery(qryStr);
-      System.out.println("after select 1 ");
       rset.next();
       // Get the BLOB locator
       blob = ((OracleResultSet)rset).getBLOB(1);
-      // Insert to the BLOB from an output stream.
-      System.out.println("after select 2 ");
-
       // Get the binary media file.
       instream = new FileInputStream(file);
 

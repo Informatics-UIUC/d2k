@@ -558,18 +558,20 @@ public class WriteVTToDB extends UIModule
       java.util.Date now = new java.util.Date();
       SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
       String dateStr = df.format(now);
+      int rowIdx = 0;
+      int colIdx = 0;
       /* insert data */
       try {
         Connection con = cw.getConnection ();
         Statement stmt;
-        for(int i = 0; i < vt.getNumRows(); i++) {
+        for(rowIdx = 0; rowIdx < vt.getNumRows(); rowIdx++) {
           String sb = new String("insert into " + dTableName +
                         " values (");
-          for(int j = 0; j < vt.getNumColumns(); j++) {
+          for(colIdx = 0; colIdx < vt.getNumColumns(); colIdx++) {
             /* find the data type */
-            String colType = vTableDef.getValueAt(j,1).toString();
-            String s = vt.getString(i, j);
-            if (j > 0) /* add "," between columns */
+            String colType = vTableDef.getValueAt(colIdx,1).toString();
+            String s = vt.getString(rowIdx, colIdx);
+            if (colIdx > 0) /* add "," between columns */
               sb = sb + ",";
             if (colType.equals("string") || colType.equals("byte[]") ||
                 colType.equals("char[]") || colType.equals("boolean")) {
@@ -578,13 +580,13 @@ public class WriteVTToDB extends UIModule
             else {
               sb = sb + s;
             }
-          } /* end of for j */
+          } /* end of for colIdx */
           /* add username and create_date to the inserted row */
           sb = sb + ", '" + userName + "', to_date('" + dateStr + "', 'yyyy/mm/dd hh24:mi:ss'))";
           stmt = con.createStatement ();
           stmt.executeUpdate(sb);
           stmt.close();
-        } /* end of for i */
+        } /* end of for rowIdx */
         JOptionPane.showMessageDialog(msgBoard,
               "Data has been loaded.", "Information",
               JOptionPane.INFORMATION_MESSAGE);
@@ -597,7 +599,7 @@ public class WriteVTToDB extends UIModule
       }
       catch (Exception e){
            JOptionPane.showMessageDialog(msgBoard,
-                e.getMessage(), "Error",
+                e.getMessage(), "Error in row " + rowIdx ,
                 JOptionPane.ERROR_MESSAGE);
            System.out.println("Error occoured in doInsertTable.");
       }

@@ -66,7 +66,7 @@ public class GetModelFromDB extends UIModule
   }
 
   public String getModuleInfo () {
-    String text = "Retrieve the NaiveBayes model from a database table.";
+    String text = "Retrieve a saved data mining model from a database table.";
     return text;
   }
 
@@ -98,7 +98,6 @@ public class GetModelFromDB extends UIModule
     JButton browseBtn;
     JButton cancelBtn;
     JButton getModelBtn;
-    //NaiveBayesModel model;
     PredictionModelModule model;
 
     public void setInput(Object input, int index) {
@@ -188,7 +187,7 @@ public class GetModelFromDB extends UIModule
       JPanel buttonPanel = new JPanel();
       buttonPanel.setLayout(new GridBagLayout());
 
-      /* Add 3 outline panels to saveModelPanel */
+      /* Add 3 outline panels to getModelPanel */
       Constrain.setConstraints(getModelPanel, modelInfo,
         0,0,4,3,GridBagConstraints.HORIZONTAL,GridBagConstraints.WEST,1,1);
       Constrain.setConstraints(getModelPanel, trainSetInfo,
@@ -222,7 +221,7 @@ public class GetModelFromDB extends UIModule
           if (getTrainSet()) {
             if (getClassLabel()) {
               getMasterInfo();
-              doit();
+              doAction();
             }
           }
         }
@@ -374,7 +373,7 @@ public class GetModelFromDB extends UIModule
     }
   }
 
-  protected void doit () throws Exception {
+  protected void doAction () throws Exception {
     BLOB blob;
     OutputStream outstream;
     InputStream instream;
@@ -430,7 +429,7 @@ public class GetModelFromDB extends UIModule
     istream.close();
     this.pushOutput(mdl,0);
     executionManager.moduleDone(this);
-  } // doit
+  } // doAction
 
   protected void closeIt() {
     executionManager.moduleDone(this);
