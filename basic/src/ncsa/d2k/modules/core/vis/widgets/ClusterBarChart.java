@@ -68,7 +68,7 @@ public class ClusterBarChart extends BarChart implements MouseListener {
     // Runs
     int[] sort = {0, 2};
     int[] indices = TableUtilities.multiSortIndex(mutable, sort);
-    mutable = (MutableTable) mutable.reorderRows(indices);
+    mutable = (MutableTable) mutable.copy(indices);
 
     // Missing values
     valueset = TableUtilities.uniqueValueSet(mutable, 2);
@@ -124,7 +124,7 @@ public class ClusterBarChart extends BarChart implements MouseListener {
     runs++;
 
     indices = TableUtilities.multiSortIndex(mutable, sort);
-    mutable = (mutable.reorderRows(indices)).toExampleTable();
+    mutable = (mutable.copy(indices)).toExampleTable();
 
     // Include bins for spacing runs
     // Impacts mapping of bins to table values

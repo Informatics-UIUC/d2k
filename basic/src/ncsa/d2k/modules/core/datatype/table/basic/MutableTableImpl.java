@@ -478,32 +478,17 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 	}
 
 	/**
-	 * Get a copy of this Table, reordered, based on the input array of indexes,
-	 * does not overwrite this Table.
-	 * @param newOrder an array of indices indicating a new order
-	 * @return a copy of this table that has been reordered.
-	 */
-	public Table reorderRows(int[] newOrder) {
-		TableImpl newTable = new MutableTableImpl(columns.length);
-		for (int i = 0; i < columns.length; i++)
-			newTable.setColumn(columns[i].reorderRows(newOrder), i);
-		newTable.setLabel(getLabel());
-		newTable.setComment(getComment());
-		return newTable;
-	}
-
-	/**
-	 * MUST GET COPIES!!
+	 * Return a copy of this table with the columns in a different order.
+    * This does not affect the original table, but does share the column
+    * data structures with it.
 	 * @param newOrder
 	 * @return
 	 */
 	public Table reorderColumns(int[] newOrder) {
-		TableImpl newTable = new MutableTableImpl(columns.length);
-		for (int i = 0; i < newOrder.length; i++)
-			newTable.setColumn(columns[newOrder[i]].copy(), i);
-		newTable.setLabel(getLabel());
-		newTable.setComment(getComment());
-		return newTable;
+      MutableTableImpl table = (MutableTableImpl) this.shallowCopy();
+      for (int i = 0 ; i < newOrder.length ; i++)
+         table.columns[i] = this.columns[newOrder[i]];
+		return table;
 	}
 
 	/**

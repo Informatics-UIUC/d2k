@@ -1,7 +1,5 @@
 package ncsa.d2k.modules.core.discovery.ruleassociation;
 
-import ncsa.d2k.modules.core.datatype.table.*;
-//import java.io.*;
 import java.util.*;
 import gnu.trove.*;
 

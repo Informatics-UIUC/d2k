@@ -75,18 +75,10 @@ public interface MutableTable extends Table {
 	*/
 	public void removeRows(int start, int len);
 
-
 	/**
 		Get a copy of this Table reordered based on the input array of indexes.
-		Does not overwrite this Table.
-		@param newOrder an array of indices indicating a new order
-		@return a copy of this column with the rows reordered
-	*/
-	public Table reorderRows(int[] newOrder);
-
-	/**
-		Get a copy of this Table reordered based on the input array of indexes.
-		Does not overwrite this Table.
+		Does not overwrite this Table, but make a shallow copy so the actual
+      data is not copied.
 		@param newOrder an array of indices indicating a new order
 		@return a copy of this column with the rows reordered
 	*/
