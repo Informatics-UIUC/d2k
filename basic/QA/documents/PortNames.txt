@@ -21,6 +21,6 @@ File Name 2, java.lang.String, Output, Second file name - possibly with path,   
 File Name,   java.lang.String, Input,  A file name where serialized object is read,    InputSerializedObject (Input Serialized Object)
 File Name,   java.lang.String, Input,  A file name where serialized object is written, OutputSerializedObject (Output Serialized Object)
 
-Java Object,         java.lang.Object, Output, The object that was deserialized, InputSerializedObject (Input Serialized Object)
-Object to Serialize, java.lang.Object, Input,  The object to be serialized,      OutputSerializedObject (Output Serialized Object)
+Java Object, java.lang.Object, Output, The object that was deserialized, InputSerializedObject (Input Serialized Object)
+Java Object, java.lang.Object, Input,  The object to be serialized,      OutputSerializedObject (Output Serialized Object)
 
