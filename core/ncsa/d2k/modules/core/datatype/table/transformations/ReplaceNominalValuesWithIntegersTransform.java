@@ -116,6 +116,7 @@ public class ReplaceNominalValuesWithIntegersTransform
       }
 
       //return mt;
+      mt.addTransformation(this);
       return true;
 
    }
