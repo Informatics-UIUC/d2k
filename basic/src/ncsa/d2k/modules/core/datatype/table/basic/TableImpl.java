@@ -346,8 +346,8 @@ abstract public class TableImpl extends DefaultMissingValuesTable /*implements T
     * @param pos2 the second column to swap
     */
     public void swapColumns (int pos1, int pos2) {
-        Column temp = getColumn(pos1);
-        setColumn(getColumn(pos2), pos1);
+        Column temp = columns[pos1];
+        setColumn(columns[pos2], pos1);
         setColumn(temp, pos2);
     }
 
@@ -381,26 +381,26 @@ abstract public class TableImpl extends DefaultMissingValuesTable /*implements T
     }
 
 	public boolean isColumnNominal(int index) {
-	  return getColumn(index).getIsNominal();
+	  return columns[index].getIsNominal();
 	}
 
 	public boolean isColumnScalar(int index) {
-	  return getColumn(index).getIsScalar();
+	  return columns[index].getIsScalar();
 	}
 
 	public void setColumnIsNominal(boolean value, int index) {
-	  getColumn(index).setIsNominal(value);
+      columns[index].setIsNominal(value);
 	}
 
 	public void setColumnIsScalar(boolean value, int index) {
-	  getColumn(index).setIsScalar(value);
+      columns[index].setIsScalar(value);
 	}
 
 	public boolean isColumnNumeric(int position) {
-	  if(getColumn(position) instanceof NumericColumn)
+	  if(columns[position] instanceof NumericColumn)
 		 return true;
 
-	  Column col = getColumn(position);
+	  Column col = columns[position];
 	  int numRows = col.getNumRows();
 		for(int row = 0; row < numRows; row++) {
 			try {
@@ -414,22 +414,22 @@ abstract public class TableImpl extends DefaultMissingValuesTable /*implements T
 	}
 
 	public int getColumnType(int position) {
-		return getColumn(position).getType();
+		return columns[position].getType();
 	}
 
 	public boolean isValueMissing(int row, int col) {
-		return getColumn(col).isValueMissing(row);
+		return columns[col].isValueMissing(row);
 	}
 	public boolean isValueEmpty(int row, int col) {
-		return getColumn(col).isValueEmpty(row);
+		return columns[col].isValueEmpty(row);
 	}
 
 	public void setValueToMissing(boolean b, int row, int col) {
-		getColumn(col).setValueToMissing(b, row);
+      columns[col].setValueToMissing(b, row);
 	}
 
 	public void setValueToEmpty(boolean b, int row, int col) {
-		getColumn(col).setValueToEmpty(b, row);
+      columns[col].setValueToEmpty(b, row);
 	}
 
 //		ANCA: method for comparing two Table objects.

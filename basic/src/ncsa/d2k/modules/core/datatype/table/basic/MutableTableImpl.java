@@ -67,8 +67,8 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 	public void insertColumn(Column col, int position) {
 
 		// Alloc a new array.
-		Column[] cols = this.getColumns();
-		int cnt = this.getColumns().length + 1;
+		Column[] cols = this.columns;
+		int cnt = columns.length + 1;
 		Column[] newColumns = new Column[cnt];
 
 		// copy the columns befor the insertion point.
@@ -198,7 +198,7 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 	 */
 	public void removeRows(int pos, int cnt) {
 		for (int i = 0; i < getNumColumns(); i++) {
-			getColumn(i).removeRows(pos, cnt);
+			columns[i].removeRows(pos, cnt);
 		}
 	}
 
@@ -208,7 +208,7 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 	 */
 	public void removeRow(int pos) {
 		for (int i = 0; i < getNumColumns(); i++) {
-			getColumn(i).removeRow(pos);
+			columns[i].removeRow(pos);
 		}
 	}
 
@@ -384,7 +384,7 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 		} catch (Exception e) {
 			vt = new MutableTableImpl(getNumColumns());
 			for (int i = 0; i < getNumColumns(); i++)
-				vt.setColumn(getColumn(i).copy(), i);
+				vt.setColumn(columns[i].copy(), i);
 			vt.setLabel(getLabel());
 			vt.setComment(getComment());
 			return vt;
@@ -402,7 +402,7 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 		// Subset the columns to get new columns.
 		Column[] cols = new Column[this.getNumColumns()];
 		for (int i = 0; i < getNumColumns(); i++) {
-			Column oldColumn = this.getColumn(i);
+			Column oldColumn = this.columns[i];
 			cols[i] = oldColumn.getSubset(start, length);
 		}
 
@@ -424,7 +424,7 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 		// Subset the columns to get new columns.
 		Column[] cols = new Column[this.getNumColumns()];
 		for (int i = 0; i < getNumColumns(); i++) {
-			Column oldColumn = this.getColumn(i);
+			Column oldColumn = this.columns[i];
 			cols[i] = oldColumn.getSubset(subset);
 		}
 
@@ -453,7 +453,7 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 	 */
 	public void addRows(int howMany) {
 		for (int i = 0; i < getNumColumns(); i++) {
-			getColumn(i).addRows(howMany);
+            columns[i].addRows(howMany);
 		}
 	}
 
@@ -500,7 +500,7 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 	public Table reorderColumns(int[] newOrder) {
 		TableImpl newTable = new MutableTableImpl(columns.length);
 		for (int i = 0; i < newOrder.length; i++)
-			newTable.setColumn(getColumn(newOrder[i]).copy(), i);
+			newTable.setColumn(columns[newOrder[i]].copy(), i);
 		newTable.setLabel(getLabel());
 		newTable.setComment(getComment());
 		return newTable;
@@ -515,7 +515,7 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 	 */
 	public void sortByColumn(int col) {
 		//ANCA removed comments from the line bellow
-		this.getColumn(col).sort((MutableTable) this);
+		this.columns[col].sort((MutableTable) this);
 	}
 
 	/**
@@ -526,7 +526,7 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 	*/
 	public void sortByColumn(int col, int begin, int end) {
 		//ANCA removed comments from the line bellow
-		this.getColumn(col).sort((MutableTable) this, begin, end);
+		this.columns[col].sort((MutableTable) this, begin, end);
 	}
 
 	//ANCA - added method below for testing purposes
