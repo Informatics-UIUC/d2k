@@ -57,7 +57,7 @@ public class FilterBoxPlot extends HeadlessUIModule {
     sb.append("Rather, its output is a <i>Transformation</i> that can ");
     sb.append("later be applied to filter the data.");
     sb.append("Missing Values Handling: Missing values are ignored as far as the display " +
-              "of statistics, but are being treated as regular ones when actually filtering.");
+              "of statistics, and by default are not being filtered.");
 
     sb.append("</p>");
     return sb.toString();
@@ -412,7 +412,8 @@ public class FilterBoxPlot extends HeadlessUIModule {
      for (int i=0; i<flags.length; i++)
        if(!flags[i]) //if this row is not yet marked for removal
          //if the value is not in the boundaries
-         if(table.getDouble(i, column) < min[att] || table.getDouble(i, column) > max[att]){
+        if(!table.isValueMissing(i, column) &&
+         (table.getDouble(i, column) < min[att] || table.getDouble(i, column) > max[att])){
            //mark this row for removal
            flags[i] = true;
 
@@ -445,6 +446,6 @@ public class FilterBoxPlot extends HeadlessUIModule {
  * to be filtered as regular ones. added this to module info.
  *
  * 01-06-04:
- * bug 195 is fixed.
+ * bug 195 is fixed. the module will no longer ignore missing values.
  * modules is ready fro basic.
 */
