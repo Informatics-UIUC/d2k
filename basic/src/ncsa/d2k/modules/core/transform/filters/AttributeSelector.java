@@ -116,7 +116,7 @@ public class AttributeSelector extends ComputeModule {
       System.out.println(m_attSel.toResultsString());
       
       selectedAttributes = m_attSel.selectedAttributes();
-      rankedAttributes = m_attSel.rankedAttributes();
+      //rankedAttributes = m_attSel.rankedAttributes();
 
 //TODO - what is the real output of this module ???
       this.pushOutput(selectedAttributes,0);
