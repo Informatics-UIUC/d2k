@@ -1,4 +1,6 @@
 package ncsa.d2k.modules.core.discovery.ruleassociation;
+//package ncsa.d2k.modules.projects.clutter.ruleassociation;
+
 import java.awt.*;
 
 import javax.swing.*;
@@ -80,16 +82,16 @@ class ValueCellRenderer extends DefaultTableCellRenderer  {
 		if ((mycolumn % 2) == 0)
 			tootoo = RuleVis.RULE_VIS_HIGHLIGHT;
 		else
-			tootoo = new Color (255, 255,255);
+			tootoo = new Color (255,255,255);
 
 		g.setColor (tootoo);
 		g.fillRect (0, 0, this.getSize ().width, this.getSize ().height);
 
 		// Paint the bar.
-		float howMuch = what.floatValue ();
-		int originalHeight = this.getSize ().height - 6;
-		int height = (int) ((howMuch * originalHeight) / 100.0);
-		int widthCenter = this.getSize().width - BAR_WIDTH;
+		float howMuch = what.floatValue();
+		int originalHeight = this.getSize().height - 6;
+		int height = (int) (howMuch * originalHeight);
+ 		int widthCenter = this.getSize().width - BAR_WIDTH;
 		int x = widthCenter / 2;
 		int bottom = this.getSize ().height - 5;
 
@@ -102,8 +104,7 @@ class ValueCellRenderer extends DefaultTableCellRenderer  {
 			g.setColor (RuleVis.RULE_VIS_CONFIDENCE);
 		else
 			g.setColor (RuleVis.RULE_VIS_SUPPORT);
-
-		g.fillRect (x+1, this.getSize ().height - 3 - height, BAR_WIDTH-1, height);
+                g.fillRect (x+1, this.getSize().height - 3 - height, BAR_WIDTH-1, height);
 	}
 }
 

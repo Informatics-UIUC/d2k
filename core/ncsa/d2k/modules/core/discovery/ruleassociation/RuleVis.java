@@ -1,150 +1,202 @@
-/*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.discovery.ruleassociation;
-
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.print.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.*;
-/*#end^1 Continue editing. ^#&*/
-/*&%^2 Do not modify this section. */
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+import java.util.*;
+
+import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 
 /**
 	RuleVis.java
 */
 public class RuleVis extends ncsa.d2k.core.modules.VisModule
-/*#end^2 Continue editing. ^#&*/
 {
 	static final int BAR_HEIGHT = 56;
 	static final Color RULE_VIS_BACKGROUND = new Color (238, 237,237);
 	static final Color RULE_VIS_CONFIDENCE = new Color (196, 195, 26);
 	static final Color RULE_VIS_SUPPORT = new Color (87, 87, 100);
 	static final Color RULE_VIS_HIGHLIGHT = new Color (247, 247, 247);
-	static final String IMAGE_LOC =
-		"/ncsa/d2k/modules/core/discovery/ruleassociation/";
+	//static final String IMAGE_LOC =
+	//	"/ncsa/d2k/modules/core/discovery/ruleassociation/";
 	/**
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "      These rules consist of an array of rules where each rule is some number of antecedants, followed by one target or prediction, the support value, then the confidence value.   ";
-			case 1: return "      This structure contains the examples used to generate the itemsets.  ";
-			default: return "No such input";
+                        case 0: return "This structure is a table where the attribute label 'Head'and 'Body'"
+                        +" are an ArrayList of integers that refer to items in the itemLabel structure, and the following attributes are attributes that compare"
+                        +" these rules, like support and confidence.";
+                        case 1: return "This structure is an ArrayList of String that contain the item labels for"
+                        +" the rules.";
+			default: return "NO SUCH INPUT!";
 		}
 	}
 
-	/**
-		This method returns an array of strings that contains the data types for the inputs.
+	/**	This method returns an array of strings that contains the data types for the inputs.
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-		String[] types = {"[[I","ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"};
+		//String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		//String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl","java.util.ArrayList"};
+		String[] types = {"ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"};
 		return types;
 	}
 
-	/**
-		This method returns the description of the outputs.
+	/**	This method returns the description of the outputs.
 		@return the description of the indexed output.
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			default: return "No such output";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
+
+        /**	This method returns an array of strings that contains the data types for the outputs.
+		@return the data types of all outputs.
+	*/
+	public String[] getOutputTypes () {
+		String[] types = {};
+		return types;
+	}
+
+	/**	This method returns the description of the module.
+		@return the description of the module.
+	*/
+	public String getModuleInfo () {
+		return "Visualization for understanding rules from a rule association algorithm.";
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Rule Visualizer";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "ruleTable";
+			case 1:
+				return "itemLabels";
+			default: return "NO SUCH INPUT!";
 		}
 	}
 
 	/**
-		This method returns an array of strings that contains the data types for the outputs.
-		@return the data types of all outputs.
-	*/
-	public String[] getOutputTypes () {
-		String[] types = {		};
-		return types;
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 
-	/**
-		This method returns the description of the module.
-		@return the description of the module.
-	*/
-	public String getModuleInfo () {
-		return "<html>  <head>      </head>  <body>    Display rules in a tabular form.  </body></html>";
-	}
+//	public void doit () throws Exception {
+//	}
 
-	/**
-		PUT YOUR CODE HERE.
-	*/
-	public void doit () throws Exception {
-	}
-/*&%^8 Do not modify this section. */
-/*#end^8 Continue editing. ^#&*/
-
-	/**
-		This method is called by D2K to get the UserView for this module.
+	/**	This method is called by D2K to get the UserView for this module.
 		@return the UserView.
 	*/
 	protected UserView createUserView() {
-/*&%^9 Do not modify this section. */
 		return new RuleVisView();
-/*#end^9 Continue editing. ^#&*/
 	}
 
-	/**
-		This method returns an array with the names of each DSComponent in the UserView
+	/**	This method returns an array with the names of each DSComponent in the UserView
 		that has a value.  These DSComponents are then used as the outputs of this module.
 	*/
 	public String[] getFieldNameMapping() {
-/*&%^10 Do not modify this section. */
 		String[] fieldMap = {};
-/*#end^10 Continue editing. ^#&*/
 		return fieldMap;
 	}
-/*&%^11 Do not modify this section. */
 
-/*#end^11 Continue editing. ^#&*/
-
-}
-
-/*&%^12 Do not modify this section. */
-/**
-	RuleVisView
+/**	RuleVisView
 	This is the UserView class.
 */
-class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionListener {
-/*#end^12 Continue editing. ^#&*/
-	ViewModule module;
-	/**
-		This method adds the components to a Panel and then adds the Panel
+private class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionListener, Printable {
+	//ViewModule module;
+	java.util.List itemLabels = null;
+    //TableImpl ruleTable;
+    RuleTable ruleTable;
+	int numExamples;
+	ValueVisDataModel vvdm;
+	RuleVisDataModel rvdm;
+    JMenuItem print;
+    JMenuBar menuBar;
+
+	/**	This method adds the components to a Panel and then adds the Panel
 		to the view.
 	*/
 	public void initView(ViewModule mod) {
-/*&%^13 Do not modify this section. */
-/*#end^13 Continue editing. ^#&*/
-		module = mod;
+		//module = mod;
+        menuBar = new JMenuBar();
+        JMenu options = new JMenu("Options");
+        print = new JMenuItem("Print...");
+        print.addActionListener(this);
+        options.add(print);
+        menuBar.add(options);
 	}
-
-	int [][] rules = null;
-	String[] names = null;
-	int numExamples;
-	int [] nameIndices = null;
 
 	public void endExecution () {
-		rules = null;
-		names = null;
-		nameIndices = null;
+		itemLabels = null;
+         ruleTable = null;
 	}
+
+    public Object getMenu() {
+        return menuBar;
+    }
+
+    public int print(Graphics g, PageFormat pf, int pi) throws PrinterException {
+        double pageHeight = pf.getImageableHeight();
+        double pageWidth = pf.getImageableWidth();
+
+        double cWidth = getWidth();
+        double cHeight = getHeight();
+
+        double scale = 1;
+        if(cWidth >= pageWidth)
+            scale = pageWidth/cWidth;
+        if(cHeight >= pageHeight)
+            scale = Math.min(scale, pageHeight/cHeight);
+
+        double cWidthOnPage = cWidth*scale;
+        double cHeightOnPage = cHeight*scale;
+
+        if (pi >= 1)
+            return Printable.NO_SUCH_PAGE;
+
+        Graphics2D g2 = (Graphics2D) g;
+        g2.translate(pf.getImageableX(), pf.getImageableY());
+        g2.scale(scale, scale);
+        print(g2);
+        return Printable.PAGE_EXISTS;
+    }
+
 
 	/** construct a table for the row heads.
 	*/
 	JTable rhjt = null;
-	private JViewport getRowHeadTable (int nameIndices [], int imageHeight)
+	private JViewport getRowHeadTable (int imageHeight)
 	{
-		String [][] rowNames = new String [nameIndices.length][1];
+		String [][] rowNames = new String [itemLabels.size()][1];
 		String [] cn = {"attributes"};
-		for (int i = 0; i < nameIndices.length ; i++)
-			rowNames  [i][0] = names [nameIndices [i]].replace ('^', '=');
+		for (int i = 0; i < itemLabels.size(); i++)
+			rowNames  [i][0] = ((String)itemLabels.get(i));
 		JViewport jv = new JViewport ();
 		DefaultTableModel dtm = new DefaultTableModel (rowNames, cn);
 		rhjt = new JTable (dtm);
@@ -167,11 +219,14 @@ class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionLi
 	JTable vhjt = null;
 	private JViewport getConfSupHeadTable ()
 	{
-		String [][] rowNames = {{"Confidence"}, {"Support"}};
-		JViewport jv = new JViewport ();
+		String [][] rowNames = new String[ruleTable.getNumColumns()][1];
+                 for(int i=2;i<ruleTable.getNumColumns();i++)
+                  rowNames[i-2][0]=ruleTable.getColumnLabel(i);
+		JViewport jv = new JViewport();
 		String [] cn = {""};
 		DefaultTableModel dtm = new DefaultTableModel (rowNames, cn);
 		vhjt = new JTable (dtm);
+        //vhjt.setRowSelectionAllowed(false);
 		vhjt.setBackground (RuleVis.RULE_VIS_BACKGROUND);
 		jv.setBackground (RuleVis.RULE_VIS_BACKGROUND);
 
@@ -187,57 +242,79 @@ class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionLi
 		return jv;
 	}
 
-	/**
-		Create a panel which will contain the buttons that sort by the various
+	/**	Create a panel which will contain the buttons that sort by the various
 		means, confidence and support.
 	*/
-	JButton conf, sup, unsort;
+	JButton conf, sup;
 	private JPanel getSortPanel () {
 		JPanel buttons = new JPanel ();
 		buttons.setLayout (new GridBagLayout ());
 		conf = new JButton ("C");
 		sup = new JButton ("S");
-		unsort = new JButton ("U");
 
-		this.setConstraints (buttons, new JLabel ("sort by:"), 0, 0, 1, 1, GridBagConstraints.NONE,
+		this.setConstraints (buttons, new JLabel ("sort:"), 0, 0, 1, 1, GridBagConstraints.NONE,
 					GridBagConstraints.WEST, 0, 0);
 		this.setConstraints (buttons, conf, 1, 0, 1, 1, GridBagConstraints.NONE,
 					GridBagConstraints.WEST, 0, 0);
 		this.setConstraints (buttons, sup, 2, 0, 1, 1, GridBagConstraints.NONE,
 					GridBagConstraints.WEST, 0, 0);
-		this.setConstraints (buttons, unsort, 3, 0, 1, 1, GridBagConstraints.NONE,
-					GridBagConstraints.WEST, 0, 0);
-
 		conf.addActionListener (this);
 		sup.addActionListener (this);
-
 		return buttons;
 	}
 
-	/**
-		A sorting button was clicked, resort by confidence or support.
+	/**	A sorting button was clicked, resort by confidence or support.
 		@param e the action event.
 	*/
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == conf)
-			rdm.sortConfidenceSupport();
-		else if (e.getSource() == sup)
-			rdm.sortSupportConfidence();
-		else
-			rdm.unSort();
+		if (e.getSource() == conf){
+                   /*int confIndex = 0;
+                   for (int i=0; i< ruleTable.getNumColumns(); i++)
+                        if (ruleTable.getColumnLabel(i).equals(CONFIDENCE)){
+                           confIndex = i;
+                            break;
+                        }
+                   ruleTable.sortByColumn(confIndex);
+            */
+                ruleTable.sortByConfidence();
+                }
+		else if (e.getSource() == sup){
+                   /*int supIndex = 0;
+                   for (int i=0; i< ruleTable.getNumColumns(); i++)
+                        if (ruleTable.getColumnLabel(i).equals(SUPPORT)){
+                           supIndex = i;
+                            break;
+                        }
+		   ruleTable.sortByColumn(supIndex);
+            */
+                ruleTable.sortBySupport();
+                }
+                else if (e.getSource() == print) {
+                    PrinterJob pj = PrinterJob.getPrinterJob();
+                    pj.setPrintable(this);
+                    if (pj.printDialog()) {
+                        try {
+                            pj.print();
+                        }
+                        catch(Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    }
+			}
 
-		rvdm.fireTableRowsUpdated (0, rvdm.getColumnCount () - 1);
-		vvdm.fireTableRowsUpdated (0, vvdm.getColumnCount () - 1);
+                rvdm.fireTableDataChanged();
+                vvdm.fireTableDataChanged();
+		//rvdm.fireTableRowsUpdated(0, rvdm.getColumnCount() - 1);
+		//vvdm.fireTableRowsUpdated(0, vvdm.getColumnCount() - 1);
 	}
 
-	/**
-		Set up the labels. We will find the width of the longest label,
+	/**	Set up the labels. We will find the width of the longest label,
 		then we will set the width of each of the labels header rows
 		to be the width of the widest one. They line up this way.
 		@param names the names of the rows.
 		@param nameIndices the indexes of the row names in the order displayed.
 	*/
-	private void setupRowHeaders (String [] names, int [] nameIndices) {
+	private void setupRowHeaders (java.util.List names) {
 
 		// First compute the max width of the guy.
 		int width = 0;
@@ -262,56 +339,80 @@ class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionLi
 		rhjt.setPreferredScrollableViewportSize (dim);
 	}
 
-	/**
-		This method is called whenever an input arrives, and is responsible
+	/**	This method is called whenever an input arrives, and is responsible
 		for modifying the contents of any gui components that should reflect
 		the value of the input.
 
 		@param input this is the object that has been input.
 		@param index the index of the input that has been received.
 	*/
-	RuleDataModel rdm;
-	ValueVisDataModel vvdm;
-	RuleVisDataModel rvdm ;
 	public void setInput(Object o, int index) {
 		if (index == 0)
-			rules = (int [][]) o;
-		else
-			if (index == 1) {
-				ItemSets is = (ItemSets)o;
-				names = is.names;
-				numExamples = is.numExamples;
-			}
-			/*
-				names = (String[]) o;
-			} else
-				sets = (String [][]) o;
-			*/
+			//ruleTable = (TableImpl) o;
+            ruleTable = (RuleTable)o;
+            itemLabels = ruleTable.getNamesList();
+                //else if (index == 1)
+                //        itemLabels = (ArrayList) o;
 
 		// Do we have all the inputs we need?
-		if (rules != null && names != null) {
+		//if (ruleTable != null) {
+                if ((ruleTable != null) /*&& (itemLabels != null)*/){
 
+                        //making up data
+                        /*Column[] cols = new Column[4];
+                        cols[0] = new ObjectColumn(2);
+                        cols[1] = new ObjectColumn(2);
+                        cols[2] = new DoubleColumn(2);
+                        cols[3] = new DoubleColumn(2);
+                        cols[0].setLabel("Head");
+                        cols[1].setLabel("Body");
+                        cols[2].setLabel("Support");
+                        cols[3].setLabel("Confidence");
+                        ruleTable = (TableImpl)DefaultTableFactory.getInstance().createTable(cols);
+
+                        int[] a1=new int[2];
+                        a1[0]=0;
+                        a1[1]=1;
+                        ruleTable.setObject(a1,0,0);
+                        a1=new int[1];
+                        a1[0]=2;
+                        ruleTable.setObject(a1,0,1);
+                        ruleTable.setFloat((float).50,0,2);
+                        ruleTable.setFloat((float).60,0,3);
+                        a1=new int[2];
+                        a1[0]=2;
+                        a1[1]=3;
+                        ruleTable.setObject(a1,1,0);
+                        a1=new int[1];
+                        a1[0]=4;
+                        ruleTable.setObject(a1,1,1);
+                        ruleTable.setFloat((float).10,1,2);
+                        ruleTable.setFloat((float).90,1,3);
+
+                        numExamples = 2;
+                        itemLabels = new ArrayList();
+                        itemLabels.add("val=A");
+                        itemLabels.add("val=B");
+                        itemLabels.add("val=C");
+                        itemLabels.add("val=D");
+                        itemLabels.add("val=E");*/
 			this.setLayout (new GridBagLayout ());
 			this.setBackground (RuleVis.RULE_VIS_BACKGROUND);
-
 			////////////////////////////////////////////////////////////////////////
 			// Create the cell renderers images, then compute the width and height of the
 			// cells.
-			Image a = module.getImage (/*RuleVis.IMAGE_LOC+*/"/images/rulevis/checkmark-blue.gif");
-			Image b = module.getImage (/*RuleVis.IMAGE_LOC+*/"/images/rulevis/box-beige.gif");
+			Image a = /*module.*/getImage ("/images/rulevis/checkmark-blue.gif");
+			Image b = /*module.*/getImage ("/images/rulevis/box-beige.gif");
 
 			int imgHeight = b.getHeight (this) > a.getHeight(this) ?
 					b.getHeight (this) : a.getHeight (this);
 			int imgWidth = b.getWidth (this) > a.getWidth (this) ?
 					b.getWidth (this) : a.getWidth (this);
 
-			// This is our own data model, it will manage sorting and organizing the data
-			rdm = new RuleDataModel (rules);
-
 			////////////////////////////////////////////////////////////////////////
 			// Create the table that will go on the top, it will show the confidence
 			// support and the row headers.
-			vvdm = new ValueVisDataModel (rdm, numExamples);
+			vvdm = new ValueVisDataModel (ruleTable, numExamples);
 			final JTable vjt = new JTable (vvdm);
 			vjt.setBackground (RuleVis.RULE_VIS_BACKGROUND);
 			vjt.createDefaultColumnsFromModel ();
@@ -330,12 +431,11 @@ class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionLi
 			// next construct the table of the rules themselves, this table
 			// will also have row headers in a different table, the scroller
 			// understands and deals with the concept of table row headers.
-			rvdm = new RuleVisDataModel (rdm, names, numExamples);
-			nameIndices = rvdm.getNameIndices ();
+			rvdm = new RuleVisDataModel (ruleTable, itemLabels, numExamples);
 			JTable rjt = new JTable (rvdm);
 			rjt.createDefaultColumnsFromModel ();
 			rjt.setBackground (RuleVis.RULE_VIS_BACKGROUND);
-			JViewport rowHeaders = this.getRowHeadTable (nameIndices, imgHeight);
+			JViewport rowHeaders = this.getRowHeadTable (imgHeight);
 
 			// Set up the scroller for the rules.
 			JScrollPane ruleScroller = new JScrollPane (rjt);
@@ -347,7 +447,8 @@ class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionLi
 			ruleScroller.setCorner (ScrollPaneConstants.UPPER_LEFT_CORNER, this.getSortPanel ());
 
 			// Set up the viewports and scrollers for the row labels.
-			this.setupRowHeaders (names, nameIndices);
+			//this.setupRowHeaders (itemLabels);
+			this.setupRowHeaders (ruleTable.getNamesList());
 
 			// Set up a table model listener so when rows move in the rules, rows also
 			// move appropriately in the confidences.
@@ -360,7 +461,7 @@ class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionLi
 			    	if (e.getFromIndex () != e.getToIndex ()) {
 				    	vjt.getColumnModel ().moveColumn (e.getFromIndex (), e.getToIndex ());
 			    	}
-				}
+                            }
 			});
 
 			///////////////////////////////////////////////////////////////
@@ -446,16 +547,14 @@ class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionLi
 		}
 	}
 
-	/**
-		Link the operation of one scroller to another, in this case, the rule
+	/**	Link the operation of one scroller to another, in this case, the rule
 		scroller is the master, and the value scroll is the slave, and only in
 		the horizontal direction.
 	*/
 	class ScrollLinkageChangeListener implements ChangeListener {
 		JViewport master, slave;
 
-		/**
-			Take the master and slave viewport.
+		/**	Take the master and slave viewport.
 			@param m the master viewport directs scrolling.
 			@param s the slave viewport is driven by the scroller.
 		*/
@@ -464,8 +563,7 @@ class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionLi
 			slave = s;
 		}
 
-		/**
-			The master viewport has changed, update the slave.
+		/**	The master viewport has changed, update the slave.
 		*/
 		public void stateChanged (ChangeEvent ce) {
 			Point pos = master.getViewPosition ();
@@ -474,8 +572,7 @@ class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionLi
 		}
 	}
 
-	/**
-		Create and set up a grid bag constraint with the values given.
+	/**	Create and set up a grid bag constraint with the values given.
 		@param x the x corrdinate in the layout grid.
 		@param y the y coordinate.
 		@param width the number of rows the object spans.
@@ -487,8 +584,7 @@ class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionLi
 
 	*/
 	private GridBagConstraints getConstraints (int x, int y, int width, int height, int fill,
-		 int anchor, double weightX, double weightY)
-	{
+		 int anchor, double weightX, double weightY){
 		GridBagConstraints c = new GridBagConstraints ();
 		c.gridx 	= x;
 		c.gridy 	= y;
@@ -501,8 +597,7 @@ class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionLi
 		return c;
 	}
 
-	/**
-		Set up the grid bag constraints for the object, and includes insets other than the
+	/**	Set up the grid bag constraints for the object, and includes insets other than the
 		default.
 		@param it the component being added.
 		@param x the x corrdinate in the layout grid.
@@ -522,8 +617,7 @@ class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionLi
 		((GridBagLayout) cont.getLayout()).setConstraints (it, c);
 		cont.add (it);
 	}
-	/**
-		Set up the grid bag constraints for the object.
+	/**	Set up the grid bag constraints for the object.
 		@param it the component being added.
 		@param x the x corrdinate in the layout grid.
 		@param y the y coordinate.
@@ -543,21 +637,15 @@ class RuleVisView extends ncsa.d2k.userviews.swing.JUserPane implements ActionLi
 		((GridBagLayout) cont.getLayout()).setConstraints (it, c);
 		cont.add (it);
 	}
-
-/*&%^14 Do not modify this section. */
-/*#end^14 Continue editing. ^#&*/
-
 }
 
-/**
-	The data model for rule vis will have an array of bytes representing the number of
+/**	The data model for rule vis will have an array of bytes representing the number of
 	rules along the first dimension, and the number of possible attributes along the
 	second dimension. each entry in this matrix will have a 'I' if the associated attribute
 	in that rule is an input, and 'O' if it is an objective, anything else means the
 	attribute is not represented in the rule.
 */
 class RuleVisDataModel extends AbstractTableModel {
-	int [] attrShown = null;
 	int numsets = 0;
 
 	// Save array lengths for performance reasons
@@ -565,56 +653,20 @@ class RuleVisDataModel extends AbstractTableModel {
 	private int numRows = 0;
 
 	/** contains the original rule data. */
-	RuleDataModel rules;
+	/*TableImpl*/RuleTable rules;
 
-	/**
-		Init this guy given the rules. Figure out which items are
+	/**	Init this guy given the rules. Figure out which items are
 		represented in the rule set and with are totally absent. When
 		we know what items are represented, we create an secondary item
 		index so we may exclude those items are are not represented from
 		the display.
 	*/
-	RuleVisDataModel (RuleDataModel rls, String [] tbl, int numsets) {
-		numRows = tbl.length;
-		numColumns = rls.getNumRules ();
+	RuleVisDataModel (/*TableImpl*/RuleTable rls, java.util.List tbl, int numsets) {
 		rules = rls;
-		int counter = 0;
-		boolean [] itemRepresented = new boolean [numRows];
-		for (int i = 0 ; i < numRows ; i++)
-			itemRepresented [i] = false;
-		for (int i = 0 ; i < numColumns ; i++) {
-
-			// the last item is the output, skip in first loop
-			int size = rls.getSize (i);
-			for (int j = 0 ; j < size - 1; j++) {
-				int ind = rls.get (i, j);
-				if (itemRepresented [ind] == false) {
-					itemRepresented [ind] = true;
-					counter++;
-				}
-			}
-
-			// Do the output.
-			int outputIndex = rls.get (i, size - 1);
-			if (itemRepresented [outputIndex] == false) {
-				itemRepresented [outputIndex] = true;
-				counter++;
-			}
-		}
-
-		// Init the list of attributes we will show. We won't display any attributes
-		// that were not represented in the rules.
-		attrShown = new int [counter];
-		for (int i = 0, ac = 0 ; i < itemRepresented.length ; i++)
-			if (itemRepresented[i] == true) {
-				attrShown [ac++] = i;
-			}
-		this.numsets = numsets;
-		numRows = counter;
-	}
-
-	int [] getNameIndices () {
-		return attrShown;
+		//numRows = tbl.size();
+        numRows = tbl.size();//rls.getNumRules();
+		numColumns = rules.getNumRows();
+                this.numsets = numsets;
 	}
 
 	public int getColumnCount() {
@@ -625,30 +677,44 @@ class RuleVisDataModel extends AbstractTableModel {
 		return numRows;
 	}
 
-	/**
-		return text that indicates if the cell at row, column is
+	/**	return text that indicates if the cell at row, column is
 		an antecedent, a result or not.
 	*/
 	public Object getValueAt (int row, int column) {
-		byte attrType = rules.getAttributeType (column, attrShown [row]);
-		if (attrType == (byte)'I')
-			return "If";
-		else if (attrType == (byte)'O')
-			return "Then";
-		else
-			return "";
+                String returnval = "";
+                /*int headIndex = 0;
+                for (int i=0; i< rules.getNumColumns(); i++)
+                     if (rules.getColumnLabel(i).equals(HEAD)){
+                        headIndex = i;
+                        break;
+                }
+                int bodyIndex = 0;
+                for (int i=0; i< rules.getNumColumns(); i++)
+                     if (rules.getColumnLabel(i).equals(BODY)){
+                        bodyIndex = i;
+                        break;
+                }*/
+                //System.out.println("headIndex="+headIndex+" bodyIndex="+bodyIndex);
+                //int[] head = (int[])rules.getObject(column,headIndex);
+                int[] head = rules.getRuleAntecedent(column);
+                for (int i=0; i<head.length; i++)
+                  if (head[i] == row)
+                    returnval = IF;
+                //int[] body = (int[])rules.getObject(column,bodyIndex);
+                int[] body = rules.getRuleConsequent(column);//(int[])rules.getObject(column,bodyIndex);
+                for (int i=0; i<body.length; i++)
+                  if (body[i] == row)
+                    returnval = THEN;
+                    //System.out.println(row+" "+column+" "+returnval);
+                return returnval;
 	}
 
 	public String getColumnName (int columnIndex) {
 		return Integer.toString (columnIndex);
-		// return Integer.toString (rules.getRuleIndex (columnIndex));
 	}
-
 }
 
-
-/**
-	The data model for rule vis will have an array of bytes representing the number of
+/**	The data model for rule vis will have an array of bytes representing the number of
 	rules along the first dimension, and the number of possible attributes along the
 	second dimension. each entry in this matrix will have a 'I' if the associated attribute
 	in that rule is an input, and 'O' if it is an objective, anything else means the
@@ -656,7 +722,8 @@ class RuleVisDataModel extends AbstractTableModel {
 */
 class ValueVisDataModel extends AbstractTableModel {
 	/** this is the data, we use just the last two entries in each row. */
-	RuleDataModel results = null;
+	//TableImpl results = null;
+    RuleTable results = null;
 
 	/** this is the number of documents in the original dataset, to compute percent */
 	int numsets = 0;
@@ -665,35 +732,32 @@ class ValueVisDataModel extends AbstractTableModel {
 	private int numColumns = 0;
 	private int numRows = 0;
 
-
-	/**
-		Init this guy given the rules. Figure out which items are
+	/**	Init this guy given the rules. Figure out which items are
 		represented in the rule set and with are totally absent. When
 		we know what items are represented, we create an secondary item
 		index so we may exclude those items are are not represented from
 		the display.
 	*/
-	ValueVisDataModel (RuleDataModel rls, int numsets) {
+	ValueVisDataModel (/*TableImpl*/RuleTable rls, int numsets) {
 		results = rls;
-		numRows = 2;
-		numColumns = rls.getNumRules ();
+		//First 2 columns of rls represent body and head of a rule
+		numRows = rls.getNumColumns() - 2;
+		numColumns = rls.getNumRows();
 		this.numsets = numsets;
 	}
 
-	/**
-		return the number of columns.
+	/**	return the number of columns.
 		@returns the number of columns.
 	*/
 	public int getColumnCount() {
 		return numColumns;
 	}
 
-	/**
-		return the number of rows.
+	/**	return the number of rows.
 		@returns the number of rows.
 	*/
 	public int getRowCount() {
-		return numRows;
+	return numRows;
 	}
 
 	public String getColumnName (int columnIndex) {
@@ -705,51 +769,21 @@ class ValueVisDataModel extends AbstractTableModel {
 		@returns the value at row and column.
 	*/
 	public Object getValueAt (int row, int column) {
-
-		// Is it a header? We have to share the same data model for the
-		// scroller to work right.
-		double percent = 0;
-		if (row == 0) {
-			percent = results.getConfidence (column);
-			percent /= 10000.0;
-		} else {
-			percent = results.getSupport (column);
-			percent = (percent * 100) / this.numsets;
-		}
-		return new Float (percent);
+		float percent = 0;
+        //percent = results.getFloat(column,row+2);//Head & Body are the first two
+        if(row == 0)
+            percent = (float)results.getConfidence(column);
+        else
+            percent = (float)results.getSupport(column);
+		return new Float(percent);
 	}
 
-	/**
-	 * Return the human readable name of the module.
-	 * @return the human readable name of the module.
-	 */
-	public String getModuleName() {
-		return "Rule Visualizer";
-	}
+}
 
-	/**
-	 * Return the human readable name of the indexed input.
-	 * @param index the index of the input.
-	 * @return the human readable name of the indexed input.
-	 */
-	public String getInputName(int index) {
-		switch(index) {
-			case 0:
-				return "Rules";
-			case 1:
-				return "item sets";
-			default: return "NO SUCH INPUT!";
-		}
-	}
-
-	/**
-	 * Return the human readable name of the indexed output.
-	 * @param index the index of the output.
-	 * @return the human readable name of the indexed output.
-	 */
-	public String getOutputName(int index) {
-		switch(index) {
-			default: return "NO SUCH OUTPUT!";
-		}
-	}
+    private static final String HEAD = "Head";
+    private static final String BODY = "Body";
+    private static final String IF = "If";
+    private static final String THEN = "Then";
+    private static final String CONFIDENCE = "Confidence";
+    private static final String SUPPORT = "Support";
 }
