@@ -14,7 +14,7 @@ import java.util.*;
  * Only items that will appear in final rules are included in the output.
  * Those items are the ones for which the attribute is a possible rule
  * antecedent or consequent.
- * 
+ *
  * <p>Title: </p>
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2001</p>
@@ -110,7 +110,7 @@ public class ItemSets implements Serializable {
 			   }
 			   targetNames = new String [outCnt];
 			   for (int i = 0 ; i < outCnt; i++) {
-				targetNames[i] = getNonNullColumnLabel( vt, outputs[i] );
+				targetNames[i] = vt.getColumnLabel( outputs[i] );
 			   }
 
 			// Example Table case 2
@@ -121,7 +121,7 @@ public class ItemSets implements Serializable {
 
 			   targetNames = new String [inCnt];
 			   for (int i = 0 ; i < inCnt; i++) {
-				targetNames[i] = getNonNullColumnLabel( vt, inputs[i] );
+				targetNames[i] = vt.getColumnLabel( inputs[i] );
 			   }
 
 			// Example Table case 3
@@ -132,7 +132,7 @@ public class ItemSets implements Serializable {
 
 			   targetNames = new String [outCnt];
 			   for (int i = 0 ; i < outCnt; i++) {
-				targetNames[i] = getNonNullColumnLabel( vt, outputs[i] );
+				targetNames[i] = vt.getColumnLabel( outputs[i] );
 			   }
 
 			// Example Tablee case 4
@@ -143,7 +143,7 @@ public class ItemSets implements Serializable {
 
 		           for (int i = 0; i < numColumns; i++ ) {
 			      attributes[i] = i;
-			      targetNames[i] = getNonNullColumnLabel( vt, i );
+			      targetNames[i] = vt.getColumnLabel( i );
 			   }
 			}
 
@@ -155,7 +155,7 @@ public class ItemSets implements Serializable {
 
 			for (int i = 0; i < numColumns; i++) {
 			   attributes[i] = i;
-			   targetNames[i] = getNonNullColumnLabel( vt, i );
+			   targetNames[i] = vt.getColumnLabel( i );
 			}
 		}
 
@@ -165,7 +165,7 @@ public class ItemSets implements Serializable {
 		// Init each prefix, if there is no column label, use our own
 		// home brew.
 		for (int i = 0 ; i < numAttributes ; i++) {
-			String tmp = getNonNullColumnLabel( vt, attributes[i] );
+			String tmp = vt.getColumnLabel( attributes[i] );
 			prefix [i] = tmp + "^";
 		}
 
@@ -323,33 +323,18 @@ public class ItemSets implements Serializable {
 		return itemFlags;
 	}
 
-	/**
-         * Returns the label of the column specified in the table passed.
-	 * If null or blank, then returns a synthesized label made up of
-	 * "column_" and the column index.
-	 */
-	public String getNonNullColumnLabel( Table tbl, int colIdx ) {
-		String label = tbl.getColumnLabel( colIdx );
-		if ( label == null || label.length() == 0 ) {
-			label = "column_"+Integer.toString(colIdx);
-		}
-		return label;
-	}
-
 }
 
 
-// QA Comments
+// Start QA Comments
 //  2/28/03 - Recv from Tom
 //  3/*/03  - Ruth, with help from Loretta, starts QA
 //          - Several iterations and updates by Tom and Ruth so that
 //            it correctly handles Tables (as advertised), handles
 //	      ExampleTables with no ins or outs, and handles Example
 //	      Tables where some, but not all, attributes used as both
-//            Ins and Outs.  Also, added support for empty column
-//            labels that's a bit more consistent w/ other displays.
-// 3/16/03  - Ready for basic.
-// 3/18/03  - If tables are changed to generate default column labels,
-//            remove the method "getNonNullColumnLabel()" which should
-//            no longer be needed.
-//
+//            Ins and Outs.
+// 3/20/03  - Handling of blank column labels now done in parsers to
+//            no need to do here any longer.
+//	    - Ready for Basic
+// End QA Comments
