@@ -145,9 +145,10 @@ public class SQLHTree extends ComputeModule
       s += "computation involved in constructing a data cube, the memory and CPU requirements ";
       s += "may be substantially increased when more attributes and more unique values ";
       s += "are included. It is recommended only to choose a data set that has less ";
-      s += "than 25 fields for analysis, and it is also recommended to group data values into ";
-      s += "bins if the number of unique values in an attribute is over 5% of the total ";
-      s += "number of records.";
+      s += "than 25 attributes for analysis. It is also recommended that an attribute with a ";
+      s += "large number of data values be grouped into bins. ";
+      s += "If the number of unique values for an attribute is greater than 5% of the total ";
+      s += "number of records, then execution stops with a recommendation that this attribute be binned.";
       return s;
   }
 
@@ -493,11 +494,11 @@ public class SQLHTree extends ComputeModule
           return (uniqCount);
         else {
           JOptionPane.showMessageDialog(msgBoard,
-            "There are too many unique values in the column " +
+            "There are too many unique values for the attribute " +
             fieldNames[col] +
-            ". You should group the values in the column using the module SQLBinColumns.", "Error",
+            ". You should group the values for this attribute using the module SQLBinColumns.", "Error",
             JOptionPane.ERROR_MESSAGE);
-          System.out.println("Column " + fieldNames[col] + " need to be binned.");
+          System.out.println("Attribute " + fieldNames[col] + " needs to be binned.");
           return (0);
         }
       }
