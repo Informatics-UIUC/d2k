@@ -36,7 +36,7 @@ public class ModelPredict extends ncsa.d2k.infrastructure.modules.ComputeModule
 	*/
 	public String[] getInputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable",
-						"ncsa.d2k.infrastructure.modules.PredictionModelModule"	};
+						"ncsa.d2k.modules.PredictionModelModule"	};
 		return types;
 
 	}
@@ -60,7 +60,7 @@ public class ModelPredict extends ncsa.d2k.infrastructure.modules.ComputeModule
 	*/
 	public String[] getOutputTypes() {
 		String[] types = {"ncsa.d2k.modules.core.datatype.table.PredictionTable",
-			"ncsa.d2k.infrastructure.modules.PredictionModelModule"};
+			"ncsa.d2k.modules.PredictionModelModule"};
 		return types;
 
 	}
