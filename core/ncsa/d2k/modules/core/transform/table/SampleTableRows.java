@@ -7,7 +7,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.Random;
 
 /**
-	SampleVTRows.java
+	SampleTableRows.java
 	Creates a sample of the given Table.  If the useFirst property is
 	set, then the first N rows of the table will be the sample.  Otherwise,
 	the sampled table will contain N random rows from the table.  The original
@@ -44,7 +44,7 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
        @return The datatypes of the inputs.
     */
     public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String []in = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
 		return in;
     }
 
@@ -54,7 +54,7 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
        @return The datatypes of the outputs.
     */
     public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+		String []out = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
 		return out;
     }
 
@@ -130,8 +130,8 @@ public class SampleTableRows extends DataPrepModule implements HasNames,
        Perform the calculation.
     */
     public void doit() {
-		TableImpl orig = (TableImpl)pullInput(0);
-		TableImpl newTable = (TableImpl)orig.copy();
+		MutableTable orig = (MutableTable)pullInput(0);
+		MutableTable newTable = (MutableTable)orig.copy();
 
 		// only keep the first N rows
 		if(useFirst) {

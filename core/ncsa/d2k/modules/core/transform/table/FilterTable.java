@@ -1,17 +1,14 @@
 package ncsa.d2k.modules.core.transform.table;
 
-import  ncsa.d2k.infrastructure.modules.*;
-import  ncsa.d2k.infrastructure.views.*;
-import  ncsa.d2k.controller.userviews.swing.*;
-import ncsa.gui.Constrain;
-import ncsa.gui.JOutlinePanel;
-
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
 import java.util.*;
+import javax.swing.*;
+import ncsa.d2k.controller.userviews.swing.*;
+import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.infrastructure.views.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.gui.*;
 
 /*
 	Filter rows from a table
@@ -40,7 +37,7 @@ public class FilterTable extends UIModule {
     }
 
     public String[] getInputTypes () {
-        String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+        String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
         return types;
     }
 
@@ -54,7 +51,7 @@ public class FilterTable extends UIModule {
     }
 
     public String[] getOutputTypes () {
-        String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
+        String[] types = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
         return types;
     }
 
@@ -71,7 +68,7 @@ public class FilterTable extends UIModule {
     }
 
     class Filter extends JUserPane implements ActionListener {
-		TableImpl table;
+		MutableTable table;
 		boolean[] linemap;
 
         HashMap numColumnLookup;
@@ -104,7 +101,7 @@ public class FilterTable extends UIModule {
 
 		public void setInput(Object object, int id) {
 			removeAll();
-			table = (TableImpl) object;
+			table = (MutableTable) object;
 			linemap = new boolean[table.getNumRows()];
 
             numColumnLookup = new HashMap();
@@ -115,16 +112,17 @@ public class FilterTable extends UIModule {
             LinkedList strCols = new LinkedList();
 
             for (int index = 0; index < table.getNumColumns(); index++) {
-                Column column = table.getColumn(index);
+                //Column column = table.getColumn(index);
 
-                if (column instanceof NumericColumn) {
-                    numColumnLookup.put(column.getLabel(), new Integer(index));
-                    numCols.add(column.getLabel());
+                //if (column instanceof NumericColumn) {
+				if(table.isColumnScalar(index)) {
+                    numColumnLookup.put(table.getColumnLabel(index), new Integer(index));
+                    numCols.add(table.getColumnLabel(index));
                 }
                 else {
-                    strColumnLookup.put(column.getLabel(), new Integer(index));
-                    strValueLookup.put(column.getLabel(), getUniqueValues(column));
-                    strCols.add(column.getLabel());
+                    strColumnLookup.put(table.getColumnLabel(index), new Integer(index));
+                    strValueLookup.put(table.getColumnLabel(index), getUniqueValues(index));
+                    strCols.add(table.getColumnLabel(index));
                 }
             }
 
@@ -265,11 +263,11 @@ public class FilterTable extends UIModule {
             add(buttonpanel, BorderLayout.SOUTH);
 		}
 
-        String[] getUniqueValues(Column column) {
+        String[] getUniqueValues(/*Column column*/int column) {
 			HashMap map = new HashMap();
 
 			for (int index = 0; index < table.getNumRows(); index++) {
-				String key = column.getString(index);
+				String key = table.getString(index, column);
 
 				if (!map.containsKey(key))
 					map.put(key, new Integer(index));
@@ -315,7 +313,8 @@ public class FilterTable extends UIModule {
 
 				for (int row = 0; row < table.getNumRows(); row++) {
 
-					if (table.getColumn(column) instanceof NumericColumn)
+					//if (table.getColumn(column) instanceof NumericColumn)
+					if(table.isColumnScalar(column))
 						value = filteritem.evaluate(table.getDouble(row, column));
 					else
 						value = filteritem.evaluate(table.getString(row, column));
@@ -335,7 +334,6 @@ public class FilterTable extends UIModule {
 				strValue.setModel(new DefaultComboBoxModel(value));
 				strValue.revalidate();
 				strValue.repaint();
-
 			}
 
             if (source == strAdd) {
@@ -456,7 +454,8 @@ public class FilterTable extends UIModule {
 				else {
 					int column = filteritem.column;
 
-					if (table.getColumn(column) instanceof NumericColumn)
+					//if (table.getColumn(column) instanceof NumericColumn)
+					if(table.isColumnScalar(column))
 						return filteritem.evaluate(table.getDouble(row, column));
 					else
 						return filteritem.evaluate(table.getString(row, column));
@@ -573,6 +572,3 @@ public class FilterTable extends UIModule {
         }
     }
 }
-
-
-
