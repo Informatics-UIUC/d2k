@@ -142,5 +142,10 @@ public class ParallelCoordinateVis extends VisModule {
   * a column different than the last one - still the legend would show the discrete
   * colors of the last column in the Table (though not chosen at all).
   *
+  *
+  * 01-01-04:
+  * bug 188 is fixed.
+  * bug 189 turns into a wish. HI will be revised in next release.
+  *
 */
 

@@ -320,3 +320,6 @@ public class BoxPlot extends UIModule {
 // handling of nominal tables - bug 192 which is a wish - to display the user
 // with a message about the abscense of scalar columns.
 // other than this - module is ready for basic.
+
+//01-01-03: wish was fullfilled - the moduel throws a run time exception with
+//          a message.

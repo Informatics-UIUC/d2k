@@ -18,8 +18,7 @@ import ncsa.d2k.modules.core.transform.StaticMethods;
  * This module creates a box-and-whisker plot of scalar <code>Table</code> data
  * that also allows the user to filter data at the ends of the plot.
  *
- * @todo: how to handle nominal columns? when golf.data was fed to this module
- * as the input table - got an array index out of bound exception...
+
  */
 public class FilterBoxPlot extends HeadlessUIModule {
 
@@ -57,6 +56,8 @@ public class FilterBoxPlot extends HeadlessUIModule {
     sb.append("This module does not modify its input data directly. ");
     sb.append("Rather, its output is a <i>Transformation</i> that can ");
     sb.append("later be applied to filter the data.");
+    sb.append("Missing Values Handling: This module treats missing values as regular ones.");
+
     sb.append("</p>");
     return sb.toString();
   }
@@ -394,16 +395,15 @@ public class FilterBoxPlot extends HeadlessUIModule {
     * if it is not in the boundaries of <code>[min[column], max[column]]</code>
     *  then its flag will be marked true.
     *
-    * @param column - column number to check its values.
+    * @param column - column number to check its values. (index into <code>table</table>
+    * @param att - index of tested filtered attribute into attributes array.
     * @param flags  - array of booleans. flags[i] = true means this row is marked for removal.
     * @param table  - a table to have its values at column no. <code>column</codE>
     *                 to be checked and marked for filteration
     */
     private void filter(int column, int att, boolean[] flags, Table table){
 
-     //debug
-     System.out.println("going over values in columns " + column);
-     //end debug
+
 
 
 
@@ -411,15 +411,11 @@ public class FilterBoxPlot extends HeadlessUIModule {
      for (int i=0; i<flags.length; i++)
        if(!flags[i]) //if this row is not yet marked for removal
          //if the value is not in the boundaries
-         if(table.getDouble(i, column) < min[column] || table.getDouble(i, column) > max[column]){
+         if(table.getDouble(i, column) < min[att] || table.getDouble(i, column) > max[att]){
            //mark this row for removal
            flags[i] = true;
 
-                //debug
-                     double val = table.getDouble(i, column);
-                   System.out.println( val + "\t");
 
-                         //end debug
 
          }
 
@@ -433,3 +429,12 @@ public class FilterBoxPlot extends HeadlessUIModule {
 
 
 }//FilterBoxPlot
+
+
+ /**
+ * QA comments
+ *
+ * 01-01-04:
+ * Vered started qa process.
+ * added to module into documentation about missing values handling (As regular ones).
+*/
