@@ -7,7 +7,7 @@ import ncsa.d2k.core.modules.*;
 	@author pgroves
 	*/
 
-public class ObjectPasser extends ComputeModule 
+public class ObjectPasser extends DataPrepModule 
 	{
 
 	//////////////////////
