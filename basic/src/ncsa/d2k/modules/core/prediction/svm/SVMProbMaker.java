@@ -27,7 +27,7 @@ public class SVMProbMaker extends DataPrepModule
 	public String getModuleInfo()
 	{
 		return "Given an ExampleTable, this module will produce the " +
-			"corresponding svm_problem class that can be used by the " + 
+			"corresponding svm_problem class that can be used by the " +
 			"SVM library (libsvm).";
 	}
 
@@ -197,7 +197,7 @@ public class SVMProbMaker extends DataPrepModule
 
 	private static double atof(String s)
 	{
-		if (s == null)
+		if ((s == null) || (s.length() == 0))
 			return 0.0;
 		else
 			return Double.valueOf(s).doubleValue();
@@ -205,7 +205,7 @@ public class SVMProbMaker extends DataPrepModule
 
 	private static int atoi(String s)
 	{
-		if (s == null)
+		if ((s == null) || (s.length() == 0))
 			return 0;
 		else
 			return Integer.parseInt(s);

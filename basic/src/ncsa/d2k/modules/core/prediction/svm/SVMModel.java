@@ -16,7 +16,7 @@ import java.io.Serializable;
   */
 public final class SVMModel
     extends PredictionModelModule
-    implements Serializable 
+    implements Serializable
 {
 	/**
 	  The actual SVM stored in its native class.
@@ -28,13 +28,13 @@ public final class SVMModel
 	  */
 	private boolean isReadyForVisualization = false;
 
-	boolean isReadyForVisualization() 
+	boolean isReadyForVisualization()
 	{
 		return isReadyForVisualization;
     }
 
 	/* empty constructor */
-	public SVMModel() 
+	public SVMModel()
 	{}
 
 	/**
@@ -50,7 +50,7 @@ public final class SVMModel
 		this.model = model;
 		setName("SVMModel");
 	}
-	
+
 	public String getModuleInfo()
 	{
 		return "Support Vector Machine prediction module.  Makes binary"
@@ -148,7 +148,7 @@ public final class SVMModel
 
 	  @param pt Prediction Table.
 	  */
-	protected void makePredictions(PredictionTable pt) 
+	protected void makePredictions(PredictionTable pt)
 	{
 		int[] ins = pt.getInputFeatures();
 		int[] outs = pt.getOutputFeatures();
@@ -200,7 +200,7 @@ public final class SVMModel
 
 	private static double atof(String s)
 	{
-		if (s == null)
+		if ((s == null) || (s.length() == 0))
 			return 0;
 		else
 			return Double.valueOf(s).doubleValue();
@@ -208,7 +208,7 @@ public final class SVMModel
 
 	private static int atoi(String s)
 	{
-		if (s == null)
+		if ((s == null) || (s.length() == 0))
 			return 0;
 		else
 			return Integer.parseInt(s);
