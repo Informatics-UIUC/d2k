@@ -379,15 +379,10 @@ public class SQLFilterConstruction extends HeadlessUIModule {
     for (int colIdx = 0; colIdx < colNames.size(); colIdx++) {
       cols[colIdx] = new ObjectColumn(1);
       cols[colIdx].setLabel(colNames.get(colIdx).toString());
-      if (colTypes.get(colIdx).toString().equals("NUMBER") ||
-          colTypes.get(colIdx).toString().equals("NUMERIC") ||
-          colTypes.get(colIdx).toString().equals("FLOAT") ||
-          colTypes.get(colIdx).toString().equals("INTEGER")) {
-        cols[colIdx].setIsScalar(true);
-      }
-      else {
-        cols[colIdx].setIsScalar(false);
-      }
+      if(ColumnTypes.isEqualNumeric(colTypes.get(colIdx).toString()))
+       cols[colIdx].setIsScalar(true);
+      else
+       cols[colIdx].setIsScalar(false);
     }
     // create an Table to hold the meta data
     MutableTableImpl aTable = new MutableTableImpl(cols);
@@ -413,13 +408,15 @@ public class SQLFilterConstruction extends HeadlessUIModule {
          if (src == columnBox && initialized) {
 
             int index = columnBox.getSelectedIndex();
-
             if (table.isColumnNominal(index)) {
 
                nominalShowing = index;
                JComboBox nominalCombo = new JComboBox(getUniqueValues(index));
-               comboOrFieldPanel.add(nominalCombo, table.getColumnLabel(index));
-               nominalComboBoxLookup.put(new Integer(index), nominalCombo);
+               if(!nominalComboBoxLookup.containsKey(new Integer(index)))
+               {
+                 comboOrFieldPanel.add(nominalCombo, table.getColumnLabel(index));
+                 nominalComboBoxLookup.put(new Integer(index), nominalCombo);
+               }
                nominalOrScalarLayout.show(comboOrFieldPanel,
                   table.getColumnLabel(index));
             }
