@@ -400,11 +400,11 @@ public class RectGraph  extends BaseGraph implements MouseInputListener  {
             dval[0] = vals[a];
             cols[a] = new DoubleColumn(dval);
             if (tc.getSparse()){
-              if (tc.getTable() instanceof ncsa.d2k.modules.t2k.datatype.DocumentTermTable){
-                cols[a].setLabel(((ncsa.d2k.modules.t2k.datatype.DocumentTermTable)tc.getTable()).getTermData(ind[a]).getImage());
-              } else {
+//              if (tc.getTable() instanceof ncsa.d2k.modules.t2k.datatype.DocumentTermTable){
+//                cols[a].setLabel(((ncsa.d2k.modules.t2k.datatype.DocumentTermTable)tc.getTable()).getTermData(ind[a]).getImage());
+//              } else {
                 cols[a].setLabel(tab.getColumnLabel(ind[a]));
-              }
+//              }
             } else {
               cols[a].setLabel(tab.getColumnLabel(ifeatures[a]));
             }
