@@ -33,9 +33,13 @@ public class SVMProbMaker extends DataPrepModule
 
 	public String getModuleInfo()
 	{
-		return "Given an ExampleTable, this module will produce the " +
+		return "<P>Overview: Given an ExampleTable, this module will produce the " +
 			"corresponding svm_problem class that can be used by the " +
-			"SVM library (libsvm).";
+			"SVM library (libsvm).</P>" +
+                        "<P>Data Restrictions: The module will build an svm_problem for " +
+                        "a single output feature. If the <I>Example Table</I> contains more than " +
+                        "one output feature, the module will build an svm_problem " +
+                        "for the first output feature only.</P>";
 	}
 
 	public String getInputInfo(int index)
