@@ -182,6 +182,7 @@ public class ItemSets implements Serializable {
 				String a = prefix[j];
 				int alen = a.length();
 				String b = vt.getString (i, attributes[j]);
+            if (b == null) b = "?";
 				int blen = b.length();
 				if ((alen+blen) > chars.length)
 					chars = new char [alen+blen];
