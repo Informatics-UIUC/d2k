@@ -321,6 +321,8 @@ public class WriteTableToFile extends OutputModule {
       if(writeColumnLabels) {
          for(int i = 0; i < vt.getNumColumns(); i++) {
             String s = vt.getColumnLabel(i);
+            if (s == null || s.length() == 0)
+               s = "column_" + i;
             fw.write(s, 0, s.length());
             if(i != (vt.getNumColumns() - 1))
                fw.write(delimiter.toCharArray(), 0, delimiter.length());
