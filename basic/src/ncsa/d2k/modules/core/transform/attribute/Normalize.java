@@ -394,7 +394,7 @@ public class Normalize extends HeadlessUIModule {
             mean /= totalNotMissing;
 
             //QA output - vered.
-            System.out.println("the mean of this datast is: " + mean);
+      //      System.out.println("the mean of this datast is: " + mean);
 
             // data now represents differences from the mean:
             for (int j = 0; j < data.length; j++)
