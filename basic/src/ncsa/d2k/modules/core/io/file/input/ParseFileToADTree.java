@@ -168,25 +168,25 @@ public class ParseFileToADTree extends InputModule {
 
 			boolean[] blanks = pl.blanks;
 			if (row != null) {
+				
+				for (int k = 0; k < row.length; k++) 
+							vals[k] = new String(row[k]);
+				
 				for (int j = 0; j < cols.length; j++) {
 					boolean isMissing = true;
 					char[] elem = row[j];
-					// test to see if this is '?'
-					// if it is, this value is missing.
+					// test to see if this is '?',  if it is, this value is missing.
 					for (int k = 0; k < elem.length; k++) {
 						if (elem[k] != QUESTION && elem[k] != SPACE) {
 							isMissing = false;
 							break;
 						}
 					}
+				
+				  if(isMissing) vals[j] = "?";	
+				
+					//System.out.println("countingLine for " + i + ": " +  vals[j] + " missing " + isMissing + " blanks " + blanks[j]);
 
-					//if (!isMissing && !blanks[j]) {
-					for (int k = 0; k < row.length; k++)
-						vals[k] = new String(row[k]);
-					//System.out.println("countingLine for " + i + ": " +  vals.toString() + " missing " + isMissing + " blanks " + blanks[j]);
-
-					//}
-					// if the value was missing..
 					// set the boolean marker to missing in the metadata table
 					if (isMissing || blanks[j])
 						cols[j].setValueToMissing(true, i);
@@ -196,9 +196,15 @@ public class ParseFileToADTree extends InputModule {
 					if (cols[j].hasMissingValues())
 						meta.setMissingString("?");
 				}
+				
+				/*System.out.println("vals in Parse are ");
+  					for (int j =0; j < vals.length; j ++)
+					  System.out.print(vals[j] + " " );
+							  System.out.println("");					
+				*/
+				
 				// no matter if the value is missing or not,  just add it to the tree
 				// otherwise we'll lose count info
-
 				adt.countLine(adt, vals);
 			}
 		}
