@@ -47,7 +47,48 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     return "DecisionTreeInducer";
   }
 
-  ModelPrintOptions ModelPrintOptions = new ModelPrintOptions();
+  public String getInputName(int i) {
+    switch(i) {
+      case 0: return "Example Table";
+      case 1: return "Error Function";
+      default: return "Error!  No such input.";
+    }
+  }
+  public String getInputInfo(int i) {
+    switch (i) {
+      case 0: return "Example Table";
+      case 1: return "Error Function";
+      default: return "Error!  No such input.";
+    }
+  }
+  public String[] getInputTypes() {
+    String[] types = {
+      "ncsa.d2k.modules.core.datatype.table.ExampleTable",
+      "ncsa.d2k.modules.core.prediction.ErrorFunction"
+    };
+    return types;
+  }
+
+  public String getOutputName(int i) {
+    switch(i) {
+      case  0: return "Model";
+      default: return "Error!  No such output.";
+    }
+  }
+  public String getOutputInfo(int i) {
+    switch (i) {
+      case 0: return "Model";
+      default: return "Error!  No such output.";
+    }
+  }
+  public String[] getOutputTypes() {
+    String[] types = {"ncsa.d2k.modules.core.datatype.model.Model"};
+    return types;
+  }
+
+
+
+
 
   public void beginExecution() {
   }
@@ -58,52 +99,6 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     // parameters need be set.  This may not be the case in general so this stub is left open for future development.
   }
 
-
-
-  double [] BiasParameters;
-
-  public String[] getInputTypes() {
-    String[] types = {
-      "ncsa.d2k.modules.core.datatype.table.ExampleTable",
-      "ncsa.d2k.modules.core.prediction.ErrorFunction"
-    };
-    return types;
-  }
-
-  public String[] getOutputTypes() {
-    String[] types = {"ncsa.d2k.modules.core.datatype.model.Model"};
-    return types;
-  }
-
-  public String getInputInfo(int i) {
-    switch (i) {
-      case 0: return "Example Table";
-      case 1: return "Error Function";
-      default: return "No such input";
-    }
-  }
-
-  public String getInputName(int i) {
-    switch(i) {
-      case 0: return "Example Table";
-      case 1: return "Error Function";
-      default: return "NO SUCH INPUT!";
-    }
-  }
-
-  public String getOutputInfo(int i) {
-    switch (i) {
-      case 0: return "Model";
-      default: return "No such output";
-    }
-  }
-
-  public String getOutputName(int i) {
-    switch(i) {
-      case  0: return "Model";
-      default: return "NO SUCH OUTPUT!";
-    }
-  }
 
   public void doit() throws Exception {
 
