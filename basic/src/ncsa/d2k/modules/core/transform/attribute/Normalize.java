@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.transform.attribute;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import java.awt.GridBagConstraints;
@@ -8,6 +9,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -137,6 +139,7 @@ public class Normalize extends HeadlessUIModule {
       private MutableTable table;
 
       private JList numericList; // list of available numeric columns
+      private DefaultListModel numericModel;
       private JButton abortButton, doneButton;
 
       private int[] indirection; // points into table, at numeric columns
@@ -210,7 +213,33 @@ public class Normalize extends HeadlessUIModule {
 
          }
 
-         numericList = new JList(numericLabels);
+         numericModel = new DefaultListModel();
+         for (int i = 0; i < numericLabels.length; i++) {
+            numericModel.addElement(numericLabels[i]);
+         }
+         numericList = new JList(numericModel);
+
+         String[] savedLabels = Normalize.this.numericLabels;
+         if (savedLabels != null) {
+
+            ArrayList indices = new ArrayList();
+
+            int ndx;
+            for (int i = 0; i < savedLabels.length; i++) {
+               ndx = numericModel.indexOf(savedLabels[i]);
+               if (ndx != -1) {
+                  indices.add(new Integer(ndx));
+               }
+            }
+
+            int[] ints = new int[indices.size()];
+            for (int i = 0; i < ints.length; i++) {
+               ints[i] = ((Integer)indices.get(i)).intValue();
+            }
+
+            numericList.setSelectedIndices(ints);
+
+         }
 
          // set up button panel
 
