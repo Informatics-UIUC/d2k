@@ -70,6 +70,9 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 	private String[] inputColumnNames;
 	private String[] outputColumnNames;
 
+	private String[] inputTypes;
+	private String[] outputTypes;
+
 	/**
 		Constructor
 		@param bt the bin tree
@@ -86,13 +89,24 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 		trainingSetSize = table.getNumRows();
 
 		inputColumnNames = new String[inputFeatures.length];
+		inputTypes = new String[inputFeatures.length];
 		for(int i = 0; i < inputFeatures.length; i++) {
 			inputColumnNames[i] = table.getColumnLabel(inputFeatures[i]);
+			if(table.getColumn(inputFeatures[i]) instanceof NumericColumn)
+				inputTypes[i] = "Numeric";
+			else
+				inputTypes[i] = "Text";
 		}
 
 		outputColumnNames = new String[outputFeatures.length];
-		for(int i = 0; i < outputFeatures.length; i++)
+		outputTypes = new String[outputFeatures.length];
+		for(int i = 0; i < outputFeatures.length; i++) {
 			outputColumnNames[i] = table.getColumnLabel(outputFeatures[i]);
+			if(table.getColumn(outputFeatures[i]) instanceof NumericColumn)
+				outputTypes[i] = "Numeric";
+			else
+				outputTypes[i] = "Text";
+		}
 
 		cn = bt.getClassNames();
 		String []an = bt.getAttributeNames();
@@ -539,6 +553,14 @@ public final class NaiveBayesModel extends PredictionModelModule implements Seri
 
 	public int[] getOutputFeatureIndices() {
 		return outputFeatures;
+	}
+
+	public String [] getInputFeatureTypes() {
+		return inputTypes;
+	}
+
+	public String [] getOutputFeatureTypes() {
+		return outputTypes;
 	}
 
 	/**
