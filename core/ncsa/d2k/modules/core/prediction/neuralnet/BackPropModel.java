@@ -18,82 +18,82 @@ import java.util.Random;
 	<ul>
 	<li>NN FAQ, Maintained by Warren Sarle of the SAS institute:
 			ftp://ftp.sas.com/pub/neural/FAQ.html
-	<li>Russel, S., Norvig, P. (1995) Artificial Intelligence: A Modern 
+	<li>Russel, S., Norvig, P. (1995) Artificial Intelligence: A Modern
 			Approach.  Upper Saddle River, NJ: Prentice-Hall
 	</ul>
 
-	
+
 	The following are the parameters of the BackProp Neural Network. Parameter
-	names are in bold, options are underlined. Numbers following the option 
+	names are in bold, options are underlined. Numbers following the option
 	indicate the index that refers to that option in the parameter object.
-	<ul>	
+	<ul>
 	<li><b>Activation function</b>:
 		The weighted sum of the input weights and inputs to every perceptron
 		are fed through the activation function to ensure that the output
 		is between 0 and 1 (or -1 and 1, depending on which function). These
 		functions also must have a few other properties to ensure the back
-		propagation function is able to work		
+		propagation function is able to work
 		<ul>
 			<li><u>Elliot</u> - 0 -
-			From a paper by D.L. Elliot. ElliotAct(x)=|x/(1-x)|. This can be 
+			From a paper by D.L. Elliot. ElliotAct(x)=|x/(1-x)|. This can be
 			computed much faster than Sigmoid or Tanh and usually gives good
 			results.
 			<li><u>FastSigmoid</u> - 1 - A linear approximation of the Sigmoid
 			function, which makes it faster but less accurate.
-			<li><u>FastTanh</u> - 2 - A linear approximation of Tanh, similar 
+			<li><u>FastTanh</u> - 2 - A linear approximation of Tanh, similar
 			issues as FastSigmoid
-			<li><u>Sigmoid</u> - 3 - The function multi-layered perceptron 
+			<li><u>Sigmoid</u> - 3 - The function multi-layered perceptron
 			neural
 			 networks were first developed with. Normally neural nets that use
-			 them are fairly accurate, but the function evaluation requires 
-			 calculating an exponential, which is computationally expensive 
+			 them are fairly accurate, but the function evaluation requires
+			 calculating an exponential, which is computationally expensive
 			 (read "slow").
-			<li><u>Tanh</u> - 4 - Another expensive, accurate function. 
+			<li><u>Tanh</u> - 4 - Another expensive, accurate function.
 		</ul>
 	<li><b>Training Method</b>:This function defines the order the examples
-	are trained on and when the update of the activation weights occurs. 
+	are trained on and when the update of the activation weights occurs.
 		<ul>
-			<li><u>Incremental BackProp</u> - 0 - The activation weights are 
+			<li><u>Incremental BackProp</u> - 0 - The activation weights are
 			updated after every training example is passesed through, and the
 			examples are passed through in the order given in the training
 			data. This is slower than Batch BackProp.
-			<li><u>Batch BackProp</u> - 1 - Weights are updated after every 
+			<li><u>Batch BackProp</u> - 1 - Weights are updated after every
 			epoch
-			(complete pass through all examples), examples iterated over in 
+			(complete pass through all examples), examples iterated over in
 			order. This is less expensive
-			than Incremental BackProp. In practice, it usually provides better 
+			than Incremental BackProp. In practice, it usually provides better
 			results, as well.
 		</ul>
-	<li><b>Epochs</b>: The number of passes through the training data set 
+	<li><b>Epochs</b>: The number of passes through the training data set
 	(iterations) that the training function will do.
-	<li><b>Seed</b>: A seed to the random weight initiallization. This can't 
-	really be optimized but trying different values for any parameter setting 
-	is a good idea as back propagation is capable of finding only the local 
+	<li><b>Seed</b>: A seed to the random weight initiallization. This can't
+	really be optimized but trying different values for any parameter setting
+	is a good idea as back propagation is capable of finding only the local
 	minimum.
-	<li><b>Weight Initialization Range</b>: The activation weights will be 
-	randomly initiallized to values between zero and this value. This is 
+	<li><b>Weight Initialization Range</b>: The activation weights will be
+	randomly initiallized to values between zero and this value. This is
 	particularly useful if the inputs in the data set (independent variables)
 	are not scaled to a standard range.
-	<li><b>Learning Accelerator</b>: Learning acceleration refers to changing 
-	the learning rate as the training process proceeds. This can be based on 
-	the epoch or the time, and can be any kind of monotonically decreasing 
-	function. The purpose of altering the learning rate is to make large 
-	adjustments intially when the weights are still near-random and then 
-	smaller as the network approaches an optimal solution (think of it as a 
-	hill climbing algorithm that takes big steps when it's far from the 
-	optimum and takes smaller steps at it approaches the optimum for better 
-	accuracy). Currently only Linear by Epoch is implemented, but the 
+	<li><b>Learning Accelerator</b>: Learning acceleration refers to changing
+	the learning rate as the training process proceeds. This can be based on
+	the epoch or the time, and can be any kind of monotonically decreasing
+	function. The purpose of altering the learning rate is to make large
+	adjustments intially when the weights are still near-random and then
+	smaller as the network approaches an optimal solution (think of it as a
+	hill climbing algorithm that takes big steps when it's far from the
+	optimum and takes smaller steps at it approaches the optimum for better
+	accuracy). Currently only Linear by Epoch is implemented, but the
 	infrastructure is such that other methods can easily be added.
 	<ul>
-		<li><u>Linear by Epoch</u> - 0 - Starts at the Initial Learning Rate 
-		and 
+		<li><u>Linear by Epoch</u> - 0 - Starts at the Initial Learning Rate
+		and
 		decreases it the same amount every epoch, such that the final epoch
 		uses a learning rate of Final Learning Rate.
 	</ul>
 	<li><b>Initial Learning Rate</b>: The learning rate of the first epoch.
 	<li><b>Final Learning Rate</b>: The learning rate of the last epoch.
-	<li><b>Number of Hidden Layers</b>:This is the number of layers of 
-	perceptrons between the input nodes and the output nodes. Currently 
+	<li><b>Number of Hidden Layers</b>:This is the number of layers of
+	perceptrons between the input nodes and the output nodes. Currently
 	restricted to be between one and four. This restriction is only in place
 	because a more sophisticated parameter selection interface is not in place.
 	The actual algorithm can handle any number of hidden layers.
@@ -107,22 +107,22 @@ import java.util.Random;
 
 
 
-public class BackPropModel extends PredictionModelModule 
+public class BackPropModel extends PredictionModelModule
 	implements Serializable{
-		
+
 	//////////////////////
 	//d2k Props
 	////////////////////
-	
-	boolean debug=false;		
-	
+
+	boolean debug=false;
+
 	/////////////////////////
 	/// other fields
 	////////////////////////
 
 	/* the total number of parameters this NN takes*/
 	public final static int NUM_PARAMS=13;
-		
+
 	/*indices to refer to the params by in the ParameterPoint object*/
 	public final static int ACTIVATION_FUNCTION=0;
 	public final static int UPDATE_FUNCTION=1;
@@ -148,7 +148,7 @@ public class BackPropModel extends PredictionModelModule
 	   present so that indexing is constant between weights, sums, activations,
 	   etc.  NaN is used so no one accidentally uses them later on without
 	   there being something obviously wrong
-	
+
 	*/
 
 	public double[][][] weights;
@@ -176,7 +176,7 @@ public class BackPropModel extends PredictionModelModule
 	private double[][] deltas;
 
 	/* The parameters
-	*/	
+	*/
 	public final ParameterPoint params;
 
 	/* The data set being trained or tested
@@ -186,19 +186,19 @@ public class BackPropModel extends PredictionModelModule
 
 	/* the activation the compute class will use
 	*/
-	protected final NNactivation act;
+	protected NNactivation act;
 
 
 	/*the function that controls the learning rate and the learning time
 	*/
-	protected final NNlearn learnFn;
+	protected NNlearn learnFn;
 
-	
+
 	public final double bias=-1.0;
 
 	public final boolean trainingSuccess;
 
-	/** these define the ranges to scale the outputs to in 
+	/** these define the ranges to scale the outputs to in
 		<code>transform</code>
 	*/
 	final double lowerTanh=-.9;
@@ -217,17 +217,17 @@ public class BackPropModel extends PredictionModelModule
 		}
 		super.doit();
 	}
-		
-	
-    /*************************************************
+
+
+	/*************************************************
 	CONSTRUCTOR
 
 
-      Builds a BackPropModel with the given parameters
+	  Builds a BackPropModel with the given parameters
 
 	  @param et= the data set to train on
 	  @param prms= a table with the parameters to use
-    *******/
+	*******/
 	public BackPropModel(ExampleTable et, ParameterPoint prms){
 		super(et);
 		int i,j,k;
@@ -240,7 +240,7 @@ public class BackPropModel extends PredictionModelModule
 			 trainingSuccess=false;
 			 return;
 		}
-		
+
 
 		params=prms;
 		transform((TrainTable)data);
@@ -248,7 +248,7 @@ public class BackPropModel extends PredictionModelModule
 		//set up arrays, fill w/ random values
 		initArrays();
 
-		
+
 		//find the activation function
 		switch ((int)params.getValue(ACTIVATION_FUNCTION)){
 			case 0:{
@@ -278,7 +278,7 @@ public class BackPropModel extends PredictionModelModule
 		}
 
 
-		//pull out the epochs count 
+		//pull out the epochs count
 		//also get initial and final learning rate
 
 		final double epochs=params.getValue(EPOCHS);
@@ -316,7 +316,7 @@ public class BackPropModel extends PredictionModelModule
 			printWeights();
 		}
 
-   	   setName("BackProp NN");
+	   setName("BackProp NN");
 
 	   //we're done with these
 	   data=null;
@@ -327,8 +327,8 @@ public class BackPropModel extends PredictionModelModule
 
 
 	/*** compute
-	
-	the main function to calculate the ouput(s) given an input vector. 
+
+	the main function to calculate the ouput(s) given an input vector.
 	@param e the row index in the table 'data' to use as input
 	@param results[e][out] the output 'out' will be put in row 'e' of this table
 	*/
@@ -336,7 +336,7 @@ public class BackPropModel extends PredictionModelModule
 	public void compute(int e, double[][] results){
 		int i,j,k;
 		double tempSum;
-		
+
 		int numNodes;
 		int numNodesPrevLayer;
 
@@ -349,9 +349,9 @@ public class BackPropModel extends PredictionModelModule
 			tempSum=0;
 			/*
 				b/c this is from the input layer, there is
-				no 'activation' that is constantly -1, 
+				no 'activation' that is constantly -1,
 				which is normally at row 0 in activations
-				but there is no analogue in this layer because we only 
+				but there is no analogue in this layer because we only
 				have the data inputs we're given
 				*/
 			tempSum+=weights[0][i][0]*bias;
@@ -397,7 +397,7 @@ public class BackPropModel extends PredictionModelModule
 
 	private void transform(TrainTable et){
 		boolean sig=false;
-		
+
 		switch ((int)params.getValue(ACTIVATION_FUNCTION)){
 			case 0:{
 				sig=false;
@@ -443,13 +443,13 @@ public class BackPropModel extends PredictionModelModule
 				et.getOutputFeatures(), mins, maxs, et);
 		scaler.transform(et);
 		this.getTransformations().add(scaler);
-				
+
 
 	}
 
 	/**verifyData
-	
-		checks for non-numeric (or boolean) inputs and outputs. 
+
+		checks for non-numeric (or boolean) inputs and outputs.
 		will remove them and
 		reset the data. if removing them leaves either zero inputs
 		or zero outputs, this will return false and the model-building
@@ -462,10 +462,10 @@ public class BackPropModel extends PredictionModelModule
 		//hold the inputs and outputs that have been proved to be useable
 		int[] useableIns=null;
 		int[] useableOuts=null;
-		
+
 		//int numericInputs=0;
 		//int numericOutputs=0;
-		
+
 		int type;
 		//start with the inputs
 		int numNumeric;
@@ -474,15 +474,15 @@ public class BackPropModel extends PredictionModelModule
 		int numCols=numInputs;
 		int[] features=data.getInputFeatures();
 		for(int gg=0;gg<2;gg++){//once for inputs, once for outputs
-		numNumeric=0; 
+		numNumeric=0;
 		for(i=0;i<numCols;i++){
 			type=data.getColumnType(features[i]);
 			switch(type){
-			
-			case (ColumnTypes.DOUBLE) : 
-			case (ColumnTypes.INTEGER) : 
-			case (ColumnTypes.FLOAT) : 
-			case (ColumnTypes.SHORT) : 
+
+			case (ColumnTypes.DOUBLE) :
+			case (ColumnTypes.INTEGER) :
+			case (ColumnTypes.FLOAT) :
+			case (ColumnTypes.SHORT) :
 			case (ColumnTypes.LONG) : {
 				 noms[i]=false;
 				 numNumeric++;
@@ -498,7 +498,7 @@ public class BackPropModel extends PredictionModelModule
 					  alertRemoving(features[i],gg);
 				 }
 				break;
-			}			
+			}
 			case (ColumnTypes.STRING) :
 			case (ColumnTypes.CHAR_ARRAY) :
 			case (ColumnTypes.BYTE_ARRAY) :
@@ -549,11 +549,11 @@ public class BackPropModel extends PredictionModelModule
 		//reset the superclass's info about training data
 		this.setTrainingTable(data);
 		return true;
-		
+
 	}//verifyData()
 
 	/** alertRemoving
-		
+
 		tells the user that a column was of the wrong type and will not be
 		part of training
 
@@ -571,7 +571,7 @@ public class BackPropModel extends PredictionModelModule
 		" and was removed from the training data. See ModuleInfo for valid"+
 		" types.");
 	}
-	
+
 	/*alertFailure
 
 		called if the data verification process removed either all input or
@@ -586,15 +586,15 @@ public class BackPropModel extends PredictionModelModule
 		System.out.println("** BackPropModel Construction: There are no valid"+
 		io+ " Features. The model building process is being aborted.");
 	}
-		 
+
 
 	/** initArrays.
 
-		sets up the weights, sums, activations, and deltas arrays, puts in 
+		sets up the weights, sums, activations, and deltas arrays, puts in
 		NaN in the appropriate places, and fills the weights w/ random
 		initial values in the range defined by the params
 	*/
-	
+
 	protected void initArrays(){
 		int i,j,k;
 		/////////////////////
@@ -640,16 +640,16 @@ public class BackPropModel extends PredictionModelModule
 
 		//when there are hidden layers
 		if(numLayers>0){
-			
+
 			//inputs to first layer
 			numNodes=((int)params.getValue(NODES_IN_LAYER_01))+1;
 			weights[weightColIdx]=new double [numNodes][];
 			for(k=0;k<numNodes;k++){
-				weights[weightColIdx][k]= 
+				weights[weightColIdx][k]=
 					new double[data.getNumInputFeatures()+1];
 			}
 			weightColIdx++;
-			
+
 
 			//hidden layer to hidden layer
 			//don't look at the last column (representing outputs) yet
@@ -661,7 +661,7 @@ public class BackPropModel extends PredictionModelModule
 				for(k=0;k<numNodes;k++){
 					weights[weightColIdx][k]=new double[numNodesPrevLayer];
 				}
-				numNodesPrevLayer=numNodes;	
+				numNodesPrevLayer=numNodes;
 				weightColIdx++;
 			}
 
@@ -671,13 +671,13 @@ public class BackPropModel extends PredictionModelModule
 			for(k=0;k<numNodes;k++){
 				weights[weightColIdx][k]=new double[numNodesPrevLayer];
 			}
-			
+
 		}
 		//if no hidden layers, go straight from inputs to outputs
 		else{
 			numNodes=data.getNumOutputFeatures()+1;
 			numNodesPrevLayer=data.getNumInputFeatures()+1;
-			
+
 			weights[weightColIdx]=new double[numNodes][];
 			for(k=0;k<numNodes;k++){
 				weights[weightColIdx][k]=new double[numNodesPrevLayer];
@@ -687,12 +687,12 @@ public class BackPropModel extends PredictionModelModule
 			weightColIdx++;
 		}
 		randomizeWeights();
- 		setFiller();
+		setFiller();
 	}
 
   /**
-  
-  	randomly initializes the weights arrays within the range 
+
+	randomly initializes the weights arrays within the range
 	[0,Weight_init_range]
 
   */
@@ -710,11 +710,11 @@ public class BackPropModel extends PredictionModelModule
 			}
 		}
 	}
-	
+
 	/**
 	put the bias in the activations at index [0] to use as a threshold
 	put NaN in the sums and deltas at index [0]
-	also fills the appropriate weight spots with  NaN 
+	also fills the appropriate weight spots with  NaN
 	*/
 	private void setFiller(){
 		double nan=Double.NaN;
@@ -732,7 +732,7 @@ public class BackPropModel extends PredictionModelModule
 		}
 	}
 
-	
+
 	/**********************************
 		makePredictions
 
@@ -743,13 +743,13 @@ public class BackPropModel extends PredictionModelModule
 		//make predictions for the test examples
 		data = pt;
 
-		//make a Table to put the predictions in, a column for every output 
+		//make a Table to put the predictions in, a column for every output
 		//feature
 		int numRows=pt.getNumRows();
 		int numOutputs=this.getOutputColumnLabels().length;
 		double[][] predictedResults= new double[numRows][numOutputs];
-		
-		
+
+
 		//make predictions, put them in predictedResults
 		for(int i=0; i<numRows; i++){
 			compute(i, predictedResults);
@@ -759,7 +759,7 @@ public class BackPropModel extends PredictionModelModule
 			}
 		}
 	}
-	
+
 	/**
 		prints the arrays, only for debugging
 		*/
@@ -795,7 +795,7 @@ public class BackPropModel extends PredictionModelModule
 	/////////////////////////////////////////////////////////////////
 	//getters for the internal data - the updateFunctions need these
 	/////////////////////////////////////////////////////////////////
-	
+
 	public double[][][] getWeights(){
 		return weights;
 	}
@@ -814,7 +814,7 @@ public class BackPropModel extends PredictionModelModule
 
 	public ExampleTable getData(){
 		return data;
- 	}
+	}
 
 	public NNactivation getActivationFunction(){
 		return act;
@@ -829,12 +829,12 @@ public class BackPropModel extends PredictionModelModule
 	///D2K info methods
 	///////////////////////////////////////////////////////////
 	public String getModuleInfo(){
-		return 	
+		return
 		"<p><b>Overview</b>: This is an instance of a Back Propagation "+
 		" Neural Network produced by the module BackPropModelGenerator.  "+
 		"</p><p><b>Detailed Description</b>: This model was built using a data "+
 		" set with the following properties:</p><br> "+
-		
+
 		super.getTrainingInfoHtml()+
 
 		"<p><b>Parameters</b>: The parameters that defined this neural "+
@@ -842,9 +842,9 @@ public class BackPropModel extends PredictionModelModule
 		"listed below. See the documentation of the model "+
 		"producer (BackPropModelGenerator) for descriptions "+
 		"of these attributes.</p> "+
-		
-		getModelInfoHtml()+ 
-		
+
+		getModelInfoHtml()+
+
 		"<p><b>Data Type Restrictions</b>: This module requires the input "+
 		"ExampleTable "+
 		"to have the same number of input features as the data trained "+
@@ -865,8 +865,8 @@ public class BackPropModel extends PredictionModelModule
 		"computed in a reasonable amount of time as compared to the "+
 		"training process.</p> ";
 	}
-	
-   	public String getModuleName() {
+
+	public String getModuleName() {
 		return "Back Propagation Neural Net";
 	}
 
@@ -906,12 +906,12 @@ public class BackPropModel extends PredictionModelModule
 		sb.append(params.getValue(WEIGHT_INIT_RANGE)+"</i></li>");
 		sb.append("<li>Seed for Random Gen: <i>"+(long)params.getValue(SEED)+
 						"</i></li></ul>");
-		
+
 		return sb.toString();
 
 	}
 
-	
+
 	////////////////////////////////
 	//D2K Property get/set methods
 	///////////////////////////////
@@ -921,11 +921,11 @@ public class BackPropModel extends PredictionModelModule
 	public boolean getDebug(){
 		return debug;
 	}
-	
+
 	//////////////////////////////////////////////////////////////////////
 	///////////////////Activation Functions/////////////////////////////
 	////////////////////////////////////////////////////////////////////
-	
+
 /**
 
 	NNactivation
@@ -970,10 +970,10 @@ abstract public class NNactivation implements Serializable{
 public class ElliotAct extends NNactivation implements Serializable{
   public double activationOf(double x){
 	double z;
-    if(x>0){
-      z=(x/(1+x));
-    }
-    else{
+	if(x>0){
+	  z=(x/(1+x));
+	}
+	else{
 	z=(x/(1-x));
 	}
   return z;
@@ -981,13 +981,13 @@ public class ElliotAct extends NNactivation implements Serializable{
   }
   public double derivativeOf(double y){
 
-    double x = activationOf(y);
-    double m;
-    if(x>0)
-      m=1-x;
-    else
-      m=1+x;
-    return m*m;
+	double x = activationOf(y);
+	double m;
+	if(x>0)
+	  m=1-x;
+	else
+	  m=1+x;
+	return m*m;
   }
   public String getName(){
 	return "Elliot's Proposed Activation";
@@ -1016,8 +1016,8 @@ public class FastSigmoidAct extends NNactivation implements Serializable{
 	}
 
   public double derivativeOf(double y){
-    double x = activationOf(y);
-    return x*(1-x);
+	double x = activationOf(y);
+	return x*(1-x);
   }
 }
 
@@ -1055,14 +1055,14 @@ public class FastTanhAct extends NNactivation implements Serializable{
 public class SigmoidAct extends NNactivation{
 
   public double activationOf(double x){
-    return (1/(1+Math.exp(-x)));
+	return (1/(1+Math.exp(-x)));
   }
 
   public double derivativeOf(double y){
-    double x = activationOf(y);
-    return (x*(1-x));
+	double x = activationOf(y);
+	return (x*(1-x));
   }
-  
+
   public String getName(){
 	return "Standard Sigmoid";
 	}
@@ -1080,7 +1080,7 @@ public class TanhAct extends NNactivation{
 	double z= ((2/(1+Math.exp(-2*x)))-1);
 	return z;
   }
-  
+
    public String getName(){
 	return "Tanh";
 	}
@@ -1091,7 +1091,7 @@ public class TanhAct extends NNactivation{
 	double z= (1-x*x);
 	return z;
   }
-}	
+}
 /////////////////////////////////////////////////////////////////////
 ///////////////Learning Rate Accelaration Functions////////////////
 /////////////////////////////////////////////////////////////////////
@@ -1223,14 +1223,14 @@ public class Linear extends NNlearn implements Serializable{
 
 abstract public class NNupdate implements Serializable{
 
-	protected final double[][][] weights;
-	protected final double[][] sums;
-	protected final double[][] activations;
-	protected final double[][] deltas;
-	protected final TrainTable data;
-	protected final NNactivation act;
-	protected final NNlearn learnFn;
-	
+	//protected final double[][][] weights;
+	//protected final double[][] sums;
+	//protected final double[][] activations;
+	//protected final double[][] deltas;
+	//protected final TrainTable data;
+	//protected final NNactivation act;
+	//protected final NNlearn learnFn;
+
 	protected final BackPropModel model;
 	/* to put calculated outputs in as the computeFn determines them\
 	*/
@@ -1238,7 +1238,7 @@ abstract public class NNupdate implements Serializable{
 
 
 	public NNupdate(BackPropModel mod){
-		
+
 		model=mod;
 		weights=model.getWeights();
 		sums=model.getSums();
@@ -1288,7 +1288,7 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 		//	+((TrainTableImpl)data).getColumn(data.getOutputFeatures()[0]).
 		//		getNumRows());
 
-		
+
 
 		while(learnFn.continueLearning()){
 			alpha=learnFn.newLearningRate();
@@ -1319,7 +1319,7 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 
 	/**
 		runExample
-		
+
 		feeds an example (input vector) through the NN and updates the
 		weights based on the error
 		@param g the example index in the table 'data'
@@ -1339,7 +1339,7 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 		final int span=data.getNumOutputFeatures()+1;
 		final int lastLayer=deltas.length-1;
 		for (t=1; t<span; t++){//don't forget there is that -1 in index 0
-			
+
 
 			d=data.getDouble(g, data.getOutputFeatures()[t-1])-
 									computedResults[g][t-1];
@@ -1353,7 +1353,7 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 			if(lastLayer>0){
 				int lastHiddenLayerIndex=lastLayer-1;
 										//activations.getNumColumns()-2;
-										
+
 				int lastLayerNodes=activations[lastHiddenLayerIndex].length;
 				for(n=0; n<lastLayerNodes; n++){
 					c=activations[lastHiddenLayerIndex][n];
@@ -1404,7 +1404,7 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 			}
 		}
 
-		//update weights inputs->firstlayer (if not already done in 
+		//update weights inputs->firstlayer (if not already done in
 		//outputs section)
 
 		if(numLayers>1){
@@ -1511,7 +1511,7 @@ public class StandardBatchBP extends StandardIncrementalBP{
 			}
 		}
 	}
-			
+
 	/*
 		updates the weights in the model with the weight changes in the
 		running tally
