@@ -395,7 +395,7 @@ public class RectGraph  extends BaseGraph implements MouseInputListener  {
             cols[a].setLabel(tab.getColumnLabel(ifeatures[a]));
           }
 
-          Table newtab = new TableImpl(cols);
+          Table newtab = new MutableTableImpl(cols);
 
           JD2KFrame frame = new JD2KFrame("Centroid values for Cluster ID " + tc.getClusterLabel());
           TableMatrix vtm = new TableMatrix(newtab);
