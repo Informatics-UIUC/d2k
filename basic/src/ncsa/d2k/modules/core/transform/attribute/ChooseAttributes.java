@@ -141,34 +141,66 @@ public class ChooseAttributes extends HeadlessUIModule {
 			colindices.put (label, new Integer(i));
 		}
 
+                if(colindices.size() == 0){
+                  System.out.println("The input table has no columns in it. " +
+                                     "Thus it will be output as is.");
+                  ExampleTable et = table.toExampleTable();
+                this.pushOutput(et, 0);
+                return;
+                }
+
 		// Create the input feature index array.
 		Object[] selected = this.getSelectedInputs ();
+                int[] inputFeatures = new int[0];
+                String[] selectedNames;
 
-                //vered - test that all columns are really in the map
-                String[] selectedNames = new String[selected.length];
-                for(int i=0; i<selectedNames.length; i++)
-                    selectedNames[i] = (String)selected[i];
+                if(selected == null || selected.length == 0){
+                  System.out.println("No input attributes were selected. Skipping " +
+                                     "setting of input features.");
+                }
 
-                int[] inputFeatures = StaticMethods.getIntersectIds(selectedNames, colindices);
-                //the following was commented out and replaced by the previous code line.
-                //vered.
-                /*
-		int[] inputFeatures = new int[selected.length];
-		for (int i = 0; i < selected.length; i++) {
-			String s = (String) selected[i];
-			Integer ii = (Integer) colindices.get (s);
-			inputFeatures[i] = ii.intValue ();
-		}
-              */
+                else{
+                  //vered - test that all columns are really in the map
+                  selectedNames = new String[selected.length];
+                  for (int i = 0; i < selectedNames.length; i++)
+                    selectedNames[i] = (String) selected[i];
+
+                  inputFeatures = StaticMethods.getIntersectIds(selectedNames, colindices);
+
+                  if(inputFeatures.length == 0)
+                    System.out.println("None of the selected input attributes is in the input table. " +
+                                       "Skipping setting of input features.");
+                  //the following was commented out and replaced by the previous code line.
+                  //vered.
+                  /*
+                     int[] inputFeatures = new int[selected.length];
+                     for (int i = 0; i < selected.length; i++) {
+                      String s = (String) selected[i];
+                      Integer ii = (Integer) colindices.get (s);
+                      inputFeatures[i] = ii.intValue ();
+                     }
+                   */
+                }
 
 		// Create the output features array
 		selected = this.getSelectedOutputs ();
+                int[] outputFeatures = new int[0];
+
+                if(selected == null || selected.length == 0){
+                  System.out.println("No output attributes were selected. Skipping " +
+                                     "setting of output features.");
+                }
+                else{
                 selectedNames = new String[selected.length];
                 for(int i=0; i<selectedNames.length; i++)
                     selectedNames[i] = (String)selected[i];
                 //the following was commented out and replaced by the previous code line.
                 //vered.
-                int[] outputFeatures = StaticMethods.getIntersectIds(selectedNames, colindices);
+                outputFeatures = StaticMethods.getIntersectIds(selectedNames, colindices);
+
+                if(outputFeatures.length == 0)
+                  System.out.println("None of the selected output attributes is in the input table. " +
+                                     "Skipping setting of output features.");
 
 		/*int[] outputFeatures = new int[selected.length];
 		for (int i = 0; i < selected.length; i++) {
@@ -177,6 +209,7 @@ public class ChooseAttributes extends HeadlessUIModule {
 			outputFeatures[i] = ii.intValue ();
 		}
 */
+                }
 		// Create the example table and push it.
 		ExampleTable et = table.toExampleTable();
 		et.setInputFeatures (inputFeatures);
