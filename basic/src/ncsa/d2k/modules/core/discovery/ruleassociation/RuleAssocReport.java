@@ -10,27 +10,24 @@ package ncsa.d2k.modules.core.discovery.ruleassociation;
  */
 
 
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.core.modules.UserView;
-import ncsa.d2k.userviews.swing.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.modules.core.io.sql.*;
-import ncsa.gui.Constrain;
-import ncsa.gui.JOutlinePanel;
-import java.sql.*;
-import java.util.ArrayList;
-import javax.swing.*;
 import java.io.*;
+import java.sql.*;
+import java.util.*;
+
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.table.TableColumnModel;
-import javax.swing.JTable;
+import javax.swing.*;
+import javax.swing.table.*;
 
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.core.io.sql.*;
+import ncsa.d2k.userviews.swing.*;
+import ncsa.gui.*;
 
 
 public class RuleAssocReport extends UIModule
                 {
-  JOptionPane msgBoard = new JOptionPane();
+  //JOptionPane msgBoard = new JOptionPane();
   File file;
   FileWriter fw;
   ConnectionWrapper cw;
@@ -45,14 +42,15 @@ public class RuleAssocReport extends UIModule
   static String ELN = "\n";
   static String NA = "NOAVL";
   // TableImpl object to keep rules. The table has 4 columns: head, body, support and confidence
-  TableImpl ruleTable;
+  RuleTable ruleTable;
   // ArrayList object to keep all item labels in the format "column_name=column_value"
   ArrayList itemLabels;
   // ArrayList object to keep frequent item sets. Each set is an object of FreqItemSet.
   ArrayList freqItemSets;
 
   String [] columnHeading;
-  GenericMatrixModel ruleModel;
+  //GenericMatrixModel ruleModel;
+  RuleModel ruleModel;
   JTable ruleList;
   JButton doneBtn;
   JButton abortBtn;
@@ -86,6 +84,7 @@ public class RuleAssocReport extends UIModule
         s += "confidence, respectively. The rules displayed in the table can be filtered by different ";
         s += "threshold values for support and confidence, and can be sorted by support or ";
         s += "confidence by the user interface module 'SQLGetRuleAssocFromCube'. </p>";
+        s += "<p>The rules can be sorted by clicking on a column header.";
         s += "<p>The <i>File</i> pull-down menu offers a <i>Save</i> option to ";
         s += "save the displayed rules to a file. ";
         s += "A file browser window pops up, allowing the user to select ";
@@ -148,11 +147,11 @@ public class RuleAssocReport extends UIModule
 
         public void setInput(Object input, int index) {
           removeAll();
-          ruleTable = (TableImpl)input;
+          ruleTable = (RuleTable)input;
           itemLabels = (ArrayList)((RuleTable)ruleTable).getNamesList();
           freqItemSets = (ArrayList)((RuleTable)ruleTable).getItemSetsList();
           doGUI();
-          displayRules();
+          //displayRules();
           this.validate();
           this.repaint();
         }
@@ -181,11 +180,80 @@ public class RuleAssocReport extends UIModule
           displayRulePanel.setLayout (new GridBagLayout());
 
           // Outline panel for rules
-          String[] columnHeading = {"IF","-->","THEN","S %","C %"};
+          final String[] columnHeading = {"IF","-->","THEN","S %","C %"};
           JOutlinePanel ruleInfo = new JOutlinePanel("Association Rules");
           ruleInfo.setLayout (new GridBagLayout());
-          ruleModel = new GenericMatrixModel(ruleTable.getNumRows(),5,false,columnHeading);
+          //ruleModel = new GenericMatrixModel(ruleTable.getNumRows(),5,false,columnHeading);
+          ruleModel = new RuleModel(ruleTable.getNumRows(),5,columnHeading);
           ruleList = new JTable(ruleModel);
+          ruleList.getTableHeader().setReorderingAllowed(false);
+          ruleList.setColumnSelectionAllowed(false);
+
+          MouseAdapter ruleMouseListener = new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+              TableColumnModel columnModel = ruleList.getColumnModel();
+              int viewCol = columnModel.getColumnIndexAtX(e.getX());
+              if(viewCol == 0) {
+                // sort by support
+                ruleTable.sortByAntecedent();
+                //ruleModel = new RuleModel(ruleTable.getNumRows();
+                ruleModel = new RuleModel(ruleTable.getNumRows(),5,columnHeading);
+                ruleList.setModel(ruleModel);
+                TableColumnModel colModel = ruleList.getColumnModel();
+                colModel.getColumn(0).setPreferredWidth(400);
+                colModel.getColumn(1).setPreferredWidth(25);
+                colModel.getColumn(2).setPreferredWidth(250);
+                colModel.getColumn(3).setPreferredWidth(50);
+                colModel.getColumn(4).setPreferredWidth(50);
+
+              }
+              else if(viewCol == 2) {
+                // sort by support
+                ruleTable.sortByConsequent();
+                //ruleModel = new RuleModel(ruleTable.getNumRows();
+                ruleModel = new RuleModel(ruleTable.getNumRows(),5,columnHeading);
+                ruleList.setModel(ruleModel);
+                TableColumnModel colModel = ruleList.getColumnModel();
+                colModel.getColumn(0).setPreferredWidth(400);
+                colModel.getColumn(1).setPreferredWidth(25);
+                colModel.getColumn(2).setPreferredWidth(250);
+                colModel.getColumn(3).setPreferredWidth(50);
+                colModel.getColumn(4).setPreferredWidth(50);
+
+              }
+
+              else if(viewCol == 3) {
+                // sort by support
+                ruleTable.sortBySupport();
+                //ruleModel = new RuleModel(ruleTable.getNumRows();
+                ruleModel = new RuleModel(ruleTable.getNumRows(),5,columnHeading);
+                ruleList.setModel(ruleModel);
+                TableColumnModel colModel = ruleList.getColumnModel();
+                colModel.getColumn(0).setPreferredWidth(400);
+                colModel.getColumn(1).setPreferredWidth(25);
+                colModel.getColumn(2).setPreferredWidth(250);
+                colModel.getColumn(3).setPreferredWidth(50);
+                colModel.getColumn(4).setPreferredWidth(50);
+
+              }
+              else if(viewCol == 4) {
+                // sort by confidence
+                ruleTable.sortByConfidence();
+                ruleModel = new RuleModel(ruleTable.getNumRows(),5,columnHeading);
+                ruleList.setModel(ruleModel);
+                TableColumnModel colModel = ruleList.getColumnModel();
+                colModel.getColumn(0).setPreferredWidth(400);
+                colModel.getColumn(1).setPreferredWidth(25);
+                colModel.getColumn(2).setPreferredWidth(250);
+                colModel.getColumn(3).setPreferredWidth(50);
+                colModel.getColumn(4).setPreferredWidth(50);
+
+              }
+            }
+          };
+          JTableHeader th = ruleList.getTableHeader();
+          th.addMouseListener(ruleMouseListener);
+
           TableColumnModel colModel = ruleList.getColumnModel();
           colModel.getColumn(0).setPreferredWidth(400);
           colModel.getColumn(1).setPreferredWidth(25);
@@ -229,7 +297,7 @@ public class RuleAssocReport extends UIModule
           }
         }
   }
-  protected void displayRules() {
+/*  protected void displayRules() {
         String leftRule;
         String rightRule;
         int headIdx;
@@ -277,7 +345,7 @@ public class RuleAssocReport extends UIModule
           ruleList.setValueAt(Float.toString(ruleTable.getFloat(ruleIdx,2)*100),ruleIdx,4);
           ruleList.setValueAt(Float.toString(ruleTable.getFloat(ruleIdx,3)*100),ruleIdx,3);
         }
-  }
+  }*/
 
   protected void closeIt() {
         executionManager.moduleDone(this);
@@ -352,5 +420,150 @@ public class RuleAssocReport extends UIModule
       e.printStackTrace();
     }
   }
+
+
+  private class RuleModel extends AbstractTableModel {
+    Object data[][];
+    String columnNames [];
+    boolean edit = false;
+    String  NOTHING = "";
+
+    /**
+     * Table Model for displaying Bin information: attribute name, type, number of bins, input or output
+     * @param maxRow Maximum number of rows in the table
+     * @param maxCol Maximum number of columns in the table
+     * @param editable Is this table editable?
+     */
+    public RuleModel(int maxRow, int maxCol, String [] columnHeading)
+    {
+      data = new Object[maxRow][maxCol];
+      columnNames = columnHeading;
+
+      // now initialize the data with the entries from the table
+      String leftRule;
+      String rightRule;
+      int headIdx;
+      int bodyIdx;
+      int labelIdx;
+      String aLabel;
+      FreqItemSet aSet;
+      // layout of ruleList is: column 1: left handside rule (if rule),
+      //                        column 2: symbol "-->",
+      //                        column 3: right handside rule (then rule),
+      //                        column 4: support,
+      //                        column 5: confidence.
+      int listSize;
+      double aConfidence;
+      //double minConfidence;
+      for (int ruleIdx = 0; ruleIdx < ruleTable.getNumRows(); ruleIdx++) {
+        leftRule = NOTHING;
+        rightRule = NOTHING;
+        // display the head part (left) of the rule
+        //headIdx = ruleTable.getInt(ruleIdx, RuleTable.IF);
+        headIdx = ruleTable.getRuleConsequentID(ruleIdx);
+        aSet = (FreqItemSet)freqItemSets.get(headIdx);
+        for (int itemIdx = 0; itemIdx < aSet.numberOfItems; itemIdx++) {
+             labelIdx = aSet.items.get(itemIdx);
+             aLabel = itemLabels.get(labelIdx).toString();
+             if (itemIdx < (aSet.numberOfItems - 1))
+               leftRule = leftRule + aLabel + ",";
+             else {
+               leftRule = leftRule + aLabel;
+               //ruleList.setValueAt(leftRule,ruleIdx,0);
+               data[ruleIdx][0] = leftRule;
+             }
+       }
+       //ruleList.setValueAt(" -->",ruleIdx,1);
+       data[ruleIdx][1] = " -->";
+       //bodyIdx = ruleTable.getInt(ruleIdx, RuleTable.THEN);
+       bodyIdx = ruleTable.getRuleAntecedentID(ruleIdx);
+       aSet = (FreqItemSet)freqItemSets.get(bodyIdx);
+       for (int itemIdx = 0; itemIdx < aSet.numberOfItems; itemIdx++) {
+             labelIdx = aSet.items.get(itemIdx);
+             aLabel = itemLabels.get(labelIdx).toString();
+             if (itemIdx < (aSet.numberOfItems - 1))
+               rightRule = rightRule + aLabel + ",";
+             else {
+               rightRule = rightRule + aLabel;
+               //ruleList.setValueAt(rightRule,ruleIdx,2);
+               data[ruleIdx][2] = rightRule;
+             }
+       }
+       //ruleList.setValueAt(Float.toString(ruleTable.getFloat(ruleIdx,2)*100),ruleIdx,4);
+       //data[ruleIdx][4] = Float.toString(ruleTable.getFloat(ruleIdx,RuleTable.CONFIDENCE)*100);
+       data[ruleIdx][4] = Float.toString((float)ruleTable.getConfidence(ruleIdx)*100);
+       //ruleList.setValueAt(Float.toString(ruleTable.getFloat(ruleIdx,3)*100),ruleIdx,3);
+       data[ruleIdx][3] = Float.toString((float)ruleTable.getSupport(ruleIdx)*100);
+     }
+
+
+    }
+
+    /**
+     * Get row count of the table
+     * @return The number of rows in the table
+     */
+    public int getRowCount()
+    {
+      return data.length;
+    }
+
+    /**
+     * Get column count of the table
+     * @return The number of columns in the table
+     */
+    public int getColumnCount()
+    {
+      return columnNames.length;
+    }
+
+    /**
+     * Get the name of the column
+     * @param col The column index
+     * @return The name of the column
+     */
+    public String getColumnName (int col)
+    {
+      return columnNames[col];
+    }
+
+    /**
+     * Get the value of a cell
+     * @param row The row index
+     * @param col The column index
+     * @return The object in a cell
+     */
+    public Object getValueAt(int row, int col)
+    {
+      return data[row][col];
+    }
+
+    /**
+     * Is the cell editable?
+     * @param row The row index
+     * @param col The column index
+     * @return true or false
+     */
+    public boolean isCellEditable (int row, int col)
+    {
+        return edit;
+    }
+
+    /**
+     * Set value at a cell
+     * @param value The value to set
+     * @param row The row index
+     * @param col The column index
+     */
+    public void setValueAt(Object value, int row, int col)
+    {
+    //    data[row][col] = value.toString();
+    //    fireTableCellUpdated(row, col);
+    } /* end of setValueAt */
+
+
+
+  } /* end of GenericMatrixModel */
+
 
 }

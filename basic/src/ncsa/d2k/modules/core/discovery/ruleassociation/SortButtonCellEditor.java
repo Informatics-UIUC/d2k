@@ -11,9 +11,12 @@ import javax.swing.event.*;
 	appropriate graphic.
 */
 class SortButtonCellEditor implements TableCellEditor  {
-	JButton confidence;
-	JButton support;
-	JButton last = null;
+	//JButton confidence;
+	//JButton support;
+	//JButton last = null;
+	JRadioButton confidence;
+	JRadioButton support;
+	JRadioButton last = null;
 	Vector listeners = new Vector();
 
 	/**
@@ -21,7 +24,7 @@ class SortButtonCellEditor implements TableCellEditor  {
 	 * @param c the confidence button.
 	 * @param s the support button.
 	 */
-	SortButtonCellEditor (JButton c, JButton s) {
+	SortButtonCellEditor (JRadioButton c, JRadioButton s) {
 		super ();
 		this.confidence = c;
 		this.support = s;

@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.discovery.ruleassociation;
 import java.util.*;
 import gnu.trove.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 
 /** This class contains the following components:
@@ -221,6 +222,14 @@ public class RuleTable extends MutableTableImpl {
         sortByColumn(SUPPORT);
     }
 
+    public void sortByAntecedent() {
+      this.itemSetSort(THEN);
+    }
+
+    public void sortByConsequent() {
+      this.itemSetSort(IF);
+    }
+
     /**
      * Get the minimum confidence
      * @return the confidence a user specified
@@ -327,5 +336,103 @@ public class RuleTable extends MutableTableImpl {
      */
     public List getItemSetsList() {
         return itemSets;
+    }
+
+    /**
+     * Sort the table using one of the item set columns as the key.
+     * @param col the column index (must be IF or THEN)
+     */
+    private void itemSetSort(int col) {
+      doItemSetSort(0, getNumRows() - 1, col);
+    }
+
+         /**
+          * Implement the quicksort algorithm.  Partition and
+          * recursively call doItemSetSort.
+          * @param p the beginning index
+          * @param r the ending index
+          * @param col the column index (must be IF or THEN)
+         * @return a sorted array of floats
+          */
+         private void doItemSetSort (int p, int r, int col) {
+                 if (p < r) {
+                         int q = itemSetSortPartition(p, r, col);
+                         doItemSetSort(p, q, col);
+                         doItemSetSort(q + 1, r, col);
+                 }
+         }
+
+         /**
+          Rearrange the table in place.
+          @param p the beginning index
+          @param r the ending index
+          @param col the column index (must be IF or THEN)
+         @return the new partition point
+          */
+         private int itemSetSortPartition (int p, int r, int col) {
+                 int i = p - 1;
+                 int j = r + 1;
+
+                 while (true) {
+                         do {
+                                 j--;
+                         } //while (A[j] > x);
+                  while(compareItemSetRows(j, p, col) < 0);
+                         do {
+                                 i++;
+                         } //while (A[i] < x);
+                  while(compareItemSetRows(i, p, col) > 0);
+                         if (i < j) {
+                            swapRows(i, j);
+                         }
+                         else
+                                 return  j;
+                 }
+         }
+
+         /**
+          * Compare two rows that contain item sets.
+          * @param i the first row
+          * @param j the second row
+          * @param column the column index (must be IF or THEN)
+          * @return -1, 0, or 1 (see Comparable)
+          */
+    private int compareItemSetRows(int i, int j, int column) {
+      FreqItemSet f1;
+      FreqItemSet f2;
+
+      if(column == IF) {
+        f1 = (FreqItemSet)this.itemSets.get(getInt(i, IF));
+        f2 = (FreqItemSet)this.itemSets.get(getInt(j, IF));
+      }
+      else {
+        f1 = (FreqItemSet)this.itemSets.get(getInt(i, THEN));
+        f2 = (FreqItemSet)this.itemSets.get(getInt(j, THEN));
+      }
+
+      String s1 = itemSetAsString(f1);
+      String s2 = itemSetAsString(f2);
+
+      return s1.compareTo(s2);
+    }
+
+    /**
+     * Get a representation of an item set as a String.  Items are comma-separated.
+     * @param f the frequent item set
+     * @return a comma separated list of the items in the frequent item set
+     */
+    private String itemSetAsString(FreqItemSet f) {
+      if(f.items != null) {
+        StringBuffer sb = new StringBuffer();
+        int[] ar = f.items.toNativeArray();
+        for (int i = 0; i < ar.length; i++) {
+          sb.append(items.get(ar[i]));
+          if (i != ar.length - 1)
+            sb.append(",");
+        }
+        return sb.toString().toLowerCase();
+      }
+      else
+        return "";
     }
 }

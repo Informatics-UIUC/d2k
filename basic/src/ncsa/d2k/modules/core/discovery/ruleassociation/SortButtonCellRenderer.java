@@ -9,14 +9,18 @@ import javax.swing.table.*;
 	appropriate graphic.
 */
 class SortButtonCellRenderer extends DefaultTableCellRenderer  {
-	JButton confidence;
-	JButton support;
+	//JButton confidence;
+	//JButton support;
+	JRadioButton confidence;
+	JRadioButton support;
+
 	/**
 	 * Given the buttons we will return from the getCellRenderer.
 	 * @param c the confidence button.
 	 * @param s the support button.
 	 */
-	SortButtonCellRenderer (JButton c, JButton s) {
+	//SortButtonCellRenderer (JButton c, JButton s) {
+	SortButtonCellRenderer (JRadioButton c, JRadioButton s) {
 		super ();
 		this.confidence = c;
 		this.support = s;
