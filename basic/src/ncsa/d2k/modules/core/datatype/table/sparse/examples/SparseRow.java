@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class SparseRow implements Row, Serializable {
 
         /** this is the index of the row to access. */
-        private int index;
+        protected int index;
 
         /** this is the example table we are accessing. */
         private SparseTable table;

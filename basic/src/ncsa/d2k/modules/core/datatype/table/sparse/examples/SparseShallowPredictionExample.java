@@ -1,3 +1,14 @@
+/**
+ * This class is currently not in use.
+ */
+
+
+
+
+
+
+
+
 //package ncsa.d2k.modules.projects.vered.sparse.example;
 package ncsa.d2k.modules.core.datatype.table.sparse.examples;
 
@@ -14,7 +25,7 @@ import ncsa.d2k.modules.core.datatype.table.sparse.SparsePredictionTable;
  * @version 1.0
  */
 
-public class SparseShallowPredictionExample extends SparseShallowExample
+public abstract class SparseShallowPredictionExample extends SparseShallowExample
   implements PredictionExample {
 
   public SparseShallowPredictionExample(SparsePredictionTable t, int r) {
@@ -22,9 +33,9 @@ public class SparseShallowPredictionExample extends SparseShallowExample
   }
 
 
-  public int getNumPredictions(){
-    return ((SparsePredictionTable)table).getNumPredictions();
-  }
+//  public int getNumPredictions(){
+//    return ((SparsePredictionTable)table).getNumPredictions();
+//  }
 
 
   /**

@@ -5,6 +5,7 @@ package ncsa.d2k.modules.core.datatype.table.sparse.examples;
 //===============
 
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.VIntHashSet;
 import ncsa.d2k.modules.core.datatype.table.sparse.SparseExampleTable;
 
@@ -23,193 +24,465 @@ import ncsa.d2k.modules.core.datatype.table.sparse.SparseExampleTable;
  * each row has the same input features and same output features.
  */
 
-public class SparseExample extends SparseExampleTable implements Example {
+public class SparseExample extends SparseRow implements Example {
 
-  //==============
-  // Data Members
-  //==============
+  /** these are the input columns. */
+  private Column [] inputColumns;
 
-  protected int row;
+  /** output columns */
+  private Column [] outputColumns;
 
-  //================
-  // Constructor(s)
-  //================
+  /** the test columns */
+  private int [] subset;
 
-  public SparseExample(SparseExampleTable t, int r) {
-    super((SparseExampleTable)(t.getSubset(r, 1)));
-    row = r;
-    setInputFeatures(t.getInputFeatures(row));
-    setOutputFeatures(t.getOutputFeatures(row));
+  public SparseExample () {
+          super ();
+  }
+  public SparseExample (SparseExampleTable et) {
+          super(et);
 
+          Column [] columns = et.getColumns();
+          int [] inputInd = et.getInputFeatures();
+          inputColumns = new Column [et.getNumInputFeatures()];
+          for (int i = 0 ; i < inputColumns.length; i++) {
+                  this.inputColumns[i] = columns[inputInd[i]];
+          }
+
+          int [] outputInd = et.getOutputFeatures();
+          outputColumns = new Column [et.getNumOutputFeatures()];
+          for (int i = 0 ; i < this.outputColumns.length; i++) {
+                  this.outputColumns[i] = columns[outputInd[i]];
+          }
+          this.subset = et.getSubset();
   }
 
   /**
-   * This constructor is to be used by Test and Train Tables.
-   * @param t     must be a single row table. actually is the example itself.
+   * This could potentially be subindexed.
+   * @param i
    */
-   public SparseExample(SparseExampleTable t) {
-    super(t);
-    row = t.getAllRows()[0];
-   }
-
-  //================
-  // Public Methods
-  //================
+  final public void setIndex(int i) {
+          this.index = this.subset[i];
+  }
 
   /**
-   * GET TYPE METHODS.
-   * i or o are indices into the input and output sets.
-   *
-   * Returns the data at column no. <code>i</code> in the input features set
-   * or column no. <code>o</code> in the output features set, in this example.
-   *
+   * Get the ith input as a double.
+   * @param i the input index
+   * @return the ith input as a double
    */
-
-  public double getInputDouble(int i) {
-    return getInputDouble(row, i);
-  }
-  public double getOutputDouble(int o) {
-     return getOutputDouble(row, o);
+  final public double getInputDouble(int i) {
+          return inputColumns [i].getDouble(index);
   }
 
-  public String getInputString(int i) {
-     return getInputString(row, i);
-  }
-  public String getOutputString(int o) {
-     return getOutputString(row, o);
-  }
-  public int getInputInt(int i) {
-     return getInputInt(row, i);
-  }
-  public int getOutputInt(int o) {
-     return getOutputInt(row, o);
-  }
-  public float getInputFloat(int i) {
-    return getInputFloat(row, i);
-  }
-  public float getOutputFloat(int o) {
-    return getOutputFloat(row, o);
-  }
-  public short getInputShort(int i) {
-    return getInputShort(row, i);
-  }
-  public short getOutputShort(int o) {
-    return getOutputShort(row, o);
-  }
-  public long getInputLong(int i) {
-    return getInputLong(row, i);
-  }
-  public long getOutputLong(int o) {
-    return getOutputLong(row, o);
-  }
-  public byte getInputByte(int i) {
-    return getInputByte(row, i);
-  }
-  public byte getOutputByte(int o) {
-    return getOutputByte(row, o);
-  }
-  public Object getInputObject(int i) {
-    return getInputObject(row, i);
-  }
-  public Object getOutputObject(int o) {
-    return getOutputObject(row, o);
-  }
-  public char getInputChar(int i) {
-    return getInputChar(row, i);
-  }
-  public char getOutputChar(int o) {
-    return getOutputChar(row, o);
-  }
-  public char[] getInputChars(int i) {
-    return getInputChars(row, i);
-  }
-  public char[] getOutputChars(int o) {
-    return getOutputChars(row, o);
-  }
-  public byte[] getInputBytes(int i) {
-    return getInputBytes(row, i);
-  }
-  public byte[] getOutputBytes(int o) {
-   return getOutputBytes(row, o);
-  }
-  public boolean getInputBoolean(int i) {
-    return getInputBoolean(row, i);
-  }
-  public boolean getOutputBoolean(int o) {
-    return getOutputBoolean(row, o);
+  /**
+   * Get the oth output as a double.
+   * @param o the output index
+   * @return the oth output as a double
+   */
+  final public double getOutputDouble(int o) {
+          return outputColumns [o].getDouble(index);
   }
 
-
-  public Table getTable()
-  {
-	return this;
+  /**
+   * Get the ith input as a String.
+   * @param i the input index
+   * @return the ith input as a String
+   */
+  final public String getInputString(int i) {
+          return inputColumns [i].getString(index);
   }
 
-  public double getDouble(int i)
-  {
-    return getInputDouble(row, i);
+  /**
+   * Get the oth output as a String.
+   * @param o the output index
+   * @return the oth output as a String
+   */
+  final public String getOutputString(int o) {
+          return outputColumns [o].getString(index);
   }
 
-  public String getString(int i)
-  {
-     return getInputString(row, i);
+  /**
+   * Get the ith input as an int.
+   * @param i the input index
+   * @return the ith input as an int
+   */
+  final public int getInputInt(int i) {
+          return inputColumns [i].getInt(index);
   }
 
-  public int getInt(int i)
-  {
-     return getInputInt(row, i);
+  /**
+   * Get the oth output as an int.
+   * @param o the output index
+   * @return the oth output as an int
+   */
+  final public int getOutputInt(int o) {
+          return outputColumns [o].getInt(index);
   }
 
-  public float getFloat(int i)
-  {
-    return getInputFloat(row, i);
+  /**
+   * Get the ith input as a float.
+   * @param i the input index
+   * @return the ith input as a float
+   */
+  final public float getInputFloat(int i) {
+          return inputColumns [i].getFloat(index);
   }
 
-  public short getShort(int i)
-  {
-    return getInputShort(row, i);
+  /**
+   * Get the oth output as a float.
+   * @param o the output index
+   * @return the oth output as a float
+   */
+  final public float getOutputFloat(int o) {
+          return outputColumns [o].getFloat(index);
   }
 
-  public long getLong(int i)
-  {
-    return getInputLong(row, i);
+  /**
+   * Get the ith input as a short.
+   * @param i the input index
+   * @return the ith input as a short
+   */
+  final public short getInputShort(int i) {
+          return inputColumns [i].getShort(index);
   }
 
-  public byte getByte(int i)
-  {
-    return getInputByte(row, i);
+  /**
+   * Get the oth output as a short.
+   * @param o the output index
+   * @return the oth output as a short
+   */
+  final public short getOutputShort(int o) {
+          return outputColumns [o].getShort(index);
   }
 
-  public Object getObject(int i)
-  {
-    return getInputObject(row, i);
+  /**
+   * Get the ith input as a long.
+   * @param i the input index
+   * @return the ith input as a long
+   */
+  final public long getInputLong(int i) {
+          return inputColumns [i].getLong(index);
   }
 
-  public char getChar(int i)
-  {
-    return getInputChar(row, i);
+  /**
+   * Get the oth output as a long.
+   * @param o the output index
+   * @return the ith output as a long
+   */
+  final public long getOutputLong(int o) {
+          return outputColumns [o].getLong(index);
   }
 
-  public char[] getChars(int i)
-  {
-    return getInputChars(row, i);
+  /**
+   * Get the ith input as a byte.
+   * @param i the input index
+   * @return the ith input as a byte
+   */
+  final public byte getInputByte(int i) {
+          return inputColumns [i].getByte(index);
   }
 
-  public byte[] getBytes(int i)
-  {
-    return getInputBytes(row, i);
+  /**
+   * Get the oth output as a byte.
+   * @param o the output index
+   * @return the oth output as a byte
+   */
+  final public byte getOutputByte(int o) {
+          return outputColumns [o].getByte(index);
   }
 
-  public boolean getBoolean(int i)
-  {
-    return getInputBoolean(row, i);
+  /**
+   * Get the ith input as an Object.
+   * @param i the input index
+   * @return the ith input as an Object.
+   */
+  final public Object getInputObject(int i) {
+          return inputColumns [i].getObject(index);
   }
 
-  public void setIndex(int i)
-  {
-	  this.row = i;
+  /**
+   * Get the oth output as an Object.
+   * @param o the output index
+   * @return the oth output as an Object
+   */
+  final public Object getOutputObject(int o) {
+          return outputColumns [o].getObject(index);
   }
 
+  /**
+   * Get the ith input as a char.
+   * @param i the input index
+   * @return the ith input as a char
+   */
+  final public char getInputChar(int i) {
+          return inputColumns [i].getChar(index);
+  }
+
+  /**
+   * Get the oth output as a char.
+   * @param o the output index
+   * @return the oth output as a char
+   */
+  final public char getOutputChar(int o) {
+          return outputColumns [o].getChar(index);
+  }
+
+  /**
+   * Get the ith input as chars.
+   * @param i the input index
+   * @return the ith input as chars
+   */
+  final public char[] getInputChars(int i) {
+          return inputColumns [i].getChars(index);
+  }
+
+  /**
+   * Get the oth output as chars.
+   * @param o the output index
+   * @return the oth output as chars
+   */
+  final public char[] getOutputChars(int o) {
+          return outputColumns [o].getChars(index);
+  }
+
+  /**
+   * Get the ith input as bytes.
+   * @param i the input index
+   * @return the ith input as bytes.
+   */
+  final public byte[] getInputBytes(int i) {
+          return inputColumns [i].getBytes(index);
+  }
+
+  /**
+   * Get the oth output as bytes.
+   * @param o the output index
+   * @return the oth output as bytes.
+   */
+  final public byte[] getOutputBytes(int o) {
+          return outputColumns [o].getBytes(index);
+  }
+
+  /**
+   * Get the ith input as a boolean.
+   * @param i the input index
+   * @return the ith input as a boolean
+   */
+  final public boolean getInputBoolean(int i) {
+          return inputColumns [i].getBoolean(index);
+  }
+
+  /**
+   * Get the oth output as a boolean.
+   * @param o the output index
+   * @return the oth output as a boolean
+   */
+  final public boolean getOutputBoolean(int o) {
+          return outputColumns [o].getBoolean(index);
+  }
+
+  //ANCA: method for comparing two ExampleImpl objects.
+  final public boolean equals(Object ex) {
+          Row example;
+          try {
+                  example = (Row) ex;
+          } catch (Exception e) {
+                  return false;
+          }
+
+          for (int i =0; i < (inputColumns.length+outputColumns.length); i ++) {
+                                  if(!this.getString(i).equals(example.getString(i))) return false;
+          }
+          return true;
+
+  }
+
+//
+//
+//  //==============
+//  // Data Members
+//  //==============
+//
+//  protected int row;
+//
+//  //================
+//  // Constructor(s)
+//  //================
+//
+//  public SparseExample(SparseExampleTable t, int r) {
+//    super((SparseExampleTable)(t.getSubset(r, 1)));
+//    row = r;
+//    setInputFeatures(t.getInputFeatures(row));
+//    setOutputFeatures(t.getOutputFeatures(row));
+//
+//  }
+//
+//  /**
+//   * This constructor is to be used by Test and Train Tables.
+//   * @param t     must be a single row table. actually is the example itself.
+//   */
+//   public SparseExample(SparseExampleTable t) {
+//    super(t);
+//    row = t.getAllRows()[0];
+//   }
+//
+//  //================
+//  // Public Methods
+//  //================
+//
+//  /**
+//   * GET TYPE METHODS.
+//   * i or o are indices into the input and output sets.
+//   *
+//   * Returns the data at column no. <code>i</code> in the input features set
+//   * or column no. <code>o</code> in the output features set, in this example.
+//   *
+//   */
+//
+//  public double getInputDouble(int i) {
+//    return getInputDouble(row, i);
+//  }
+//  public double getOutputDouble(int o) {
+//     return getOutputDouble(row, o);
+//  }
+//
+//  public String getInputString(int i) {
+//     return getInputString(row, i);
+//  }
+//  public String getOutputString(int o) {
+//     return getOutputString(row, o);
+//  }
+//  public int getInputInt(int i) {
+//     return getInputInt(row, i);
+//  }
+//  public int getOutputInt(int o) {
+//     return getOutputInt(row, o);
+//  }
+//  public float getInputFloat(int i) {
+//    return getInputFloat(row, i);
+//  }
+//  public float getOutputFloat(int o) {
+//    return getOutputFloat(row, o);
+//  }
+//  public short getInputShort(int i) {
+//    return getInputShort(row, i);
+//  }
+//  public short getOutputShort(int o) {
+//    return getOutputShort(row, o);
+//  }
+//  public long getInputLong(int i) {
+//    return getInputLong(row, i);
+//  }
+//  public long getOutputLong(int o) {
+//    return getOutputLong(row, o);
+//  }
+//  public byte getInputByte(int i) {
+//    return getInputByte(row, i);
+//  }
+//  public byte getOutputByte(int o) {
+//    return getOutputByte(row, o);
+//  }
+//  public Object getInputObject(int i) {
+//    return getInputObject(row, i);
+//  }
+//  public Object getOutputObject(int o) {
+//    return getOutputObject(row, o);
+//  }
+//  public char getInputChar(int i) {
+//    return getInputChar(row, i);
+//  }
+//  public char getOutputChar(int o) {
+//    return getOutputChar(row, o);
+//  }
+//  public char[] getInputChars(int i) {
+//    return getInputChars(row, i);
+//  }
+//  public char[] getOutputChars(int o) {
+//    return getOutputChars(row, o);
+//  }
+//  public byte[] getInputBytes(int i) {
+//    return getInputBytes(row, i);
+//  }
+//  public byte[] getOutputBytes(int o) {
+//   return getOutputBytes(row, o);
+//  }
+//  public boolean getInputBoolean(int i) {
+//    return getInputBoolean(row, i);
+//  }
+//  public boolean getOutputBoolean(int o) {
+//    return getOutputBoolean(row, o);
+//  }
+//
+//
+//  public Table getTable()
+//  {
+//	return this;
+//  }
+//
+//  public double getDouble(int i)
+//  {
+//    return getInputDouble(row, i);
+//  }
+//
+//  public String getString(int i)
+//  {
+//     return getInputString(row, i);
+//  }
+//
+//  public int getInt(int i)
+//  {
+//     return getInputInt(row, i);
+//  }
+//
+//  public float getFloat(int i)
+//  {
+//    return getInputFloat(row, i);
+//  }
+//
+//  public short getShort(int i)
+//  {
+//    return getInputShort(row, i);
+//  }
+//
+//  public long getLong(int i)
+//  {
+//    return getInputLong(row, i);
+//  }
+//
+//  public byte getByte(int i)
+//  {
+//    return getInputByte(row, i);
+//  }
+//
+//  public Object getObject(int i)
+//  {
+//    return getInputObject(row, i);
+//  }
+//
+//  public char getChar(int i)
+//  {
+//    return getInputChar(row, i);
+//  }
+//
+//  public char[] getChars(int i)
+//  {
+//    return getInputChars(row, i);
+//  }
+//
+//  public byte[] getBytes(int i)
+//  {
+//    return getInputBytes(row, i);
+//  }
+//
+//  public boolean getBoolean(int i)
+//  {
+//    return getInputBoolean(row, i);
+//  }
+//
+//  public void setIndex(int i)
+//  {
+//	  this.row = i;
+//  }
+//
 
 
 }//SparseExample

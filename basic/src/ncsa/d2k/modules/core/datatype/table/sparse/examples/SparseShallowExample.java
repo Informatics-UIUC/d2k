@@ -1,3 +1,13 @@
+/**
+ * This class is currently not in use.
+ */
+
+
+
+
+
+
+
 //package ncsa.d2k.modules.projects.vered.sparse.example;
 package ncsa.d2k.modules.core.datatype.table.sparse.examples;
 
@@ -158,57 +168,57 @@ public class SparseShallowExample implements Example {
   }
 
 
-  public double getDouble(int i) 
+  public double getDouble(int i)
   {
     return table.getInputDouble(row, i);
   }
 
-  public String getString(int i) 
+  public String getString(int i)
   {
      return table.getInputString(row, i);
   }
 
-  public int getInt(int i) 
+  public int getInt(int i)
   {
      return table.getInputInt(row, i);
   }
 
-  public float getFloat(int i) 
+  public float getFloat(int i)
   {
     return table.getInputFloat(row, i);
   }
 
-  public short getShort(int i) 
+  public short getShort(int i)
   {
     return table.getInputShort(row, i);
   }
 
-  public long getLong(int i) 
+  public long getLong(int i)
   {
     return table.getInputLong(row, i);
   }
 
-  public byte getByte(int i) 
+  public byte getByte(int i)
   {
     return table.getInputByte(row, i);
   }
 
-  public Object getObject(int i) 
+  public Object getObject(int i)
   {
     return table.getInputObject(row, i);
   }
 
-  public char getChar(int i) 
+  public char getChar(int i)
   {
     return table.getInputChar(row, i);
   }
 
-  public char[] getChars(int i) 
+  public char[] getChars(int i)
   {
     return table.getInputChars(row, i);
   }
 
-  public byte[] getBytes(int i) 
+  public byte[] getBytes(int i)
   {
     return table.getInputBytes(row, i);
   }

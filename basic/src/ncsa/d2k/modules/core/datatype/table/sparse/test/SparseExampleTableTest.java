@@ -99,22 +99,22 @@ public class SparseExampleTableTest
     super.tearDown();
   }
 
-//        public void testGetRow() {
-//                // test getRow on an empty table
-//                Row emptyRow = getEmptyTable().getRow();
-//                Row expected  = new SparseExample();
-//                assertEquals(emptyRow, expected);
-//                Table mFull = getFullTable();
-//                int numColumns = mFull.getNumColumns();
-//                Row fullRow = mFull.getRow();
-//                int numRows = mFull.getNumRows();
-//           for (int j =0; j < numRows; j ++) {
-//                   fullRow.setIndex(j);
-//                            for (int i = 0; i < numColumns ; i ++) {
-//                                    assertEquals(fullRow.getString(i),mFull.getString(j,i));
-//                               }
-//           }
-//        }
+  public void testGetRow() {
+    // test getRow on an empty table
+    Row emptyRow = getEmptyTable().getRow();
+    Row expected = new SparseExample();
+    assertEquals(emptyRow, expected);
+    Table mFull = getFullTable();
+    int numColumns = mFull.getNumColumns();
+    Row fullRow = mFull.getRow();
+    int numRows = mFull.getNumRows();
+    for (int j = 0; j < numRows; j++) {
+      fullRow.setIndex(j);
+      for (int i = 0; i < numColumns; i++) {
+        assertEquals(fullRow.getString(i), mFull.getString(j, i));
+      }
+    }
+  }
 
 //  public void testToPredictionTable() {
 //    SparseExampleTable et = (SparseExampleTable) getFullTable();

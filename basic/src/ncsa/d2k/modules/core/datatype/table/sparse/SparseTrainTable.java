@@ -1,3 +1,8 @@
+/**
+ * This class is currently not in use.
+ */
+
+
 package ncsa.d2k.modules.core.datatype.table.sparse;
 
 //import ncsa.d2k.modules.projects.vered.sparse.primitivehash.VIntHashSet;
