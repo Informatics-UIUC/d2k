@@ -100,7 +100,7 @@ public class SaveFileToDB extends HeadlessUIModule
       s += "cannot find the database table you want to add data to, please report the ";
       s += "problem to your database administrator. </p>";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle and SQLServer databases.";
+      s += "We currently only support Oracle, SQLServer, DB2 and MySql databases.";
       return s;
     }
 

@@ -37,7 +37,7 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
           s += "retrieved from the <i>Attributes List</i> input port. ";
           s += "The selected attributes will be used to construct SQL queries.  </p>";
           s += "<p>Restrictions: ";
-          s += "Currently only SQLServer and Oracle databases are supported. ";
+          s += "Currently only Oracle, SQLServer, DB2 and MySql databases are supported. ";
           return s;
 
 	}

@@ -28,7 +28,7 @@ public class AvailableFieldsInput extends InputModule
           s += "<i>Selected Table</i> input port. ";
  	  s += "The list is made available to other modules via the <i>Attributes List</i> output port. ";
           s += "<p>Restrictions: ";
-          s += "Only Oracle and SQLServer databases are currently supported.";
+          s += "Only Oracle, SQLServer, DB2 and MySql databases are currently supported.";
 
           return s;
 	}

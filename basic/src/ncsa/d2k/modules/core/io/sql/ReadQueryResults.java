@@ -75,7 +75,7 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
           s += "database data, or to prepare the database data set for feeding into ";
           s += "mining processes. </p>";
           s += "<p>Restrictions: ";
-          s += "We currently only support Oracle databases. </p>";
+          s += "We currently only support Oracle, SqlServer, DB2 and MySql databases. </p>";
           return s;
 	}
 

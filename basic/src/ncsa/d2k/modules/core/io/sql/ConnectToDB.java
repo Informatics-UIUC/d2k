@@ -10,15 +10,13 @@ import javax.swing.*;
 
 import ncsa.d2k.core.modules.*;
 
-
 import ncsa.d2k.userviews.swing.*;
 
 import ncsa.gui.*;
 
 
 
-
-public class ConnectToDB extends HeadlessUIModule {
+public class ConnectToDB extends UIModule {
 
 /**
 
@@ -26,7 +24,6 @@ public class ConnectToDB extends HeadlessUIModule {
 
  */
     private String dbVendor;
-
     private String url;
 
     /** username */
@@ -85,7 +82,7 @@ public class ConnectToDB extends HeadlessUIModule {
       s += "After you successfully log onto a database, this connection is ";
       s += "passed to next modules for use. </p>";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle, SQLServer and MySQL databases.";
+      s += "We currently only support Oracle, SQLServer , DB2 and MySQL databases.";
 
         return s;
 
@@ -218,15 +215,13 @@ public class ConnectToDB extends HeadlessUIModule {
     }
 
     public PropertyDescription [] getPropertiesDescriptions () {
-      //PropertyDescription [] super_pds = super.getPropertiesDescriptions();
-      PropertyDescription [] pds = new PropertyDescription [7];
-      pds[0] = super.supressDescription;
-      pds[1] = new PropertyDescription ("dbVendor", "Database Vendor", "The database vendor.");
-      pds[2] = new PropertyDescription ("username", "User Name", "The login account to use.");
-      pds[3] = new PropertyDescription ("machine", "Machine Name", "The server this database is running on.");
-      pds[4] = new PropertyDescription ("port", "Connection Port", "The connection Port to use.");
-      pds[5] = new PropertyDescription ("dbInstance", "Database Instance", "The database to connect.");
-      pds[6] = new PropertyDescription ("driver", "JDBC Driver", "The JDBC driver to use.");
+      PropertyDescription [] pds = new PropertyDescription [6];
+      pds[0] = new PropertyDescription ("dbVendor", "Database Vendor", "The database vendor.");
+      pds[1] = new PropertyDescription ("username", "User Name", "The login account to use.");
+      pds[2] = new PropertyDescription ("machine", "Machine Name", "The server this database is running on.");
+      pds[3] = new PropertyDescription ("port", "Connection Port", "The connection Port to use.");
+      pds[4] = new PropertyDescription ("dbInstance", "Database Instance", "The database to connect.");
+      pds[5] = new PropertyDescription ("driver", "JDBC Driver", "The JDBC driver to use.");
       return pds;
     }
 
@@ -487,89 +482,16 @@ public class ConnectToDB extends HeadlessUIModule {
 
 
     /**
-       connects to the database, according to the settings of the properties.
+
+       Provides a simple user interface to get username, password, host and port.
+
+       The text values used in the Labels and textfields are properties of the
+
+       module class.
+
+       If these properties are null, default values are used.
+
        */
-        public void doit() throws Exception{
-
-          //checking that the properties are not null
-          if(password != null &&( dbInstance == null || driver == null || machine == null ||
-              port == null || username == null))
-             throw new Exception(this.getAlias() + " has not been configured. Before running headless set the properties using the properties editor window.");
-
-
-          if(password == null)
-            throw new Exception (this.getAlias()+": password property has not been configured. Before running headless, run with the gui and configure the parameters.");
-
-
-
-
-          if ( driver.equals("oracle.jdbc.driver.OracleDriver")) {
-
-                        setUrl("jdbc:oracle:thin:@"+getMachine()+":"+getPort()+":"+getDbInstance());
-
-                        OracleDBConnection oc = new OracleDBConnection(getUrl().trim(),
-
-                                getDriver().trim(),
-
-                                getUsername().trim(),
-
-                                getPassword().trim());
-
-                        if (oc.getConnection() != null) {
-                          pushOutput (oc, 0);
-                         // viewDone("Done");
-                        }
-
-                    }
-
-                    else if ( driver.equals("com.mysql.jdbc.Driver")) {
-
-                        setUrl("jdbc:mysql://" + getMachine()+ "/" + getDbInstance());
-
-                        MySQLDBConnection mc = new MySQLDBConnection(getUrl().trim(),
-
-                                getDriver().trim(),
-
-                                getUsername().trim(),
-
-                                getPassword().trim(),
-
-                                getDbInstance().trim());
-
-                        pushOutput (mc, 0);
-
-                    }
-
-                    else if(driver.equals("com.microsoft.jdbc.sqlserver.SQLServerDriver")) {
-
-                      setUrl("jdbc:microsoft:sqlserver://"+getMachine()+":"+getPort()+";"
-
-                               +"DatabaseName="+getDbInstance());
-
-                        SQLServerDBConnection sc = new SQLServerDBConnection(getUrl().trim(),
-
-                                getDriver().trim(),
-
-                                getUsername().trim(),
-
-                                getPassword().trim());
-
-                        if (sc.getConnection() != null) {
-                          pushOutput (sc, 0);
-                          //viewDone("Done");
-                        }
-                    }
-
-                    else {
-                      System.out.println(this.getAlias() +": no match driver was found for driver " + driver);
-                        //pushOutput(null, 0);
-                      //viewDone("Done");
-                    }
-
-                    //viewDone("Done");
-
-          }
-
 
     private class GetConnectionView extends JUserPane implements ActionListener {
 
@@ -583,8 +505,8 @@ public class ConnectToDB extends HeadlessUIModule {
 
         private JComboBox cbV;
 
-        // we currently only support Oracle, SQLServer and MySQL
-        private String[] Vendors = {"Oracle", "SQLServer", "MySQL"};
+        // we currently only support Oracle, SQLServer , DB2 and MySQL
+        private String[] Vendors = {"Oracle", "SQLServer", "MySQL", "DB2"};
 
         private int dbFlag;
 
@@ -709,6 +631,14 @@ public class ConnectToDB extends HeadlessUIModule {
                         tfPo.setText("1433");
 
                         tfD.setText("com.microsoft.jdbc.sqlserver.SQLServerDriver");
+
+                    }
+
+                    else if (newSelection == "DB2") {
+
+                        tfPo.setText("6789");
+
+                        tfD.setText("COM.ibm.db2.jdbc.net.DB2Driver");
 
                     }
 
@@ -1134,6 +1064,24 @@ public class ConnectToDB extends HeadlessUIModule {
 
                       if (sc.getConnection() != null) {
                         pushOutput (sc, 0);
+                        viewDone("Done");
+                      }
+                  }
+
+                  else if(_driver.equals("COM.ibm.db2.jdbc.net.DB2Driver")) {
+
+                    setUrl("jdbc:db2://" + getMachine() + ":" + getPort() + "/" + getDbInstance());
+
+                      DB2DBConnection dc = new DB2DBConnection(getUrl().trim(),
+
+                              getDriver().trim(),
+
+                              getUsername().trim(),
+
+                              getPassword().trim());
+
+                      if (dc.getConnection() != null) {
+                        pushOutput (dc, 0);
                         viewDone("Done");
                       }
                   }

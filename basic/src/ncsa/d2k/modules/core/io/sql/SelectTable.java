@@ -42,7 +42,7 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
           s += "If you cannot see the tables you are looking for, please report the ";
           s += "problem to your database administrator. </p>";
           s += "<p> Restrictions: ";
-          s += "Currently only SQLServer and Oracle databases are supported.";
+          s += "Currently only Oracle, SQLServer, DB2 and MySql databases are supported.";
 
           return s;
 	}

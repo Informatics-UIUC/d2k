@@ -105,7 +105,7 @@ public class SQLChooseAttributes extends HeadlessUIModule {
       s += "real data. The real data can be retrieved from the database table ";
       s += "by other modules. </p>";
       s += "<p> Restrictions: ";
-      s += "We currently only support Oracle and SQLServer databases. </p> ";
+      s += "We currently only support Oracle, SQLServer, DB2 and MySql databases. </p> ";
 
       return s;
 

@@ -40,7 +40,7 @@ public class AvailableTablesInput extends InputModule
           s += "cannot see the tables you are looking for, please report the ";
           s += "problems to your database administrator. </p>";
           s += "<p> Restrictions: ";
-          s += "Only Oracle and SQLServer databases are currently supported.";
+          s += "Only Oracle, SQLServer, DB2 and MySql databases are currently supported.";
 
           return s;
 	}
