@@ -308,7 +308,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @param col the column to expand
     * @return the expanded column.
     */
-   private Column expandColumn (Column col) {
+   protected Column expandColumn (Column col) {
       String columnClass = (col.getClass()).getName();
       Column expandedColumn = null;
 
@@ -341,15 +341,11 @@ public class SubsetTableImpl extends MutableTableImpl {
          expandedColumn.setIsScalar(col.getIsScalar());
          expandedColumn.setIsNominal(col.getIsNominal());
 
-         //initialize all values as missing for the beginning
-         for (int j = 0; j < numRows; j++)
-            expandedColumn.setValueToMissing(true, j);
-
          //set the elements of the column where appropriate as determined by subset
          Object el;
          for (int i = 0; i < subset.length; i++) {
             if (col.isValueMissing(i)) {
-               expandedColumn.setValueToMissing(true, i);
+               expandedColumn.setValueToMissing(true, subset[i]);
             } else {
                el = col.getObject(i);
                expandedColumn.setObject(el, subset[i]);

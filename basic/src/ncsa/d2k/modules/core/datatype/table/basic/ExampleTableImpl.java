@@ -445,7 +445,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 
 		// Copy failed, maybe objects in a column that are not serializable.
 		Column[] cols = new Column[this.getNumColumns()];
-		Column[] oldcols = this.getColumns();
+		Column[] oldcols = this.columns;
 		for (int i = 0; i < cols.length; i++) {
 			cols[i] = oldcols[i].copy();
 		}
@@ -463,7 +463,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 		System.arraycopy(trainSet, 0, newtrain, 0, trainSet.length);
 
 		ExampleTableImpl mti = new ExampleTableImpl ();
-		mti.addColumns(cols);
+      mti.columns = cols;
 		mti.subset = newsubset;
 		mti.setInputFeatures(newins);
 		mti.setOutputFeatures(newouts);
