@@ -22,39 +22,46 @@ public class TableEditor extends TableViewer {
   public String getModuleInfo() {
     String info = "<p>Overview: ";
     info += "This module displays a table and allows it to be edited. ";
+    info += "</p>";
 
-    info += "</p><p>Detailed Description: ";
+    info += "<p>Detailed Description: ";
     info += "This module can be used to edit a table in a variety of ways. ";
-    info += "The value of an individual cell can be edited directly by clicking on the cell and entering the new value. ";
+    info += "The value of an individual cell can be edited directly by clicking on the cell, updating value, ";
+    info += "and hitting the Enter key. ";
     info += "The datatype of an attribute (column) can be changed by clicking on the column's datatype and using the ";
     info += "combo box that appears to select a new datatype. ";
     info += "One or more rows can be deleted from the table by highlighting the rows that are to be removed, and then ";
     info += "selecting the menu bar option <i>Edit->Remove Rows</i>. ";
+    info += "</p>";
 
-    info += "</p><p>";
+    info += "<p>";
     info += "The module performs sanity checks when a cell value is changed, or when a column datatype is changed, to ";
     info += "make sure that the new selection is valid.  ";
     info += "In particular, if an incongruous value is entered in a cell, a message is displayed and the cell is not changed. ";
     info += "If a column datatype is changed, and the conversion fails, a message is displayed and the datatypes of the cells in the ";
     info += "column are not updated. ";
+    info += "</p>";
 
-    info += "</p><p>";
+    info += "<p>";
     info += "The <i>File</i> pull-down menu offers a <i>Save</i> option to ";
     info += "save the displayed table to a tab-delimited file. ";
     info += "A file browser window pops up, allowing the user to select ";
     info += "where the table should be saved. ";
     info += "Missing values in the table appear as blanks in the saved file. ";
+    info += "</p>";
 
-    info += "</p><p>Known Limitations in Current Release: ";
+    info += "<p>Known Limitations in Current Release: ";
     info += "This module was designed to work with a single input table per itinerary run. ";
     info += "It will not work properly if it receives multiple inputs per run. ";
     info += "If you accidently direct multiple inputs to the module, it may be necessary ";
     info += "to resize the Table Editor Window before the table contents and <i>Abort</i> ";
     info += "and <i>Done</i> buttons are visible and/or operational.   Until you resize, it may ";
     info += "seem that you have no way to stop the itinerary and correct the problem. ";
+    info += "</p>";
 
-    info += "</p><p>Data Handling: ";
-    info += "The data in the input <i>Table</i> is changed during the edit process.";
+    info += "<p>Data Handling: ";
+    info += "The data in the input <i>Mutable Table</i> is changed during the edit process.";
+    info += "</p>";
     return info;
   }
 
@@ -736,4 +743,7 @@ public class TableEditor extends TableViewer {
 //          you get the Exception box "Could not convert column type" two times.  Haven't
 //          yet tested w/ 'other' table types.  Vered had reported the types of conversions
 //          allowed weren't consistent across types.
+// 4/10/03 - Greg fixed 2.  Said 1 was standard behavior.  Updated info to say "hit Enter".
+//         - Ready for Basic
+// End QA comments.
 // End QA comments.
