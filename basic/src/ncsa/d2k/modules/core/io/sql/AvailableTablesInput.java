@@ -4,11 +4,16 @@ package ncsa.d2k.modules.core.io.sql;
 import ncsa.d2k.core.modules.InputModule;
 import java.sql.*;
 import java.util.Vector;
+import java.beans.PropertyVetoException;  
 import ncsa.d2k.core.modules.*;
 
 public class AvailableTablesInput extends InputModule
 {
-	/** list data tables (not views and cube tables) only */
+	/** controls what to list **/
+        /** NOTE:  These variable names imply that only one or the other can be
+         ** retrieved, but in fact both can.  We didn't update the variable names
+         ** when we changed the logic because we wanted old itinieraries to continue
+         ** to work.   **/
 	protected boolean dataTableOnly = true;
         protected boolean dataCubeOnly = false;
 
@@ -35,12 +40,12 @@ public class AvailableTablesInput extends InputModule
           s += "list of available database tables. There are two types of tables in a ";
           s += "database: raw data tables and aggregated cube tables. By using ";
           s += "the property parameters: 'List Data Tables' and 'List Cube Tables', you ";
-          s += "can list one or both types of tables. For the security purpose, ";
-          s += "you may only view the tables you have been granted to. If you ";
+          s += "can list one or both types of tables. For security purposes, ";
+          s += "you may only view the tables you have been granted permission to access. If you ";
           s += "cannot see the tables you are looking for, please report the ";
           s += "problems to your database administrator. </p>";
           s += "<p> Restrictions: ";
-          s += "We currently only support Oracle and SQLServer database.";
+          s += "We currently only support Oracle and SQLServer databases.";
 
           return s;
 	}
@@ -57,7 +62,7 @@ public class AvailableTablesInput extends InputModule
 
 	/**
 		Get the value of dataTableOnly
-		@return true if only data tables (not data cubes) should be listed.
+		@return true if data tables should be listed.
 		false otherwise
 	*/
 	public boolean getDataTableOnly() {
@@ -66,7 +71,7 @@ public class AvailableTablesInput extends InputModule
 
 	/**
 		Set the the value of dataTableOnly
-		@param b true if only data tables should be listed.
+		@param b true if data tables should be listed.
 		false otherwise
 	*/
 	public void setDataTableOnly(boolean b) {
@@ -75,7 +80,7 @@ public class AvailableTablesInput extends InputModule
 
 	/**
 		Get the value of dataCubeOnly
-		@return true if only data cubes (not data tables) should be listed.
+		@return true if data cubes should be listed.
 		false otherwise
 	*/
 	public boolean getDataCubeOnly() {
@@ -83,18 +88,23 @@ public class AvailableTablesInput extends InputModule
 	}
 
 	/**
-		Set the the value of dataTableOnly
-		@param b true if only data tables should be listed.
+		Set the the value of dataCubeOnly
+		@param b true if data tables should be listed.
 		false otherwise
 	*/
-	public void setDataCubeOnly(boolean b) {
+	public void setDataCubeOnly(boolean b) throws PropertyVetoException {
 		dataCubeOnly = b;
+
+		if ( !dataTableOnly && !dataCubeOnly ) {
+      		    throw new PropertyVetoException( 
+			"\nYou must set either List Data Tables or List Data Cubes to True.", null );   
+                }
 	}
 
         public PropertyDescription [] getPropertiesDescriptions () {
           PropertyDescription [] pds = new PropertyDescription [2];
-          pds[0] = new PropertyDescription ("dataTableOnly", "List Data Tables", "Choose True if you only want to list data tables, but not data cubes.");
-          pds[1] = new PropertyDescription ("dataCubeOnly", "List Data Cubes", "Choose True if you only want to list data cubes, but not data tables.");
+          pds[0] = new PropertyDescription ("dataTableOnly", "List Data Tables", "Choose True if you want to list data tables.");
+          pds[1] = new PropertyDescription ("dataCubeOnly", "List Data Cubes", "Choose True if you want to list data cubes.");
           return pds;
         }
 
@@ -112,18 +122,15 @@ public class AvailableTablesInput extends InputModule
                 ResultSet tableNames = metadata.getTables(null,"%","%",types);
                 while (tableNames.next()) {
                   String aTable = tableNames.getString("TABLE_NAME");
-                  if (dataTableOnly && !dataCubeOnly) {
+                  if (dataTableOnly) {
                     if (aTable.toUpperCase().indexOf("CUBE") < 0) {
                       v.addElement(aTable);
                     }
                   }
-                  else if (dataCubeOnly && !dataTableOnly) {
+                  if (dataCubeOnly) {
                     if (aTable.toUpperCase().indexOf("CUBE") >= 0) {
                       v.addElement(aTable);
                     }
-                  }
-                  else {
-                    v.addElement(aTable);
                   }
                 }
 
