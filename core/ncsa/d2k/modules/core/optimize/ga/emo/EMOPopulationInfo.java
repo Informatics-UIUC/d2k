@@ -20,11 +20,18 @@ public class EMOPopulationInfo implements java.io.Serializable {
   //public static final int DOUBLE_TYPE = 0;
 
   private int type;
-  private boolean useExternalFitnessEvaluation;
-  private boolean useExternalConstraintEvaluation;
+  public boolean useExternalFitnessEvaluation;
+  public boolean useExternalConstraintEvaluation;
 
   public Table externalFitnessInfo;
   public Table externalConstraintInfo;
+
+  public double mutationRate;
+  public double crossoverRate;
+  public int tournamentSize;
+
+  public int populationSize;
+  public int numGenerations;
 
   public EMOPopulationInfo() {
     fitnessVariableConstructions = new Construction[0];
@@ -41,7 +48,7 @@ public class EMOPopulationInfo implements java.io.Serializable {
     return type;
   }*/
 
-  public void setUseExternalFitnessEvaluation(boolean b) {
+/*  public void setUseExternalFitnessEvaluation(boolean b) {
     useExternalFitnessEvaluation = b;
   }
   public boolean getUseExternalFitnessEvaluation() {
@@ -53,5 +60,5 @@ public class EMOPopulationInfo implements java.io.Serializable {
   }
   public boolean getUseExternalConstraintEvaluation() {
     return useExternalConstraintEvaluation;
-  }
+  }*/
 }

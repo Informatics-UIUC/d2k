@@ -290,7 +290,7 @@ public class DefineExternalFitnessFunctions extends UIModule {
 
           // push out the pop info
 
-          popInfo.setUseExternalFitnessEvaluation(true);
+          popInfo.useExternalFitnessEvaluation = true;
           popInfo.externalFitnessInfo = tbl;
 
           pushOutput(popInfo, 0);

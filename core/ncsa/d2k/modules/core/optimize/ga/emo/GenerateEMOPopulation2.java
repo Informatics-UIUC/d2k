@@ -12,13 +12,14 @@ import ncsa.d2k.modules.core.optimize.util.*;
 /**
  * EMOGeneratePopulation
  */
-public class GenerateEMOPopulation
+public class GenerateEMOPopulation2
     extends PopulationPrep
     implements Serializable {
 
   public PropertyDescription[] getPropertiesDescriptions() {
+    return new PropertyDescription[0];
 
-    PropertyDescription[] pds = new PropertyDescription[6];
+/*    PropertyDescription[] pds = new PropertyDescription[6];
 
     pds[0] = new PropertyDescription(
         "nonDominatedFronts",
@@ -50,47 +51,47 @@ public class GenerateEMOPopulation
         "Create binary individuals",
         "Create binary individuals if true, create real-coded individuals if false");
 
-    return pds;
+    return pds;*/
   }
 
   private int nonDominatedFronts = 50;
-  public void setNonDominatedFronts(int i) {
+/*  public void setNonDominatedFronts(int i) {
     nonDominatedFronts = i;
   }
   public int getNonDominatedFronts() {
     return nonDominatedFronts;
-  }
+  }*/
 
   private boolean useRecommendedPopSize = true;
-  public void setUseRecommendedPopSize(boolean b) {
+/*  public void setUseRecommendedPopSize(boolean b) {
     useRecommendedPopSize = b;
   }
   public boolean getUseRecommendedPopSize() {
     return useRecommendedPopSize;
-  }
+  }*/
 
   private boolean useRecommendedNumGenerations = true;
-  public void setUseRecommendedNumGenerations(boolean b) {
+/*  public void setUseRecommendedNumGenerations(boolean b) {
     useRecommendedNumGenerations = b;
   }
   public boolean getUseRecommendedNumGenerations() {
     return useRecommendedNumGenerations;
-  }
+  }*/
 
-  public int getMaxGenerations() {
+/*  public int getMaxGenerations() {
     return this.maxGenerations;
   }
   public void setMaxGenerations(int i) {
     maxGenerations = i;
-  }
+  }*/
 
   private boolean createBinaryIndividuals = true;
-  public void setCreateBinaryIndividuals(boolean b) {
+/*  public void setCreateBinaryIndividuals(boolean b) {
     createBinaryIndividuals = b;
   }
   public boolean getCreateBinaryIndividuals() {
     return createBinaryIndividuals;
-  }
+  }*/
 
   public String getInputName(int i) {
     switch (i) {
@@ -188,7 +189,7 @@ public class GenerateEMOPopulation
       populationTbl = (MutableTable) popInfo.varNames;
       variableNames = (MutableTable)populationTbl.copy();
 
-      if(this.getUseRecommendedPopSize())
+/*      if(this.getUseRecommendedPopSize())
         this.populationSize = 2* this.getNonDominatedFronts();
 
       bounds = (MutableTable) popInfo.boundsAndPrecision;
@@ -200,7 +201,11 @@ public class GenerateEMOPopulation
           stringLength += bounds.getInt(i, bounds.getNumColumns() - 1);
         }
         this.maxGenerations = 2 * stringLength;
-      }
+      }*/
+      bounds = (MutableTable) popInfo.boundsAndPrecision;
+      firstRun = false;
+      this.populationSize = popInfo.populationSize;
+      this.maxGenerations = popInfo.numGenerations;
     }
     else {
       // consume the dummy input

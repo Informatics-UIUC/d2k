@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.optimize.ga.emo;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
+import ncsa.gui.*;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -11,7 +12,8 @@ import java.awt.*;
 public class InputEMOParams extends UIModule {
 
   public String[] getInputTypes() {
-    return new String[] {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
+    //return new String[] {"ncsa.d2k.modules.core.optimize.ga.emo.EMOPopulationInfo"};
+    return null;
   }
 
   public String[] getOutputTypes() {
@@ -40,22 +42,167 @@ public class InputEMOParams extends UIModule {
 
   private class ParamView extends JUserPane {
 
-    JTable paramsTable;
-    DefaultTableModel paramsModel;
+    private JTable paramsTable;
+    private DefaultTableModel paramsModel;
+    private boolean multiObjective;
 
     public void initView(ViewModule vm) {
       paramsModel = new MultiObjectiveParamsTableModel();
       paramsTable = new JTable(paramsModel);
+      paramsTable.setPreferredScrollableViewportSize(new Dimension(410, 80));
       JScrollPane jsp = new JScrollPane(paramsTable);
 
       setLayout(new BorderLayout());
       JLabel label = new JLabel("Set GA Parameters");
       label.setBorder(new EmptyBorder(20, 10, 20, 5));
-      add(label, BorderLayout.NORTH);
-      add(jsp, BorderLayout.CENTER);
+
+      JPanel leftPanel = new JPanel(new BorderLayout());
+      leftPanel.add(label, BorderLayout.NORTH);
+
+      JPanel l1 = new JPanel(new BorderLayout());
+      l1.add(jsp, BorderLayout.NORTH);
+      l1.add(new TimePanel(), BorderLayout.CENTER);
+
+      leftPanel.add(l1, BorderLayout.CENTER);
+
+      add(leftPanel, BorderLayout.WEST);
+
+      JPanel rightPanel = new JPanel(new BorderLayout());
+      JLabel l2 = new JLabel("Estimated Time Factor");
+      l2.setBorder(new EmptyBorder(20, 10, 20, 5));
+      rightPanel.add(l2, BorderLayout.NORTH);
+      rightPanel.add(new RunTimeChart(), BorderLayout.CENTER);
+
+      rightPanel.setBorder(new EmptyBorder(10, 50, 10, 50));
+      add(rightPanel, BorderLayout.EAST);
+
+      advanced.setEnabled(false);
     }
 
-    boolean multiObjective;
+    private JLabel timeRequired = new JLabel();
+    private JTextField maxTime = new JTextField(4);
+    private JTextField numSolutions = new JTextField(4);
+    private JButton advanced = new JButton("Advanced Settings");
+    private RunTimeChart runTimeChart;
+
+    private JLabel timeRequired2 = new JLabel("   ");
+
+    class RunTimePanel extends JPanel {
+      RunTimePanel() {
+        setLayout(new GridBagLayout());
+        Constrain.setConstraints(this, new JLabel("Estimated Time Required:", JLabel.RIGHT),
+                                                  0, 0, 1, 1,
+                                                  GridBagConstraints.HORIZONTAL,
+                                                  GridBagConstraints.WEST,
+                                                  1, 1);
+        Constrain.setConstraints(this, timeRequired2, 1, 0, 1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.WEST,
+                                  1, 1);
+        Constrain.setConstraints(this, new JLabel("Specified Maximum Run Time:", JLabel.RIGHT),
+                                 1, 0, 1, 1,
+                                 GridBagConstraints.HORIZONTAL,
+                                 GridBagConstraints.WEST,
+                                 1, 1);
+      }
+    }
+
+    class RunTimeChart extends JPanel {
+      RunTimeChart() {}
+
+      public Dimension getPreferredSize() {
+        return new Dimension(300, 100);
+      }
+
+      protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        Graphics2D g2 = (Graphics2D)g;
+
+        // paint divider
+        g2.setColor(Color.black);
+        g2.drawLine(0, (int)height/2, (int)width, (int)height/2);
+
+        String req = timeRequired.getText();
+        String max = maxTime.getText();
+        double timeReq = 0;
+        double maxTime = 0;
+
+        try {
+          timeReq = Double.parseDouble(req);
+          maxTime = Double.parseDouble(max);
+        }
+        catch(Exception e) {
+          return;
+        }
+
+        if(timeReq > maxTime)
+          ;
+        else
+          ;
+      }
+
+      double height;
+      double width;
+
+      public void setBounds(int x, int y, int w, int h) {
+        super.setBounds(x, y, w, h);
+        height = h;
+        width = w;
+      }
+    }
+
+    class TimePanel extends JPanel {
+      TimePanel() {
+        setLayout(new GridBagLayout());
+        JLabel lbl = new JLabel("Time Required:", JLabel.RIGHT);
+        Constrain.setConstraints(this, lbl,
+                                 0, 0, 1, 1,
+                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, timeRequired, 1, 0, 1, 1,
+                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, new JLabel("minutes"),
+                                 2, 0, 1, 1,
+                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, new JLabel("    "),
+                                 0, 1, 1, 1,
+                                 GridBagConstraints.BOTH, GridBagConstraints.WEST,
+                                 1, 1);
+        JLabel lbl2 = new JLabel("Maximum Run Time:", JLabel.RIGHT);
+        Constrain.setConstraints(this, lbl2,
+                                 0, 2, 1, 1,
+                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, maxTime,
+                                 1, 2, 1, 1,
+                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, new JLabel("minutes"),
+                                 2, 2, 1, 1,
+                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 1, 1);
+        JLabel lbl3 = new JLabel("Number of Solutions Desired:", JLabel.RIGHT);
+        Constrain.setConstraints(this, lbl3,
+                                 0, 3, 1, 1,
+                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, numSolutions,
+                                 1, 3, 1, 1,
+                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, new JLabel("  "),
+                                 0, 4, 1, 1,
+                                 GridBagConstraints.BOTH, GridBagConstraints.WEST,
+                                 1, 1);
+        Constrain.setConstraints(this, advanced,
+                                 0, 5, 1, 1,
+                                 GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                                 1, 1);
+      }
+    }
 
     public void setInput(Object o, int i) {
       EMOPopulationInfo popInfo = (EMOPopulationInfo)o;
@@ -65,36 +212,32 @@ public class InputEMOParams extends UIModule {
         multiObjective = true;
 
       if(!multiObjective) {
-
       }
       else {
-        paramsModel.setValueAt(Integer.toString(5), 0, 1);
-        paramsModel.setValueAt(Integer.toString(10), 2, 1);
-        paramsModel.setValueAt(Integer.toString(1), 5, 1);
       }
     }
 
     private class MultiObjectiveParamsTableModel extends DefaultTableModel {
 
-      String[] col0 = {"Number of Nondominated Solutions",
+      String[] col0 = {/*"Number of Nondominated Solutions",*/
           "Starting Population Size",
           "Tournament Size",
           "Probability of Crossover",
           "Probability of Mutation",
           "Generation Gap"};
 
-      String[] col1 = {"", "", "", "", "", ""};
-      String[] col2 = {"", "", "", "", "", ""};
+      String[] col1 = {"", "", "", "", ""};
+      String[] col2 = {"", "", "", "", ""};
 
       String[] names = {"", "Recommended", "Override"};
 
       MultiObjectiveParamsTableModel() {
-        setValueAt(Integer.toString(20), 0, 1);
-        setValueAt(Integer.toString(41), 1, 1);
-        setValueAt(Integer.toString(5), 2, 1);
-        setValueAt(Double.toString(.8), 3, 1);
-        setValueAt(Double.toString(.2), 4, 1);
-        setValueAt(Integer.toString(1), 5, 1);
+//        setValueAt(Integer.toString(20), 0, 1);
+//        setValueAt(Integer.toString(41), 1, 1);
+/*        setValueAt(Integer.toString(5), 0, 1);
+        setValueAt(Double.toString(.8), 1, 1);
+        setValueAt(Double.toString(.2), 2, 1);
+        setValueAt(Integer.toString(1), 3, 1);*/
       }
 
       public int getColumnCount() {
@@ -102,7 +245,7 @@ public class InputEMOParams extends UIModule {
       }
 
       public int getRowCount() {
-        return 6;
+        return 5;
       }
 
       public String getColumnName(int i) {
