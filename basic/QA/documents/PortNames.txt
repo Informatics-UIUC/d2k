@@ -12,7 +12,10 @@ Please use the format shown (commas separating different pieces of information)
 so that we can sort & manage the information at a later date.  Thanks!
 
 
-Port Name, Port Type, Description of Information, Module Name
+Port Name, Port Object Type, Input or Output, Description of Information, Module Name (Common Name)
+
+
+File Name, java.lang.String, Output, A file name - possibly with a path, Input1FileName (Input File Name)
 
 
 
