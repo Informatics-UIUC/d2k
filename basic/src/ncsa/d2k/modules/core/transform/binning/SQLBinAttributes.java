@@ -42,7 +42,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
     private BinDescriptor[] savedBins;
     public Object[] getSavedBins() { return savedBins; }
     public void setSavedBins(Object[] value) { savedBins = (BinDescriptor[])value; }
-	public ExampleTable etbl= null;
+        public ExampleTable etbl= null;
 
     /**
      * get the name of the module
@@ -134,14 +134,14 @@ public class SQLBinAttributes extends HeadlessUIModule {
         }
     }
 
-	public boolean isReady() {
-			  if (!isInputPipeConnected(3)) {
-			  	return (getInputPipeSize(0)>0 &&
-						getInputPipeSize(1)>0 &&
-						getInputPipeSize(2)>0 );
-			  } 
-			   return super.isReady();
-			}
+        public boolean isReady() {
+                          if (!isInputPipeConnected(3)) {
+                                  return (getInputPipeSize(0)>0 &&
+                                                getInputPipeSize(1)>0 &&
+                                                getInputPipeSize(2)>0 );
+                          }
+                           return super.isReady();
+                        }
     /**
      * Get the data types for the input parameters
      * @return Connection Wrapper, list of columns chosed, table name, where clause
@@ -393,19 +393,19 @@ public class SQLBinAttributes extends HeadlessUIModule {
             if(id == 1) {
                 tableName = (String)o;
                 numArrived++;
-				//System.out.println("input two ");
+                                //System.out.println("input two ");
             }
             if(id == 2) {
                 fieldNames = (String[])o;
                 numArrived++;
-				//System.out.println("input three ");
+                                //System.out.println("input three ");
             }
 
-			if (isInputPipeConnected(3) && id ==3) {
-				//System.out.println("input 3 connected id = " + id);
-							 etbl = (ExampleTable)o;
-			numArrived ++;
-			}
+                        if (isInputPipeConnected(3) && id ==3) {
+                                //System.out.println("input 3 connected id = " + id);
+                                                         etbl = (ExampleTable)o;
+                        numArrived ++;
+                        }
 
             if(numArrived == 3 ) {
                 binCounts = new SQLBinCounts(tableName, fieldNames, connectionWrapper);
@@ -1119,7 +1119,6 @@ BinDescriptor bd = createTextualBin(idx, textualBinName, sel);
                     savedBins = new BinDescriptor[bins.length];
                     for (int i = 0; i < bins.length; i++)
                        savedBins[i] = bins[i];
-
                     BinTransform bt = new BinTransform(etbl, bins, createInNewColumn.isSelected());
                               pushOutput(bt, 0);
                     viewDone("Done");
@@ -1426,7 +1425,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                   // the number of bins is (max - min) / (bin width)
                   //int num = (int)Math.round((maxes[i] - mins[i])/intrval);
 
-				  //System.out.println("column " + i + " max " + maxes[i] + " min " + mins[i] + " num " + num  + "original " +( maxes[i]-mins[i])/intrval);
+                                  //System.out.println("column " + i + " max " + maxes[i] + " min " + mins[i] + " num " + num  + "original " +( maxes[i]-mins[i])/intrval);
 
 //vered: (01-16-04)replaced *num* with *bounds.size()*
                   //Anca replaced num-1 with num to fix bug  175
@@ -1448,7 +1447,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                    //vered: (01-16-04)replaced *binMaxes[k - 1] + intrval* with *((Double)bounds.get(k)).doubleValue()*
                     binMaxes[k] = /*binMaxes[k - 1] + intrval*/ ((Double)bounds.get(k)).doubleValue();
 
-					//System.out.println("binMax j " + binMaxes[k] + " " + k);
+                                        //System.out.println("binMax j " + binMaxes[k] + " " + k);
                     // now create the BinDescriptor and add it to the bin list
                     nbd = createNumericBinDescriptor(i, binMaxes[k - 1], binMaxes[k]);
                     addItemToBinList(nbd);
@@ -1493,8 +1492,8 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
             }
 
             for (int i = 0; i < colIdx.length; i++) {
-				Double db1 = null;
-						 ArrayList list = new ArrayList();
+                                Double db1 = null;
+                                                 ArrayList list = new ArrayList();
 
               try {
                 int aColIdx = colIdx[i];
@@ -1525,14 +1524,14 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                // System.out.println("itemCnt " + itemCnt + " for  "+ colName );
                 if (itemCnt > 0)
                   list.add(db1);
-				stmt.close();
-			  }
-					   catch (Exception e) {
-					  JOptionPane.showMessageDialog(msgBoard,
-							 e.getMessage(), "Error",
-							 JOptionPane.ERROR_MESSAGE);
-						   System.out.println("Error occured in addFromWeight. " + e);
-					   }
+                                stmt.close();
+                          }
+                                           catch (Exception e) {
+                                          JOptionPane.showMessageDialog(msgBoard,
+                                                         e.getMessage(), "Error",
+                                                         JOptionPane.ERROR_MESSAGE);
+                                                   System.out.println("Error occured in addFromWeight. " + e);
+                                           }
 
                 double[] binMaxes = new double[list.size()];
                 for (int j = 0; j < binMaxes.length; j++) {
@@ -1540,10 +1539,10 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                 // System.out.println("binmaxes for j = " + j + " is " +  binMaxes[j]);
                 }
 
-				if (binMaxes.length < 2) {
-							 BinDescriptor nbd = createMinMaxBinDescriptor(colIdx[i]);
-								addItemToBinList(nbd);
-					 } else {
+                                if (binMaxes.length < 2) {
+                                                         BinDescriptor nbd = createMinMaxBinDescriptor(colIdx[i]);
+                                                                addItemToBinList(nbd);
+                                         } else {
 
 
                 // add the first bin manually
@@ -1568,7 +1567,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                 //nbd = createMaxNumericBinDescriptor(colIdx[i],binMaxes[binMaxes.length-1]);
 
                 addItemToBinList(nbd);
-				}
+                                }
             }
         }
 
@@ -1584,8 +1583,8 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
 
           System.out.println("creating bin named " + name);
             for (int i = 0; i < vals.length; i++) {
-            	   vals[i] = sel[i].toString();
-            	   System.out.println(vals[i]);
+                       vals[i] = sel[i].toString();
+                       System.out.println(vals[i]);
             }
             return  new TextualBinDescriptor(idx, name, vals, (String)fieldNames[idx]);
             //return  new TextualBinDescriptor(idx, name, vals, (String)fieldNames[idx].toLowerCase());
@@ -1602,11 +1601,11 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
                 double max) {
             StringBuffer nameBuffer = new StringBuffer();
             nameBuffer.append(OPEN_PAREN);
-            //nameBuffer.append(nf.format(min));
-			nameBuffer.append(min);
+            nameBuffer.append(nf.format(min));
+                        //nameBuffer.append(min);
             nameBuffer.append(COLON);
-            //nameBuffer.append(nf.format(max));
-			nameBuffer.append(max);
+            nameBuffer.append(nf.format(max));
+                        //nameBuffer.append(max);
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
                     min, max, (String)fieldNames[col]);
@@ -1626,8 +1625,8 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
             nameBuffer.append(OPEN_BRACKET);
             nameBuffer.append(DOTS);
             nameBuffer.append(COLON);
-            //nameBuffer.append(nf.format(max));
-			nameBuffer.append(max);
+            nameBuffer.append(nf.format(max));
+                        //nameBuffer.append(max);
             nameBuffer.append(CLOSE_BRACKET);
             BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
                     Double.NEGATIVE_INFINITY, max, (String)fieldNames[col]);
@@ -1644,8 +1643,8 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
         private BinDescriptor createMaxNumericBinDescriptor (int col, double min) {
             StringBuffer nameBuffer = new StringBuffer();
             nameBuffer.append(OPEN_PAREN);
-            //nameBuffer.append(nf.format(min));
-			nameBuffer.append(min);
+            nameBuffer.append(nf.format(min));
+                        //nameBuffer.append(min);
             nameBuffer.append(COLON);
             nameBuffer.append(DOTS);
             nameBuffer.append(CLOSE_BRACKET);
@@ -1655,20 +1654,20 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
             return  nb;
         }
 
-		/**
-				* Create a numeric bin that goes from Double.NEGATIVE_INFINITY to Double.POSITIVE_INFINITY
-				*/
-			   private BinDescriptor createMinMaxBinDescriptor (int col) {
-				   StringBuffer nameBuffer = new StringBuffer();
-				   nameBuffer.append(OPEN_BRACKET);
-				   nameBuffer.append(DOTS);
-				   nameBuffer.append(COLON);
-				   nameBuffer.append(DOTS);
-				   nameBuffer.append(CLOSE_BRACKET);
-				   BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
-						   Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,(String)fieldNames[col]);
-				   return  nb;
-			   }
+                /**
+                                * Create a numeric bin that goes from Double.NEGATIVE_INFINITY to Double.POSITIVE_INFINITY
+                                */
+                           private BinDescriptor createMinMaxBinDescriptor (int col) {
+                                   StringBuffer nameBuffer = new StringBuffer();
+                                   nameBuffer.append(OPEN_BRACKET);
+                                   nameBuffer.append(DOTS);
+                                   nameBuffer.append(COLON);
+                                   nameBuffer.append(DOTS);
+                                   nameBuffer.append(CLOSE_BRACKET);
+                                   BinDescriptor nb = new NumericBinDescriptor(col, nameBuffer.toString(),
+                                                   Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,(String)fieldNames[col]);
+                                   return  nb;
+                           }
         /**
          * add an item to a bin
          * @param bd the BinDescriptor to use
@@ -1805,9 +1804,9 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
       String tableName = (String)pullInput(1);
       String[] fieldNames = (String[]) pullInput(2);
      ExampleTable etbl = null;
-	  if (isInputPipeConnected(3)) {
-				etbl = (ExampleTable)pullInput(3);
-		 }
+          if (isInputPipeConnected(3)) {
+                                etbl = (ExampleTable)pullInput(3);
+                 }
 
 
       //verifying that tableName is in the data base
