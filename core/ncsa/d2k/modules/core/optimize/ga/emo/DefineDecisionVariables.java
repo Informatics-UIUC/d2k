@@ -19,6 +19,8 @@ public class DefineDecisionVariables
     extends UIModule
     implements Serializable {
 
+  static final long serialVersionUID = 5053865571628514478L;
+
   public String getModuleName() {
     return "Define Decision Variables";
   }
@@ -615,6 +617,8 @@ public class DefineDecisionVariables
    */
   private class CachedRowValue
       implements Serializable {
+
+  static final long serialVersionUID = 7134596339214916408L;
 
     /**
      * The six columns of one row in a JTable of NewEmo1.java
