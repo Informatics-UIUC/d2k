@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.control;
 
 import ncsa.d2k.infrastructure.modules.*;
+import java.util.Vector;
 
 /*
 	@author pgroves
@@ -18,9 +19,11 @@ public class SaveNthObject extends ComputeModule
 	/// other fields
 	////////////////////////
 
-	private Object savedObj;
+	private Vector savedObjs;
 	protected int numfires;
 	protected int maxfires;
+
+	boolean lastPushed;
 	
 	//////////////////////////
 	///d2k control methods
@@ -30,7 +33,7 @@ public class SaveNthObject extends ComputeModule
 		if(inputFlags[0]>0){
 			return true;
 		}
-		if(inputFlags[1]>0){
+		if(lastPushed&&(inputFlags[1]>0)){
 			return true;
 		}
 		return false;
@@ -46,10 +49,11 @@ public class SaveNthObject extends ComputeModule
 	
 	private void reset(){
 		//just so it doesn't think it's done before it even starts
-		maxfires=-2;
-
-		numfires=0;
-		savedObj=null;
+		maxfires=Integer.MAX_VALUE;
+		lastPushed=true;
+		savedObjs=new Vector();
+		//numfires=0;
+		//savedObj=null;
 	}
 		
 	/////////////////////
@@ -60,23 +64,32 @@ public class SaveNthObject extends ComputeModule
 	*/
 	public void doit() throws Exception{
 		if(inputFlags[0]>0){
-			savedObj=pullInput(0);
-			numfires++;
+			savedObjs.add(pullInput(0));
+				numfires++;
 			if(debug)
 				System.out.println("numfires:"+numfires);
-
+	
 		}
-		if(inputFlags[1]>0){
+		if(lastPushed&&(inputFlags[1]>0)){
 			maxfires=((Integer)pullInput(1)).intValue();
+			lastPushed=false;
 			if(debug)
 				System.out.println("maxfires set to "+maxfires);
 			return;
 		}
 		
-		if(numfires==maxfires){
-			if(savedObj!=null){
-				pushOutput(savedObj, 0);
-				reset();
+		if(numfires>=maxfires){
+			numfires-=maxfires;
+			if(savedObjs.size()!=0){
+				pushOutput(savedObjs.get(maxfires-1), 0);
+				Vector t=savedObjs;
+				
+				reset();//this will re-init savedObjs
+				
+				//put the leftovers in the new vector
+				for(int i=maxfires-1; i<t.size();i++){
+					savedObjs.add(t.get(i));
+				}
 			}else
 				return;
 		}
