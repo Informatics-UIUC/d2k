@@ -107,7 +107,7 @@ public class ParseFileToPagingTable extends ParseFileToTable {
 
 		curNum = 0;
 		boolean hasTypes = false;
-
+		String [] labels = new String [numColumns];
 		// for each table
 		for (int nt = 0; nt < numTables; nt++) {
 
@@ -121,10 +121,12 @@ public class ParseFileToPagingTable extends ParseFileToTable {
 				if (type != -1)
 					hasTypes = true;
 
-				// set the label
-				String label = df.getColumnLabel(col);
-				if (label != null)
-					columns[col].setLabel(label);
+				// set the label, only first time through.
+				if (nt == 0) {
+					labels [col] = df.getColumnLabel(col);
+					if (labels [col] == null)
+						labels [col] = "Column-"+col;
+				}
 			}
 
 			MutableTableImpl ti = new MutableTableImpl(columns);
@@ -196,6 +198,8 @@ public class ParseFileToPagingTable extends ParseFileToTable {
 			}
 		}
 		PageCache pc = new PageCache(pages, offsets, numRowsPerPage);
+		for (int i = 0; i < labels.length; i++)
+			pc.setColumnLabel(labels[i], i);
 		SubsetPagingTable spt = new SubsetPagingTable(pc);
 		return spt;
 	}
