@@ -3,7 +3,9 @@ package ncsa.d2k.modules.core.transform.table;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.util.*;
 import java.util.*;
+
 public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 	//begin setting Properties
 	String fillerString = new String("*");
@@ -153,10 +155,10 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 		return "<p>      Overview: This module will append the columns in the second table to the       columns"+
 			" in the first table to produce a third table.    </p>    <p>      Detailed Description: Each"+
 			" row in the resulting data consists of data       from one or both of the input tables. If there"+
-			" is a row in each of the       original tables that shared a value in the their key column,"+
+			" is a row in each of the       original tables that shared a value in their key column,"+
 			" then the       data from the columns in first input table are inserted into the       resulting"+
 			" row first, then any unique columns from the second table are       appended to the row. If"+
-			" for a row in the first table has no       corresponding row in the second table, then the columns"+
+			"  a row in the first table has no       corresponding row in the second table, then the columns"+
 			" that exist only       in the second table are assigned filler values. For rows that exist only"+
 			"       in the second table, the columns of the first table are assigned the       filler values."+
 			" And for columns that exist in both tables, the values       assigned to the result table will"+
@@ -258,6 +260,14 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 		if (keyColumnObj2 == null) throw new Exception("The key column named "+key+" did not exist in table two.");
 		int keyColumn1 = keyColumnObj1.intValue();
 		int keyColumn2 = keyColumnObj2.intValue();
+		boolean isKeyColumn1 = TableUtilities.isKeyColumn(t1,keyColumn1);
+		boolean isKeyColumn2 = TableUtilities.isKeyColumn(t2,keyColumn2);
+		if(!isKeyColumn1)
+		    throw new Exception ("The column named " + key + " is not a key column in table one.");
+		if(!isKeyColumn2)
+		    throw new Exception ("The column named " + key + " is not a key column in table two.");
+
+
 
 		// find the matching rows.
 		int [][] matches = this.matchRows(t1, keyColumn1, t2, keyColumn2);
@@ -583,3 +593,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 		this.pushOutput(result, 0);
 	}
 }
+
+// QA Anca - corrected type in moduleInfo
+// WISH - mark filler values as missing values for future support of missing values
+// WISH - support for multiple-column-key
+
