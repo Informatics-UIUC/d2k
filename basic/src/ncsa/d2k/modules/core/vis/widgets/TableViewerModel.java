@@ -73,6 +73,23 @@ public class TableViewerModel extends AbstractTableModel {
       return table.getNumColumns()+1;
    }
 
+   // getColumnClass is overridden for the purpose of right-justifying text
+   // in numeric columns.
+   public Class getColumnClass(int col) {
+
+      if (col == 0) {
+         return super.getColumnClass(col);
+      }
+
+      if (table.isColumnNumeric(col - 1)) {
+         return Integer.class;
+      }
+      else {
+         return String.class;
+      }
+
+   }
+
    /**
       Return the Object that goes in a particular spot in the table.
       @param row the row of the table to index
