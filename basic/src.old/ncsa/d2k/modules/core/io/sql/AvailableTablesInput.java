@@ -15,7 +15,7 @@ public class AvailableTablesInput extends InputModule
 	public String getOutputInfo (int index) {
 		switch (index) {
 			case 0: return "Pass the database connection to the next module.";
-			case 1: return "This is a list of the available tables.";
+			case 1: return "A list of available tables.";
 			default: return "No such output";
 		}
 	}
