@@ -532,6 +532,7 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 
 
      ResultSet columns = metadata.getColumns(null,"%",_table,"%");
+
      //will hold column name <-> column index
      HashMap availableColumnMap = new HashMap ();
      //will hold column index <-> column name
