@@ -9,13 +9,12 @@ import java.sql.*;
 /**
 	ReadQueryResults.java
 
-        @todo: [11-21-03] after a decision is made regarding the default values
-               for missing values - change the arguments int he calls for the
-               setter commands in the module.
 */
 //  Modified by Dora Cai on 02/13/03: correct SQL syntax error, add codes to
 //  handle null value in Varchar fields.
 //  Vered added a conditional setting missing value flag to true.
+//  Vered 11/24/03: when value is missing, arguments in setter methods are the
+//                  default, as defined by getMissingType() method.
 
 
 public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
@@ -202,9 +201,10 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
 			query += " WHERE "+whereClause;
 
 /**
-* @todo: [11-21-03] after a decision is made regarding the default values
-for missing values - change the arguments int he calls for the
-setter commands in the module. (vered)
+
+vered - changed the arguments in the call to the setter method, so that it would
+be set to the defualt of missing value, when needed. [11-24-03]
+
 */
 
 
@@ -217,14 +217,14 @@ setter commands in the module. (vered)
 					case Types.INTEGER:
 					case Types.BIGINT:
                                                 if (rs.getString(i+1) == null) {
-                                                  vt.setDouble(Double.NaN, where, i);
+                                                  vt.setDouble(vt.getMissingInt(), where, i);
                                                 }
                                                 else
                                                   vt.setInt (rs.getInt (i+1), where, i);
 						break;
 					case Types.DOUBLE:
                                                 if (rs.getString(i+1) == null) {
-                                                  vt.setDouble(Double.NaN, where, i);
+                                                  vt.setDouble(vt.getMissingDouble(), where, i);
                                                 }
                                                 else
        					          vt.setDouble (rs.getDouble (i+1), where, i);
@@ -234,7 +234,8 @@ setter commands in the module. (vered)
 					case Types.FLOAT:
 					case Types.REAL:
                                                 if (rs.getString(i+1) == null) {
-                                                  vt.setDouble(Double.NaN, where, i);
+
+                                                  vt.setDouble(vt.getMissingDouble(), where, i);
                                                 }
                                                 else
                                                   vt.setFloat (rs.getFloat (i+1), where, i);
@@ -243,7 +244,7 @@ setter commands in the module. (vered)
 					case Types.VARCHAR:
 					case Types.LONGVARCHAR:
                                                 if (rs.getString(i+1) == null) {
-                                                  vt.setString(" ", where, i);
+                                                  vt.setString(vt.getMissingString(), where, i);
                                                 }
                                                 else
 						  vt.setString (rs.getString (i+1), where, i);
