@@ -1,12 +1,13 @@
 
 package ncsa.d2k.modules.demos.helloworld;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 
 /**
 	SupplyHelloWorldString.java
 */
-public class SupplyHelloWorldString extends ncsa.d2k.infrastructure.modules.InputModule {
+public class SupplyHelloWorldString extends ncsa.d2k.core.modules.InputModule {
 
 	/**
 		This pair returns the description of the various inputs.
@@ -33,7 +34,7 @@ public class SupplyHelloWorldString extends ncsa.d2k.infrastructure.modules.Inpu
 	*/
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"myString\">    <Text>myString is set to \"HelloWorld!\" and is output. </Text>  </Info></D2K>";
+			case 0: return "      myString is set to \"HelloWorld!\" and is output.   ";
 			default: return "No such output";
 		}
 	}
@@ -52,8 +53,8 @@ public class SupplyHelloWorldString extends ncsa.d2k.infrastructure.modules.Inpu
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"\">    <Text>This module creates a string with the value of \"HelloWorld!\" and outputs it. </Text>  </Info></D2K>";
-}
+		return "<html>  <head>      </head>  <body>    This module creates a string with the value of &quot;HelloWorld!&quot; and outputs     it.  </body></html>";
+	}
 
 	/**
 		PUT YOUR CODE HERE.
@@ -63,5 +64,37 @@ public class SupplyHelloWorldString extends ncsa.d2k.infrastructure.modules.Inpu
          pushOutput(output, 0);
 	}
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "myString";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

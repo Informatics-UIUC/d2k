@@ -1,25 +1,25 @@
 package ncsa.d2k.modules.demos.lifedemo;
 
-import ncsa.d2k.infrastructure.modules.ComputeModule;
-import ncsa.d2k.infrastructure.modules.HasNames;
+
+import ncsa.d2k.core.modules.ComputeModule;
 
 /**
 	Whenever an input arrives, push it.
-*/	
-public class LifeDispatchModule extends ComputeModule implements HasNames {
+*/
+public class LifeDispatchModule extends ComputeModule  {
 
 	/**
 		Provide a description of this module.
-		@return A description of this module.	
+		@return A description of this module.
 	*/
 	public String getModuleInfo() {
-		return "This module creates the initial game board.";
+		return "<html>  <head>      </head>  <body>    This module creates the initial game board.  </body></html>";
 	}
 
 	/**
 		Get the name of the module.
 		@return The name of the module
-	*/			
+	*/
 	public String getModuleName() {
 		return "Dispatch";
 	}
@@ -29,18 +29,17 @@ public class LifeDispatchModule extends ComputeModule implements HasNames {
 		@return The input types.
 	*/
 	public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.demos.lifedemo.LifeGameBoard", 
-			"ncsa.d2k.modules.demos.lifedemo.LifeGameBoard"};
-		return in;
+		String[] types = {"ncsa.d2k.modules.demos.lifedemo.LifeGameBoard","ncsa.d2k.modules.demos.lifedemo.LifeGameBoard"};
+		return types;
 	}
-	
+
 	/**
 		Return an array containing the output types of this module.
 		@return The output types.
 	*/
 	public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.demos.lifedemo.LifeGameBoard"};
-		return out;
+		String[] types = {"ncsa.d2k.modules.demos.lifedemo.LifeGameBoard"};
+		return types;
 	}
 
 	/**
@@ -49,13 +48,10 @@ public class LifeDispatchModule extends ComputeModule implements HasNames {
 		@return The info about the input
 	*/
 	public String getInputInfo(int i) {
-		switch(i) {
-			case(0):
-				return "A game board.";
-			case(1):
-				return "A game board.";
-			default:
-				return "No such output!";
+		switch (i) {
+			case 0: return "A game board.";
+			case 1: return "A game board.";
+			default: return "No such input";
 		}
 	}
 
@@ -66,12 +62,11 @@ public class LifeDispatchModule extends ComputeModule implements HasNames {
 	*/
 	public String getInputName(int i) {
 		switch(i) {
-			case(0):
+			case 0:
 				return "board1";
-			case(1):
+			case 1:
 				return "board2";
-			default:
-				return "No such output!";
+			default: return "NO SUCH INPUT!";
 		}
 	}
 
@@ -82,11 +77,9 @@ public class LifeDispatchModule extends ComputeModule implements HasNames {
 		@return The info about the output
 	*/
 	public String getOutputInfo(int i) {
-		switch(i) {
-			case(0):
-				return "The game board.";
-			default:
-				return "No such output!";
+		switch (i) {
+			case 0: return "The game board.";
+			default: return "No such output";
 		}
 	}
 
@@ -97,10 +90,9 @@ public class LifeDispatchModule extends ComputeModule implements HasNames {
 	*/
 	public String getOutputName(int i) {
 		switch(i) {
-			case(0):
+			case 0:
 				return "board";
-			default:
-				return "No such output!";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 
@@ -110,12 +102,12 @@ public class LifeDispatchModule extends ComputeModule implements HasNames {
 
 	public void doit() {
 		LifeGameBoard brd;
-		
+
 		if(inputFlags[0] > 0)
 			brd = (LifeGameBoard)this.pullInput(0);
 		else
 			brd = (LifeGameBoard)this.pullInput(1);
-			
+
 		this.pushOutput(brd, 0);
 	}
 }

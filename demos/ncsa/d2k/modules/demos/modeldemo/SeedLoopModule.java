@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.demos.modeldemo;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 
 /**
 	This module is used to signal SeedParameterInput to begin execution.  When
@@ -16,14 +17,11 @@ public class SeedLoopModule extends ComputeModule {
 		@returns a text description of the indexed input
 	*/
 	public String getInputInfo(int i) {
-		switch(i) {
-			case 0:
-				return "The beginning trigger.";
-			case 1:
-				return "The looping trigger.";
-			default:
-				return "No such input!";
-		}		
+		switch (i) {
+			case 0: return "The beginning trigger.";
+			case 1: return "The looping trigger.";
+			default: return "No such input";
+		}
 	}
 	
 	/**
@@ -34,10 +32,10 @@ public class SeedLoopModule extends ComputeModule {
 		@returns a text description of the indexed output
 	*/		
 	public String getOutputInfo(int i) {
-		if(i == 0)
-			return "The trigger for the next module.";
-		else	
-			return "No such output.";
+		switch (i) {
+			case 0: return "The trigger for the next module.";
+			default: return "No such output";
+		}
 	}
 	
 	/**
@@ -46,8 +44,8 @@ public class SeedLoopModule extends ComputeModule {
 		@returns the input types
 	*/		
 	public String []getInputTypes() {
-		String []in = {"java.lang.Boolean", "java.lang.Boolean"};
-		return in;
+		String[] types = {"java.lang.Boolean","java.lang.Boolean"};
+		return types;
 	}
 	
 	/**
@@ -57,8 +55,8 @@ public class SeedLoopModule extends ComputeModule {
 		@returns the output types
 	*/		
 	public String []getOutputTypes() {
-		String []out = {"java.lang.Boolean"};
-		return out;
+		String[] types = {"java.lang.Boolean"};
+		return types;
 	}
 	
 	/**
@@ -67,8 +65,7 @@ public class SeedLoopModule extends ComputeModule {
 		@returns a text description of the modules function
 	*/	
 	public String getModuleInfo() {
-		return "This module triggers the next module when either of its two inputs"+
-		" are available.";
+		return "<html>  <head>      </head>  <body>    This module triggers the next module when either of its two inputs are     available.  </body></html>";
 	}
 	
 	/**
@@ -93,5 +90,41 @@ public class SeedLoopModule extends ComputeModule {
 			
 		// signal the next module to begin executing.	
 		this.pushOutput(res, 0);	
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "SeedLoopModule";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

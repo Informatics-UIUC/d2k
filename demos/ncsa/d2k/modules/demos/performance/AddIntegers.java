@@ -4,7 +4,7 @@ package ncsa.d2k.modules.demos.performance;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.core.modules.UserView;
 
-public class AddIntegersModule2 extends ReentrantComputeModule {
+public class AddIntegers extends ComputeModule {
 
 	public String [] getInputTypes () {
 		String[] types = {"[I"};
@@ -16,13 +16,13 @@ public class AddIntegersModule2 extends ReentrantComputeModule {
 		return types;
 	}
 
-	int loopSize = 200;
+	int loopSize = 50000;
 	public int getLoopSize () { return loopSize; }
 	public void setLoopSize (int nls) { loopSize = nls; }
 	/**
 		Default constructor simply sets up the input and output types.
 	*/
-	public AddIntegersModule2() {
+	public AddIntegers() {
 		super ();
 	}
 
@@ -83,6 +83,7 @@ public class AddIntegersModule2 extends ReentrantComputeModule {
 				cum [i] = 0;
 		}
 
+
 		int k = 0;
 		for (int i = 0 ; i < arry.length ; i++)
 		{
@@ -92,10 +93,8 @@ public class AddIntegersModule2 extends ReentrantComputeModule {
 				k += testee;
 			}
 		}
-
-		System.out.println("AddIntegers2 took "+(System.currentTimeMillis()-start)
+		System.out.println("AddIntegers took "+(System.currentTimeMillis()-start)
 						   +" loopSize : "+loopSize+" array size : "+arry.length);
-
 		this.pushOutput (arry, 0);
 	}
 
@@ -104,7 +103,7 @@ public class AddIntegersModule2 extends ReentrantComputeModule {
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "AddIntegersModule2";
+		return "AddIntegers";
 	}
 
 	/**
@@ -115,7 +114,7 @@ public class AddIntegersModule2 extends ReentrantComputeModule {
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "input0";
+				return "int array";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -128,7 +127,7 @@ public class AddIntegersModule2 extends ReentrantComputeModule {
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "output0";
+				return "int array";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}

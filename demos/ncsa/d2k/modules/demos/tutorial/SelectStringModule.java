@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.demos.tutorial;
-import ncsa.d2k.infrastructure.modules.ViewModule;
-import ncsa.d2k.infrastructure.views.UserView;
+
+import ncsa.d2k.core.modules.ViewModule;
+import ncsa.d2k.core.modules.UserView;
 
 public class SelectStringModule extends ViewModule  {
 		
@@ -10,13 +11,13 @@ public class SelectStringModule extends ViewModule  {
 	}
 
 	public String [] getInputTypes () {
-		String [] ins = {"java.lang.String","java.lang.String","java.lang.String"};
-		return ins;
+		String[] types = {"java.lang.String","java.lang.String","java.lang.String"};
+		return types;
 	}
 
 	public String [] getOutputTypes () {
-		String [] outputs = {"java.lang.String"};
-		return outputs;
+		String[] types = {"java.lang.String"};
+		return types;
 	}
 	
 	/**
@@ -32,7 +33,7 @@ public class SelectStringModule extends ViewModule  {
 		@returns a text description of the modules function
 	*/
 	public String getModuleInfo () {
-		return "This module allows the user to select one from the three strings passed in. A List user interface component is used to display the inputs, the user selects one of the inputs from the list.";
+		return "<html>  <head>      </head>  <body>    This module allows the user to select one from the three strings passed     in. A List user interface component is used to display the inputs, the     user selects one of the inputs from the list.  </body></html>";
 	}
 	
 	/**
@@ -44,14 +45,10 @@ public class SelectStringModule extends ViewModule  {
 	*/
 	public String getInputInfo (int index) {
 		switch (index) {
-			case 0:
-				return "This is the first of three string to chose from.";
-			case 1:
-				return "This is the second of three string to chose from.";
-			case 2:
-				return "This is the third of three string to chose from.";
-			default:
-				return "There is no such input.";
+			case 0: return "This is the first of three string to chose from.";
+			case 1: return "This is the second of three string to chose from.";
+			case 2: return "This is the third of three string to chose from.";
+			default: return "No such input";
 		}
 	}
 	
@@ -64,10 +61,8 @@ public class SelectStringModule extends ViewModule  {
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0:
-				return "This output is the string that the user selected from those passed in.";
-			default:
-				return "There is no such output.";
+			case 0: return "This output is the string that the user selected from those passed in.";
+			default: return "No such output";
 		}
 	}
 	
@@ -80,5 +75,43 @@ public class SelectStringModule extends ViewModule  {
 	*/
 	protected UserView createUserView () {
 		return new SelectStringView ();
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "SelectStringModule";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			case 2:
+				return "input2";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

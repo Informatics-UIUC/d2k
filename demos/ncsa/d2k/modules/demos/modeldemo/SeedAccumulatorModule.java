@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.demos.modeldemo;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.io.Serializable;
 
 /**
@@ -9,7 +10,7 @@ import java.io.Serializable;
 	When this occurs, it pushes the average values for the three functions to SeedModelMaker.
 	SeedModelMaker then creates a model based on these three average values.
 */
-public class SeedAccumulatorModule extends ComputeModule implements Serializable {
+public class SeedAccumulatorModule extends ComputeModule  {
 
 	int curIteration = 1;
 	
@@ -48,17 +49,12 @@ public class SeedAccumulatorModule extends ComputeModule implements Serializable
 		@returns a text description of the indexed input
 	*/
 	public String getInputInfo(int i) {
-		switch(i) {
-			case(0):
-				return "The light function used in this experiment.";
-			case(1):
-				return "The moisture function used in this experiment.";
-			case(2):
-				return "The soil function used in this experiment.";
-			case(3):
-				return "The result of the experiment.";	
-			default:
-				return "No such input";
+		switch (i) {
+			case 0: return "The light function used in this experiment.";
+			case 1: return "The moisture function used in this experiment.";
+			case 2: return "The soil function used in this experiment.";
+			case 3: return "The result of the experiment.";
+			default: return "No such input";
 		}
 	}
 	
@@ -70,17 +66,12 @@ public class SeedAccumulatorModule extends ComputeModule implements Serializable
 		@returns a text description of the indexed output
 	*/		
 	public String getOutputInfo(int i) {
-		switch(i) {
-			case (0):
-				return "The average light function for successful experiments.";
-			case (1):
-				return "The average moisture function for successful experiments.";
-			case (2):
-				return "The average soil function for successful experiments.";
-			case (3):
-				return "The trigger used when looping back to the beginning of the itinerary.";	
-			default:
-				return "No such output.";
+		switch (i) {
+			case 0: return "The average light function for successful experiments.";
+			case 1: return "The average moisture function for successful experiments.";
+			case 2: return "The average soil function for successful experiments.";
+			case 3: return "The trigger used when looping back to the beginning of the itinerary.";
+			default: return "No such output";
 		}
 	}
 	
@@ -90,8 +81,8 @@ public class SeedAccumulatorModule extends ComputeModule implements Serializable
 		@returns the input types
 	*/			
 	public String []getInputTypes() {
-		String []in = {"java.lang.String", "java.lang.String", "java.lang.String", "java.lang.Boolean"};
-		return in;
+		String[] types = {"java.lang.String","java.lang.String","java.lang.String","java.lang.Boolean"};
+		return types;
 	}
 	
 	/**
@@ -101,8 +92,8 @@ public class SeedAccumulatorModule extends ComputeModule implements Serializable
 		@returns the output types
 	*/		
 	public String []getOutputTypes() {
-		String []out = {"java.lang.Double", "java.lang.Double", "java.lang.Double", "java.lang.Boolean"};
-		return out;
+		String[] types = {"java.lang.Double","java.lang.Double","java.lang.Double","java.lang.Boolean"};
+		return types;
 	}
 	
 	/**
@@ -111,8 +102,7 @@ public class SeedAccumulatorModule extends ComputeModule implements Serializable
 		@returns a text description of the modules function
 	*/		
 	public String getModuleInfo() {
-		return "This module accumulates the data.  This module is also used as a branching mechanism for"+
-		" the itinerary.";
+		return "<html>  <head>      </head>  <body>    This module accumulates the data. This module is also used as a branching     mechanism for the itinerary.  </body></html>";
 	}
 	
 	// these are the average values.
@@ -158,4 +148,50 @@ System.out.println("NUM ITERATIONS: "+iterations);
 			this.pushOutput(new Double( (aveSoil/numSuccessful) ), 2);
 		}	
 	}	
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "SeedAccumulatorModule";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			case 2:
+				return "input2";
+			case 3:
+				return "input3";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			case 1:
+				return "output1";
+			case 2:
+				return "output2";
+			case 3:
+				return "output3";
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }

@@ -1,7 +1,8 @@
 package ncsa.d2k.modules.demos.modeldemo;
 
-import ncsa.d2k.infrastructure.modules.ViewModule;
-import ncsa.d2k.infrastructure.views.UserView;
+
+import ncsa.d2k.core.modules.ViewModule;
+import ncsa.d2k.core.modules.UserView;
 
 /**
 	This module will present a UserView to the user.  The UserView is defined in 
@@ -54,8 +55,8 @@ public class SeedParameterInput extends ViewModule {
 		@returns the input types
 	*/			
 	public String[] getInputTypes() {
-		String []in = {"java.lang.Boolean"};
-		return in;
+		String[] types = {"java.lang.Boolean"};
+		return types;
 	}
 
 	/**
@@ -65,8 +66,8 @@ public class SeedParameterInput extends ViewModule {
 		@returns the output types
 	*/	
 	public String[] getOutputTypes() {
-		String []out = {"java.lang.String", "java.lang.String", "java.lang.String", "java.lang.Boolean"};
-		return out;
+		String[] types = {"java.lang.String","java.lang.String","java.lang.String","java.lang.Boolean"};
+		return types;
 	}
 
 	/**
@@ -75,8 +76,7 @@ public class SeedParameterInput extends ViewModule {
 		@returns a text description of the modules function
 	*/	
 	public String getModuleInfo() {
-		return "This module presents a UserView for the user to input the results of each experiment."+
-		"  The input to this module is just used as a trigger for it to begin execution.";
+		return "<html>  <head>      </head>  <body>    This module presents a UserView for the user to input the results of each     experiment. The input to this module is just used as a trigger for it to     begin execution.  </body></html>";
 	}
 	
 	/**
@@ -87,10 +87,10 @@ public class SeedParameterInput extends ViewModule {
 		@returns a text description of the indexed input
 	*/	
 	public String getInputInfo(int i) {
-		if(i == 0)
-			return "The trigger for this module to begin executing.";
-		else
-			return "No such input!";
+		switch (i) {
+			case 0: return "The trigger for this module to begin executing.";
+			default: return "No such input";
+		}
 	}
 	
 	/**
@@ -103,17 +103,52 @@ public class SeedParameterInput extends ViewModule {
 		@returns a text description of the indexed output
 	*/		
 	public String getOutputInfo(int i) {
-		switch(i) {
-			case 0: 
-				return "A function of the light used in the experiment.";
+		switch (i) {
+			case 0: return "A function of the light used in the experiment.";
+			case 1: return "A function of the moisture used in the experiment.";
+			case 2: return "A function of the soil used in the experiment.";
+			case 3: return "The result of the experiment.";
+			default: return "No such output";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "SeedParameterInput";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
 			case 1:
-				return "A function of the moisture used in the experiment.";
+				return "output1";
 			case 2:
-				return "A function of the soil used in the experiment.";
+				return "output2";
 			case 3:
-				return "The result of the experiment.";
-			default:
-				return "No such output!";
+				return "output3";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }

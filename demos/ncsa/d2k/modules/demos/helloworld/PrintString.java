@@ -1,12 +1,13 @@
 
 package ncsa.d2k.modules.demos.helloworld;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 
 /**
 	PrintString.java
 */
-public class PrintString extends ncsa.d2k.infrastructure.modules.OutputModule {
+public class PrintString extends ncsa.d2k.core.modules.OutputModule {
 
 	/**
 		This pair returns the description of the various inputs.
@@ -14,7 +15,7 @@ public class PrintString extends ncsa.d2k.infrastructure.modules.OutputModule {
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"theString\">    <Text>theString is a string that will be printed out with the string that is set as a property. </Text>  </Info></D2K>";
+			case 0: return "      theString is a string that will be printed out with the string that is set as a property.   ";
 			default: return "No such input";
 		}
 	}
@@ -52,8 +53,8 @@ public class PrintString extends ncsa.d2k.infrastructure.modules.OutputModule {
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><D2K>  <Info common=\"\">    <Text>This module takes as input a string and allows the user to set the value for another string as a property.  The input string and the property string are concatenated and printed to the console. </Text>  </Info></D2K>";
-}
+		return "<html>  <head>      </head>  <body>    This module takes as input a string and allows the user to set the value     for another string as a property. The input string and the property string     are concatenated and printed to the console.  </body></html>";
+	}
 
 	String name = "D2K to the rescue!!!";
 
@@ -79,5 +80,37 @@ public class PrintString extends ncsa.d2k.infrastructure.modules.OutputModule {
          System.out.println("length of input string="+str.length());
 	}
 
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "theString";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
+	}
 }
 

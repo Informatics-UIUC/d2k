@@ -1,16 +1,14 @@
 package ncsa.d2k.modules.demos.lifedemo;
 
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Hashtable;
-
-import ncsa.d2k.infrastructure.modules.UIModule;
-import ncsa.d2k.infrastructure.modules.ViewModule;
-import ncsa.d2k.infrastructure.modules.HasNames;
-import ncsa.d2k.controller.userviews.*;
-import ncsa.d2k.infrastructure.views.UserView;
-
-import ncsa.d2k.controller.userviews.listeners.DSCancelInputListener;
+import ncsa.d2k.core.modules.UIModule;
+import ncsa.d2k.core.modules.ViewModule;
+import ncsa.d2k.userviews.*;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.userviews.listeners.DSCancelInputListener;
 
 /**
 	DrawBoardModule draws the board in a UserView.  The board is presented as a grid with
@@ -20,14 +18,14 @@ import ncsa.d2k.controller.userviews.listeners.DSCancelInputListener;
 	TODO: There are still some bugs associated with the painting and toggling of cells
 	on the grid.
 */
-public class DrawBoardModule extends UIModule implements HasNames {
+public class DrawBoardModule extends UIModule  {
 
 	/**
 		Provide a description of this module.
 		@return A description of this module.
 	*/
 	public String getModuleInfo() {
-		return "This module draws the life board.";
+		return "<html>  <head>      </head>  <body>    This module draws the life board.  </body></html>";
 	}
 
 	/**
@@ -35,8 +33,8 @@ public class DrawBoardModule extends UIModule implements HasNames {
 		@return The input types.
 	*/
 	public String[] getInputTypes() {
-		String []in = {"ncsa.d2k.modules.demos.lifedemo.LifeGameBoard"};
-		return in;
+		String[] types = {"ncsa.d2k.modules.demos.lifedemo.LifeGameBoard"};
+		return types;
 	}
 
 	/**
@@ -44,8 +42,8 @@ public class DrawBoardModule extends UIModule implements HasNames {
 		@return The output types.
 	*/
 	public String[] getOutputTypes() {
-		String []out = {"ncsa.d2k.modules.demos.lifedemo.LifeGameBoard"};
-		return out;
+		String[] types = {"ncsa.d2k.modules.demos.lifedemo.LifeGameBoard"};
+		return types;
 	}
 
 	/**
@@ -54,11 +52,9 @@ public class DrawBoardModule extends UIModule implements HasNames {
 		@return The info about the input
 	*/
 	public String getInputInfo(int i) {
-		switch(i) {
-			case(0):
-				return "The next game board.";
-			default:
-				return "No such input!";
+		switch (i) {
+			case 0: return "The next game board.";
+			default: return "No such input";
 		}
 	}
 
@@ -69,10 +65,9 @@ public class DrawBoardModule extends UIModule implements HasNames {
 	*/
 	public String getInputName(int i) {
 		switch(i) {
-			case(0):
+			case 0:
 				return "nextBoard";
-			default:
-				return "No such input!";
+			default: return "NO SUCH INPUT!";
 		}
 	}
 
@@ -83,11 +78,9 @@ public class DrawBoardModule extends UIModule implements HasNames {
 		@return The info about the output
 	*/
 	public String getOutputInfo(int i) {
-		switch(i) {
-			case(0):
-				return "The current game board.";
-			default:
-				return "No such input!";
+		switch (i) {
+			case 0: return "The current game board.";
+			default: return "No such output";
 		}
 	}
 
@@ -98,10 +91,9 @@ public class DrawBoardModule extends UIModule implements HasNames {
 	*/
 	public String getOutputName(int i) {
 		switch(i) {
-			case(0):
+			case 0:
 				return "currentBoard";
-			default:
-				return "No such input!";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 

@@ -1,9 +1,9 @@
 package ncsa.d2k.modules.demos.modeldemo;
 
-import ncsa.d2k.controller.userviews.*;
-import ncsa.d2k.controller.userviews.widgits.*;
+import ncsa.d2k.userviews.*;
+import ncsa.d2k.userviews.widgets.*;
 
-import ncsa.d2k.infrastructure.modules.*;
+import ncsa.d2k.core.modules.*;
 
 import java.awt.*;
 
@@ -14,7 +14,7 @@ public class SeedParameterView extends UserInputPane {
 
 	/**
 		These are the DSComponents that are used.  The argument to the constructor
-		of each DSComponent is the value that is used to identify it in the fieldMap 
+		of each DSComponent is the value that is used to identify it in the fieldMap
 		of SeedParameterInput.
 	*/
 	DSTextField light = new DSTextField("light");
@@ -24,9 +24,9 @@ public class SeedParameterView extends UserInputPane {
 
 	public void initView(ViewModule mod) {
 		super.initView(mod);
-		
+
 		Panel p = new Panel();
-		
+
 		p.setLayout(new GridLayout(4, 2));
 		p.add(new Label("Light"));
 		p.add(light);
@@ -35,7 +35,7 @@ public class SeedParameterView extends UserInputPane {
 		p.add(new Label("Soil"));
 		p.add(soil);
 		p.add(new Label("Result"));
-		
+
 		// result is a DSStringChoice, so we need to add the items here.
 		result.add("success");
 		result.add("failure");
@@ -50,9 +50,9 @@ public class SeedParameterView extends UserInputPane {
 	*/
 	/*public SeedParameterView() {
 		super();
-		
+
 		Panel p = new Panel();
-		
+
 		p.setLayout(new GridLayout(4, 2));
 		p.add(new Label("Light"));
 		p.add(light);
@@ -61,7 +61,7 @@ public class SeedParameterView extends UserInputPane {
 		p.add(new Label("Soil"));
 		p.add(soil);
 		p.add(new Label("Result"));
-		
+
 		// result is a DSStringChoice, so we need to add the items here.
 		result.add("success");
 		result.add("failure");

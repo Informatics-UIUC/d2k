@@ -1,19 +1,20 @@
 package ncsa.d2k.modules.demos.performance;
 
-import ncsa.d2k.infrastructure.modules.DataPrepModule;
-import ncsa.d2k.infrastructure.views.UserView;
+
+import ncsa.d2k.core.modules.DataPrepModule;
+import ncsa.d2k.core.modules.UserView;
 import java.io.*;
 
-public class Test2BranchModule extends DataPrepModule implements Serializable  {
+public class Test2BranchModule extends DataPrepModule   {
 
 	public String [] getInputTypes () {
-		String [] ins = {"[I"};
-		return ins;
+		String[] types = {"[I"};
+		return types;
 	}
 
 	public String [] getOutputTypes () {
-		String [] outputs = {"[I"};
-		return outputs;
+		String[] types = {"[I"};
+		return types;
 	}
 
 	/**
@@ -29,7 +30,7 @@ public class Test2BranchModule extends DataPrepModule implements Serializable  {
 		@returns a text description of the modules function
 	*/
 	public String getModuleInfo () {
-		return "This module will continue to run until is reaches a certain number of iterations.";
+		return "<html>  <head>      </head>  <body>    This module will continue to run until is reaches a certain number of     iterations.  </body></html>";
 	}
 
 	/**
@@ -41,10 +42,8 @@ public class Test2BranchModule extends DataPrepModule implements Serializable  {
 	*/
 	public String getInputInfo (int index) {
 		switch (index) {
-			case 0:
-				return "This is the array of integers to operate on.";
-			default:
-				return "There is no such input.";
+			case 0: return "This is the array of integers to operate on.";
+			default: return "No such input";
 		}
 	}
 
@@ -57,10 +56,8 @@ public class Test2BranchModule extends DataPrepModule implements Serializable  {
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0:
-				return "This output is the string that the user selected from those passed in.";
-			default:
-				return "There is no such output.";
+			case 0: return "This output is the string that the user selected from those passed in.";
+			default: return "No such output";
 		}
 	}
 
@@ -95,6 +92,11 @@ public class Test2BranchModule extends DataPrepModule implements Serializable  {
 	int counter = 0;
 	int prev = -1;
 	int tmp [] = null;
+
+	int SIZE = 10;
+	public void setSize(int size) { SIZE = size; }
+	public int getSIze() { return SIZE; }
+
 	public void doit ()
 	{
 		// If we are starting, start the timer.
@@ -111,10 +113,10 @@ public class Test2BranchModule extends DataPrepModule implements Serializable  {
 			System.out.println ("## OUT OF SEQUENCE : expected "+prev+" got "+ary[0]);
 
 		if (tmp == null)
-			tmp = new int [InitIntegersModule.SIZE];
+			tmp = new int [SIZE];
 		tmp [counter] = ary[0];
 		counter++;
-		if (counter == InitIntegersModule.SIZE)
+		if (counter == SIZE)
 		{
 			counter = 0;
 			iterationCounter--;
@@ -130,6 +132,40 @@ System.out.println ("iterationCounter:"+iterationCounter);
 				startTime = System.currentTimeMillis( )-startTime;
 				System.out.println ("It took "+startTime);
 			}
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "Test2BranchModule";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }

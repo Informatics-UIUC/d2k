@@ -2,7 +2,8 @@ package ncsa.d2k.modules.demos.tutorial;
 
 /**
 */
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 import java.util.*;
 
 public class DateBranchModule extends ComputeModule {
@@ -16,7 +17,7 @@ public class DateBranchModule extends ComputeModule {
 		@returns a text description of the modules function
 	*/
 	public String getModuleInfo () {
-		return "This branch module will provide the first output is the sole input string equals \"OperationsModule.OP1\", it will provide the second output if the input equals \"OperationsModule.OP2\", or it will provide the third output if the input string equals \"OperationsModule.OP3\"";
+		return "<html>  <head>      </head>  <body>    This branch module will provide the first output is the sole input string     equals &quot;OperationsModule.OP1&quot;, it will provide the second output if the     input equals &quot;OperationsModule.OP2&quot;, or it will provide the third output     if the input string equals &quot;OperationsModule.OP3&quot;  </body></html>";
 	}
 
 	/**
@@ -28,10 +29,8 @@ public class DateBranchModule extends ComputeModule {
 	*/
 	public String getInputInfo (int index) {
 		switch (index) {
-			case 0:
-				return "This input string is the key against which we will select an output to provide.";
-			default:
-				return "There is no such input.";
+			case 0: return "This input string is the key against which we will select an output to provide.";
+			default: return "No such input";
 		}
 	}
 
@@ -72,14 +71,10 @@ public class DateBranchModule extends ComputeModule {
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0:
-				return "Contains a Date object containing the current date if the input string equals \"OperationsModule.OP1\".";
-			case 1:
-				return "Contains a Date object containing the current date if the input string equals \"OperationsModule.OP2\".";
-			case 2:
-				return "Contains a Date object containing the current date if the input string equals \"OperationsModule.OP3\".";
-			default:
-				return "There is no such output.";
+			case 0: return "Contains a Date object containing the current date if the input string equals \"OperationsModule.OP1\".";
+			case 1: return "Contains a Date object containing the current date if the input string equals \"OperationsModule.OP2\".";
+			case 2: return "Contains a Date object containing the current date if the input string equals \"OperationsModule.OP3\".";
+			default: return "No such output";
 		}
 	}
 
@@ -89,8 +84,8 @@ public class DateBranchModule extends ComputeModule {
 		@returns an array of one entry, a string.
 	*/
 	public String [] getInputTypes () {
-		String [] ins = {"java.lang.String"};
-		return ins;
+		String[] types = {"java.lang.String"};
+		return types;
 	}
 
 	/**
@@ -99,8 +94,8 @@ public class DateBranchModule extends ComputeModule {
 		@returns an array of three entries, all strings.
 	*/
 	public String [] getOutputTypes () {
-		String [] outs = {"java.util.Date", "java.util.Date", "java.util.Date"};
-		return outs;
+		String[] types = {"java.util.Date","java.util.Date","java.util.Date"};
+		return types;
 	}
 
 	/**
@@ -143,5 +138,43 @@ public class DateBranchModule extends ComputeModule {
 			pushOutput (new Date (System.currentTimeMillis()), 2);
 		} else
 			System.out.println ("Whoaaaa");
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "DateBranchModule";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			case 0:
+				return "output0";
+			case 1:
+				return "output1";
+			case 2:
+				return "output2";
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

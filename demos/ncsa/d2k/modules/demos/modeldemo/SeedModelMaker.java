@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.demos.modeldemo;
 
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 
 /**
 	This class creates a ModelModule.
@@ -47,7 +48,7 @@ public class SeedModelMaker extends ModelGeneratorModule {
 		@returns a text description of the modules function
 	*/	
 	public String getModuleInfo() {
-		return "Generates a SeedModel based on the four inputs.";
+		return "<html>  <head>      </head>  <body>    Generates a SeedModel based on the four inputs.  </body></html>";
 	}
 	
 	/**
@@ -58,16 +59,12 @@ public class SeedModelMaker extends ModelGeneratorModule {
 		@returns a text description of the indexed input
 	*/		
 	public String getInputInfo(int index) {
-		switch(index) {
-			case 0:
-				return "A function of the amount of light the seed received.";
-			case 1:
-				return "A function of the amout of moisture the seed received.";
-			case 2:
-				return "A function of the soil the seed is planted in.";
-			default:
-				return "There is no such output.";
-		}	
+		switch (index) {
+			case 0: return "A function of the amount of light the seed received.";
+			case 1: return "A function of the amout of moisture the seed received.";
+			case 2: return "A function of the soil the seed is planted in.";
+			default: return "No such input";
+		}
 	}
 	
 	/**
@@ -78,7 +75,9 @@ public class SeedModelMaker extends ModelGeneratorModule {
 		@returns a text description of the indexed output
 	*/		
 	public String getOutputInfo(int index) {
-		return "There is no such output.";
+		switch (index) {
+			default: return "No such output";
+		}
 	}
 
 	/**
@@ -87,8 +86,8 @@ public class SeedModelMaker extends ModelGeneratorModule {
 		@returns the input types
 	*/	
 	public String []getInputTypes() {
-		String []inputs = {"java.lang.Double", "java.lang.Double", "java.lang.Double"};
-		return inputs;	
+		String[] types = {"java.lang.Double","java.lang.Double","java.lang.Double"};
+		return types;
 	}
 	
 	/**
@@ -97,7 +96,8 @@ public class SeedModelMaker extends ModelGeneratorModule {
 		@returns null since there are not outputs.
 	*/			
 	public String []getOutputTypes() {
-		return null;
+		String[] types = {		};
+		return types;
 	}
 	
 	
@@ -209,5 +209,41 @@ public class SeedModelMaker extends ModelGeneratorModule {
 					return "There is no such output!";
 			}
 		}	
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "SeedModelMaker";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			case 0:
+				return "input0";
+			case 1:
+				return "input1";
+			case 2:
+				return "input2";
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
+			default: return "NO SUCH OUTPUT!";
+		}
 	}
 }

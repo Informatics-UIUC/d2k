@@ -1,10 +1,10 @@
 package ncsa.d2k.modules.demos.performance;
 
 
-import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.core.modules.UserView;
 
-public class AddIntegersModule2 extends ReentrantComputeModule {
+public class PulseInitModule extends ComputeModule  {
 
 	public String [] getInputTypes () {
 		String[] types = {"[I"};
@@ -16,13 +16,10 @@ public class AddIntegersModule2 extends ReentrantComputeModule {
 		return types;
 	}
 
-	int loopSize = 200;
-	public int getLoopSize () { return loopSize; }
-	public void setLoopSize (int nls) { loopSize = nls; }
 	/**
 		Default constructor simply sets up the input and output types.
 	*/
-	public AddIntegersModule2() {
+	public PulseInitModule() {
 		super ();
 	}
 
@@ -32,7 +29,7 @@ public class AddIntegersModule2 extends ReentrantComputeModule {
 		@returns a text description of the modules function
 	*/
 	public String getModuleInfo () {
-		return "<html>  <head>      </head>  <body>    Increments each integer in the array of integers passed in.  </body></html>";
+		return "<html>  <head>      </head>  <body> Just push a bunch of copies. this is for testing.</body></html>";
 	}
 
 	/**
@@ -44,7 +41,7 @@ public class AddIntegersModule2 extends ReentrantComputeModule {
 	*/
 	public String getInputInfo (int index) {
 		switch (index) {
-			case 0: return "This is the first of the arrays of integers to add together.";
+			case 0: return "This is the array of integers to operate on.";
 			default: return "No such input";
 		}
 	}
@@ -52,6 +49,7 @@ public class AddIntegersModule2 extends ReentrantComputeModule {
 	/**
 		This method will return a text description of the the output indexed by
 		the value passed in.
+
 		@param index the index of the output we want the description of.
 		@returns a text description of the indexed output
 	*/
@@ -61,7 +59,22 @@ public class AddIntegersModule2 extends ReentrantComputeModule {
 			default: return "No such output";
 		}
 	}
-
+	private int counter, MAX = 1000;
+	public void setTimes (int tms) {
+		MAX = tms;
+	}
+	public int getTimes () { return MAX; }
+	long time;
+	public void beginExecution() { counter = 0;time = System.currentTimeMillis(); }
+	public void endExecution() {
+		System.out.println("It took "+(System.currentTimeMillis()-time)+" ticks.");
+	}
+	public boolean isReady() {
+		if (counter == 0)
+			return super.isReady();
+		else
+			return counter < MAX;
+	}
 	/**
 		Ascertain the correct output to generate on the basis of the string
 		passed in.
@@ -69,34 +82,25 @@ public class AddIntegersModule2 extends ReentrantComputeModule {
 		@param inV the list of required inputs.
 		@param outV list of results.
 	*/
-	int [] cum = null;
-	int testee = 1;
+	int [] arry;
 	public void doit () {
 
 		// First decrement the counter
-		int [] arry = (int []) this.pullInput (0);
-		long start = System.currentTimeMillis();
-		if (cum == null)
-		{
-			cum = new int [arry.length];
-			for (int i = 0 ; i < arry.length;i++)
-				cum [i] = 0;
-		}
-
-		int k = 0;
-		for (int i = 0 ; i < arry.length ; i++)
-		{
-			cum [i] += arry [i];
-			for (int j = 0 ; j < loopSize ; j++)
-			{
-				k += testee;
-			}
-		}
-
-		System.out.println("AddIntegers2 took "+(System.currentTimeMillis()-start)
-						   +" loopSize : "+loopSize+" array size : "+arry.length);
-
+		if (counter == 0)
+		    arry = (int []) this.pullInput( 0 );
 		this.pushOutput (arry, 0);
+
+		counter++;
+		if ((counter % 10) == 0)
+			System.out.println("-------- Pulse : "+counter+" ---------");
+
+		if (counter == MAX) {
+			System.out.println ();
+			System.out.println ();
+			System.out.println ("---------- PulseInitModule Done -----------");
+			System.out.println ();
+			System.out.println ();
+		}
 	}
 
 	/**
@@ -104,7 +108,7 @@ public class AddIntegersModule2 extends ReentrantComputeModule {
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "AddIntegersModule2";
+		return "IncIntegersModule";
 	}
 
 	/**

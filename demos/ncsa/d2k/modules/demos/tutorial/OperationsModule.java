@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.demos.tutorial;
-import ncsa.d2k.infrastructure.modules.*;
+
+import ncsa.d2k.core.modules.*;
 
 public class OperationsModule extends InputModule {
 	public static final String OP1 = "Date";
@@ -12,7 +13,8 @@ public class OperationsModule extends InputModule {
 		@returns null since there are not inputs.
 	*/
 	public String [] getInputTypes () {
-		return null;
+		String[] types = {		};
+		return types;
 	}
 
 	/**
@@ -22,8 +24,8 @@ public class OperationsModule extends InputModule {
 		@returns null since there are not inputs.
 	*/
 	public String [] getOutputTypes () {
-		String [] outputs = {"java.lang.String","java.lang.String","java.lang.String"};
-		return outputs;
+		String[] types = {"java.lang.String","java.lang.String","java.lang.String"};
+		return types;
 	}
 	
 	/**
@@ -44,7 +46,7 @@ System.out.println("Ops mod has been fired!");
 		@returns a text description of the modules function
 	*/
 	public String getModuleInfo () {
-		return "This module takes no inputs and produces three outputs; These outputs are simply names that identify the three possible operations we may perform. The operations are Date, Time, and Date and time.";
+		return "<html>  <head>      </head>  <body>    This module takes no inputs and produces three outputs; These outputs are     simply names that identify the three possible operations we may perform.     The operations are Date, Time, and Date and time.  </body></html>";
 	}
 	
 	/**
@@ -56,8 +58,7 @@ System.out.println("Ops mod has been fired!");
 	*/
 	public String getInputInfo (int index) {
 		switch (index) {
-			default:
-				return "There is no inputs to this module.";
+			default: return "No such input";
 		}
 	}
 	
@@ -70,14 +71,46 @@ System.out.println("Ops mod has been fired!");
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
+			case 0: return "Contains a reference to the String name of the first operation, in this case Date.";
+			case 1: return "Contains a reference to the String name of the second operation, in this case Time.";
+			case 2: return "Contains a reference to the String name of the third operation, in this case Date and time.";
+			default: return "No such output";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the module.
+	 * @return the human readable name of the module.
+	 */
+	public String getModuleName() {
+		return "OperationsModule";
+	}
+
+	/**
+	 * Return the human readable name of the indexed input.
+	 * @param index the index of the input.
+	 * @return the human readable name of the indexed input.
+	 */
+	public String getInputName(int index) {
+		switch(index) {
+			default: return "NO SUCH INPUT!";
+		}
+	}
+
+	/**
+	 * Return the human readable name of the indexed output.
+	 * @param index the index of the output.
+	 * @return the human readable name of the indexed output.
+	 */
+	public String getOutputName(int index) {
+		switch(index) {
 			case 0:
-				return "Contains a reference to the String name of the first operation, in this case Date.";
+				return "output0";
 			case 1:
-				return "Contains a reference to the String name of the second operation, in this case Time.";
+				return "output1";
 			case 2:
-				return "Contains a reference to the String name of the third operation, in this case Date and time.";
-			default:
-				return "There is no such output.";
+				return "output2";
+			default: return "NO SUCH OUTPUT!";
 		}
 	}
 }
