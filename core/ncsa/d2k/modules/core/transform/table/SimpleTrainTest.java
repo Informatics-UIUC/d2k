@@ -18,7 +18,7 @@ import java.beans.PropertyVetoException;
 */
 public class SimpleTrainTest extends DataPrepModule  {
 
-	boolean debug = false;
+	boolean debug = true;
 	/**
 	   Return a description of the function of this module.
 	   @return A description of this module.
@@ -211,14 +211,14 @@ public class SimpleTrainTest extends DataPrepModule  {
 			}
 		}
 
-		// do the test assignment, from the start of the array of indices.
-		for(int i = 0; i < numTest; i++) {
-			test[i] = random[i];
+		// do the train assignment, from the start of the array of indices.
+		for(int i = 0; i < numTrain; i++) {
+			train[i] = random[i];
 		}
 
-		// do the train assignment, from the end of the array of indices.
-		for(int i = numTrain-1, j = nr - 1; i >= 0; i--, j--) {
-		   train[i] = random[j];
+		// do the test assignment, from the end of the array of indices.
+		for(int i = numTest-1, j = nr - 1; i >= 0; i--, j--) {
+		   test[i] = random[j];
 		}
 		if (debug) {
 			System.out.println("test set");
@@ -337,10 +337,10 @@ public class SimpleTrainTest extends DataPrepModule  {
 			int op = SET_BOTH;
 
 			/** the initial position of the thumb. */
-			int test = 50;
+			int trainPercentage = 50;
 
 			/** the initial position of the thumb. */
-			int train = 50;
+			int testPercentage = 50;
 
 			/** the height of text. */
 			int text_height;
@@ -393,8 +393,8 @@ public class SimpleTrainTest extends DataPrepModule  {
 			 * return the percent test.
 			 * @return
 			 */
-			int getTest() {
-				int current = test-1;
+			int getTrain() {
+				int current = trainPercentage-1;
 				current *= 100;
 				current /= RHEIGHT;
 				return current;
@@ -404,18 +404,18 @@ public class SimpleTrainTest extends DataPrepModule  {
 			 * Set the test value. The percentage passed in is converted to an offset.
 			 * @param val the percent test.
 			 */
-			private void setTest(int val) {
-				test = val;
-				test = test * 2;
-				test++;
+			private void setTrain(int val) {
+				trainPercentage = val;
+				trainPercentage = trainPercentage * 2;
+				trainPercentage++;
 			}
 
 			/**
 			 * return the percent test.
 			 * @return
 			 */
-			int getTrain() {
-				int current = train - 1;
+			int getTest() {
+				int current = testPercentage - 1;
 				current = current / 2;
 				return 100 - current;
 			}
@@ -424,10 +424,10 @@ public class SimpleTrainTest extends DataPrepModule  {
 			 * Set the test value. The percentage passed in is converted to an offset.
 			 * @param val the percent test.
 			 */
-			private void setTrain(int val) {
-				train = 100 - val;
-				train = (train * 2);
-				train++;
+			private void setTest(int val) {
+				testPercentage = 100 - val;
+				testPercentage = (testPercentage * 2);
+				testPercentage++;
 			}
 
 			/**
@@ -461,33 +461,33 @@ public class SimpleTrainTest extends DataPrepModule  {
 				// draw the test thumb
 
 				g.setColor(Color.red.brighter().brighter());
-				this.paintThumb(g, 0, test - THUMB_SIZE, THUMB_SIZE, test,
-								0, test + THUMB_SIZE, true);
+				this.paintThumb(g, 0, trainPercentage - THUMB_SIZE, THUMB_SIZE, trainPercentage,
+								0, trainPercentage + THUMB_SIZE, true);
 
 				// draw the line.
 				int halfway = 4;
-				int ploc = this.test + this.text_descent;
+				int ploc = this.trainPercentage + this.text_descent;
 				if (ploc < this.text_ascent)
 					ploc = this.text_ascent;
 				if (ploc > (comp_height - this.text_descent))
 					ploc = comp_height - this.text_descent;
-				String percent = " "+Integer.toString(this.getTest())+"% ";
+				String percent = " "+Integer.toString(this.getTrain())+"% ";
 				int stringwidth = fm.stringWidth(percent);
 				g.drawString(percent, halfway, ploc);
 
 				// draw the training thumb
 				g.setColor(Color.blue.brighter().brighter());
 				int right = comp_width - THUMB_SIZE;
-				this.paintThumb(g, comp_width, train - THUMB_SIZE, right, train,
-								comp_width, train + THUMB_SIZE, true);
+				this.paintThumb(g, comp_width, testPercentage - THUMB_SIZE, right, testPercentage,
+								comp_width, testPercentage + THUMB_SIZE, true);
 
 				// draw the line.
-				ploc = train + this.text_descent;
+				ploc = testPercentage + this.text_descent;
 				if (ploc < this.text_ascent)
 					ploc = this.text_ascent;
 				if (ploc > (comp_height - this.text_descent))
 					ploc = comp_height - this.text_descent;
-				percent = " "+Integer.toString(this.getTrain())+"% ";
+				percent = " "+Integer.toString(this.getTest())+"% ";
 				stringwidth = fm.stringWidth(percent);
 				halfway = right - 4 - stringwidth;
 				g.drawString(percent, halfway, ploc);
@@ -509,23 +509,23 @@ public class SimpleTrainTest extends DataPrepModule  {
 
 				// fill the test percent
 				g.setColor(this.lightRed);
-				g.fillRect(this.THUMB_SIZE, 1, right, this.test-1);
+				g.fillRect(this.THUMB_SIZE, 1, right, this.trainPercentage-1);
 
 				g.setColor(this.lightBlue);
-				g.fillRect(this.THUMB_SIZE, this.train, right, bottom-this.train);
-				if (this.train == this.test) return;
-				if (this.train < this.test) {
+				g.fillRect(this.THUMB_SIZE, this.testPercentage, right, bottom-this.testPercentage);
+				if (this.testPercentage == this.trainPercentage) return;
+				if (this.testPercentage < this.trainPercentage) {
 					g.setColor(this.lightYellow);
 				} else {
 					g.setColor(Color.white);
 				}
-				int amount = this.test - this.train;
-				g.fillRect(this.THUMB_SIZE, this.train, right, amount);
-				if (this.train < this.test) {
+				int amount = this.trainPercentage - this.testPercentage;
+				g.fillRect(this.THUMB_SIZE, this.testPercentage, right, amount);
+				if (this.testPercentage < this.trainPercentage) {
 					g.setColor(Color.black);
 					int wdth = fm.stringWidth("resampled");
 					g.drawString ("resampled", this.THUMB_SIZE + 24,
-								  this.train + this.text_ascent);
+								  this.testPercentage + this.text_ascent);
 				}
 		   }
 
@@ -559,9 +559,9 @@ public class SimpleTrainTest extends DataPrepModule  {
 
 				// paint some lines in there.
 				g.setColor(Color.black);
-				g.drawString(this.TEST, this.THUMB_SIZE + 24,
-							 this.text_ascent+1);
 				g.drawString(this.TRAIN, this.THUMB_SIZE + 24,
+							 this.text_ascent+1);
+				g.drawString(this.TEST, this.THUMB_SIZE + 24,
 							 comp_height - (this.text_descent+1));
 				this.paintThumb(g);
 			}
@@ -612,14 +612,14 @@ public class SimpleTrainTest extends DataPrepModule  {
 				if (y < 1) y = 1;
 				switch (op) {
 					case SET_BOTH:
-						this.test = y;
-						this.train = y;
+						this.trainPercentage = y;
+						this.testPercentage = y;
 						break;
 					case SET_TEST:
-						this.test = y;
+						this.trainPercentage = y;
 						break;
 					case SET_TRAIN:
-					   this.train = y;
+					   this.testPercentage = y;
 					   break;
 			   }
 			   this.repaint();

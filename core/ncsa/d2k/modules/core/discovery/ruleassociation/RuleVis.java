@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.discovery.ruleassociation;
 
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.*;
@@ -9,7 +10,6 @@ import javax.swing.table.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import java.util.*;
-
 import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 
 /**
@@ -30,12 +30,8 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-                        case 0: return "This structure is a table where the attribute label 'Head'and 'Body'"
-                        +" are an ArrayList of integers that refer to items in the itemLabel structure, and the following attributes are attributes that compare"
-                        +" these rules, like support and confidence.";
-                        case 1: return "This structure is an ArrayList of String that contain the item labels for"
-                        +" the rules.";
-			default: return "NO SUCH INPUT!";
+			case 0: return "This structure is a table where the attribute label 'Head'and 'Body' are an ArrayList of integers that refer to items in the itemLabel structure, and the following attributes are attributes that compare these rules, like support and confidence.";
+			default: return "No such input";
 		}
 	}
 
@@ -43,8 +39,6 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		@return the data types of all inputs.
 	*/
 	public String[] getInputTypes () {
-		//String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl"};
-		//String[] types = {"ncsa.d2k.modules.core.datatype.table.basic.TableImpl","java.util.ArrayList"};
 		String[] types = {"ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"};
 		return types;
 	}
@@ -54,7 +48,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			default: return "NO SUCH OUTPUT!";
+			default: return "No such output";
 		}
 	}
 
@@ -62,7 +56,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		@return the data types of all outputs.
 	*/
 	public String[] getOutputTypes () {
-		String[] types = {};
+		String[] types = {		};
 		return types;
 	}
 
@@ -70,7 +64,16 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "Visualization for understanding rules from a rule association algorithm.";
+		return "<p>      Overview: This module displays rules from rule association algorithms       like apriori."+
+			"    </p>    <p>      Detailed Description: The rules are displayed in a matrix with all the"+
+			"       possible item values displayed along the left hand side and the rules       displayed"+
+			" in the columns. For each rule, the antecedents of that       particular rule are indicated"+
+			" by a square box in the row associated with       the item value. The result is indicated by"+
+			" a check mark. For example, if       we are displaying rules that indicate if a mushroom is"+
+			" edible or not, a       rule might be &quot;odor=none&quot; and &quot;ring_number=one&quot;"+
+			" then &quot;edibility=edible&quot;.       This rule would be displayed in a column with a box"+
+			" in the row for the       item &quot;odor=none&quot; and a box in the row for &quot;ring_number=one&quot;,"+
+			" and there       would be a check in the row for &quot;edibility=edible&quot;.    </p>";
 	}
 
 	/**
@@ -90,8 +93,6 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		switch(index) {
 			case 0:
 				return "ruleTable";
-			case 1:
-				return "itemLabels";
 			default: return "NO SUCH INPUT!";
 		}
 	}

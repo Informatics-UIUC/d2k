@@ -41,7 +41,7 @@ public class ItemSets implements Serializable {
 	/** holds some method specific data.*/
 	public Object userData;
 
-    public ItemSets(Table vt) {
+	public ItemSets(Table vt) {
 		int numColumns = vt.getNumColumns ();
 		int numRows = this.numExamples = vt.getNumRows ();
 
@@ -62,8 +62,11 @@ public class ItemSets implements Serializable {
 				outputNames[i] = new String (vt.getColumnLabel (outputs[i]));
 		} else {
 			attributes = new int [numColumns];
-			for (int i = 0; i < numColumns; i++)
+			outputNames = new String [numColumns];
+			for (int i = 0; i < numColumns; i++) {
 				attributes[i] = i;
+				outputNames[i] = new String (vt.getColumnLabel (i));
+			}
 		}
 
 		// Allocate an array of string for each column prefix.
@@ -131,35 +134,6 @@ public class ItemSets implements Serializable {
 			names[tmp[1]] = tmpName;
 		}
 
-		// We will now sort the unique items on the basis of their frequency distribution
-		// with those items with the highest frequency distribution having the highest indices.
-		// This will allow some optimization fo the search space.
-
-/*		HashMap result = new HashMap ();
-		int numUnique = unique.size ();
-		names = new String [numUnique];
-		for (int i = 0 ; i < numUnique ;i++) {
-			Iterator enum = unique.values().iterator();
-			Iterator enum2 = unique.keySet().iterator();
-			int smallestFrequency = numRows;
-			String smallestName = null;
-			int [] smallestInts = null;
-			while (enum.hasNext ()) {
-				int [] tmp = (int[]) enum.next ();
-				String tmpName = (String) enum2.next ();
-				if (tmp[0] <= smallestFrequency) {
-					smallestName = tmpName;
-					smallestInts = tmp;
-					smallestFrequency = tmp[0];
-				}
-			}
-			smallestInts[1] = i;
-			names[i] = smallestName;
-			result.put (smallestName, smallestInts);
-			unique.remove (smallestName);
-		}
-		unique = result;
-*/
 		// Now construct the new representation of the vertical table, where each
 		// entry is represented by an integer.
 		int [][] documents = new int [numRows][numColumns];
@@ -197,14 +171,14 @@ public class ItemSets implements Serializable {
 		ArrayList list = new ArrayList ();
 
 		// for each of the attributes, see if the inputs include the attribute.
-
-		while (keys.hasNext ()) {
-			String name = (String) keys.next ();
-			int[] indx = (int[]) indxs.next ();
-			for (int i = 0 ; i < targets.length; i++)
-				if (name.startsWith (targets[i]))
-					list.add (indx);
-		}
+		if (targets != null)
+			while (keys.hasNext ()) {
+				String name = (String) keys.next ();
+				int[] indx = (int[]) indxs.next ();
+				for (int i = 0 ; i < targets.length; i++)
+					if (name.startsWith (targets[i]))
+						list.add (indx);
+			}
 
 		// Put the indexes into the list.
 		int size = list.size ();

@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.discovery.ruleassociation.apriori;
 
 
+
 import java.io.*;
 import java.util.*;
 import ncsa.d2k.core.modules.*;
@@ -60,11 +61,12 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 	public String getModuleInfo () {
 		return "<p>      Overview: Given a list of frequent item sets, compute the percentage of       examples"+
 			" that contain the first items that also contain the last item.       This value is called the"+
-			" confidence.    </p>    <p>      Scalability: This module will search all the items sets to"+
-			" compute the       confidence for each frequent item set. This is done quite efficiently,  "+
-			"     so this module should never take as long as the apriori module does. It       also allocates"+
-			" no additional memory, the confidence is stored at the end       of the frequent item set, space"+
-			" is already allocated there for it.    </p>";
+			" confidence. This module will compute rules only       for a single predicate.    </p>    <p>"+
+			"      Scalability: This module will search all the items sets to compute the       confidence"+
+			" for each frequent item set. This is done quite efficiently,       so this module should never"+
+			" take as long as the apriori module does. It       also allocates no additional memory, the"+
+			" confidence is stored at the end       of the frequent item set, space is already allocated"+
+			" there for it.    </p>";
 	}
 
 	private boolean debug = true;

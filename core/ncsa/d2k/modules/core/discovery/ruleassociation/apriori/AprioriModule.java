@@ -326,13 +326,15 @@ nextrule:	for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.length;
 						// which we construct new rules will all contain a target. He we make sure
 						// we ignore any rule that does not contain an output.
 						int targetIndex;
-						for (targetIndex = 0 ; targetIndex < targetIndices.length ;targetIndex++)
-							if (rulebuffer[ruleIndex] == targetIndices[targetIndex])
-								break;
-						if (targetIndex >= targetIndices.length)
+						if (targetIndices != null) {
 							for (targetIndex = 0 ; targetIndex < targetIndices.length ;targetIndex++)
-								if (items[itemIndex] == targetIndices[targetIndex])
+								if (rulebuffer[ruleIndex] == targetIndices[targetIndex])
 									break;
+							if (targetIndex >= targetIndices.length)
+								for (targetIndex = 0 ; targetIndex < targetIndices.length ;targetIndex++)
+									if (items[itemIndex] == targetIndices[targetIndex])
+										break;
+						}
 					}
 
 
