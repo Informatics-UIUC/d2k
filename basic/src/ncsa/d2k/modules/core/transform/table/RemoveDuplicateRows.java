@@ -48,6 +48,7 @@ public class RemoveDuplicateRows extends DataPrepModule {
 			" with the same values has already been encountered. If it has,       we just mark the row as"+
 			" a duplicate to delete when we are done. If it       hasn't been encountered, we add it to the"+
 			" hash table. When we have       examined each row, we just trash the duplicates.    </p>   "+
+                        "<P>Data Handling: The input table is changed by this module.</P>"+
 			" <p>      Scalability: If there are not a lot of duplicates, this hashtable can       get very"+
 			" large. The entries in this hash table store a string       representation of each value in"+
 			" each field in each unique row. Do the       math.    </p>";
