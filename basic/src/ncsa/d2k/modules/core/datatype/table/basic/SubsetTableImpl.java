@@ -38,15 +38,9 @@ public class SubsetTableImpl extends MutableTableImpl {
       this.label = table.label;
       this.comment = table.comment;
       this.subset = new int[table.getNumRows()];
-      if (table instanceof SubsetTableImpl) {
-         int[] tmp = ((SubsetTableImpl)table).getSubset();
-         for (int i = 0; i < this.subset.length; i++) {
-            this.subset[i] = tmp[i];
-         }
-      } else
-         for (int i = 0; i < this.subset.length; i++) {
-            this.subset[i] = i;
-         }
+      for (int i = 0; i < this.subset.length; i++) {
+         this.subset[i] = i;
+      }
    }
 
    /**
@@ -171,7 +165,7 @@ public class SubsetTableImpl extends MutableTableImpl {
 
       int[] tmp = new int[this.subset.length];
       System.arraycopy(this.subset, 0, tmp, 0, this.subset.length);
-      this.doSort(this.getColumn(col), tmp, 0, this.getNumRows() - 1, 0);
+      this.doSort(columns[col], tmp, 0, this.getNumRows() - 1, 0);
    }
 
    /**
@@ -184,7 +178,7 @@ public class SubsetTableImpl extends MutableTableImpl {
       int[] neworder = new int[end - begin + 1];
       for (int i = begin; i <= end; i++)
          neworder[i - begin] = this.subset[i];
-      this.doSort(this.getColumn(col), neworder, 0, neworder.length - 1, begin);
+      this.doSort(columns[col], neworder, 0, neworder.length - 1, begin);
    }
 
    /**
@@ -487,7 +481,7 @@ public class SubsetTableImpl extends MutableTableImpl {
 
       // Copy failed, maybe objects in a column that are not serializable.
       Column[] cols = new Column[this.getNumColumns()];
-      Column[] oldcols = this.getColumns();
+      Column[] oldcols =  columns;
       for (int i = 0; i < cols.length; i++) {
          cols[i] = oldcols[i].getSubset(newsubset);
       }
@@ -504,7 +498,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return a shallow copy of the table.
     */
    public Table shallowCopy() {
-      SubsetTableImpl vt = new SubsetTableImpl(this.getColumns(), this.subset);
+      SubsetTableImpl vt = new SubsetTableImpl(columns, this.subset);
       vt.setLabel(getLabel());
       vt.setComment(getComment());
       return vt;
@@ -516,7 +510,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     */
    public void addRows(int howMany) {
       for (int i = 0; i < getNumColumns(); i++) {
-         getColumn(i).addRows(howMany);
+         columns[i].addRows(howMany);
       }
       int[] newsubset = new int[subset.length + howMany];
       System.arraycopy(subset, 0, newsubset, 0, subset.length);
@@ -530,10 +524,6 @@ public class SubsetTableImpl extends MutableTableImpl {
    	 * @param pos the row to remove
    	 */
    public void removeRows(int pos, int cnt) {
-      //		ANCA: rows need not be removed from the columns if they are removed from the subset
-      //for (int i = 0; i < getNumColumns(); i++) {
-      //	getColumn(i).removeRows(pos, cnt);
-      //}
       int[] newsubset = new int[subset.length - cnt];
       System.arraycopy(subset, 0, newsubset, 0, pos);
       System.arraycopy(
@@ -551,10 +541,6 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @param pos the row to remove
     */
    public void removeRow(int pos) {
-      //ANCA: rows need not be removed from the columns if they are removed from the subset
-      //for (int i = 0; i < getNumColumns(); i++) {
-      //	getColumn(i).removeRow(subset[pos]);
-      //}
       int[] newsubset = new int[subset.length - 1];
 
       System.arraycopy(subset, 0, newsubset, 0, pos);
@@ -587,7 +573,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the Object in the Table at (row, column)
     */
    public Object getObject(int row, int column) {
-      return getColumn(column).getRow(subset[row]);
+      return columns[column].getRow(subset[row]);
    }
 
    /**
@@ -597,7 +583,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the int in the Table at (row, column)
     */
    public int getInt(int row, int column) {
-      return getColumn(column).getInt(subset[row]);
+      return columns[column].getInt(subset[row]);
    }
 
    /**
@@ -607,7 +593,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the short in the Table at (row, column)
     */
    public short getShort(int row, int column) {
-      return getColumn(column).getShort(subset[row]);
+      return columns[column].getShort(subset[row]);
    }
 
    /**
@@ -617,7 +603,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the long in the Table at (row, column)
     */
    public long getLong(int row, int column) {
-      return getColumn(column).getLong(subset[row]);
+      return columns[column].getLong(subset[row]);
    }
 
    /**
@@ -627,7 +613,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the float in the Table at (row, column)
     */
    public float getFloat(int row, int column) {
-      return getColumn(column).getFloat(subset[row]);
+      return columns[column].getFloat(subset[row]);
    }
 
    /**
@@ -637,7 +623,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the float in the Table at (row, column)
     */
    public double getDouble(int row, int column) {
-      return getColumn(column).getDouble(subset[row]);
+      return columns[column].getDouble(subset[row]);
    }
 
    /**
@@ -647,7 +633,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the String in the Table at (row, column)
     */
    public String getString(int row, int column) {
-      return getColumn(column).getString(subset[row]);
+      return columns[column].getString(subset[row]);
    }
 
    /**
@@ -657,7 +643,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the bytes in the Table at (row, column)
     */
    public byte[] getBytes(int row, int column) {
-      return getColumn(column).getBytes(subset[row]);
+      return columns[column].getBytes(subset[row]);
    }
 
    /**
@@ -667,7 +653,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the byte in the Table at (row, column)
     */
    public byte getByte(int row, int column) {
-      return getColumn(column).getByte(subset[row]);
+      return columns[column].getByte(subset[row]);
    }
 
    /**
@@ -677,7 +663,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the chars in the Table at (row, column)
     */
    public char[] getChars(int row, int column) {
-      return getColumn(column).getChars(subset[row]);
+      return columns[column].getChars(subset[row]);
    }
 
    /**
@@ -687,7 +673,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the chars in the Table at (row, column)
     */
    public char getChar(int row, int column) {
-      return getColumn(column).getChar(subset[row]);
+      return columns[column].getChar(subset[row]);
    }
 
    /**
@@ -697,25 +683,25 @@ public class SubsetTableImpl extends MutableTableImpl {
     * @return the boolean in the Table at (row, column)
     */
    public boolean getBoolean(int row, int column) {
-      return getColumn(column).getBoolean(subset[row]);
+      return columns[column].getBoolean(subset[row]);
    }
 
    ///////////////////////
    // Missing and empty values.
    //
    public boolean isValueMissing(int row, int col) {
-      return getColumn(col).isValueMissing(subset[row]);
+      return columns[col].isValueMissing(subset[row]);
    }
    public boolean isValueEmpty(int row, int col) {
-      return getColumn(col).isValueEmpty(subset[row]);
+      return columns[col].isValueEmpty(subset[row]);
    }
 
    public void setValueToMissing(boolean b, int row, int col) {
-      getColumn(col).setValueToMissing(b, subset[row]);
+      columns[col].setValueToMissing(b, subset[row]);
    }
 
    public void setValueToEmpty(boolean b, int row, int col) {
-      getColumn(col).setValueToEmpty(b, subset[row]);
+      columns[col].setValueToEmpty(b, subset[row]);
    }
    //////////////////////////////////////
    // Setter methods.
