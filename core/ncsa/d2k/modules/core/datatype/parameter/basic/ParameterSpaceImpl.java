@@ -1,36 +1,41 @@
 package ncsa.d2k.modules.core.datatype.parameter.basic;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.projects.dtcheng.*;
+import ncsa.d2k.modules.core.datatype.table.continuous.*;
 
-public class ParameterSpaceImpl extends FloatExampleSet implements ParameterSpace, ExampleTable, java.io.Serializable {
+public class ParameterSpaceImpl extends ContinuousExampleSet implements ParameterSpace, ExampleTable, java.io.Serializable {
 
-  Table [] subspaceTables;
-  int numSubspaces;
-  int [] subspaceSizes;
-  int [] subspaceNumParameters;
-  int numParameters;
+  int       numParameters;
+  int       numSubspaces;
+  MutableTable  [] subspaceTables;
+  int    [] subspaceSizes;
+  int    [] subspaceNumParameters;
   String [] parameterNames;
-  double [] parameterMinValues;
-  double [] parameterMaxValues;
-  double [] parameterDefaultValues;
-  int    [] resolutions;
   int    [] parameterSubspaceIndices;
   int    [] parameterSubspaceParameterIndices;
 
   public ParameterSpaceImpl () {
   }
 
-  public ParameterSpace createFromTable (Table table) {
+  /**
+   * Instantiate a ParameterSpace from the information in the given table.
+   * Each column in the table represents a paramter.
+   * Row 1 is the minimum parameter value.
+   * Row 2 is the maximum parameter value.
+   * Row 3 is the default parameter setting.
+   * Row 4 is the parameter resolution in terms of number of intervals.
+   * Row 5 is the type as an integer as defined in ColumnTypes.
+   * @param table the table representing the parameter space.
+   * @return a ParameterSpace.
+   */
+  public ParameterSpace createFromTable(MutableTable table) {
 
+    this.numParameters = table.getNumColumns();
     this.numSubspaces = 1;
-    this.subspaceTables = new Table[this.numSubspaces];
+    this.subspaceTables = new MutableTable[this.numSubspaces];
     this.subspaceTables[0] = table;
     int [] subspaceSizes = new int[this.numSubspaces];
     this.subspaceSizes[0] = table.getNumColumns();
-
-    int numParameters = this.subspaceSizes[0];
-
 
 
     return (ParameterSpace) this;
@@ -48,13 +53,54 @@ public class ParameterSpaceImpl extends FloatExampleSet implements ParameterSpac
    * @param types the type as an integer as defined in ColumnTypes.
    * @return a ParameterSpace.
    */
-  public ParameterSpace createFromData(String [] names,
-                                       double [] minValues,
-                                       double [] maxValues,
-                                       double [] defaultValues,
-                                       int    [] resolutions,
-                                       int    [] types) {
-    return null;
+  public ParameterSpace createFromData(
+      String [] names,
+      double [] minValues,
+    double [] maxValues,
+    double [] defaultValues,
+    int    [] resolutions,
+    int    [] types) {
+
+    int numParamters = names.length;
+    int numRows      = 5;
+
+    int numValues = numRows * numParamters;
+
+    double [] data = new double[numValues];
+
+    for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
+      for (int parameterIndex = 0; parameterIndex < numParameters; parameterIndex++) {
+        switch (rowIndex) {
+        case 0:
+          data[rowIndex * numParamters + parameterIndex] = minValues[parameterIndex];
+          break;
+        case 1:
+          data[rowIndex * numParamters + parameterIndex] = maxValues[parameterIndex];
+          break;
+        case 2:
+          data[rowIndex * numParamters + parameterIndex] = defaultValues[parameterIndex];
+          break;
+        case 3:
+          data[rowIndex * numParamters + parameterIndex] = resolutions[parameterIndex];
+          break;
+        case 4:
+          data[rowIndex * numParamters + parameterIndex] = types[parameterIndex];
+          break;
+      }
+      }
+    }
+
+
+    ContinuousExampleSet table = new ContinuousExampleSet(data,
+        numRows,
+        numParameters,
+        0,
+        names,
+        null);
+
+    ParameterSpace space = createFromTable(table);
+
+    return space;
   }
 
   /**
@@ -88,7 +134,10 @@ public class ParameterSpaceImpl extends FloatExampleSet implements ParameterSpac
    * @return a double value representing the minimum possible value of the parameter.
    */
   public double getMinValue(int parameterIndex) {
-    return parameterMinValues[parameterIndex];
+    int tableIndex = parameterSubspaceIndices[parameterIndex];
+    int rowIndex   = 0;
+    int colIndex   = parameterSubspaceParameterIndices[parameterIndex];
+    return subspaceTables[tableIndex].getDouble(rowIndex, colIndex);
   }
 
   /**
@@ -97,7 +146,10 @@ public class ParameterSpaceImpl extends FloatExampleSet implements ParameterSpac
    * @return a double value representing the minimum possible value of the parameter.
    */
   public double getMaxValue(int parameterIndex) {
-    return parameterMaxValues[parameterIndex];
+    int tableIndex = parameterSubspaceIndices[parameterIndex];
+    int rowIndex   = 1;
+    int colIndex   = parameterSubspaceParameterIndices[parameterIndex];
+    return subspaceTables[tableIndex].getDouble(rowIndex, colIndex);
   }
 
   /**
@@ -106,30 +158,34 @@ public class ParameterSpaceImpl extends FloatExampleSet implements ParameterSpac
    * @return a double value representing the minimum possible value of the parameter.
    */
   public double getDefaultValue(int parameterIndex) {
-    return parameterDefaultValues[parameterIndex];
+    int tableIndex = parameterSubspaceIndices[parameterIndex];
+    int rowIndex   = 2;
+    int colIndex   = parameterSubspaceParameterIndices[parameterIndex];
+    return subspaceTables[tableIndex].getDouble(rowIndex, colIndex);
   }
 
   /**
-   * Set the minimum value of a parameter.
+   * Get the resolution of a parameter.
    * @param parameterIndex the index of the parameter of interest.
+   * @return a int value representing the number of intervals between the min and max parameter values.
    */
-  public void setMinValue(int parameterIndex, double value) {
+  public int getResolution(int parameterIndex) {
+    int tableIndex = parameterSubspaceIndices[parameterIndex];
+    int rowIndex   = 3;
+    int colIndex   = parameterSubspaceParameterIndices[parameterIndex];
+    return subspaceTables[tableIndex].getInt(rowIndex, colIndex);
   }
 
   /**
-   * Set the maximum value of a parameter.
+   * Get the type of a parameter.
    * @param parameterIndex the index of the parameter of interest.
-   * @param value the value of the parameter of interest.
+   * @return a int value representing the number of intervals between the min and max parameter values.
    */
-  public void setMaxValue(int parameterIndex, double value){
-  }
-
-  /**
-   * Set the default value of a parameter.
-   * @param parameterIndex the index of the parameter of interest.
-   * @param value the value of the parameter of interest.
-   */
-  public void setDefaultValue(int parameterIndex, double value){
+  public int getType(int parameterIndex) {
+    int tableIndex = parameterSubspaceIndices[parameterIndex];
+    int rowIndex   = 4;
+    int colIndex   = parameterSubspaceParameterIndices[parameterIndex];
+    return subspaceTables[tableIndex].getInt(rowIndex, colIndex);
   }
 
   /**
@@ -157,24 +213,6 @@ public class ParameterSpaceImpl extends FloatExampleSet implements ParameterSpac
    */
   public ParameterPoint getDefaultParameterPoint(){
     return null;
-  }
-
-  /**
-   * Get the type of a parameter.
-   * @param parameterIndex the index of the parameter of interest.
-   * @return a int value representing the number of intervals between the min and max parameter values.
-   */
-  public int getType(int parameterIndex) {
-    return resolutions[parameterIndex];
-  }
-
-  /**
-   * Get the resolution of a parameter.
-   * @param parameterIndex the index of the parameter of interest.
-   * @return a int value representing the number of intervals between the min and max parameter values.
-   */
-  public int getResolution(int parameterIndex) {
-    return resolutions[parameterIndex];
   }
 
   /**
@@ -219,6 +257,65 @@ public class ParameterSpaceImpl extends FloatExampleSet implements ParameterSpac
   public ParameterSpace getSubspace(int subspaceIndex) {
     //!!!
     return null;
+  }
+
+  /**
+   * Set the minimum value of a parameter.
+   * @param parameterIndex the index of the parameter of interest.
+   */
+  public void setMinValue(int parameterIndex, double value) {
+    int tableIndex = parameterSubspaceIndices[parameterIndex];
+    int rowIndex   = 0;
+    int colIndex   = parameterSubspaceParameterIndices[parameterIndex];
+    subspaceTables[tableIndex].setDouble(value, rowIndex, colIndex);
+  }
+
+  /**
+   * Set the maximum value of a parameter.
+   * @param parameterIndex the index of the parameter of interest.
+   * @param value the value of the parameter of interest.
+   */
+  public void setMaxValue(int parameterIndex, double value){
+    int tableIndex = parameterSubspaceIndices[parameterIndex];
+    int rowIndex   = 1;
+    int colIndex   = parameterSubspaceParameterIndices[parameterIndex];
+    subspaceTables[tableIndex].setDouble(value, rowIndex, colIndex);
+  }
+
+  /**
+   * Set the default value of a parameter.
+   * @param parameterIndex the index of the parameter of interest.
+   * @param value the value of the parameter of interest.
+   */
+  public void setDefaultValue(int parameterIndex, double value) {
+    int tableIndex = parameterSubspaceIndices[parameterIndex];
+    int rowIndex   = 2;
+    int colIndex   = parameterSubspaceParameterIndices[parameterIndex];
+    subspaceTables[tableIndex].setDouble(value, rowIndex, colIndex);
+  }
+
+  /**
+   * Set the resolution of a parameter.
+   * @param parameterIndex the index of the parameter of interest.
+   * @param value the resolution.
+   */
+  public void setResolution(int parameterIndex, int resolution) {
+    int tableIndex = parameterSubspaceIndices[parameterIndex];
+    int rowIndex   = 3;
+    int colIndex   = parameterSubspaceParameterIndices[parameterIndex];
+    subspaceTables[tableIndex].setInt(resolution, rowIndex, colIndex);
+  }
+
+  /**
+   * Set the type of a parameter.
+   * @param parameterIndex the index of the parameter of interest.
+   * @param value the type as defined in ColumnTypes().
+   */
+  public void setType(int parameterIndex, int type) {
+    int tableIndex = parameterSubspaceIndices[parameterIndex];
+    int rowIndex   = 4;
+    int colIndex   = parameterSubspaceParameterIndices[parameterIndex];
+    subspaceTables[tableIndex].setInt(type, rowIndex, colIndex);
   }
 
   /**

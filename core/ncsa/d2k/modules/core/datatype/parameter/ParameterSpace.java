@@ -34,7 +34,7 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
    * @param table the table representing the parameter space.
    * @return a ParameterSpace.
    */
-  public ParameterSpace createFromTable(Table table);
+  public ParameterSpace createFromTable(MutableTable table);
 
   /**
    * Instantiate a ParameterSpace from primative data types.
@@ -93,26 +93,6 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
    * @return a double value representing the minimum possible value of the parameter.
    */
   public double getDefaultValue(int parameterIndex);
-
-  /**
-   * Set the minimum value of a parameter.
-   * @param parameterIndex the index of the parameter of interest.
-   */
-  public void setMinValue(int parameterIndex, double value);
-
-  /**
-   * Set the maximum value of a parameter.
-   * @param parameterIndex the index of the parameter of interest.
-   * @param value the value of the parameter of interest.
-   */
-  public void setMaxValue(int parameterIndex, double value);
-
-  /**
-   * Set the default value of a parameter.
-   * @param parameterIndex the index of the parameter of interest.
-   * @param value the value of the parameter of interest.
-   */
-  public void setDefaultValue(int parameterIndex, double value);
 
   /**
    * Get the minimum values of all parameters returned as a ParamterPoint.
@@ -181,6 +161,40 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
    * @return a ParameterSpace which defines the indicated subspace.
    */
   public ParameterSpace getSubspace(int subspaceIndex);
+
+  /**
+   * Set the minimum value of a parameter.
+   * @param parameterIndex the index of the parameter of interest.
+   */
+  public void setMinValue(int parameterIndex, double value);
+
+  /**
+   * Set the maximum value of a parameter.
+   * @param parameterIndex the index of the parameter of interest.
+   * @param value the value of the parameter of interest.
+   */
+  public void setMaxValue(int parameterIndex, double value);
+
+  /**
+   * Set the default value of a parameter.
+   * @param parameterIndex the index of the parameter of interest.
+   * @param value the value of the parameter of interest.
+   */
+  public void setDefaultValue(int parameterIndex, double value);
+
+  /**
+   * Set the resolution of a parameter.
+   * @param parameterIndex the index of the parameter of interest.
+   * @param value the resolution.
+   */
+  public void setResolution(int parameterIndex, int resolution);
+
+  /**
+   * Set the type of a parameter.
+   * @param parameterIndex the index of the parameter of interest.
+   * @param value the type as defined in ColumnTypes().
+   */
+  public void setType(int parameterIndex, int type);
 
   /**
    * Join two ParameterSpaces to produce a single parameter space.

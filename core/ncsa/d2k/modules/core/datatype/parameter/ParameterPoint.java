@@ -12,10 +12,30 @@ Note: It is important that this be an Example so that additional layers
 
 */
 
-
 public interface ParameterPoint extends Example, java.io.Serializable {
 
   //static final long serialVersionUID = 2508941379956505568L;
+
+
+  /**
+   * Create a ParameterPoint from the information in the given table.
+   * Each column in the table represents a paramter.
+   * Row 1 is the values for all the parameter settings.
+   * @param table the table representing the parameter space.
+   * @return a ParameterPoint.
+   */
+  public ParameterPoint createFromTable(MutableTable table);
+
+  /**
+   * Create a ParameterPoint from primative data types.
+   * @param names the names of the paramters.
+   * @param values the values parameter settings.
+   * @param types the type as an integer as defined in ColumnTypes.
+   * @return a ParameterPoint.
+   */
+
+  public ParameterPoint createFromData(String [] names, double [] values);
+
 
   /**
    * Get the number of parameters that define the space.
@@ -29,13 +49,6 @@ public interface ParameterPoint extends Example, java.io.Serializable {
    * @return A string value representing the name of the parameter.
    */
   public String getName(int parameterIndex);
-
-  /**
-   * Get the resolution of a parameter.
-   * @param parameterIndex the index of the parameter of interest.
-   * @return An int value representing the number of intervals between the min and max parameter values.
-   */
-  public int getResolution(int parameterIndex);
 
   /**
    * Get the value of a parameter.
