@@ -1,18 +1,16 @@
-/*&%^1 Do not modify this section. */
 package ncsa.d2k.modules.core.discovery.ruleassociation.apriori;
+
+
 
 import java.io.*;
 import java.util.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.discovery.ruleassociation.*;
-/*#end^1 Continue editing. ^#&*/
-/*&%^2 Do not modify this section. */
 /**
 	AprioriModule.java
 
 */
-public class AprioriModule extends ncsa.d2k.core.modules.ComputeModule
-/*#end^2 Continue editing. ^#&*/
-		     {
+public class AprioriModule extends ncsa.d2k.core.modules.ComputeModule{
 
 	/** the names of the various items. */
 	String [] nameList;
@@ -65,7 +63,7 @@ public class AprioriModule extends ncsa.d2k.core.modules.ComputeModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "      ITem set object.   ";
+			case 0: return "This object contains all the itemsets.";
 			default: return "No such input";
 		}
 	}
@@ -85,7 +83,7 @@ public class AprioriModule extends ncsa.d2k.core.modules.ComputeModule
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "      Each rull consists of a list of distinct item ids followed by a confidence and a support value. The support is the percentage of the sets that contained that combination, the confidence is, well , we don't know what that is.   ";
+			case 0: return "Each rull consists of a list of distinct item ids followed by a confidence     and a support value. The support is the percentage of the sets that     contained that combination, the confidence is provided by a different     module.";
 			default: return "No such output";
 		}
 	}
@@ -104,11 +102,21 @@ public class AprioriModule extends ncsa.d2k.core.modules.ComputeModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<html>  <head>      </head>  <body>    This module will take a number of sets and a hashtable as it's inputs. The     sets is a list of co-occurances, for example, a list purchases from a     store, where each purchase entry (a set) is a list of items purchased.     This module will find rules that define a high probability that     combinations of items will be purchased together.  </body></html>";
+		return "<p>      Overview: This module will find all the itemsets that are frequent in       the given"+
+			" data.    </p>    <p>      Detailed Description: Given the ItemSets as an input, find all the"+
+			" <i>       frequent item sets</i>, that is all combinations of items that occur in       more"+
+			" than a user specified percentage(called support) of the itemsets.       For more information"+
+			" on how the Apriori rule associated algorithm works,       see &quot;Fast Algorithms for Mining"+
+			" Association Rules&quot;, Agrawal et al., 1994.    </p>    <p>      Scalability: This module"+
+			" will create an array of integers to contain the       indexes of the items in each frequent"+
+			" itemset it finds. It may be       computationally intensive, and scales with the size of the"+
+			" frequent       itemsets it finds and the number of itemsets to search. The user can       limit"+
+			" the size of the frequent itemsets and the support via the       properties editor.    </p>";
 	}
 
 	/** this property is the min acceptable support score. */
-	public void setMinimumSupport (double i) {
+	public void setMinimumSupport (double i) throws Exception {
+		if (i > 1.0 || i < 0.0) throw new Exception ("Support must range from 0.0 to 1.0");
 		score = i;
 	}
 	public double getMinimumSupport () {
@@ -135,6 +143,18 @@ public class AprioriModule extends ncsa.d2k.core.modules.ComputeModule
 	}
 	public int getMaxRuleSize () {
 		return this.maxSize;
+	}
+
+	/**
+	 * Return a list of the property descriptions.
+	 * @return a list of the property descriptions.
+	 */
+	public PropertyDescription [] getPropertiesDescriptions () {
+		PropertyDescription [] pds = new PropertyDescription [3];
+		pds[2] = new PropertyDescription ("debug", "Debug", "Generate debugging output in the console.");
+		pds[1] = new PropertyDescription ("maxRuleSize", "Maximum Frequent Set Size", "The maximum number of items in a frequent item set.");
+		pds[0] = new PropertyDescription ("minimumSupport", "Support", "This is the minimum percent of the examples that must contain an itemset before it can be considered frequent. Values range from 0 to 1, and should be expressed in decimal notation.");
+		return pds;
 	}
 
 	/**
@@ -226,7 +246,7 @@ public class AprioriModule extends ncsa.d2k.core.modules.ComputeModule
 					return false;
 
 			return true;
-    	}
+		}
 
 	}
 
@@ -348,7 +368,7 @@ nextrule:	for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.length;
 							FastHashIntArray darn = new FastHashIntArray (newRule);
 							dups.put (darn, darn);
 							results.add (new LocalResultSet (rules[ruleCount],
-								    new MutableIntegerArray(tmp)));
+									new MutableIntegerArray(tmp)));
 							rules[ruleCount] = newRule;
 						} else
 							rules[ruleCount] = null;
@@ -427,7 +447,7 @@ nextrule:	for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.length;
 		// get the item names, and the sets, from these num items and num examples.
 		if (documentMap == null) {
 			done = false;
-		    ItemSets iss = (ItemSets)this.pullInput(0);
+			ItemSets iss = (ItemSets)this.pullInput(0);
 			sNames = iss.unique;
 			targetIndices = iss.outputIndices;
 			names = sNames;
@@ -477,7 +497,7 @@ nextrule:	for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.length;
 			}
 			itemFlags = null;
 			iss.userData = documentMap;
-		    attributeCount = 2; // number attributes to include in the rule		}
+			attributeCount = 2; // number attributes to include in the rule		}
 		}
 
 		// The rules themselves will actually be stored in a vector where
@@ -562,7 +582,7 @@ nextrule:	for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.length;
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "item sets";
+				return "Item Sets";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -575,7 +595,7 @@ nextrule:	for (int ruleIndex = 0, itemIndex = 0; itemIndex < items.length;
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "rules";
+				return "Rules";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}

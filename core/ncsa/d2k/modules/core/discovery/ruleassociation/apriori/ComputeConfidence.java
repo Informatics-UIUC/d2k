@@ -1,21 +1,15 @@
-/*&%^1 Do not modify this section. */
-
 package ncsa.d2k.modules.core.discovery.ruleassociation.apriori;
 
 
 import java.io.*;
 import java.util.*;
+import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 
-/*#end^1 Continue editing. ^#&*/
-/*&%^2 Do not modify this section. */
 /**
 	ComputeConfidence.java
 */
-public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule
-/*#end^2 Continue editing. ^#&*/
-
-{
+public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 
 	/**
 		This method returns the description of the various inputs.
@@ -23,9 +17,9 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule
 	*/
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "      the itemset contains the examples   ";
-			case 1: return "      Rules generated.  ";
-			case 2: return "      These are the target items we are trying to predict, if there are any.  ";
+			case 0: return "The itemset contains the all the itemsets in the original data.";
+			case 1: return "These are the frequent item sets for which confidence must be computed.";
+			case 2: return "<p>      This is a list of the names of those items that are the targets of       interest.    </p>";
 			default: return "No such input";
 		}
 	}
@@ -45,7 +39,7 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule
 	*/
 	public String getOutputInfo (int index) {
 		switch (index) {
-			case 0: return "      The resulting rules with a high enough confidence.   ";
+			case 0: return "<p>      Each entry in this array contains a frequent item set with the       confidence value append to the end of the array.    </p>";
 			default: return "No such output";
 		}
 	}
@@ -64,7 +58,13 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<paragraph>  <head>  </head>  <body>    <p>          </p>  </body></paragraph>";
+		return "<p>      Overview: Given a list of frequent item sets, compute the percentage of       examples"+
+			" that contain the first items that also contain the last item.       This value is called the"+
+			" confidence.    </p>    <p>      Scalability: This module will search all the items sets to"+
+			" compute the       confidence for each frequent item set. This is done quite efficiently,  "+
+			"     so this module should never take as long as the apriori module does. It       also allocates"+
+			" no additional memory, the confidence is stored at the end       of the frequent item set, space"+
+			" is already allocated there for it.    </p>";
 	}
 
 	private boolean debug = true;
@@ -74,7 +74,22 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule
 	/** confidence in the result. */
 	float confidence;
 	public float getConfidence () {return confidence; }
-	public void setConfidence (float newConfidence) {confidence = newConfidence; }
+	public void setConfidence (float newConfidence) throws Exception {
+		if (newConfidence > 1.0 || newConfidence < 0.0)
+			throw new Exception ("Confidence must range from 0.0 to 1.0");
+		confidence = newConfidence;
+	}
+
+	/**
+	 * Return a list of the property descriptions.
+	 * @return a list of the property descriptions.
+	 */
+	public PropertyDescription [] getPropertiesDescriptions () {
+		PropertyDescription [] pds = new PropertyDescription [2];
+		pds[1] = new PropertyDescription ("debug", "Debug", "Generate debugging output in the console.");
+		pds[0] = new PropertyDescription ("confidence", "Confidence", "The percentage of the examples that contain the antecedent to the rule that must also contain the target to be considered. Values range from 0.0 to 1.0.");
+		return pds;
+	}
 
 	/** If this field exists, it contains the name of the item that is the preferred target. */
 	String  targetItem = "";
@@ -107,7 +122,7 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule
 		int numExamples = iss.numExamples;
 		int numRules = rules.length;
 		int numItems = items.length;
-     	int [] targetIndex = null;
+		int [] targetIndex = null;
 
 		// What are the outputs.
 		if (this.inputFlags[2] != 0) {
@@ -137,9 +152,9 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule
 					targetIndex[i] = ((int[])list.get (i))[1];
 			}
 		}
-     	else
-	     	if (targetItem.length () > 0) {
-	     		Iterator keys = names.keySet().iterator();
+		else
+			if (targetItem.length () > 0) {
+				Iterator keys = names.keySet().iterator();
 				Iterator indxs = names.values().iterator();
 				ArrayList list = new ArrayList();
 
@@ -158,7 +173,7 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule
 					for (int i = 0 ; i < size ; i++)
 						targetIndex[i] = ((int[])list.get (i))[1];
 				}
-	     	}
+			}
 
 		// get the bit map indicating what items were bought for each example.
 		boolean [][] itemFlags = iss.getItemFlags();
@@ -189,9 +204,9 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule
 
 				if (targetIndex != null) {
 					int tgts;
-				    for (tgts = 0 ; tgts < targetIndex.length ; tgts++)
+					for (tgts = 0 ; tgts < targetIndex.length ; tgts++)
 						if (newRule[newRule.length-3] == targetIndex [tgts])
-						    break;
+							break;
 					if (tgts == targetIndex.length)
 						continue;
 				}
@@ -223,7 +238,7 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule
 				// Here we will have the confidence.
 				if (((double)hits/(double)total) >= confidence) {
 					newRule[newRule.length-1] =
-						    (int)(((double)hits/(double)total) * 1000000.0);
+							(int)(((double)hits/(double)total) * 1000000.0);
 					finalRules.addElement (newRule);
 					newRule = null;
 				}
@@ -241,7 +256,7 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule
 
 		}
 		System.out.println ("ComputeConfidence, rules found : "+finalRules.size()+":"+(
-			    System.currentTimeMillis()-start));
+				System.currentTimeMillis()-start));
 
 		int rsize = finalRules.size();
 		if (rsize > 0) {
@@ -262,7 +277,7 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "";
+		return "Compute Confidence";
 	}
 
 	/**
@@ -273,11 +288,11 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule
 	public String getInputName(int index) {
 		switch(index) {
 			case 0:
-				return "itemset";
+				return "Itemset";
 			case 1:
-				return "rules";
+				return "Rules";
 			case 2:
-				return "targets";
+				return "Targets";
 			default: return "NO SUCH INPUT!";
 		}
 	}
@@ -290,7 +305,7 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule
 	public String getOutputName(int index) {
 		switch(index) {
 			case 0:
-				return "confident rules";
+				return "Confident Rules";
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
