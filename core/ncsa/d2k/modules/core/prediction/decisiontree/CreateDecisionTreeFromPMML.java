@@ -9,6 +9,7 @@ import org.dom4j.*;
 import org.dom4j.io.*;
 
 import java.util.*;
+import java.io.*;
 
 public class CreateDecisionTreeFromPMML extends InputModule implements DecisionTreePMMLTags {
   HashMap datafields;
@@ -20,7 +21,8 @@ public class CreateDecisionTreeFromPMML extends InputModule implements DecisionT
     uniqueoutputs = new ArrayList();
 
     SAXReader reader = new SAXReader(false);
-    Document document = reader.read(pmml);
+    FileInputStream fis = new FileInputStream(pmml);
+    Document document = reader.read(fis);
 
     Node compound = document.selectSingleNode("//CompoundPredicate");
     if (compound != null)
