@@ -196,13 +196,18 @@ public class DelimitedFileParser implements FlatFileParser {
 
         // read through the file to count the number of rows, columns, and find
         // the delimiter
-        try {
+        /*try {
             scanFile();
         }
         catch(Exception e) {
-        }
+        }*/
 
         setDelimiter(delim);
+        this.scanRowsCols();
+
+        char[] ar = {delim};
+        System.out.println("MY DELIM: /"+new String(ar)+"/");
+
         lineReader = new LineNumberReader(new FileReader(file));
 
         // now read in the types, scalar, in out rows, labels
@@ -483,6 +488,8 @@ public class DelimitedFileParser implements FlatFileParser {
             delimiterFound = true;
         }
 
+        System.out.println("My DELIM: "+delimiterFound);
+
         if(!delimiterFound) {
             // OK, that didn't work. Lets trim the strings and see if it will work the.
             // read the file in one row at a time
@@ -564,10 +571,15 @@ public class DelimitedFileParser implements FlatFileParser {
                 throw new IOException("No delimiter could be found.");
         }
 
+        scanRowsCols();
+    }
+
+    private void scanRowsCols() throws FileNotFoundException, IOException {
         int nr = 0;
         int nc = 0;
 
-        reader = new BufferedReader (new FileReader (file));
+        BufferedReader reader = new BufferedReader (new FileReader (file));
+        String line;
 
         // read the file in one row at a time
         while ((line = reader.readLine ()) != null) {
@@ -584,7 +596,6 @@ public class DelimitedFileParser implements FlatFileParser {
                 blanks[i][j] = false;
         }
     }
-
 
     /**
      * This method will search the document, counting the number of each
