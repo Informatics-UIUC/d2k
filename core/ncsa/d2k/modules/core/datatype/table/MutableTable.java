@@ -7,7 +7,9 @@ import java.util.*;
  */
 public interface MutableTable extends Table {
 
-static final long serialVersionUID = 1505481703513638163L;
+//static final long serialVersionUID = 1505481703513638163L;
+
+	static final long serialVersionUID = 3803628206682571278L;
 
 	/**
 	 * Add a row to the end of this Table, initialized with integer data.
@@ -725,4 +727,46 @@ static final long serialVersionUID = 1505481703513638163L;
      @returns an ArrayList containing the Transformation which transformed the data.
      */
     public ArrayList getTransformations ();
+
+	/**
+	 * Set the value at (row, col) to be the missing value for that column.
+	 * @param row the row index
+	 * @param col the column index
+	 */
+	public void setValueToMissing(int row, int col);
+
+	/**
+	 * Set the value at (row, col) to be the empty value for that column.
+	 * @param row the row index
+	 * @param col the column index
+	 */
+	public void setValueToEmpty(int row, int col);
+
+	/**
+	 * Set the value used to signify a nominal empty value for col.
+	 * @param val the new value
+	 * @param col the column index
+	 */
+	public void setNominalEmptyValue(String val, int col);
+
+	/**
+	 * Set the value used to signify a scalar missing value for col.
+	 * @param val the new value
+	 * @param col the column index
+	 */
+	public void setScalarMissingValue(Number val, int col);
+
+	/**
+	 * Set the value used to signify a nominal missing value for col.
+	 * @param val the new value
+	 * @param col the column index
+	 */
+	public void setNominalMissingValue(String val, int col);
+
+	/**
+	 * Set the value used to signify a scalar empty value for col.
+	 * @param val the new value
+	 * @param col the column index
+	 */
+	public void setScalarEmptyValue(Number val, int col);
 }

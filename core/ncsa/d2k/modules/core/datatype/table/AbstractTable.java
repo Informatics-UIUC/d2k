@@ -5,7 +5,8 @@ package ncsa.d2k.modules.core.datatype.table;
  */
 public abstract class AbstractTable implements Table {
 
- static final long serialVersionUID = 7799682534587814277L;
+ //static final long serialVersionUID = 7799682534587814277L;
+	static final long serialVersionUID = 2147035826260285698L;
 
 	private String label;
 	private String comment;

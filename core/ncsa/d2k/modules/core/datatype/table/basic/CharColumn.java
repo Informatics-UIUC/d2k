@@ -13,7 +13,7 @@ import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
  */
 final public class CharColumn extends AbstractColumn implements TextualColumn {
 
-	static final long serialVersionUID = 4400422800710542291L;
+	//static final long serialVersionUID = 4400422800710542291L;
 
     /** the internal representation of this Column */
     private char[] internal = null;
@@ -33,10 +33,10 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
      */
     public CharColumn (int capacity) {
         internal = new char[capacity];
-        //byte[] ty = new byte[0];
-        //setType(ty);
         setIsNominal(true);
         type = ColumnTypes.CHAR;
+		//setScalarMissingValue(new Integer(Integer.MIN_VALUE));
+		//setScalarEmptyValue(new Integer(Integer.MAX_VALUE));
     }
 
     /**
@@ -46,9 +46,9 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
      */
     public CharColumn (char[] newInternal) {
         this.setInternal(newInternal);
-        //byte[] ty = new byte[0];
-        //setType(ty);
         setIsNominal(true);
+		//setScalarMissingValue(new Integer(Integer.MIN_VALUE));
+		//setScalarEmptyValue(new Integer(Integer.MAX_VALUE));
     }
 
     /**
@@ -78,7 +78,10 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
                 bac.setChar(getChar(i), i);
             bac.setLabel(getLabel());
             bac.setComment(getComment());
-            //bac.setType(getType());
+			bac.setNominalEmptyValue(getNominalEmptyValue());
+			bac.setNominalMissingValue(getNominalMissingValue());
+			bac.setScalarEmptyValue(getScalarEmptyValue());
+			bac.setScalarMissingValue(getScalarMissingValue());
             return  bac;
         }
     }
@@ -131,13 +134,13 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
     }
 
     /**
-     * Returns 0.
+     * Calls getInt() and casts the return value to a short.
      *
      * @param pos            unused
      * @return               0 as a <code>short</code>
      */
     public short getShort (int pos) {
-        return (short)0;
+        return (short)getInt(pos);
     }
 
     /**
@@ -174,40 +177,44 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
     }
 
     /**
-     * Returns <code>Double.NaN</code>.
+     * Calls getInt() and casts the return value to a double.
      *
-     * @param pos            unused
-     * @return               <code>Double.NaN</code>
+     * @param pos
+     * @return
      */
     public double getDouble (int pos) {
-        return Double.NaN;
+        return (double)getInt(pos);
     }
 
     /**
-     * Does nothing.
+	 * Cases newEntry to an int and calls setInt.
      *
-     * @param newEntry       unused
-     * @param pos            unused
+     * @param newEntry
+     * @param pos
      */
-    public void setDouble (double newEntry, int pos) { }
+    public void setDouble (double newEntry, int pos) {
+		setInt((int)newEntry, pos);
+	}
 
     /**
-     * Returns <code>Float.NaN</code>.
+     * Calls getInt and returns the value as a float.
      *
      * @param pos            unused
      * @return               <code>Float.NaN</code>
      */
     public float getFloat (int pos) {
-        return Float.NaN;
+        return (float)getInt(pos);
     }
 
     /**
-     * Does nothing.
+     * Casts newEntry to an int and calls setInt()
      *
-     * @param newEntry       unused
-     * @param pos            unused
+     * @param newEntry
+     * @param pos
      */
-    public void setFloat (float newEntry, int pos) { }
+    public void setFloat (float newEntry, int pos) {
+		setInt((int)newEntry, pos);
+	}
 
     /**
      * Gets a <code>byte</code> array whose first element is the result
@@ -380,7 +387,11 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
         @return this ByteArrayColumn's number of entries
      */
     public int getNumEntries () {
-        return internal.length;
+	    int numEntries = 0;
+        for (int i = 0; i < internal.length; i++)
+            if (!isValueMissing(i) && !isValueEmpty(i))
+                numEntries++;
+        return  numEntries;
     }
 
     /**
@@ -441,12 +452,16 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
         @return a subset of this Column
      */
     public Column getSubset (int pos, int len) {
-        byte[][] subset = new byte[len][];
+        char[] subset = new char[len];
         System.arraycopy(internal, pos, subset, 0, len);
-        ByteArrayColumn bac = new ByteArrayColumn(subset);
+        CharColumn bac = new CharColumn(subset);
         bac.setLabel(getLabel());
         bac.setComment(getComment());
-        //bac.setType(getType());
+		bac.setNominalEmptyValue(getNominalEmptyValue());
+		bac.setNominalMissingValue(getNominalMissingValue());
+		bac.setScalarEmptyValue(getScalarEmptyValue());
+		bac.setScalarMissingValue(getScalarMissingValue());
+
         return  bac;
     }
 
@@ -568,6 +583,11 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
         bac.setLabel(getLabel());
         //bac.setType(getType());
         bac.setComment(getComment());
+		bac.setNominalEmptyValue(getNominalEmptyValue());
+		bac.setNominalMissingValue(getNominalMissingValue());
+		bac.setScalarEmptyValue(getScalarEmptyValue());
+		bac.setScalarMissingValue(getScalarMissingValue());
+
         return  bac;
     }
 
@@ -608,7 +628,7 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
      * @param b2 the second byte array to compare
      * @return -1, 0, 1
      */
-    private int compareBytes (byte[] b1, byte[] b2) {
+    private static int compareBytes (byte[] b1, byte[] b2) {
         if (b1 == null) {
             if (b2 == null)
                 return  0;
@@ -652,18 +672,19 @@ final public class CharColumn extends AbstractColumn implements TextualColumn {
         @param indices the int array of remove indices
      */
     public void removeRowsByIndex (int[] indices) {
-        HashMap toRemove = new HashMap(indices.length);
+        HashSet toRemove = new HashSet(indices.length);
         for (int i = 0; i < indices.length; i++) {
             Integer id = new Integer(indices[i]);
-            toRemove.put(id, id);
+            toRemove.add(id);
         }
         char newInternal[] = new char[internal.length - indices.length];
         int newIntIdx = 0;
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
-            Integer x = (Integer)toRemove.get(new Integer(i));
+            //Integer x = (Integer)toRemove.get(new Integer(i));
             // if this row is not in the list, copy it into the new internal
-            if (x == null) {
+            //if (x == null) {
+			if(!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
                 newIntIdx++;
             }

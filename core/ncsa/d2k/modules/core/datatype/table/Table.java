@@ -42,7 +42,9 @@ package ncsa.d2k.modules.core.datatype.table;
 */
 public interface Table extends java.io.Serializable {
 
-	static final long serialVersionUID = 2508941379956505568L;
+	//static final long serialVersionUID = 2508941379956505568L;
+
+	static final long serialVersionUID = -8081185634463160785L;
 
     /**
 	 * Get an Object from the table.
@@ -304,4 +306,49 @@ public interface Table extends java.io.Serializable {
 	  * @return This object as an ExampleTable
 	  */
 	 public ExampleTable toExampleTable();
+
+	/**
+	 * Return true if the value at (row, col) is a missing value, false otherwise.
+	 * @param row the row index
+	 * @param col the column index
+	 * @return true if the value is missing, false otherwise
+	 */
+	public boolean isValueMissing(int row, int col);
+
+	/**
+	 * Return true if the value at (row, col) is an empty value, false otherwise.
+	 * @param row the row index
+	 * @param col the column index
+	 * @return true if the value is empty, false otherwise
+	 */
+	public boolean isValueEmpty(int row, int col);
+
+	/**
+	 * Return the value used to signify a scalar missing value in col
+	 * @param col the column index
+	 * @return the value used to signify a scalar missing value in col
+	 */
+	public Number getScalarMissingValue(int col);
+
+	/**
+	 * Return the value used to signify a nominal missing value in col
+	 * @param col the column index
+	 * @return the value used to signify a nominal missing value in col
+	 */
+	public String getNominalMissingValue(int col);
+
+	/**
+	 * Return the value used to signify a scalar empty value in col
+	 * @param col the column index
+	 * @return the value used to signify a scalar empty value in col
+	 */
+	public Number getScalarEmptyValue(int col);
+
+	/**
+	 * Return the value used to signify a nominal empty value in col
+	 * @param col the column index
+	 * @return the value used to signify a nominal empty value in col
+	 */
+	public String getNominalEmptyValue(int col);
+
 }/*Table*/

@@ -20,7 +20,7 @@ final public class ObjectColumn extends AbstractColumn {
 
 	static final long serialVersionUID = -449781262751749846L;
 
-    private static final Object emptyValue = null;
+    //private static final Object emptyValue = null;
 
     /** holds ObjectColumn's enternal data rep */
     private Object[] internal = null;
@@ -77,6 +77,10 @@ final public class ObjectColumn extends AbstractColumn {
                 newCol.setObject(internal[i], i);
             newCol.setLabel(getLabel());
             newCol.setComment(getComment());
+			newCol.setScalarEmptyValue(getScalarEmptyValue());
+			newCol.setScalarMissingValue(getScalarMissingValue());
+			newCol.setNominalEmptyValue(getNominalEmptyValue());
+			newCol.setNominalMissingValue(getNominalMissingValue());
             return  newCol;
         }
     }
@@ -120,7 +124,7 @@ final public class ObjectColumn extends AbstractColumn {
     public int getNumEntries () {
         int numEntries = 0;
         for (int i = 0; i < internal.length; i++)
-            if (internal[i] != emptyValue)
+            if (!isValueMissing(i) && !isValueEmpty(i))
                 numEntries++;
         return  numEntries;
     }
@@ -178,6 +182,10 @@ final public class ObjectColumn extends AbstractColumn {
         ObjectColumn oc = new ObjectColumn(subset);
         oc.setLabel(getLabel());
         oc.setComment(getComment());
+		oc.setScalarEmptyValue(getScalarEmptyValue());
+		oc.setScalarMissingValue(getScalarMissingValue());
+		oc.setNominalEmptyValue(getNominalEmptyValue());
+		oc.setNominalMissingValue(getNominalMissingValue());
         return  oc;
     }
 
@@ -584,6 +592,10 @@ final public class ObjectColumn extends AbstractColumn {
         ObjectColumn oc = new ObjectColumn(newInternal);
         oc.setComment(getComment());
         oc.setLabel(getLabel());
+		oc.setScalarEmptyValue(getScalarEmptyValue());
+		oc.setScalarMissingValue(getScalarMissingValue());
+		oc.setNominalEmptyValue(getNominalEmptyValue());
+		oc.setNominalMissingValue(getNominalMissingValue());
         return  oc;
     }
 
@@ -598,14 +610,24 @@ final public class ObjectColumn extends AbstractColumn {
     public int compareRows (Object element, int pos) {
         Object d1 = element;
         Object d2 = internal[pos];
-        if (d1 == emptyValue) {
-            if (d2 == emptyValue)
+        if (d1 == nominalEmptyValue) {
+            if (d2 == nominalEmptyValue)
                 return  0;
             else
                 return  -1;
         }
-        else if (d2 == emptyValue)
+        else if (d2 == nominalEmptyValue)
             return  1;
+
+        if (d1 == nominalMissingValue) {
+            if (d2 == nominalMissingValue)
+                return  0;
+            else
+                return  -1;
+        }
+        else if (d2 == nominalMissingValue)
+            return  1;
+
         if (d1 == d2)
             return  0;
         else
@@ -621,7 +643,8 @@ final public class ObjectColumn extends AbstractColumn {
      @return a value representing the relationship- >, <, or == 0
      */
     public int compareRows (int pos1, int pos2) {
-        Object d1 = internal[pos1];
+		return compareRows(getObject(pos1), pos2);
+        /*Object d1 = internal[pos1];
         Object d2 = internal[pos2];
         if (d1 == emptyValue) {
             if (d2 == emptyValue)
@@ -635,6 +658,8 @@ final public class ObjectColumn extends AbstractColumn {
             return  0;
         else
             return  2;
+		*/
+
     }
 
     //////////////////////////////////////

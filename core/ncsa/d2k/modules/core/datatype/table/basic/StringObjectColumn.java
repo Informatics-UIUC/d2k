@@ -78,7 +78,11 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
             }
             newCol.setLabel(getLabel());
             newCol.setComment(getComment());
-         newCol.type = getType();
+         	newCol.type = getType();
+			newCol.setScalarEmptyValue(getScalarEmptyValue());
+			newCol.setScalarMissingValue(getScalarMissingValue());
+			newCol.setNominalEmptyValue(getNominalEmptyValue());
+			newCol.setNominalMissingValue(getNominalMissingValue());
             return  newCol;
         }
     }
@@ -366,6 +370,10 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
         sc.setLabel(getLabel());
         sc.setComment(getComment());
       sc.type = getType();
+		sc.setScalarEmptyValue(getScalarEmptyValue());
+		sc.setScalarMissingValue(getScalarMissingValue());
+		sc.setNominalEmptyValue(getNominalEmptyValue());
+		sc.setNominalMissingValue(getNominalMissingValue());
         return  sc;
     }
 
@@ -491,7 +499,11 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
         StringObjectColumn sc = new StringObjectColumn(newInternal);
         sc.setLabel(getLabel());
         sc.setComment(getComment());
-      sc.type = getType();
+      	sc.type = getType();
+		sc.setScalarEmptyValue(getScalarEmptyValue());
+		sc.setScalarMissingValue(getScalarMissingValue());
+		sc.setNominalEmptyValue(getNominalEmptyValue());
+		sc.setNominalMissingValue(getNominalMissingValue());
         return  sc;
     }
 
@@ -572,18 +584,19 @@ final public class StringObjectColumn extends AbstractColumn implements TextualC
      @param indices the int array of remove indices
      */
     public void removeRowsByIndex (int[] indices) {
-        HashMap toRemove = new HashMap(indices.length);
+        HashSet toRemove = new HashSet(indices.length);
         for (int i = 0; i < indices.length; i++) {
             Integer id = new Integer(indices[i]);
-            toRemove.put(id, id);
+            toRemove.add(id);
         }
         String newInternal[] = new String[internal.length - indices.length];
         int newIntIdx = 0;
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
-            Integer x = (Integer)toRemove.get(new Integer(i));
+            //Integer x = (Integer)toRemove.get(new Integer(i));
             // if this row is not in the list, copy it into the new internal
-            if (x == null) {
+            //if (x == null) {
+			if(!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
                 newIntIdx++;
             }

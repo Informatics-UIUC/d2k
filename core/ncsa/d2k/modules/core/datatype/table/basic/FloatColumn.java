@@ -16,10 +16,10 @@ import java.util.*;
  */
 final public class FloatColumn extends AbstractColumn implements NumericColumn {
 
-	static final long serialVersionUID = 7079197888923314281L;
+	//static final long serialVersionUID = 7079197888923314281L;
+	static final long serialVersionUID = 8058798293651032173L;
 
     private float min, max;
-    private float emptyValue = Float.MIN_VALUE;
 
     /** holds FloatColumn's internal data rep */
     private float[] internal = null;
@@ -37,8 +37,12 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
      */
     public FloatColumn (int capacity) {
         internal = new float[capacity];
-      setIsScalar(true);
-      type = ColumnTypes.FLOAT;
+      	setIsScalar(true);
+      	type = ColumnTypes.FLOAT;
+	  	setScalarMissingValue(new Float(Float.NEGATIVE_INFINITY));
+	  	setScalarEmptyValue(new Float(Float.POSITIVE_INFINITY));
+		setNominalMissingValue(Float.toString(Float.NEGATIVE_INFINITY));
+		setNominalEmptyValue(Float.toString(Float.POSITIVE_INFINITY));
     }
 
     /**
@@ -46,9 +50,13 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
     * @param vals the initial values stored in this column
      */
     public FloatColumn (float[] vals) {
-      internal = vals;
-      setIsScalar(true);
-      type = ColumnTypes.FLOAT;
+    	internal = vals;
+    	setIsScalar(true);
+    	type = ColumnTypes.FLOAT;
+		setScalarMissingValue(new Float(Float.NEGATIVE_INFINITY));
+		setScalarEmptyValue(new Float(Float.POSITIVE_INFINITY));
+		setNominalMissingValue(Float.toString(Float.NEGATIVE_INFINITY));
+		setNominalEmptyValue(Float.toString(Float.POSITIVE_INFINITY));
     }
 
     /**
@@ -76,6 +84,10 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
                 fc.setFloat(internal[i], i);
             fc.setLabel(getLabel());
             fc.setComment(getComment());
+			fc.setScalarEmptyValue(getScalarEmptyValue());
+			fc.setScalarMissingValue(getScalarMissingValue());
+			fc.setNominalEmptyValue(getNominalEmptyValue());
+			fc.setNominalMissingValue(getNominalMissingValue());
             return  fc;
         }
     }
@@ -90,7 +102,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
     public int getNumEntries () {
         int numEntries = 0;
         for (int i = 0; i < internal.length; i++)
-            if (internal[i] != emptyValue)
+            if (!isValueMissing(i) && !isValueEmpty(i))
                 numEntries++;
         return  numEntries;
     }
@@ -144,7 +156,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
      * Sets the value which indicates an empty entry.
      * This can by any subclass of Number
      * @param emptyVal the value to which an empty entry is set
-     */
+     /
     public void setEmptyValue (Number emptyVal) {
         emptyValue = ((Number)emptyVal).floatValue();
     }
@@ -152,7 +164,7 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
     /**
      * Gets the value which indicates an empty entry.
      * @return the value of an empty entry wrapped in a subclass of Number
-     */
+     /
     public Number getEmptyValue () {
         return  new Float(emptyValue);
     }
@@ -164,10 +176,12 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
     protected void initRange () {
         max = min = internal[0];
         for (int i = 1; i < internal.length; i++) {
-            if (internal[i] > max)
-                max = internal[i];
-            if (internal[i] < min)
-                min = internal[i];
+			if(!isValueMissing(i) && !isValueEmpty(i)) {
+            	if (internal[i] > max)
+                	max = internal[i];
+            	if (internal[i] < min)
+                	min = internal[i];
+			}
         }
     }
 
@@ -213,6 +227,10 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
         FloatColumn fc = new FloatColumn(subset);
         fc.setLabel(getLabel());
         fc.setComment(getComment());
+		fc.setScalarEmptyValue(getScalarEmptyValue());
+		fc.setScalarMissingValue(getScalarMissingValue());
+		fc.setNominalEmptyValue(getNominalEmptyValue());
+		fc.setNominalMissingValue(getNominalMissingValue());
         //fc.setType(getType());
         return  fc;
     }
@@ -583,6 +601,10 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
         FloatColumn fc = new FloatColumn(newInternal);
         fc.setLabel(getLabel());
         fc.setComment(getComment());
+		fc.setScalarEmptyValue(getScalarEmptyValue());
+		fc.setScalarMissingValue(getScalarMissingValue());
+		fc.setNominalEmptyValue(getNominalEmptyValue());
+		fc.setNominalMissingValue(getNominalMissingValue());
         return  fc;
     }
 
@@ -596,14 +618,24 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
     public int compareRows (Object element, int pos) {
         float d1 = ((Number)element).floatValue();
         float d2 = internal[pos];
-        if (d1 == emptyValue) {
-            if (d2 == emptyValue)
+        if (d1 == scalarEmptyValue) {
+            if (d2 == scalarEmptyValue)
                 return  0;
             else
                 return  -1;
         }
-        else if (d2 == emptyValue)
+        else if (d2 == scalarEmptyValue)
             return  1;
+
+		if(d1 == scalarMissingValue) {
+			if(d2 == scalarMissingValue)
+				return 0;
+			else
+				return -1;
+		}
+		else if(d2 == scalarMissingValue)
+			return 1;
+
         if (d1 > d2)
             return  1;
         else if (d1 < d2)
@@ -621,14 +653,24 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
     public int compareRows (int pos1, int pos2) {
         float d1 = internal[pos1];
         float d2 = internal[pos2];
-        if (d1 == emptyValue) {
-            if (d2 == emptyValue)
+        if (d1 == scalarEmptyValue) {
+            if (d2 == scalarEmptyValue)
                 return  0;
             else
                 return  -1;
         }
-        else if (d2 == emptyValue)
+        else if (d2 == scalarEmptyValue)
             return  1;
+
+		if(d1 == scalarMissingValue) {
+			if(d2 == scalarMissingValue)
+				return 0;
+			else
+				return -1;
+		}
+		else if(d2 == scalarMissingValue)
+			return 1;
+
         if (d1 > d2)
             return  1;
         else if (d1 < d2)
@@ -746,5 +788,21 @@ final public class FloatColumn extends AbstractColumn implements NumericColumn {
                 return  j;
         }
     }
+
+	public void setValueToMissing(int row) {
+		setDouble(scalarMissingValue, row);
+	}
+
+	public void setValueToEmpty(int row) {
+		setDouble(scalarEmptyValue, row);
+	}
+
+	public boolean isValueMissing(int row) {
+		return getDouble(row) == scalarMissingValue;
+	}
+
+	public boolean isValueEmpty(int row) {
+		return getDouble(row) == scalarEmptyValue;
+	}
 }
 /*FloatColumn*/

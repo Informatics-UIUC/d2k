@@ -4,12 +4,11 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
-//import ncsa.d2k.util.*;
 import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
 
 /**
- * <code>ByteColumn</code> is an implementation of <code>TextualColumn</code>
- * which stores textual data in a byte form. The internal representation is a
+ * <code>ByteColumn</code> is an implementation of <code>NumericColumn</code>
+ * which stores data in a byte form. The internal representation is a
  * <code>byte</code> array.
  * <br><br>
  * It it optimized for: retrieval of words by index, compact representation
@@ -18,12 +17,17 @@ import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
  * <br><br>
  * It is inefficient for: removals, insertions, searching (on contents of word)
  */
-final public class ByteColumn extends AbstractColumn implements TextualColumn {
+final public class ByteColumn extends AbstractColumn implements NumericColumn {
 
-	static final long serialVersionUID = 8471652021364392992L;
+	//static final long serialVersionUID = 8471652021364392992L;
+	static final long serialVersionUID = -8647688352992361702L;
 
     /** the internal representation of this Column */
     private byte[] internal = null;
+	private boolean[] missing = null;
+	private boolean[] empty = null;
+	private byte min;
+	private byte max;
 
     /**
      * Creates a new, empty <code>ByteColumn</code>.
@@ -40,10 +44,20 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
      */
     public ByteColumn (int capacity) {
         internal = new byte[capacity];
-        //byte[] ty = new byte[0];
-        //setType(ty);
         setIsNominal(true);
         type = ColumnTypes.BYTE;
+	  	/*setScalarMissingValue(new Byte(Byte.MIN_VALUE));
+	  	setScalarEmptyValue(new Byte(Byte.MAX_VALUE));
+		setNominalMissingValue(Byte.toString(Byte.MIN_VALUE));
+		setNominalEmptyValue(Byte.toString(Byte.MAX_VALUE));
+		*/
+		missing = new boolean[internal.length];
+		empty = new boolean[internal.length];
+		for(int i = 0; i < internal.length; i++) {
+			missing[i] = false;
+			empty[i] = false;
+		}
+
     }
 
     /**
@@ -52,11 +66,21 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
      * @param newInternal    the default data this column holds
      */
     public ByteColumn (byte[] newInternal) {
-        this.setInternal(newInternal);
-        //byte[] ty = new byte[0];
-        //setType(ty);
+        //this.setInternal(newInternal);
+		internal = newInternal;
         setIsNominal(true);
         type = ColumnTypes.BYTE;
+	  	/*setScalarMissingValue(new Byte(Byte.MIN_VALUE));
+	  	setScalarEmptyValue(new Byte(Byte.MAX_VALUE));
+		setNominalMissingValue(Byte.toString(Byte.MIN_VALUE));
+		setNominalEmptyValue(Byte.toString(Byte.MAX_VALUE));
+		*/
+		missing = new boolean[internal.length];
+		empty = new boolean[internal.length];
+		for(int i = 0; i < internal.length; i++) {
+			missing[i] = false;
+			empty[i] = false;
+		}
     }
 
     /**
@@ -86,8 +110,47 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
                 bac.setByte(getByte(i), i);
             bac.setLabel(getLabel());
             bac.setComment(getComment());
-            //bac.setType(getType());
+			/*bac.setScalarEmptyValue(getScalarEmptyValue());
+			bac.setScalarMissingValue(getScalarMissingValue());
+			bac.setNominalEmptyValue(getNominalEmptyValue());
+			bac.setNominalMissingValue(getNominalMissingValue());
+			*/
+			boolean[] miss = new boolean[internal.length];
+			boolean[] em = new boolean[internal.length];
+			for(int i = 0; i < internal.length; i++) {
+				miss[i] = missing[i];
+				em[i] = empty[i];
+
+			}
+		 	bac.missing = miss;
+			bac.empty = em;
+
             return  bac;
+        }
+    }
+
+	public double getMax() {
+		initRange();
+		return (double)max;
+	}
+
+	public double getMin() {
+		initRange();
+		return (double)min;
+	}
+
+    /**
+     * Initializes the min and max of this IntColumn.
+     */
+    private void initRange () {
+        max = min = internal[0];
+        for (int i = 1; i < internal.length; i++) {
+			if(!isValueMissing(i) && !isValueEmpty(i)) {
+            	if (internal[i] > max)
+                	max = internal[i];
+            	if (internal[i] < min)
+                	min = internal[i];
+			}
         }
     }
 
@@ -382,13 +445,6 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
             setByte((byte)0, pos);
     }
 
-    /**
-     * Trim any excess storage from the internal buffer for this
-     * <code>TextualColumn</code>. This has no effect on a
-     * <code>ByteColumn</code>.
-     */
-    public void trim() {}
-
     //////////////////////////////////////
     //// Accessing Metadata
 
@@ -399,8 +455,12 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
         @return this ByteArrayColumn's number of entries
      */
     public int getNumEntries () {
-        return internal.length;
-    }
+        int numEntries = 0;
+        for (int i = 0; i < internal.length; i++)
+            if (!isValueMissing(i) && !isValueEmpty(i))
+                numEntries++;
+        return  numEntries;
+	}
 
     /**
      * Get the number of rows that this column can hold.  Same as getCapacity
@@ -427,7 +487,7 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
         @param newCapacity a new capacity
      */
     public void setNumRows (int newCapacity) {
-        if (internal != null) {
+/*        if (internal != null) {
             byte[] newInternal = new byte[newCapacity];
             if (newCapacity > internal.length)
                 newCapacity = internal.length;
@@ -436,6 +496,26 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
         }
         else
             internal = new byte[newCapacity];
+*/
+        if (internal != null) {
+            byte[] newInternal = new byte[newCapacity];
+			boolean[] newMissing = new boolean[newCapacity];
+			boolean[] newEmpty = new boolean[newCapacity];
+            if (newCapacity > internal.length)
+                newCapacity = internal.length;
+            System.arraycopy(internal, 0, newInternal, 0, newCapacity);
+			System.arraycopy(missing, 0, newMissing, 0, missing.length);
+			System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+            internal = newInternal;
+			missing = newMissing;
+			empty = newEmpty;
+        }
+        else {
+            internal = new byte[newCapacity];
+			missing = new boolean[newCapacity];
+			empty = new boolean[newCapacity];
+		}
+
     }
 
     //////////////////////////////////////
@@ -460,33 +540,53 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
         @return a subset of this Column
      */
     public Column getSubset (int pos, int len) {
-        byte[][] subset = new byte[len][];
+/*        byte[] subset = new byte[len];
         System.arraycopy(internal, pos, subset, 0, len);
-        ByteArrayColumn bac = new ByteArrayColumn(subset);
+        ByteColumn bac = new ByteColumn(subset);
         bac.setLabel(getLabel());
         bac.setComment(getComment());
-        //bac.setType(getType());
+		bac.setScalarEmptyValue(getScalarEmptyValue());
+		bac.setScalarMissingValue(getScalarMissingValue());
+		bac.setNominalEmptyValue(getNominalEmptyValue());
+		bac.setNominalMissingValue(getNominalMissingValue());
+
         return  bac;
+*/
+
+        if ((pos + len) > internal.length)
+            throw  new ArrayIndexOutOfBoundsException();
+        byte[] subset = new byte[len];
+		boolean[] newMissing = new boolean[len];
+		boolean[] newEmpty = new boolean[len];
+        System.arraycopy(internal, pos, subset, 0, len);
+		System.arraycopy(missing, pos, newMissing, 0, len);
+		System.arraycopy(empty, pos, newEmpty, 0, len);
+        ByteColumn bc = new ByteColumn(subset);
+		bc.missing = newMissing;
+		bc.empty = newEmpty;
+        bc.setLabel(getLabel());
+        bc.setComment(getComment());
+        return  bc;
     }
 
     /**
         Gets a reference to the internal representation of this Column.
         Changes made to this object will be reflected in the Column.
         @return the internal representation of this Column.
-     */
+     /
     public Object getInternal () {
         return  this.internal;
-    }
+    }*/
 
     /**
         Sets the reference to the internal representation of this Column.
         If a miscompatable Object is passed in, the most common Exception
         thrown is a ClassCastException.
         @param newInternal a new internal representation for this Column
-     */
+     /
     public void setInternal (Object newInternal) {
         this.internal = (byte[])newInternal;
-    }
+    }*/
 
     /**
         Sets the entry at the given position to newEntry
@@ -508,11 +608,25 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
          last = i;
          this.internal[last+1] = (byte[])newEntry;
          */
-        int last = internal.length;
+/*        int last = internal.length;
         byte[] newInternal = new byte[internal.length + 1];
         System.arraycopy(internal, 0, newInternal, 0, internal.length);
         newInternal[last] = ((Byte)newEntry).byteValue();
         internal = newInternal;
+	*/
+        int last = internal.length;
+        byte[] newInternal = new byte[internal.length + 1];
+		boolean[] newMissing = new boolean[internal.length + 1];
+		boolean[] newEmpty = new boolean[internal.length + 1];
+        System.arraycopy(internal, 0, newInternal, 0, internal.length);
+		System.arraycopy(missing, 0, newMissing, 0, missing.length);
+		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+        newInternal[last] = ((Number)newEntry).byteValue();
+
+        internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
+
     }
 
     /**
@@ -522,13 +636,38 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
         @return the removed object
      */
     public Object removeRow (int pos) {
-        byte removed = internal[pos];
+/*        byte removed = internal[pos];
         System.arraycopy(internal, pos + 1, internal, pos, internal.length -
                 (pos + 1));
         byte newInternal[] = new byte[internal.length - 1];
         System.arraycopy(internal, 0, newInternal, 0, internal.length - 1);
         internal = newInternal;
         return new Byte(removed);
+*/
+
+        byte removed = internal[pos];
+        // copy all the items after the item to be removed one position up
+        System.arraycopy(internal, pos + 1, internal, pos, internal.length -
+                (pos + 1));
+
+        System.arraycopy(missing, pos + 1, missing, pos, internal.length -
+                (pos + 1));
+
+        System.arraycopy(empty, pos + 1, empty, pos, internal.length -
+                (pos + 1));
+
+        // copy the items into a new array
+        byte newInternal[] = new byte[internal.length - 1];
+		boolean newMissing[] = new boolean[internal.length-1];
+		boolean newEmpty[] = new boolean[internal.length-1];
+        System.arraycopy(internal, 0, newInternal, 0, internal.length - 1);
+        System.arraycopy(missing, 0, newMissing, 0, internal.length - 1);
+        System.arraycopy(empty, 0, newEmpty, 0, internal.length - 1);
+
+        internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
+        return  new Byte(removed);
     }
 
     /**
@@ -538,16 +677,13 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
         @param pos the position to insert at
      */
     public void insertRow (Object newEntry, int pos) {
-        byte[] newInternal = new byte[internal.length + 1];
+        /*byte[] newInternal = new byte[internal.length + 1];
         if (pos > getCapacity()) {
             addRow(newEntry);
             return;
         }
         if (pos == 0)
-            System.arraycopy(internal, 0, newInternal, 1, getCapacity());        /*else if(pos == 1) {
-         newInternal[0] = internal[0];
-         System.arraycopy(internal, 1, newInternal, 2, getCapacity()-2);
-         }*/
+            System.arraycopy(internal, 0, newInternal, 1, getCapacity());
         else {
             System.arraycopy(internal, 0, newInternal, 0, pos);
             System.arraycopy(internal, pos, newInternal, pos + 1, internal.length
@@ -555,6 +691,37 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
         }
         newInternal[pos] = ((Byte)newEntry).byteValue();
         internal = newInternal;
+		*/
+
+        if (pos > getNumRows()) {
+            addRow(newEntry);
+            return;
+        }
+        byte[] newInternal = new byte[internal.length + 1];
+		boolean[] newMissing = new boolean[internal.length + 1];
+		boolean[] newEmpty = new boolean[internal.length + 1];
+        if (pos == 0) {
+            System.arraycopy(internal, 0, newInternal, 1, getNumRows());
+            System.arraycopy(missing, 0, newMissing, 1, getNumRows());
+            System.arraycopy(empty, 0, newEmpty, 1, getNumRows());
+		}
+        else {
+            System.arraycopy(internal, 0, newInternal, 0, pos);
+            System.arraycopy(internal, pos, newInternal, pos + 1, internal.length
+                    - pos);
+
+            System.arraycopy(missing, 0, newMissing, 0, pos);
+            System.arraycopy(missing, pos, newMissing, pos + 1, internal.length
+                    - pos);
+
+            System.arraycopy(empty, 0, newEmpty, 0, pos);
+            System.arraycopy(empty, pos, newEmpty, pos + 1, internal.length
+                    - pos);
+        }
+        newInternal[pos] = ((Number)newEntry).byteValue();
+        internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
     }
 
     /**
@@ -563,9 +730,22 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
         @param pos2 the position of the 2nd entry to swap
      */
     public void swapRows (int pos1, int pos2) {
-        byte e1 = internal[pos1];
+        /*byte e1 = internal[pos1];
         internal[pos1] = internal[pos2];
         internal[pos2] = e1;
+		*/
+
+        byte d1 = internal[pos1];
+		boolean miss = missing[pos1];
+		boolean emp = empty[pos1];
+        internal[pos1] = internal[pos2];
+        internal[pos2] = d1;
+
+		missing[pos1] = missing[pos2];
+		missing[pos2] = miss;
+
+		empty[pos1] = empty[pos2];
+		empty[pos2] = emp;
     }
 
     /**
@@ -575,7 +755,7 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
         @return a copy of this column, re-ordered
      */
     public Column reorderRows (int[] newOrder) {
-        byte[] newInternal = null;
+        /*byte[] newInternal = null;
         if (newOrder.length == internal.length) {
             newInternal = new byte[internal.length];
             for (int i = 0; i < internal.length; i++)
@@ -587,7 +767,35 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
         bac.setLabel(getLabel());
         //bac.setType(getType());
         bac.setComment(getComment());
+		bac.setScalarEmptyValue(getScalarEmptyValue());
+		bac.setScalarMissingValue(getScalarMissingValue());
+		bac.setNominalEmptyValue(getNominalEmptyValue());
+		bac.setNominalMissingValue(getNominalMissingValue());
+
         return  bac;
+		*/
+        byte[] newInternal = null;
+		boolean[] newMissing = null;
+		boolean[] newEmpty = null;
+        if (newOrder.length == internal.length) {
+            newInternal = new byte[internal.length];
+			newMissing = new boolean[internal.length];
+			newEmpty = new boolean[internal.length];
+            for (int i = 0; i < internal.length; i++) {
+                newInternal[i] = internal[newOrder[i]];
+				newMissing[i] = missing[newOrder[i]];
+				newEmpty[i] = empty[newOrder[i]];
+			}
+        }
+        else
+            throw  new ArrayIndexOutOfBoundsException();
+        ByteColumn bc = new ByteColumn(newInternal);
+		bc.missing = newMissing;
+		bc.empty = newEmpty;
+        bc.setLabel(getLabel());
+        bc.setComment(getComment());
+        return  bc;
+
     }
 
     /**
@@ -627,7 +835,7 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
      * @param b2 the second byte array to compare
      * @return -1, 0, 1
      */
-    private int compareBytes (byte[] b1, byte[] b2) {
+    private static int compareBytes (byte[] b1, byte[] b2) {
         if (b1 == null) {
             if (b2 == null)
                 return  0;
@@ -671,18 +879,17 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
         @param indices the int array of remove indices
      */
     public void removeRowsByIndex (int[] indices) {
-        HashMap toRemove = new HashMap(indices.length);
+        /*HashSet toRemove = new HashSet(indices.length);
         for (int i = 0; i < indices.length; i++) {
             Integer id = new Integer(indices[i]);
-            toRemove.put(id, id);
+            toRemove.add(id);
         }
         byte newInternal[] = new byte[internal.length - indices.length];
         int newIntIdx = 0;
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
-            Integer x = (Integer)toRemove.get(new Integer(i));
             // if this row is not in the list, copy it into the new internal
-            if (x == null) {
+            if (!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
                 newIntIdx++;
             }
@@ -690,6 +897,32 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
             //   internal[i] = null;
         }
         internal = newInternal;
+		*/
+        HashSet toRemove = new HashSet(indices.length);
+        for (int i = 0; i < indices.length; i++) {
+            Integer id = new Integer(indices[i]);
+            toRemove.add(id);
+        }
+        byte newInternal[] = new byte[internal.length - indices.length];
+        boolean newMissing[] = new boolean[internal.length - indices.length];
+        boolean newEmpty[] = new boolean[internal.length - indices.length];
+
+        int newIntIdx = 0;
+        for (int i = 0; i < getNumRows(); i++) {
+            // check if this row is in the list of rows to remove
+            //Integer x = (Integer)toRemove.get(new Integer(i));
+            // if this row is not in the list, copy it into the new internal
+            //if (x == null) {
+         if(!toRemove.contains(new Integer(i))) {
+                newInternal[newIntIdx] = internal[i];
+				newMissing[newIntIdx] = missing[i];
+				newEmpty[newIntIdx] = empty[i];
+                newIntIdx++;
+            }
+        }
+        internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
     }
 
     /**
@@ -765,9 +998,11 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
             } while (compareRows(A[i], p) < 0);
             if (i < j) {
                 if (t == null) {
-                    byte temp = A[i];
+                    /*byte temp = A[i];
                     A[i] = A[j];
                     A[j] = temp;
+					*/
+					swapRows(i, j);
                 }
                 else
                     t.swapRows(i, j);
@@ -776,5 +1011,22 @@ final public class ByteColumn extends AbstractColumn implements TextualColumn {
                 return  j;
         }
     }
+
+	public void setValueToMissing(int row) {
+		missing[row] = true;
+	}
+
+	public void setValueToEmpty(int row) {
+		empty[row] = true;
+	}
+
+	public boolean isValueMissing(int row) {
+		return missing[row];
+	}
+
+	public boolean isValueEmpty(int row) {
+		return empty[row];
+	}
 }
-/*ByteArrayColumn*/
+
+/*ByteColumn*/

@@ -15,7 +15,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
 */
 public interface Column extends java.io.Serializable {
 
-	static final long serialVersionUID = 8383279130438086351L;
+	//static final long serialVersionUID = 8383279130438086351L;
+	static final long serialVersionUID = 63054574851515523L;
 
 	/**
 		Get the label associated with this Column.
@@ -357,10 +358,104 @@ public interface Column extends java.io.Serializable {
 	 */
 	public void removeRowsByIndex( int[] indices );
 
+	/**
+	 * Set whether this column is nominal or not.
+	 * @param value true if the column is nominal, false otherwise
+	 */
 	public void setIsNominal(boolean value);
+
+	/**
+	 * Set whether this column is scalar or not.
+	 * @param value true if the column is scalar, false otherwise.
+	 */
 	public void setIsScalar(boolean value);
+
+	/**
+	 */
 	public boolean getIsNominal();
+	/**
+	 */
 	public boolean getIsScalar();
 
+	/**
+	 * Get the type of this column, enumerated in <code>ColumnTypes</code>.
+	 * @return the type of this column
+	 */
 	public int getType();
+
+	/**
+	 * Get the scalar missing value for this column.
+	 * @return the scalar missing value for this column.
+	 */
+	public Number getScalarMissingValue();
+
+	/**
+	 * Set the scalar missing value for this column.
+	 * @param val the new scalar missing value
+	 */
+	public void setScalarMissingValue(Number val);
+
+	/**
+	 * Get the nominal missing value for this column.
+	 * @return the nominal missing value for this column.
+	 */
+	public String getNominalMissingValue();
+
+	/**
+	 * Set the nominal missing value for this column.
+	 * @param s the new nominal missing value
+	 */
+	public void setNominalMissingValue(String s);
+
+	/**
+	 * Get the scalar empty value for this column.
+	 * @return the scalar empty value for this column
+	 */
+	public Number getScalarEmptyValue();
+
+	/**
+	 * Set the scalar empty value for this column.
+	 * @param val the scalar empty value for this column
+	 */
+	public void setScalarEmptyValue(Number val);
+
+	/**
+	 * Get the nominal empty value for this column.
+	 * @return the nominal empty value for this column
+	 */
+	public String getNominalEmptyValue();
+
+	/**
+	 * Set the nominal empty value for this column.
+	 * @param s the new nominal empty value for this column
+	 */
+	public void setNominalEmptyValue(String s);
+
+	/**
+	 * Return true if the value at row is missing, false otherwise
+	 * @param row the row index
+	 * @return true if the value at row is missing, false otherwise
+	 */
+	public boolean isValueMissing(int row);
+
+	/**
+	 * Return true if the value at row is empty, false otherwise
+	 * @param row the row index
+	 * @return true if the value at row is empty, false otherwise
+	 */
+
+	public boolean isValueEmpty(int row);
+
+	/**
+	 * Set the value at row to be missing.
+	 * @param row the row index
+	 */
+	public void setValueToMissing(int row);
+
+	/**
+	 * Set the value at row to be empty.
+	 * @param row the row index
+	 */
+	public void setValueToEmpty(int row);
+
 }/*Column*/

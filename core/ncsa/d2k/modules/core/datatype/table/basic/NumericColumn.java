@@ -9,7 +9,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
 */
 public interface NumericColumn extends Column {
 
-	static final long serialVersionUID = -8231597566891195839L;
+	//static final long serialVersionUID = -8231597566891195839L;
+	static final long serialVersionUID = -4942612002109477988L;
 
     //////////////////////////////////////
     //// Accessing Metadata
@@ -28,13 +29,13 @@ public interface NumericColumn extends Column {
     /**
        Sets the value which indicates an empty entry.
        @param emptyVal the value to which an empty entry is set
-    */
+    /
     public void setEmptyValue( Number emptyVal );
 
     /**
        Gets the value which indicates an empty entry.
        @return the value of an empty entry as a subclass of Number
-    */
+    /
     public Number getEmptyValue( );
-    //////////////////////////////////////
+	*/
 }/*NumericColumn*/

@@ -43,6 +43,8 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
         //setType(ty);
 		setIsNominal(true);
 		type = ColumnTypes.CHAR_ARRAY;
+		//setScalarMissingValue(new Integer(Integer.MIN_VALUE));
+		//setScalarEmptyValue(new Integer(Integer.MAX_VALUE));
     }
 
     /**
@@ -55,6 +57,8 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
         //setType(ty);
 		setIsNominal(true);
 		type = ColumnTypes.CHAR_ARRAY;
+		//setScalarMissingValue(new Integer(Integer.MIN_VALUE));
+		//setScalarEmptyValue(new Integer(Integer.MAX_VALUE));
     }
 
     /**
@@ -87,6 +91,10 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
             }
             cac.setLabel(getLabel());
             cac.setComment(getComment());
+			cac.setScalarEmptyValue(getScalarEmptyValue());
+			cac.setScalarMissingValue(getScalarMissingValue());
+			cac.setNominalEmptyValue(getNominalEmptyValue());
+			cac.setNominalMissingValue(getNominalMissingValue());
             //cac.setType(getType());
             return  cac;
         }
@@ -414,6 +422,11 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
         CharArrayColumn cac = new CharArrayColumn(subset);
         cac.setLabel(getLabel());
         cac.setComment(getComment());
+		cac.setScalarEmptyValue(getScalarEmptyValue());
+		cac.setScalarMissingValue(getScalarMissingValue());
+		cac.setNominalEmptyValue(getNominalEmptyValue());
+		cac.setNominalMissingValue(getNominalMissingValue());
+
         //cac.setType(getType());
         return  cac;
     }
@@ -532,6 +545,11 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
         cac.setLabel(getLabel());
         //cac.setType(getType());
         cac.setComment(getComment());
+		cac.setScalarEmptyValue(getScalarEmptyValue());
+		cac.setScalarMissingValue(getScalarMissingValue());
+		cac.setNominalEmptyValue(getNominalEmptyValue());
+		cac.setNominalMissingValue(getNominalMissingValue());
+
         return  cac;
     }
 
@@ -570,7 +588,7 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
      * @param b2 the second char[] to compare
      * @return -1, 0, 1
      */
-    private int compareChars (char[] b1, char[] b2) {
+    private static int compareChars (char[] b1, char[] b2) {
         if (b1 == null) {
             if (b2 == null)
                 return  0;
@@ -614,18 +632,19 @@ final public class CharArrayColumn extends AbstractColumn implements TextualColu
      @param indices the int array of remove indices
      */
     public void removeRowsByIndex (int[] indices) {
-        HashMap toRemove = new HashMap(indices.length);
+        HashSet toRemove = new HashSet(indices.length);
         for (int i = 0; i < indices.length; i++) {
             Integer id = new Integer(indices[i]);
-            toRemove.put(id, id);
+            toRemove.add(id);
         }
         char newInternal[][] = new char[internal.length - indices.length][];
         int newIntIdx = 0;
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
-            Integer x = (Integer)toRemove.get(new Integer(i));
+            //Integer x = (Integer)toRemove.get(new Integer(i));
             // if this row is not in the list, copy it into the new internal
-            if (x == null) {
+            //if (x == null) {
+			if(!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
                 newIntIdx++;
             }

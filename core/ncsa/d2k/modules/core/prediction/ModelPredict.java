@@ -90,7 +90,7 @@ public class ModelPredict extends ncsa.d2k.core.modules.ComputeModule
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "Predictor";
+		return "ModelPredict";
 	}
 
 	/**

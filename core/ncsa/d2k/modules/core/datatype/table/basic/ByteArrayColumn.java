@@ -20,7 +20,7 @@ import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
  */
 final public class ByteArrayColumn extends AbstractColumn implements TextualColumn {
 
-	static final long serialVersionUID = 4081605254880124454L;
+	//static final long serialVersionUID = 4081605254880124454L;
 
     /** the internal representation of this Column */
     private byte[][] internal = null;
@@ -38,10 +38,10 @@ final public class ByteArrayColumn extends AbstractColumn implements TextualColu
      */
     public ByteArrayColumn (int capacity) {
         internal = new byte[capacity][];
-        //byte[] ty = new byte[0];
-        //setType(ty);
 		setIsNominal(true);
 		type = ColumnTypes.BYTE_ARRAY;
+	  	//setScalarMissingValue(new Double(Double.MIN_VALUE));
+	  	//setScalarEmptyValue(new Double(Double.MAX_VALUE));
     }
 
     /**
@@ -50,10 +50,10 @@ final public class ByteArrayColumn extends AbstractColumn implements TextualColu
      */
     public ByteArrayColumn (byte[][] newInternal) {
         this.setInternal(newInternal);
-        //byte[] ty = new byte[0];
-        //setType(ty);
 		setIsNominal(true);
 		type = ColumnTypes.BYTE_ARRAY;
+	  	//setScalarMissingValue(new Double(Double.MIN_VALUE));
+	  	//setScalarEmptyValue(new Double(Double.MAX_VALUE));
     }
 
     /**
@@ -86,6 +86,10 @@ final public class ByteArrayColumn extends AbstractColumn implements TextualColu
             }
             bac.setLabel(getLabel());
             bac.setComment(getComment());
+			bac.setScalarEmptyValue(getScalarEmptyValue());
+			bac.setScalarMissingValue(getScalarMissingValue());
+			bac.setNominalEmptyValue(getNominalEmptyValue());
+			bac.setNominalMissingValue(getNominalMissingValue());
             //bac.setType(getType());
             return  bac;
         }
@@ -118,6 +122,7 @@ final public class ByteArrayColumn extends AbstractColumn implements TextualColu
     	@return the value of the byte array at pos as an int
      */
     public int getInt (int pos) {
+		//return Integer.valueOf(new String(internal[pos]));
         return  ByteUtils.toInt(internal[pos]);
     }
 
@@ -349,7 +354,7 @@ final public class ByteArrayColumn extends AbstractColumn implements TextualColu
         //return internal.length;
         int numEntries = 0;
         for (int i = 0; i < internal.length; i++)
-            if (internal[i] != null)
+            if (internal[i] != null && !isValueMissing(i) && !isValueEmpty(i))
                 numEntries++;
         return  numEntries;
     }
@@ -417,7 +422,10 @@ final public class ByteArrayColumn extends AbstractColumn implements TextualColu
         ByteArrayColumn bac = new ByteArrayColumn(subset);
         bac.setLabel(getLabel());
         bac.setComment(getComment());
-        //bac.setType(getType());
+		bac.setScalarEmptyValue(getScalarEmptyValue());
+		bac.setScalarMissingValue(getScalarMissingValue());
+		bac.setNominalEmptyValue(getNominalEmptyValue());
+		bac.setNominalMissingValue(getNominalMissingValue());
         return  bac;
     }
 
@@ -537,6 +545,10 @@ final public class ByteArrayColumn extends AbstractColumn implements TextualColu
             throw  new ArrayIndexOutOfBoundsException();
         ByteArrayColumn bac = new ByteArrayColumn(newInternal);
         bac.setLabel(getLabel());
+		bac.setScalarEmptyValue(getScalarEmptyValue());
+		bac.setScalarMissingValue(getScalarMissingValue());
+		bac.setNominalEmptyValue(getNominalEmptyValue());
+		bac.setNominalMissingValue(getNominalMissingValue());
         //bac.setType(getType());
         bac.setComment(getComment());
         return  bac;
@@ -574,7 +586,7 @@ final public class ByteArrayColumn extends AbstractColumn implements TextualColu
      * @param b2 the second byte array to compare
      * @return -1, 0, 1
      */
-    private int compareBytes (byte[] b1, byte[] b2) {
+    private static int compareBytes (byte[] b1, byte[] b2) {
         if (b1 == null) {
             if (b2 == null)
                 return  0;
@@ -618,18 +630,18 @@ final public class ByteArrayColumn extends AbstractColumn implements TextualColu
     	@param indices the int array of remove indices
      */
     public void removeRowsByIndex (int[] indices) {
-        HashMap toRemove = new HashMap(indices.length);
+        HashSet toRemove = new HashSet(indices.length);
         for (int i = 0; i < indices.length; i++) {
             Integer id = new Integer(indices[i]);
-            toRemove.put(id, id);
+            toRemove.add(id);
         }
         byte newInternal[][] = new byte[internal.length - indices.length][];
         int newIntIdx = 0;
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
-            Integer x = (Integer)toRemove.get(new Integer(i));
+            //Integer x = (Integer)toRemove.get(new Integer(i));
             // if this row is not in the list, copy it into the new internal
-            if (x == null) {
+            if (!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
                 newIntIdx++;
             }

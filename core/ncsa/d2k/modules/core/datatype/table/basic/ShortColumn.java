@@ -16,13 +16,15 @@ import java.util.*;
  */
 final public class ShortColumn extends AbstractColumn implements NumericColumn {
 
-	static final long serialVersionUID = 4529414048084787224L;
+	//static final long serialVersionUID = 4529414048084787224L;
+	static final long serialVersionUID = 3517854138523010356L;
 
     private short min, max;
-    private static short emptyValue = Short.MIN_VALUE;
 
     /** holds ShortColumn's internal data rep */
     private short[] internal = null;
+	private boolean[] missing = null;
+	private boolean[] empty = null;
 
     /**
      Create a new, empty ShortColumn with a capacity of zero.
@@ -39,6 +41,17 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
         internal = new short[capacity];
       setIsScalar(true);
       type = ColumnTypes.SHORT;
+	  /*setScalarMissingValue(new Short(Short.MIN_VALUE));
+	  setScalarEmptyValue(new Short(Short.MAX_VALUE));
+	  setNominalMissingValue(Short.toString(Short.MIN_VALUE));
+	  setNominalEmptyValue(Short.toString(Short.MAX_VALUE));
+	  */
+		missing = new boolean[internal.length];
+		empty = new boolean[internal.length];
+		for(int i = 0; i < internal.length; i++) {
+			missing[i] = false;
+			empty[i] = false;
+		}
     }
 
     /**
@@ -49,6 +62,17 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
       internal = vals;
       setIsScalar(true);
       type = ColumnTypes.SHORT;
+	  /*setScalarMissingValue(new Short(Short.MIN_VALUE));
+	  setScalarEmptyValue(new Short(Short.MAX_VALUE));
+	  setNominalMissingValue(Short.toString(Short.MIN_VALUE));
+	  setNominalEmptyValue(Short.toString(Short.MAX_VALUE));
+	  */
+		missing = new boolean[internal.length];
+		empty = new boolean[internal.length];
+		for(int i = 0; i < internal.length; i++) {
+			missing[i] = false;
+			empty[i] = false;
+		}
     }
 
     /**
@@ -75,6 +99,21 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
                 newCol.setShort(internal[i], i);
             newCol.setLabel(getLabel());
             newCol.setComment(getComment());
+			/*newCol.setScalarEmptyValue(getScalarEmptyValue());
+			newCol.setScalarMissingValue(getScalarMissingValue());
+			newCol.setNominalEmptyValue(getNominalEmptyValue());
+			newCol.setNominalMissingValue(getNominalMissingValue());
+			*/
+			boolean[] miss = new boolean[internal.length];
+			boolean[] em = new boolean[internal.length];
+			for(int i = 0; i < internal.length; i++) {
+				miss[i] = missing[i];
+				em[i] = empty[i];
+
+			}
+		 	newCol.missing = miss;
+			newCol.empty = em;
+
             return  newCol;
         }
     }
@@ -90,7 +129,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
     public int getNumEntries () {
         int numEntries = 0;
         for (int i = 0; i < internal.length; i++)
-            if (internal[i] != emptyValue)
+            if (!isValueMissing(i) && !isValueEmpty(i))
                 numEntries++;
         return  numEntries;
     }
@@ -110,7 +149,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
      @param newCapacity the new capacity
      */
     public void setNumRows (int newCapacity) {
-        if (internal != null) {
+        /*if (internal != null) {
             short[] newInternal = new short[newCapacity];
             if (newCapacity > internal.length)
                 newCapacity = internal.length;
@@ -119,6 +158,27 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
         }
         else
             internal = new short[newCapacity];
+			*/
+
+        if (internal != null) {
+            short[] newInternal = new short[newCapacity];
+			boolean[] newMissing = new boolean[newCapacity];
+			boolean[] newEmpty = new boolean[newCapacity];
+            if (newCapacity > internal.length)
+                newCapacity = internal.length;
+            System.arraycopy(internal, 0, newInternal, 0, newCapacity);
+			System.arraycopy(missing, 0, newMissing, 0, missing.length);
+			System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+            internal = newInternal;
+			missing = newMissing;
+			empty = newEmpty;
+        }
+        else {
+            internal = new short[newCapacity];
+			missing = new boolean[newCapacity];
+			empty = new boolean[newCapacity];
+		}
+
     }
 
     /**
@@ -143,7 +203,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
      Sets the value which indicates an empty entry.
      This can by any subclass of Number.
      @param emptyVal the value to which an empty entry is set
-     */
+     /
     public void setEmptyValue (Number emptyVal) {
         emptyValue = ((Number)emptyVal).shortValue();
     }
@@ -151,7 +211,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
     /**
      Gets the value which indicates an empty entry.
      @return the value of an empty entry wrapped in a subclass of Number
-     */
+     /
     public Number getEmptyValue () {
         return  new Short(emptyValue);
     }
@@ -388,10 +448,12 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
     private void initRange () {
         max = min = internal[0];
         for (int i = 1; i < internal.length; i++) {
-            if (internal[i] > max)
-                max = internal[i];
-            if (internal[i] < min)
-                min = internal[i];
+			if(!isValueMissing(i) && !isValueEmpty(i)) {
+            	if (internal[i] > max)
+                	max = internal[i];
+            	if (internal[i] < min)
+                	min = internal[i];
+			}
         }
     }
 
@@ -417,14 +479,34 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
      @return a subset of this Column
      */
     public Column getSubset (int pos, int len) {
-        if ((pos + len) > internal.length)
+/*        if ((pos + len) > internal.length)
             throw  new ArrayIndexOutOfBoundsException();
         short[] subset = new short[len];
         System.arraycopy(internal, pos, subset, 0, len);
         ShortColumn sc = new ShortColumn(subset);
         sc.setLabel(getLabel());
         sc.setComment(getComment());
+		sc.setScalarEmptyValue(getScalarEmptyValue());
+		sc.setScalarMissingValue(getScalarMissingValue());
+		sc.setNominalEmptyValue(getNominalEmptyValue());
+		sc.setNominalMissingValue(getNominalMissingValue());
         return  sc;
+*/
+
+        if ((pos + len) > internal.length)
+            throw  new ArrayIndexOutOfBoundsException();
+        short[] subset = new short[len];
+		boolean[] newMissing = new boolean[len];
+		boolean[] newEmpty = new boolean[len];
+        System.arraycopy(internal, pos, subset, 0, len);
+		System.arraycopy(missing, pos, newMissing, 0, len);
+		System.arraycopy(empty, pos, newEmpty, 0, len);
+        ShortColumn bc = new ShortColumn(subset);
+		bc.missing = newMissing;
+		bc.empty = newEmpty;
+        bc.setLabel(getLabel());
+        bc.setComment(getComment());
+        return  bc;
     }
 
     /**
@@ -474,11 +556,26 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
          internal=newInternal;
          }
          */
-        int last = internal.length;
+        /*int last = internal.length;
         short[] newInternal = new short[internal.length + 1];
         System.arraycopy(internal, 0, newInternal, 0, internal.length);
         newInternal[last] = ((Short)newEntry).shortValue();
         internal = newInternal;
+		*/
+
+        int last = internal.length;
+        short[] newInternal = new short[internal.length + 1];
+		boolean[] newMissing = new boolean[internal.length + 1];
+		boolean[] newEmpty = new boolean[internal.length + 1];
+        System.arraycopy(internal, 0, newInternal, 0, internal.length);
+		System.arraycopy(missing, 0, newMissing, 0, missing.length);
+		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
+        newInternal[last] = ((Number)newEntry).shortValue();
+
+        internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
+
     }
 
     /**
@@ -489,12 +586,37 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
      @return a Short representation of the removed short
      */
     public Object removeRow (int pos) {
-        short removed = internal[pos];
+/*        short removed = internal[pos];
         System.arraycopy(internal, pos + 1, internal, pos, internal.length -
                 (pos + 1));
         short newInternal[] = new short[internal.length - 1];
         System.arraycopy(internal, 0, newInternal, 0, internal.length - 1);
         internal = newInternal;
+        return  new Short(removed);
+*/
+
+        short removed = internal[pos];
+        // copy all the items after the item to be removed one position up
+        System.arraycopy(internal, pos + 1, internal, pos, internal.length -
+                (pos + 1));
+
+        System.arraycopy(missing, pos + 1, missing, pos, internal.length -
+                (pos + 1));
+
+        System.arraycopy(empty, pos + 1, empty, pos, internal.length -
+                (pos + 1));
+
+        // copy the items into a new array
+        short newInternal[] = new short[internal.length - 1];
+		boolean newMissing[] = new boolean[internal.length-1];
+		boolean newEmpty[] = new boolean[internal.length-1];
+        System.arraycopy(internal, 0, newInternal, 0, internal.length - 1);
+        System.arraycopy(missing, 0, newMissing, 0, internal.length - 1);
+        System.arraycopy(empty, 0, newEmpty, 0, internal.length - 1);
+
+        internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
         return  new Short(removed);
     }
 
@@ -505,30 +627,35 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
      @param pos the position to insert at
      */
     public void insertRow (Object newEntry, int pos) {
-        /*short[] newInternal = new short[internal.length+1];
-         short last = 0;
-         System.arraycopy(newInternal,0,internal,0,pos-1);
-         System.arraycopy(newInternal,pos,internal,pos+1,internal.length-(pos+1));
-         newInternal[pos] = ((Number)newEntry).shortValue();
-         internal = newInternal;
-         */
-        short[] newInternal = new short[internal.length + 1];
         if (pos > getNumRows()) {
             addRow(newEntry);
             return;
         }
-        if (pos == 0)
-            System.arraycopy(internal, 0, newInternal, 1, getNumRows());        /*else if(pos == 1) {
-         newInternal[0] = internal[0];
-         System.arraycopy(internal, 1, newInternal, 2, getCapacity()-2);
-         }*/
+        short[] newInternal = new short[internal.length + 1];
+		boolean[] newMissing = new boolean[internal.length + 1];
+		boolean[] newEmpty = new boolean[internal.length + 1];
+        if (pos == 0) {
+            System.arraycopy(internal, 0, newInternal, 1, getNumRows());
+            System.arraycopy(missing, 0, newMissing, 1, getNumRows());
+            System.arraycopy(empty, 0, newEmpty, 1, getNumRows());
+		}
         else {
             System.arraycopy(internal, 0, newInternal, 0, pos);
             System.arraycopy(internal, pos, newInternal, pos + 1, internal.length
                     - pos);
+
+            System.arraycopy(missing, 0, newMissing, 0, pos);
+            System.arraycopy(missing, pos, newMissing, pos + 1, internal.length
+                    - pos);
+
+            System.arraycopy(empty, 0, newEmpty, 0, pos);
+            System.arraycopy(empty, pos, newEmpty, pos + 1, internal.length
+                    - pos);
         }
-        newInternal[pos] = ((Short)newEntry).shortValue();
+        newInternal[pos] = ((Number)newEntry).shortValue();
         internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
     }
 
     /**
@@ -537,9 +664,21 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
      @param pos2 the position of the 2nd entry to swap
      */
     public void swapRows (int pos1, int pos2) {
-        short d1 = internal[pos1];
+/*        short d1 = internal[pos1];
         internal[pos1] = internal[pos2];
         internal[pos2] = d1;
+*/
+        short d1 = internal[pos1];
+		boolean miss = missing[pos1];
+		boolean emp = empty[pos1];
+        internal[pos1] = internal[pos2];
+        internal[pos2] = d1;
+
+		missing[pos1] = missing[pos2];
+		missing[pos2] = miss;
+
+		empty[pos1] = empty[pos2];
+		empty[pos2] = emp;
     }
 
     /**
@@ -549,7 +688,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
     @return a copy of this column, re-ordered
      */
     public Column reorderRows (int[] newOrder) {
-        short[] newInternal = null;
+        /*short[] newInternal = null;
         if (newOrder.length == internal.length) {
             newInternal = new short[internal.length];
             for (int i = 0; i < internal.length; i++)
@@ -560,7 +699,35 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
         ShortColumn sc = new ShortColumn(newInternal);
         sc.setLabel(getLabel());
         sc.setComment(getComment());
+		sc.setScalarEmptyValue(getScalarEmptyValue());
+		sc.setScalarMissingValue(getScalarMissingValue());
+		sc.setNominalEmptyValue(getNominalEmptyValue());
+		sc.setNominalMissingValue(getNominalMissingValue());
         return  sc;
+		*/
+
+        short[] newInternal = null;
+		boolean[] newMissing = null;
+		boolean[] newEmpty = null;
+        if (newOrder.length == internal.length) {
+            newInternal = new short[internal.length];
+			newMissing = new boolean[internal.length];
+			newEmpty = new boolean[internal.length];
+            for (int i = 0; i < internal.length; i++) {
+                newInternal[i] = internal[newOrder[i]];
+				newMissing[i] = missing[newOrder[i]];
+				newEmpty[i] = empty[newOrder[i]];
+			}
+        }
+        else
+            throw  new ArrayIndexOutOfBoundsException();
+        ShortColumn bc = new ShortColumn(newInternal);
+		bc.missing = newMissing;
+		bc.empty = newEmpty;
+        bc.setLabel(getLabel());
+        bc.setComment(getComment());
+        return  bc;
+
     }
 
     /**
@@ -574,14 +741,6 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
     public int compareRows (Object element, int pos) {
         short d1 = ((Number)element).shortValue();
         short d2 = internal[pos];
-        if (d1 == emptyValue) {
-            if (d2 == emptyValue)
-                return  0;
-            else
-                return  -1;
-        }
-        else if (d2 == emptyValue)
-            return  1;
         if (d1 > d2)
             return  1;
         else if (d1 < d2)
@@ -600,14 +759,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
     public int compareRows (int pos1, int pos2) {
         short d1 = internal[pos1];
         short d2 = internal[pos2];
-        if (d1 == emptyValue) {
-            if (d2 == emptyValue)
-                return  0;
-            else
-                return  -1;
-        }
-        else if (d2 == emptyValue)
-            return  1;
+
         if (d1 > d2)
             return  1;
         else if (d1 < d2)
@@ -628,6 +780,9 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
             toRemove.add(id);
         }
         short newInternal[] = new short[internal.length - indices.length];
+        boolean newMissing[] = new boolean[internal.length - indices.length];
+        boolean newEmpty[] = new boolean[internal.length - indices.length];
+
         int newIntIdx = 0;
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
@@ -636,10 +791,14 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
             //if (x == null) {
          if(!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
+				newMissing[newIntIdx] = missing[i];
+				newEmpty[newIntIdx] = empty[i];
                 newIntIdx++;
             }
         }
         internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
     }
 
     //////////////////////////////////////
@@ -689,7 +848,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
      @param t the Table to swap rows for
     @return a sorted array of shorts
      */
-    private static short[] doSort (short[] A, int p, int r, MutableTable t) {
+    private short[] doSort (short[] A, int p, int r, MutableTable t) {
         if (p < r) {
             int q = partition(A, p, r, t);
             doSort(A, p, q, t);
@@ -706,7 +865,7 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
      @param t the Table to swap rows for
     @return the new partition point
      */
-    private static int partition (short[] A, int p, int r, MutableTable t) {
+    private int partition (short[] A, int p, int r, MutableTable t) {
         short x = A[p];
         int i = p - 1;
         int j = r + 1;
@@ -719,9 +878,11 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
             } while (A[i] < x);
             if (i < j) {
                 if (t == null) {
-                    short temp = A[i];
+                    /*short temp = A[i];
                     A[i] = A[j];
                     A[j] = temp;
+					*/
+					swapRows(i, j);
                 }
                 else
                     t.swapRows(i, j);
@@ -730,5 +891,21 @@ final public class ShortColumn extends AbstractColumn implements NumericColumn {
                 return  j;
         }
     }
+
+	public void setValueToMissing(int row) {
+		missing[row] = true;
+	}
+
+	public void setValueToEmpty(int row) {
+		empty[row] = true;
+	}
+
+	public boolean isValueMissing(int row) {
+		return missing[row];
+	}
+
+	public boolean isValueEmpty(int row) {
+		return empty[row];
+	}
 }
 /*ShortColumn*/

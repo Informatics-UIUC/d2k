@@ -16,10 +16,13 @@ import java.util.*;
  */
 final public class LongColumn extends AbstractColumn implements NumericColumn {
 
-	static final long serialVersionUID = -7647384917759605382L;
+	//static final long serialVersionUID = -7647384917759605382L;
+	static final long serialVersionUID = 5984128029247050964L;
 
     private long min, max;
-    private static long emptyValue = Long.MIN_VALUE;
+    //private static long emptyValue = Long.MIN_VALUE;
+	//private long emptyValue;
+	//private long missingValue;
 
     /** holds LongColumn's internal data rep */
     private long[] internal = null;
@@ -39,6 +42,10 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
         internal = new long[capacity];
       setIsScalar(true);
       type = ColumnTypes.LONG;
+	  setScalarMissingValue(new Long(Long.MIN_VALUE));
+	  setScalarEmptyValue(new Long(Long.MAX_VALUE));
+	  setNominalMissingValue(Long.toString(Long.MIN_VALUE));
+	  setNominalEmptyValue(Long.toString(Long.MAX_VALUE));
     }
 
     /**
@@ -49,6 +56,10 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
       internal = vals;
       setIsScalar(true);
       type = ColumnTypes.LONG;
+	  setScalarMissingValue(new Long(Long.MIN_VALUE));
+	  setScalarEmptyValue(new Long(Long.MAX_VALUE));
+	  setNominalMissingValue(Long.toString(Long.MIN_VALUE));
+	  setNominalEmptyValue(Long.toString(Long.MAX_VALUE));
     }
 
     /**
@@ -77,6 +88,10 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
             newCol.setLabel(getLabel());
             newCol.setComment(getComment());
             //newCol.setType(getType());
+			newCol.setScalarEmptyValue(getScalarEmptyValue());
+			newCol.setScalarMissingValue(getScalarMissingValue());
+			newCol.setNominalEmptyValue(getNominalEmptyValue());
+			newCol.setNominalMissingValue(getNominalMissingValue());
             return  newCol;
         }
     }
@@ -93,7 +108,7 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
     public int getNumEntries () {
         int numEntries = 0;
         for (int i = 0; i < internal.length; i++)
-            if (internal[i] != emptyValue)
+            if (!isValueMissing(i) && !isValueEmpty(i))
                 numEntries++;
         return  numEntries;
     }
@@ -146,7 +161,7 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
      Sets the value which indicates an empty entry.
      This can by any subclass of Number
      @param emptyVal the value to which an empty entry is set
-     */
+     /
     public void setEmptyValue (Number emptyVal) {
         emptyValue = ((Number)emptyVal).longValue();
     }
@@ -154,7 +169,7 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
     /**
      Gets the value which indicates an empty entry.
      @return the value of an empty entry wrapped in a subclass of Number
-     */
+     /
     public Number getEmptyValue () {
         return  new Long(emptyValue);
     }
@@ -396,10 +411,12 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
     private void initRange () {
         max = min = internal[0];
         for (int i = 1; i < internal.length; i++) {
-            if (internal[i] > max)
-                max = internal[i];
-            if (internal[i] < min)
-                min = internal[i];
+			if(!isValueMissing(i) && !isValueEmpty(i)) {
+            	if (internal[i] > max)
+                	max = internal[i];
+            	if (internal[i] < min)
+                	min = internal[i];
+			}
         }
     }
 
@@ -432,6 +449,10 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
         LongColumn lc = new LongColumn(subset);
         lc.setLabel(getLabel());
         lc.setComment(getComment());
+		lc.setScalarEmptyValue(getScalarEmptyValue());
+		lc.setScalarMissingValue(getScalarMissingValue());
+		lc.setNominalEmptyValue(getNominalEmptyValue());
+		lc.setNominalMissingValue(getNominalMissingValue());
         return  lc;
     }
 
@@ -569,6 +590,10 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
         LongColumn lc = new LongColumn(newInternal);
         lc.setComment(getComment());
         lc.setLabel(getLabel());
+		lc.setScalarEmptyValue(getScalarEmptyValue());
+		lc.setScalarMissingValue(getScalarMissingValue());
+		lc.setNominalEmptyValue(getNominalEmptyValue());
+		lc.setNominalMissingValue(getNominalMissingValue());
         return  lc;
     }
 
@@ -577,20 +602,29 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
      are the same, greater than zero if element is greater,
     and less than zero if element is less.
      @param element the object to be passed in should be a subclass of Number
-     @param pos the position of the element in Column to be compared with
-     @return a value representing the relationship- >, <, or == 0
+     @param pos the position of the element in Column to be compared with @return a value representing the relationship- >, <, or == 0
      */
     public int compareRows (Object element, int pos) {
         long d1 = ((Number)element).longValue();
         long d2 = internal[pos];
-        if (d1 == emptyValue) {
-            if (d2 == emptyValue)
+        if (d1 == scalarEmptyValue) {
+            if (d2 == scalarEmptyValue)
                 return  0;
             else
                 return  -1;
         }
-        else if (d2 == emptyValue)
+        else if (d2 == scalarEmptyValue)
             return  1;
+
+		if(d1 == scalarMissingValue) {
+			if(d2 == scalarMissingValue)
+				return 0;
+			else
+				return -1;
+		}
+		else if(d2 == scalarMissingValue)
+			return 1;
+
         if (d1 > d2)
             return  1;
         else if (d1 < d2)
@@ -609,14 +643,24 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
     public int compareRows (int pos1, int pos2) {
         long d1 = internal[pos1];
         long d2 = internal[pos2];
-        if (d1 == emptyValue) {
-            if (d2 == emptyValue)
+        if (d1 == scalarEmptyValue) {
+            if (d2 == scalarEmptyValue)
                 return  0;
             else
                 return  -1;
         }
-        else if (d2 == emptyValue)
+        else if (d2 == scalarEmptyValue)
             return  1;
+
+		if(d1 == scalarMissingValue) {
+			if(d2 == scalarMissingValue)
+				return 0;
+			else
+				return -1;
+		}
+		else if(d2 == scalarMissingValue)
+			return 1;
+
         if (d1 > d2)
             return  1;
         else if (d1 < d2)
@@ -740,5 +784,22 @@ final public class LongColumn extends AbstractColumn implements NumericColumn {
                 return  j;
         }
     }
+
+	public void setValueToMissing(int row) {
+		setDouble(scalarMissingValue, row);
+	}
+
+	public void setValueToEmpty(int row) {
+		setDouble(scalarEmptyValue, row);
+	}
+
+	public boolean isValueMissing(int row) {
+		return getDouble(row) == scalarMissingValue;
+	}
+
+	public boolean isValueEmpty(int row) {
+		return getDouble(row) == scalarEmptyValue;
+	}
+
 }
 /*LongColumn*/

@@ -50,7 +50,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
             else if (col instanceof FloatColumn)
                 col = new FloatColumn(col.getNumRows());
             else if (col instanceof StringColumn)
-                col = new StringColumn(col.getNumRows(), true);
+                col = new StringColumn(col.getNumRows());
 			else if(col instanceof StringObjectColumn)
 				col = new StringObjectColumn(col.getNumRows());
             //else if (col instanceof ByteArrayColumn)

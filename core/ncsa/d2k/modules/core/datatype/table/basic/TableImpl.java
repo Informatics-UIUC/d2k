@@ -16,10 +16,10 @@ import java.util.*;
  * <br>
  */
 public class TableImpl extends AbstractTable implements MutableTable {
+	//static final long serialVersionUID = 2152647679198922423L;
+	static final long serialVersionUID = -2629248420114547112L;
 
-	static final long serialVersionUID = 2152647679198922423L;
-
-   private static TableFactory tableFactory = DefaultTableFactory.getInstance();
+   	private static TableFactory tableFactory = DefaultTableFactory.getInstance();
 
     protected Column[] columns = null;
 
@@ -1336,4 +1336,45 @@ public class TableImpl extends AbstractTable implements MutableTable {
     public ArrayList getTransformations () {
         return  transformations;
     }
+
+	public boolean isValueMissing(int row, int col) {
+		return getColumn(col).isValueMissing(row);
+	}
+	public boolean isValueEmpty(int row, int col) {
+		return getColumn(col).isValueEmpty(row);
+	}
+
+	public void setValueToMissing(int row, int col) {
+		getColumn(col).setValueToMissing(row);
+	}
+
+	public void setValueToEmpty(int row, int col) {
+		getColumn(col).setValueToEmpty(row);
+	}
+
+	public Number getScalarMissingValue(int col) {
+		return getColumn(col).getScalarMissingValue();
+	}
+	public void setScalarMissingValue(Number val, int col) {
+		getColumn(col).setScalarMissingValue(val);
+	}
+	public String getNominalMissingValue(int col) {
+		return getColumn(col).getNominalMissingValue();
+	}
+	public void setNominalMissingValue(String val, int col) {
+		getColumn(col).setNominalMissingValue(val);
+	}
+
+	public Number getScalarEmptyValue(int col) {
+		return getColumn(col).getScalarEmptyValue();
+	}
+	public void setScalarEmptyValue(Number val, int col) {
+		getColumn(col).setScalarEmptyValue(val);
+	}
+	public String getNominalEmptyValue(int col) {
+		return getColumn(col).getNominalEmptyValue();
+	}
+	public void setNominalEmptyValue(String val, int col) {
+		getColumn(col).setNominalEmptyValue(val);
+	}
 }

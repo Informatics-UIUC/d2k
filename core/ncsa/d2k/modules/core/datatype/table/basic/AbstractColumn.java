@@ -10,13 +10,27 @@ import java.util.*;
  */
 abstract public class AbstractColumn implements Column {
 
-	static final long serialVersionUID = -2585038024480240364L;
+	//static final long serialVersionUID = -2585038024480240364L;
+
+	static final long serialVersionUID = -213911595597217168L;
 
 	private String label;
 	private String comment;
 	private boolean isNominal;
 	private boolean isScalar;
 	protected int type;
+
+	protected String nominalEmptyValue;
+	protected String nominalMissingValue;
+	protected double scalarEmptyValue;
+	protected double scalarMissingValue;
+
+	protected AbstractColumn() {
+		setNominalEmptyValue(".");
+		setNominalMissingValue("?");
+		setScalarMissingValue(new Double(Double.NEGATIVE_INFINITY));
+		setScalarEmptyValue(new Double(Double.POSITIVE_INFINITY));
+	}
 
 	/**
 		Get the label associated with this Column.
@@ -108,4 +122,66 @@ abstract public class AbstractColumn implements Column {
         // now call remove by index to remove the rows
         removeRowsByIndex(toRemove);
     }
+
+	/*
+	*/
+	public String getNominalMissingValue() {
+		return nominalMissingValue;
+	}
+
+	public void setNominalMissingValue(String s) {
+		nominalMissingValue = s;
+	}
+
+	public Number getScalarMissingValue() {
+		return new Double(scalarMissingValue);
+	}
+
+	public void setScalarMissingValue(Number val) {
+		scalarMissingValue = val.doubleValue();
+	}
+
+	public Number getScalarEmptyValue() {
+		return new Double(scalarEmptyValue);
+	}
+
+	public void setScalarEmptyValue(Number val) {
+		scalarEmptyValue = val.doubleValue();
+	}
+
+	public String getNominalEmptyValue() {
+		return nominalEmptyValue;
+	}
+
+	public void setNominalEmptyValue(String s) {
+		nominalEmptyValue = s;
+	}
+
+	public boolean isValueMissing(int row) {
+		if(getIsScalar())
+			return getDouble(row) == scalarMissingValue;
+		else
+			return getString(row).equals(nominalMissingValue);
+	}
+
+	public boolean isValueEmpty(int row) {
+		if(getIsScalar())
+			return getDouble(row) == scalarEmptyValue;
+		else
+			return getString(row).equals(nominalMissingValue);
+	}
+
+	public void setValueToMissing(int row) {
+		if(getIsScalar())
+			setDouble(scalarMissingValue, row);
+		else
+			setString(nominalMissingValue, row);
+	}
+
+	public void setValueToEmpty(int row) {
+		if(getIsScalar())
+			setDouble(scalarEmptyValue, row);
+		else
+			setString(nominalEmptyValue, row);
+	}
 }

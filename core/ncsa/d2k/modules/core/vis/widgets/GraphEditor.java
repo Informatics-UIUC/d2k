@@ -375,7 +375,6 @@ public class GraphEditor extends JPanel implements ActionListener {
 				graph = new ScatterPlot(table, set, settings);
 			}
 			else if (type == LINE_GRAPH) {
-				System.out.println("JOE");
 				graph = new LineGraph(table, set, settings);
 			}
 			else if (type == LINEAR_REGRESSION) {

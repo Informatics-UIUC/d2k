@@ -14,6 +14,7 @@ import java.io.*;
 import ncsa.d2k.modules.core.vis.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.util.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.gui.*;
 import ncsa.gui.*;
@@ -58,9 +59,10 @@ public class PCView extends JUserPane implements ActionListener, Printable  {
 	private static final String printicon = File.separator+"images"+File.separator+"printit.gif";
 	private static final String tableicon = File.separator+"images"+File.separator+"table.gif";
 	private static final String filtericon = File.separator+"images"+File.separator+"filter.gif";
+	private static final String helpicon = File.separator+"images"+File.separator+"help.gif";
 	private static final String EMPTY_STRING = " ";
 
-	private static final Dimension buttonsize = new Dimension(25, 25);
+	private static final Dimension buttonsize = new Dimension(22, 22);
 
 	private static final HashMap uniqueValues(Table t, int i) {
 		HashMap hm = new HashMap();
@@ -98,6 +100,7 @@ public class PCView extends JUserPane implements ActionListener, Printable  {
 		private JToggleButton zoom;
 		private JButton showTable;
 		private JButton printButton;
+		private JButton helpButton;
 		private JCheckBoxMenuItem useAntialias;
 		private JMenuItem miClearSelected;
 		private ColorMenuItem miSelectedColor;
@@ -316,12 +319,30 @@ public class PCView extends JUserPane implements ActionListener, Printable  {
 			printButton.addActionListener(this);
 			printButton.setToolTipText("Print");
 
+			im = null;
+			icon = null;
+			im = module.getImage(helpicon);
+
+			if(im != null)
+				icon = new ImageIcon(im);
+			if(icon != null) {
+				helpButton = new JButton(icon);
+				helpButton.setMaximumSize(buttonsize);
+				helpButton.setPreferredSize(buttonsize);
+			}
+			else
+				helpButton = new JButton("H");
+			helpButton.addActionListener(this);
+			helpButton.setToolTipText("Help");
+
 			JPanel bp = new JPanel();
+			bp.setLayout(new GridLayout(1, 6));
 			bp.add(refreshButton);
 			bp.add(filterButton);
 			bp.add(printButton);
 			bp.add(zoom);
 			bp.add(showTable);
+			bp.add(helpButton);
 
 			JPanel bq = new JPanel();
 			bq.setLayout(new BoxLayout(bq, BoxLayout.Y_AXIS));
@@ -555,7 +576,7 @@ public class PCView extends JUserPane implements ActionListener, Printable  {
 				ma.setPreferredSize(new Dimension(wid, hei));
 				jsp.revalidate();
 			}
-			else if(src == helpItem)
+			else if(src == helpItem || src == helpButton)
 				helpWindow.setVisible(true);
 		}
 

@@ -3,246 +3,251 @@ package ncsa.d2k.modules.core.datatype.table.basic;
 import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
+import java.util.*;
 
 /**
- * A TextualColumn that keeps its data as a continuous array of chars.  This
- * minimizes the space requirements to hold the data.  The data is kept as a
- * buffer of chars with a secondary array of pointers into the buffer.
- * <br><br>
- * This column is efficient in storing and retrieving textual data.  Insertion
- * and deletion methods may require an expansion or compaction of the internal
- * buffer.
- * <br><br>
- * The buffer will allocate extra space when an insertion requires more
- * space than the size of the buffer.  This extra space can be removed using
- * the trim() method.
- * <br><br>
- * The buffer will compact itself when a row is removed from this column.  The
- * space freed up from the removal will not be freed until trim() is called.
+ *
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2002</p>
+ * <p>Company: </p>
+ * @author unascribed
+ * @version 1.0
  */
-final public class StringColumn extends ContinuousCharArrayColumn {
+public class StringColumn extends AbstractColumn implements TextualColumn {
 
-	static final long serialVersionUID = 7989129781969763787L;
+	static final long serialVersionUID = -8586278089615271574L;
 
-	/**
-	 * Create a new StringColumn
-	 * @param initialLength the initial number of rows
-	 * @param initialSize the initial size of the internal buffer
-	 */
-	public StringColumn(int initialLength, int initialSize) {
-		super(initialLength, initialSize, false);
-		type = ColumnTypes.STRING;
-	}
+	/** a map of integer values to Strings */
+	HashMap setOfValues;
+	/** the unique strings contained in the table */
+	String[] values;
+	/** the int value for each row.  the int is an index into the values array */
+	int[] rowIndicies;
 
-	/**
-	 * Create a new StringColumn
-	 * @param initialLength the initial number of rows
-	 * @param initialSize the initial size of the internal buffer
-	 */
-	public StringColumn(int initialLength, int initialSize, boolean fill) {
-		super(initialLength, initialSize, fill);
-		type = ColumnTypes.STRING;
-	}
-
-	/**
-	 * Create a new StringColumn with the specified number of rows and
-	 * the default initial size for the internal buffer.
-	 * @param initialLength the initial number of rows
-	 */
-	public StringColumn(int initialLength) {
-		this(initialLength, DEFAULT_INITIAL_SIZE, false);
-		type = ColumnTypes.STRING;
-	}
-
-	/**
-	 * Create a new StringColumn with the specified number of rows and
-	 * the default initial size for the internal buffer.
-	 * @param initialLength the initial number of rows
-	 */
-	public StringColumn(int initialLength, boolean fill) {
-		this(initialLength, DEFAULT_INITIAL_SIZE, fill);
-		type = ColumnTypes.STRING;
-	}
-
-	/**
-	 * Create a new StringColumn with zero rows and default size
-	 * for the internal buffer
-	 */
 	public StringColumn() {
-		this(0, DEFAULT_INITIAL_SIZE);
+		this(0);
+	}
+
+	public StringColumn(int numRows) {
+		setOfValues = new HashMap();
+		values = new String[0];
+		rowIndicies = new int[numRows];
 		type = ColumnTypes.STRING;
 	}
 
-	public StringColumn(boolean fill) {
-		this(0, DEFAULT_INITIAL_SIZE, fill);
+	public StringColumn(String[] data) {
+		rowIndicies = new int[data.length];
+		for(int i = 0; i < data.length; i++) {
+			setString(data[i], i);
+		}
 		type = ColumnTypes.STRING;
 	}
 
 	/**
-	 * Create a new StringColumn with the specified data
-	 * @param data the internal buffer
-	 * @param pointers the pointers into the internal buffer
-	 /
-	public StringColumn(char[] data, int[] pointers) {
-		super(data, pointers);
-	}*/
-
-	/**
-	 * Create a new StringColumn and insert all items in intern
-	 * @param intern the Strings to insert
+	 * A copy constructor.
+	 * @param rows
+	 * @param vals
+	 * @param set
 	 */
-	public StringColumn(String [] intern) {
-		this();
-		for(int i = 0; i < intern.length; i++)
-			setString(intern[i], i);
-		type = ColumnTypes.STRING;
+	private StringColumn(int[] rows, String[] vals, HashMap set) {
+		setOfValues = set;
+		values = vals;
+		rowIndicies = rows;
+	}
+
+	private int addValue(String newVal) {
+		String [] tmp = new String[values.length+1];
+		System.arraycopy(values, 0, tmp, 0, values.length);
+		tmp[tmp.length-1] = newVal;
+
+		setOfValues.put(newVal, new Integer((int)(tmp.length-1)));
+		values = tmp;
+		return (int)(tmp.length-1);
 	}
 
 	/**
-	 * Create an exact copy of this column.
-	 * @return A copy of this column
+	 * Currently we just leave removed values in the values array.
+	 * Eventually we should compact the array, but this will require shuffling
+	 * the rowIndicies...??? will it??
+	 * @param toRemove
 	 */
-	public Column copy() {
-        StringColumn bac;
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(this);
-            byte buf[] = baos.toByteArray();
-            oos.close();
-            ByteArrayInputStream bais = new ByteArrayInputStream(buf);
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            bac = (StringColumn)ois.readObject();
-            ois.close();
-            return  bac;
-        } catch (Exception e) {
-            bac = new StringColumn(getNumRows());
-            for (int i = 0; i < getNumRows(); i++) {
-				String orig = getString(i);
-                bac.setString(new String(orig), i);
-            }
-            bac.setLabel(getLabel());
-            bac.setComment(getComment());
-            return  bac;
+	private void removeValue(String toRemove) {
+		;
+	}
+
+	public void trim() {}
+
+	public int getNumRows() {
+		return rowIndicies.length;
+	}
+
+	public int getNumEntries() {
+		return rowIndicies.length;
+	}
+
+	public String getString(int row) {
+		return values[rowIndicies[row]];
+	}
+
+	public void setString(String s, int row) {
+		if(!setOfValues.containsKey(s)) {
+			int r = addValue(s);
+			rowIndicies[row] = r;
+		}
+		else {
+			Integer r = (Integer)setOfValues.get(s);
+			rowIndicies[row] = r.intValue();
+		}
+	}
+
+	public double getDouble(int row) {
+		return Double.parseDouble(getString(row));
+	}
+
+	public void setDouble(double d, int row) {
+		setString(Double.toString(d), row);
+	}
+
+	public int getInt(int row) {
+		return Integer.parseInt(getString(row));
+	}
+
+	public void setInt(int i, int row) {
+		setString(Integer.toString(i), row);
+	}
+
+	public short getShort(int row) {
+		return Short.parseShort(getString(row));
+	}
+
+	public void setShort(short s, int row) {
+		setString(Short.toString(s), row);
+	}
+
+	public float getFloat(int row) {
+		return Float.parseFloat(getString(row));
+	}
+
+	public void setFloat(float f, int row) {
+		setString(Float.toString(f), row);
+	}
+
+	public long getLong(int row) {
+		return Long.parseLong(getString(row));
+	}
+
+	public void setLong(long l, int row) {
+		setString(Long.toString(l), row);
+	}
+
+	public char[] getChars(int row) {
+		return getString(row).toCharArray();
+	}
+
+	public void setChars(char[] c, int row) {
+		setString(new String(c), row);
+	}
+
+	public byte[] getBytes(int row) {
+		return getString(row).getBytes();
+	}
+
+	public void setBytes(byte[] b, int row) {
+		setString(new String(b), row);
+	}
+
+	public char getChar(int row) {
+		return getString(row).toCharArray()[0];
+	}
+
+	public void setChar(char c, int row) {
+		char[] ar = {c};
+		setString(new String(ar), row);
+	}
+
+	public byte getByte(int row) {
+		return getString(row).getBytes()[0];
+	}
+
+	public void setByte(byte b, int row) {
+		byte[] ar = {b};
+		setString(new String(ar), row);
+	}
+
+	public void setBoolean(boolean b, int row) {
+		setString(new Boolean(b).toString(), row);
+	}
+
+	public boolean getBoolean(int row) {
+		return Boolean.valueOf(getString(row)).booleanValue();
+	}
+
+	public void setObject(Object o, int row) {
+		setString(o.toString(), row);
+	}
+
+	public Object getObject(int row) {
+		return getString(row);
+	}
+
+	public void sort() {
+		sort(null);
+	}
+
+	public void sort(MutableTable t) {
+        rowIndicies = doSort(rowIndicies, 0, rowIndicies.length - 1, t);
+	}
+	public void sort(MutableTable t, int begin, int end) {
+   		if (end > rowIndicies.length -1) {
+       		System.err.println(" end index was out of bounds");
+       		end = rowIndicies.length -1;
+   		}
+   		rowIndicies = doSort(rowIndicies, begin, end, t);
+	}
+
+    /**
+     * Implement the quicksort algorithm.  Partition the array and
+     * recursively call doSort.
+     * @param A the array to sort
+     * @param p the beginning index
+     * @param r the ending index
+     * @param t the Table to swap rows for
+    * @return a sorted array of floats
+     */
+    private int[] doSort (int[] A, int p, int r, MutableTable t) {
+        if (p < r) {
+            int q = partition(A, p, r, t);
+            doSort(A, p, q, t);
+            doSort(A, q + 1, r, t);
         }
-	}
-
-	public Object getRow(int i) {
-		return getString(i);
-	}
-
-	public Object getObject(int i) {
-		return getString(i);
-	}
-
-    /**
-     * Set the entry at pos to be newEntry.  If newEntry is a
-	 * String, set it.  If newEntry is a byte[] or char[],
-	 * convert them to String and insert.  Otherwise, call to
-	 * toString() method on o and insert that String.
-     * @param o the new item
-     * @param row the position
-     */
-    public void setObject (Object o, int row) {
-        if (o instanceof byte[])
-			setBytes((byte[])o, row);
-        else if (o instanceof char[])
-			setChars((char[])o, row);
-        else
-			setChars(o.toString().toCharArray(), row);
+        return  A;
     }
-
-    /**
-     Sets the entry at the given position to newEntry
-     @param newEntry a new entry
-     @param pos the position to set
-     */
-    public void setRow (Object newEntry, int pos) {
-		//insertChars((char[])newEntry, pos);
-		/*if(newEntry instanceof byte[])
-			setBytes((byte[])newEntry, pos);
-		else if(newEntry instanceof char[])
-			setChars((char[])newEntry, pos);
-			//insertBytes(new String((char[])newEntry).getBytes(), pos);
-		else
-			//insertBytes(newEntry.toString().getBytes(), pos);
-			setChars(newEntry.toString().toCharArray(), pos);
-		*/
-		setObject(newEntry, pos);
-    }
-
-    /**
-     Appends the new entry to the end of the Column.
-     @param newEntry a new entry
-     */
-    public void addRow (Object newEntry) {
-		if(newEntry instanceof byte[])
-			appendChars(toCharArray((byte[])newEntry));
-		else if(newEntry instanceof char[])
-			appendChars((char[])newEntry);
-		else
-			appendChars(newEntry.toString().toCharArray());
-    }
-
-    /**
-     Removes an entry from the Column, at pos.
-     All entries from pos+1 will be moved back 1 position
-     @param row the position to remove
-     @return the removed object
-     */
-    public Object removeRow (int row) {
-		char[] removed = (char[])super.removeRow(row);
-		return new String(removed);
-    }
-
-    /**
-     Compare the values of the element passed in and pos. Return 0 if they
-     are the same, greater than 0 if element is greater, and less than 0 if element is less.
-     @param element the element to be passed in and compared
-     @param pos the position of the element in Column to be compare with
-     @return a value representing the relationship- >, <, or == 0
-     */
-    public int compareRows (Object element, int pos) {
-		return compareStrings(element.toString(), getString(pos));
-    }
-
-    /**
-     Compare pos1 and pos2 positions in the Column. Return 0 if they
-     are the same, greater than 0 if pos1 is greater, and less than 0 if pos1 is less.
-     @param pos1 the position of the first element to compare
-     @param pos2 the position of the second element to compare
-     @return a value representing the relationship- >, <, or == 0
-     */
-    public int compareRows (int pos1, int pos2) {
-		return compareStrings(getString(pos1), getString(pos2));
-    }
-
-	private int compareStrings(String s1, String s2) {
-		return s1.compareTo(s2);
-	}
 
     /**
      Rearrange the subarray A[p..r] in place.
      @param A the array to rearrange
      @param p the beginning index
      @param r the ending index
-     @param t the VerticalTable to swap rows for
-	 @return the new partition point
+     @param t the Table to swap rows for
+    @return the new partition point
      */
-    protected int partition (/*byte[] A,*/ int p, int r, MutableTable t) {
-        //String x = A[p];
+    private int partition (int[] A, int p, int r, MutableTable t) {
+        int x = A[p];
         int i = p - 1;
         int j = r + 1;
         while (true) {
             do {
                 j--;
-            } while (compareRows(/*A[j]*/j, p) > 0);
+            } //while (A[j] > x);
+			while(compareRows(j, p) > 0);
             do {
                 i++;
-            } while (compareRows(/*A[i]*/i, p) < 0);
+            } //while (A[i] < x);
+			while(compareRows(i, p) < 0);
             if (i < j) {
                 if (t == null) {
-                    //byte[] temp = A[i];
+                    //short temp = A[i];
                     //A[i] = A[j];
                     //A[j] = temp;
 					swapRows(i, j);
@@ -254,4 +259,195 @@ final public class StringColumn extends ContinuousCharArrayColumn {
                 return  j;
         }
     }
+
+
+	public int compareRows(Object o, int row) {
+		return compareStrings(o.toString(), getString(row));
+	}
+
+	public int compareRows(int r1, int r2) {
+		return compareStrings(getString(r1), getString(r2));
+	}
+
+	private static int compareStrings(String s1, String s2) {
+		return s1.compareTo(s2);
+	}
+
+	public void setNumRows(int nr) {
+		int[] tmprow = new int[nr];
+		if(rowIndicies == null) {
+			rowIndicies = tmprow;
+			return;
+		}
+
+		if(nr < rowIndicies.length) {
+			System.arraycopy(rowIndicies, 0, tmprow, 0, tmprow.length);
+		}
+		else {
+			System.arraycopy(rowIndicies, 0, tmprow, 0, rowIndicies.length);
+		}
+		rowIndicies = tmprow;
+	}
+
+	public Object getRow(int row) {
+		return getString(row);
+	}
+
+	public void setRow(Object o, int row) {
+		setObject(o, row);
+	}
+
+	public Column getSubset(int pos, int len) {
+        if ((pos + len) > rowIndicies.length)
+            throw  new ArrayIndexOutOfBoundsException();
+        int[] subset = new int[len];
+        System.arraycopy(rowIndicies, pos, subset, 0, len);
+		StringColumn ic = new StringColumn(subset, values, setOfValues);
+        ic.setLabel(getLabel());
+        ic.setComment(getComment());
+		ic.setScalarEmptyValue(getScalarEmptyValue());
+		ic.setScalarMissingValue(getScalarMissingValue());
+		ic.setNominalEmptyValue(getNominalEmptyValue());
+		ic.setNominalMissingValue(getNominalMissingValue());
+        return  ic;
+	}
+
+	public Column reorderRows(int[] newOrder) {
+        int[] newInternal = null;
+        if (newOrder.length == rowIndicies.length) {
+            newInternal = new int[rowIndicies.length];
+            for (int i = 0; i < rowIndicies.length; i++)
+                newInternal[i] = rowIndicies[newOrder[i]];
+        }
+        else
+            throw  new ArrayIndexOutOfBoundsException();
+        StringColumn ic = new StringColumn(newInternal, values, setOfValues);
+        ic.setLabel(getLabel());
+        ic.setComment(getComment());
+		ic.setScalarEmptyValue(getScalarEmptyValue());
+		ic.setScalarMissingValue(getScalarMissingValue());
+		ic.setNominalEmptyValue(getNominalEmptyValue());
+		ic.setNominalMissingValue(getNominalMissingValue());
+        return  ic;
+	}
+
+	public void swapRows(int pos1, int pos2) {
+		int tmp = rowIndicies[pos1];
+		rowIndicies[pos1] = rowIndicies[pos2];
+		rowIndicies[pos2] = tmp;
+	}
+
+	public Column copy() {
+        StringColumn newCol = null;
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(this);
+            byte buf[] = baos.toByteArray();
+            oos.close();
+            ByteArrayInputStream bais = new ByteArrayInputStream(buf);
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            newCol = (StringColumn)ois.readObject();
+            ois.close();
+            return  newCol;
+        } catch (Exception e) {
+			int[] tmprow = new int[rowIndicies.length];
+			String[] vals = new String[values.length];
+			HashMap set = new HashMap();
+            for (int i = 0; i < rowIndicies.length; i++)
+				tmprow[i] = rowIndicies[i];
+			for(int i = 0; i < vals.length; i++)
+				vals[i] = values[i];
+			Iterator i = setOfValues.keySet().iterator();
+			while(i.hasNext()) {
+				Object key = i.next();
+				Object val = setOfValues.get(key);
+				set.put(key, val);
+			}
+
+			newCol = new StringColumn(tmprow, vals, set);
+
+            newCol.setLabel(getLabel());
+            newCol.setComment(getComment());
+			newCol.type = getType();
+			newCol.setScalarEmptyValue(getScalarEmptyValue());
+			newCol.setScalarMissingValue(getScalarMissingValue());
+			newCol.setNominalEmptyValue(getNominalEmptyValue());
+			newCol.setNominalMissingValue(getNominalMissingValue());
+            return  newCol;
+        }
+
+	}
+
+	public Object removeRow(int pos) {
+        int removed = rowIndicies[pos];
+        System.arraycopy(rowIndicies, pos + 1, rowIndicies, pos, rowIndicies.length -
+                (pos + 1));
+        int newInternal[] = new int[rowIndicies.length - 1];
+        System.arraycopy(rowIndicies, 0, newInternal, 0, rowIndicies.length - 1);
+        rowIndicies = newInternal;
+        return values[removed];
+	}
+
+	public void addRow(Object o) {
+		int idx;
+		if(!setOfValues.containsKey(o.toString()))
+			idx = addValue(o.toString());
+		else {
+			Integer r = (Integer)setOfValues.get(o.toString());
+			idx = r.intValue();
+		}
+
+        int last = rowIndicies.length;
+        int[] newInternal = new int[rowIndicies.length + 1];
+        System.arraycopy(rowIndicies, 0, newInternal, 0, rowIndicies.length);
+        newInternal[last] = idx;
+        rowIndicies = newInternal;
+	}
+
+	public void insertRow(Object newEntry, int pos) {
+
+        int[] newInternal = new int[rowIndicies.length + 1];
+        if (pos > getNumRows()) {
+            addRow(newEntry);
+            return;
+        }
+        if (pos == 0)
+            System.arraycopy(rowIndicies, 0, newInternal, 1, getNumRows());
+        else {
+            System.arraycopy(rowIndicies, 0, newInternal, 0, pos);
+            System.arraycopy(rowIndicies, pos, newInternal, pos + 1,
+				rowIndicies.length - pos);
+        }
+
+		int idx;
+		if(!setOfValues.containsKey(newEntry.toString()))
+			idx = addValue(newEntry.toString());
+		else {
+			Integer r = (Integer)setOfValues.get(newEntry.toString());
+			idx = r.intValue();
+		}
+
+        newInternal[pos] = idx;
+        rowIndicies = newInternal;
+	}
+
+	public void removeRowsByIndex(int[] indices) {
+        HashSet toRemove = new HashSet(indices.length);
+        for (int i = 0; i < indices.length; i++) {
+            Integer id = new Integer(indices[i]);
+            toRemove.add(id);
+        }
+        int newInternal[] = new int[rowIndicies.length - indices.length];
+        int newIntIdx = 0;
+        for (int i = 0; i < getNumRows(); i++) {
+            // check if this row is in the list of rows to remove
+            // if this row is not in the list, copy it into the new internal
+         if(!toRemove.contains(new Integer(i))) {
+                newInternal[newIntIdx] = rowIndicies[i];
+                newIntIdx++;
+            }
+        }
+        rowIndicies = newInternal;
+	}
 }

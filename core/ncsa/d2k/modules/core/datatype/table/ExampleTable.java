@@ -25,7 +25,7 @@ import java.util.*;
  */
 public interface ExampleTable extends Table {
 
-  static final long serialVersionUID = 6037200533380375292L;
+	static final long serialVersionUID = 6037200533380375292L;
 
     //////////////  Input, output, test and train. ///////////////
     /**

@@ -154,6 +154,10 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
             }
             bac.setLabel(getLabel());
             bac.setComment(getComment());
+			bac.setScalarEmptyValue(getScalarEmptyValue());
+			bac.setScalarMissingValue(getScalarMissingValue());
+			bac.setNominalEmptyValue(getNominalEmptyValue());
+			bac.setNominalMissingValue(getNominalMissingValue());
             return  bac;
         }
 	}
@@ -673,6 +677,10 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
 		cac.setLabel(getLabel());
 		//cac.setType(getType());
 		cac.setComment(getComment());
+		cac.setScalarEmptyValue(getScalarEmptyValue());
+		cac.setScalarMissingValue(getScalarMissingValue());
+		cac.setNominalEmptyValue(getNominalEmptyValue());
+		cac.setNominalMissingValue(getNominalMissingValue());
 		return cac;
     }
 
@@ -895,6 +903,10 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
 		ContinuousCharArrayColumn cac = new ContinuousCharArrayColumn(newinternal, newrowPtrs);
 		cac.setLabel(getLabel());
 		cac.setComment(getComment());
+		cac.setScalarEmptyValue(getScalarEmptyValue());
+		cac.setScalarMissingValue(getScalarMissingValue());
+		cac.setNominalEmptyValue(getNominalEmptyValue());
+		cac.setNominalMissingValue(getNominalMissingValue());
 		return cac;
     }
 
@@ -928,7 +940,7 @@ public class ContinuousCharArrayColumn extends AbstractColumn implements Textual
      * @param b2 the second char array to compare
      * @return -1, 0, 1
      */
-    private int compareChars (char[] b1, char[] b2) {
+    private static int compareChars (char[] b1, char[] b2) {
         if (b1 == null) {
             if (b2 == null)
                 return  0;

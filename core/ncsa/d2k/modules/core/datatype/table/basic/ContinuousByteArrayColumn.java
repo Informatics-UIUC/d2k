@@ -156,6 +156,10 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
             }
             bac.setLabel(getLabel());
             bac.setComment(getComment());
+			bac.setScalarEmptyValue(getScalarEmptyValue());
+			bac.setScalarMissingValue(getScalarMissingValue());
+			bac.setNominalEmptyValue(getNominalEmptyValue());
+			bac.setNominalMissingValue(getNominalMissingValue());
             return  bac;
         }
 	}
@@ -684,6 +688,10 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
 		}
 		cac.setLabel(getLabel());
 		cac.setComment(getComment());
+		cac.setScalarEmptyValue(getScalarEmptyValue());
+		cac.setScalarMissingValue(getScalarMissingValue());
+		cac.setNominalEmptyValue(getNominalEmptyValue());
+		cac.setNominalMissingValue(getNominalMissingValue());
 		return cac;
     }
 
@@ -907,6 +915,10 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
 		ContinuousByteArrayColumn bc = new ContinuousByteArrayColumn(newinternal, newrowPtrs);
 		bc.setLabel(getLabel());
 		bc.setComment(getComment());
+		bc.setScalarEmptyValue(getScalarEmptyValue());
+		bc.setScalarMissingValue(getScalarMissingValue());
+		bc.setNominalEmptyValue(getNominalEmptyValue());
+		bc.setNominalMissingValue(getNominalMissingValue());
 		return bc;
     }
 
@@ -940,7 +952,7 @@ final public class ContinuousByteArrayColumn extends AbstractColumn implements T
      * @param b2 the second byte array to compare
      * @return -1, 0, 1
      */
-    private int compareBytes (byte[] b1, byte[] b2) {
+    private static int compareBytes (byte[] b1, byte[] b2) {
         if (b1 == null) {
             if (b2 == null)
                 return  0;

@@ -4,7 +4,6 @@ import ncsa.d2k.modules.core.datatype.table.*;
 
 import java.io.*;
 import java.util.*;
-//import ncsa.util.*;
 import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
 
 /**
@@ -14,10 +13,14 @@ import ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
  */
 public class BooleanColumn extends AbstractColumn {
 
-	static final long serialVersionUID = -6442288971928484351L;
+	//static final long serialVersionUID = -6442288971928484351L;
+
+	static final long serialVersionUID = -7963304594161482882L;
 
     /** holds BooleanColumn's internal data rep */
     private boolean[] internal = null;
+	private boolean[] missing = null;
+	private boolean[] empty = null;
 
     /**
      * Creates a new, empty <code>BooleanColumn</code>.
@@ -35,6 +38,13 @@ public class BooleanColumn extends AbstractColumn {
         internal = new boolean[capacity];
         setIsNominal(true);
         type = ColumnTypes.BOOLEAN;
+
+		missing = new boolean[internal.length];
+		empty = new boolean[internal.length];
+		for(int i = 0; i < internal.length; i++) {
+			missing[i] = false;
+			empty[i] = false;
+		}
     }
 
     /**
@@ -46,6 +56,13 @@ public class BooleanColumn extends AbstractColumn {
         internal = vals;
         setIsNominal(true);
         type = ColumnTypes.BOOLEAN;
+
+		missing = new boolean[internal.length];
+		empty = new boolean[internal.length];
+		for(int i = 0; i < internal.length; i++) {
+			missing[i] = false;
+			empty[i] = false;
+		}
     }
 
     /**
@@ -76,6 +93,16 @@ public class BooleanColumn extends AbstractColumn {
                 newCol.setBoolean(internal[i], i);
             newCol.setLabel(getLabel());
             newCol.setComment(getComment());
+
+			boolean[] miss = new boolean[internal.length];
+			boolean[] em = new boolean[internal.length];
+			for(int i = 0; i < internal.length; i++) {
+				miss[i] = missing[i];
+				em[i] = empty[i];
+
+			}
+		 	newCol.missing = miss;
+			newCol.empty = em;
             return  newCol;
         }
     }
@@ -100,7 +127,13 @@ public class BooleanColumn extends AbstractColumn {
      * @return               this <code>Column</code>'s number of entries
      */
     public int getNumEntries() {
-        return internal.length;
+        //return internal.length;
+		int ctr = 0;
+		for(int i = 0; i < internal.length; i++) {
+			if(!isValueMissing(i) && !isValueEmpty(i))
+				ctr++;
+		}
+		return ctr;
     }
 
     /**
@@ -114,13 +147,22 @@ public class BooleanColumn extends AbstractColumn {
     public void setNumRows(int newCapacity) {
         if (internal != null) {
             boolean[] newInternal = new boolean[newCapacity];
+			boolean[] newMissing = new boolean[newCapacity];
+			boolean[] newEmpty = new boolean[newCapacity];
             if (newCapacity > internal.length)
                 newCapacity = internal.length;
             System.arraycopy(internal, 0, newInternal, 0, newCapacity);
+			System.arraycopy(missing, 0, newMissing, 0, missing.length);
+			System.arraycopy(empty, 0, newEmpty, 0, empty.length);
             internal = newInternal;
+			missing = newMissing;
+			empty = newEmpty;
         }
-        else
+        else {
             internal = new boolean[newCapacity];
+			missing = new boolean[newCapacity];
+			empty = new boolean[newCapacity];
+		}
     }
 
     /**
@@ -467,8 +509,14 @@ public class BooleanColumn extends AbstractColumn {
         if ((pos + len) > internal.length)
             throw  new ArrayIndexOutOfBoundsException();
         boolean[] subset = new boolean[len];
+		boolean[] newMissing = new boolean[len];
+		boolean[] newEmpty = new boolean[len];
         System.arraycopy(internal, pos, subset, 0, len);
+		System.arraycopy(missing, pos, newMissing, 0, len);
+		System.arraycopy(empty, pos, newEmpty, 0, len);
         BooleanColumn bc = new BooleanColumn(subset);
+		bc.missing = newMissing;
+		bc.empty = newEmpty;
         bc.setLabel(getLabel());
         bc.setComment(getComment());
         return  bc;
@@ -514,9 +562,16 @@ public class BooleanColumn extends AbstractColumn {
     public void addRow (Object newEntry) {
         int last = internal.length;
         boolean[] newInternal = new boolean[internal.length + 1];
+		boolean[] newMissing = new boolean[internal.length + 1];
+		boolean[] newEmpty = new boolean[internal.length + 1];
         System.arraycopy(internal, 0, newInternal, 0, internal.length);
+		System.arraycopy(missing, 0, newMissing, 0, missing.length);
+		System.arraycopy(empty, 0, newEmpty, 0, empty.length);
         newInternal[last] = ((Boolean)newEntry).booleanValue();
+
         internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
     }
 
     /**
@@ -532,10 +587,24 @@ public class BooleanColumn extends AbstractColumn {
         // copy all the items after the item to be removed one position up
         System.arraycopy(internal, pos + 1, internal, pos, internal.length -
                 (pos + 1));
+
+        System.arraycopy(missing, pos + 1, missing, pos, internal.length -
+                (pos + 1));
+
+        System.arraycopy(empty, pos + 1, empty, pos, internal.length -
+                (pos + 1));
+
         // copy the items into a new array
         boolean newInternal[] = new boolean[internal.length - 1];
+		boolean newMissing[] = new boolean[internal.length-1];
+		boolean newEmpty[] = new boolean[internal.length-1];
         System.arraycopy(internal, 0, newInternal, 0, internal.length - 1);
+        System.arraycopy(missing, 0, newMissing, 0, internal.length - 1);
+        System.arraycopy(empty, 0, newEmpty, 0, internal.length - 1);
+
         internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
         return  new Boolean(removed);
     }
 
@@ -551,13 +620,19 @@ public class BooleanColumn extends AbstractColumn {
      * @param pos            the position to insert at
      */
     public void insertRow (Object newEntry, int pos) {
-        boolean[] newInternal = new boolean[internal.length + 1];
         if (pos > getNumRows()) {
             addRow(newEntry);
             return;
         }
-        if (pos == 0)
-            System.arraycopy(internal, 0, newInternal, 1, getNumRows());        /*else if(pos == 1) {
+        boolean[] newInternal = new boolean[internal.length + 1];
+		boolean[] newMissing = new boolean[internal.length + 1];
+		boolean[] newEmpty = new boolean[internal.length + 1];
+        if (pos == 0) {
+            System.arraycopy(internal, 0, newInternal, 1, getNumRows());
+            System.arraycopy(missing, 0, newMissing, 1, getNumRows());
+            System.arraycopy(empty, 0, newEmpty, 1, getNumRows());
+		}
+		/*
          newInternal[0] = internal[0];
          System.arraycopy(internal, 1, newInternal, 2, getCapacity()-2);
          }*/
@@ -565,9 +640,19 @@ public class BooleanColumn extends AbstractColumn {
             System.arraycopy(internal, 0, newInternal, 0, pos);
             System.arraycopy(internal, pos, newInternal, pos + 1, internal.length
                     - pos);
+
+            System.arraycopy(missing, 0, newMissing, 0, pos);
+            System.arraycopy(missing, pos, newMissing, pos + 1, internal.length
+                    - pos);
+
+            System.arraycopy(empty, 0, newEmpty, 0, pos);
+            System.arraycopy(empty, pos, newEmpty, pos + 1, internal.length
+                    - pos);
         }
         newInternal[pos] = ((Boolean)newEntry).booleanValue();
         internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
     }
 
     /**
@@ -578,8 +663,16 @@ public class BooleanColumn extends AbstractColumn {
      */
     public void swapRows (int pos1, int pos2) {
         boolean d1 = internal[pos1];
+		boolean miss = missing[pos1];
+		boolean emp = empty[pos1];
         internal[pos1] = internal[pos2];
         internal[pos2] = d1;
+
+		missing[pos1] = missing[pos2];
+		missing[pos2] = miss;
+
+		empty[pos1] = empty[pos2];
+		empty[pos2] = emp;
     }
 
     /**
@@ -591,14 +684,23 @@ public class BooleanColumn extends AbstractColumn {
      */
     public Column reorderRows (int[] newOrder) {
         boolean[] newInternal = null;
+		boolean[] newMissing = null;
+		boolean[] newEmpty = null;
         if (newOrder.length == internal.length) {
             newInternal = new boolean[internal.length];
-            for (int i = 0; i < internal.length; i++)
+			newMissing = new boolean[internal.length];
+			newEmpty = new boolean[internal.length];
+            for (int i = 0; i < internal.length; i++) {
                 newInternal[i] = internal[newOrder[i]];
+				newMissing[i] = missing[newOrder[i]];
+				newEmpty[i] = empty[newOrder[i]];
+			}
         }
         else
             throw  new ArrayIndexOutOfBoundsException();
         BooleanColumn bc = new BooleanColumn(newInternal);
+		bc.missing = newMissing;
+		bc.empty = newEmpty;
         bc.setLabel(getLabel());
         bc.setComment(getComment());
         return  bc;
@@ -618,6 +720,9 @@ public class BooleanColumn extends AbstractColumn {
             toRemove.add(id);
         }
         boolean newInternal[] = new boolean[internal.length - indices.length];
+        boolean newMissing[] = new boolean[internal.length - indices.length];
+        boolean newEmpty[] = new boolean[internal.length - indices.length];
+
         int newIntIdx = 0;
         for (int i = 0; i < getNumRows(); i++) {
             // check if this row is in the list of rows to remove
@@ -626,10 +731,14 @@ public class BooleanColumn extends AbstractColumn {
             //if (x == null) {
          if(!toRemove.contains(new Integer(i))) {
                 newInternal[newIntIdx] = internal[i];
+				newMissing[newIntIdx] = missing[i];
+				newEmpty[newIntIdx] = empty[i];
                 newIntIdx++;
             }
         }
         internal = newInternal;
+		missing = newMissing;
+		empty = newEmpty;
     }
 
     //////////////////////////////////////
@@ -712,7 +821,7 @@ public class BooleanColumn extends AbstractColumn {
 
     //////////////////////////////////////
 
-    private static boolean[] doSort (boolean[] A, int p, int r, MutableTable t) {
+    private boolean[] doSort (boolean[] A, int p, int r, MutableTable t) {
         if (p < r) {
             int q = partition(A, p, r, t);
             doSort(A, p, q, t);
@@ -721,7 +830,7 @@ public class BooleanColumn extends AbstractColumn {
         return  A;
     }
 
-    private static int partition (boolean[] A, int p, int r, MutableTable t) {
+    private int partition (boolean[] A, int p, int r, MutableTable t) {
         boolean x = A[p];
         int i = p - 1;
         int j = r + 1;
@@ -734,9 +843,11 @@ public class BooleanColumn extends AbstractColumn {
             } while (!A[i] && x); // A[i] < x
             if (i < j) {
                 if (t == null) {
-                    boolean temp = A[i];
+                    /*boolean temp = A[i];
                     A[i] = A[j];
                     A[j] = temp;
+					*/
+					swapRows(i, j);
                 }
                 else
                     t.swapRows(i, j);
@@ -745,6 +856,22 @@ public class BooleanColumn extends AbstractColumn {
                 return  j;
         }
     }
+
+	public void setValueToMissing(int row) {
+		missing[row] = true;
+	}
+
+	public void setValueToEmpty(int row) {
+		empty[row] = true;
+	}
+
+	public boolean isValueMissing(int row) {
+		return missing[row];
+	}
+
+	public boolean isValueEmpty(int row) {
+		return empty[row];
+	}
 
 }
 /* BooleanColumn */

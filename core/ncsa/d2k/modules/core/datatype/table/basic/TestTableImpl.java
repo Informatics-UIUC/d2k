@@ -14,13 +14,14 @@ import java.util.*;
  */
 public final class TestTableImpl extends PredictionTableImpl implements TestTable {
 
-	static final long serialVersionUID = -7408690070856124087L;
+	//static final long serialVersionUID = -7408690070856124087L;
+	static final long serialVersionUID = -3816781677534840220L;
+	
+   	private ExampleTable original;
 
-   private ExampleTable original;
-
-   private TestTableImpl(int i) {
-      super(i);
-   }
+   	private TestTableImpl(int i) {
+      	super(i);
+   	}
 
     /**
      Given an example table, copy it's input columns, and create new

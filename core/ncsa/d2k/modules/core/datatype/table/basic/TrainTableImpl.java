@@ -11,9 +11,10 @@ import java.util.*;
  the getter methods look exactly the same as they do for any other table.
  */
 public final class TrainTableImpl extends ExampleTableImpl implements TrainTable {
-    protected ExampleTable original = null;
+	//static final long serialVersionUID = 3645653836067022357L;
+	static final long serialVersionUID = 1873191678159757973L;
 
-	static final long serialVersionUID = 3645653836067022357L;
+    protected ExampleTable original = null;
 
    TrainTableImpl(int i) {
       super(i);
@@ -178,9 +179,9 @@ public final class TrainTableImpl extends ExampleTableImpl implements TrainTable
       return getNumRows();
    }
 
-   public PredictionTable toPredictionTable() {
+   /*public PredictionTable toPredictionTable() {
       return null;
-   }
+   }*/
 
    ////////////////////////////////////
    // now, TrainTableImpl must override all methods that add, insert, and
