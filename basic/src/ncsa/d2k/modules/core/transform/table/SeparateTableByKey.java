@@ -19,16 +19,20 @@ import java.util.Iterator;
 public class SeparateTableByKey extends DataPrepModule {
 
 	/** this is the list of tables that were produced. */
-	Table [] tables = null;
+	//Table [] tables = null;
+	protected Table [] tables = null;
 
 	/** this is the index of the next table to push. */
-	int currentTable = 0;
+	//int currentTable = 0;
+	protected int currentTable = 0;
 
 	/** the name of the attribute to use to distinguish the tables by key. */
-	String attributeName;
+	//String attributeName;
+	protected String attributeName;
 
 	/** this property defines the max number of tables to produce. */
-	int maxTables = 10000;
+	//int maxTables = 10000;
+	protected int maxTables = 10000;
 
 	/**
 	 * Set the name of the key attribute field.
@@ -206,7 +210,8 @@ public class SeparateTableByKey extends DataPrepModule {
 	public class ExtensibleIntArray {
 		private int where;
 		private int [] intarray;
-		ExtensibleIntArray (int maxsize) {
+		//ExtensibleIntArray (int maxsize) {
+		public ExtensibleIntArray (int maxsize) {
 			intarray = new int [maxsize];
 		}
 
