@@ -194,4 +194,5 @@ public class ClusterAssignment
 
 // Start QA Comments
 // 4/8/03 - Ruth starts QA;  Updated Input Info for consistence;  add getAlias()
-//          to ClusterRefinement ctor;
+//          to ClusterRefinement ctor; 
+// 	  - Ready for Basic.
