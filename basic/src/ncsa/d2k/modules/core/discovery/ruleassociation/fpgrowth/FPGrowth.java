@@ -173,9 +173,9 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
 
     sb.append("</p><p>Scalability: ");
     sb.append("This module creates an array of integers to hold the indices of the items in each frequent itemset. ");
-    sb.append("The module may be computationally intensive, and scales with the number of Item Sets entries to search and the ");
-    sb.append("size of the frequent itemsets. The user can limit the size of the frequent itemsets and influence ");
-    sb.append("the number generated via the properties editor. Choosing and Binning modules can be included in the itinerary ");
+    sb.append("The module may be computationally intensive, and scales with the number of Item Sets entries to search. ");
+    sb.append("The user can limit the size of the frequent itemsets although this will have little effect on performance for ");
+    sb.append("this algorithm. Choosing and Binning modules can be included in the itinerary ");
     sb.append("prior to this modules to reduce the number of Item Sets entries.  </p>");
     return sb.toString();
   }
@@ -194,7 +194,7 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
     pds[1] = new PropertyDescription(
         "maxRuleSize",
         "Maximum Items per Rule",
-        "The maximum number of items to include in any rule. " +
+        "The maximum number of items to include in any rule. Does not impact performance for this algorithm as it does for Apriori." +
         "This value cannot be less than 2.");
     pds[2] = new PropertyDescription(
         "verbose",
