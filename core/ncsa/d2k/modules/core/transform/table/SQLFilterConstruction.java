@@ -45,7 +45,7 @@ public class SQLFilterConstruction extends UIModule {
 /******************************************************************************/
 
    public String getModuleName() {
-      return "SQLFilterConstruction";
+      return "SQL Filter Construction";
    }
 
    public String getModuleInfo() {

@@ -711,7 +711,7 @@ public class SQLArrayCube extends ComputeModule
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {
-		return "SQLArrayCube";
+		return "SQL Array Cube";
 	}
 
 	/**

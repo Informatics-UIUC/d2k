@@ -179,6 +179,15 @@ public class SQLHTree extends ComputeModule
         }
     }
 
+    /**
+     * Return the human readable name of the module.
+     * @return the human readable name of the module.
+     */
+    public String getModuleName() {
+            return "SQL HTree";
+    }
+
+
   // this property is the min acceptable support score.
   public void setSupport (double i)  throws PropertyVetoException {
   	if( i < 0 || i  >100) throw new PropertyVetoException ("Support must be between 0 and 100", null);
