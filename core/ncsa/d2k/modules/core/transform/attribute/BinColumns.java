@@ -178,6 +178,8 @@ public class BinColumns extends UIModule {
         private JButton abort, done;
         private JCheckBox createInNewColumn;
 
+        int uniqueTextualIndex = 0;
+
         /**
          * put your documentation comment here
          */
@@ -208,6 +210,11 @@ public class BinColumns extends UIModule {
             txtModel = (DefaultListModel)textualColumnLabels.getModel();
             numModel.removeAllElements();
             txtModel.removeAllElements();
+
+            textCurrentModel.removeAllElements();
+            textUniqueModel.removeAllElements();
+            uniqueTextualIndex = 0;
+
             for (int i = 0; i < tbl.getNumColumns(); i++) {
                 columnLookup.put(tbl.getColumnLabel(i), new Integer(i));
                 //if (table.getColumn(i) instanceof NumericColumn)
@@ -540,6 +547,7 @@ public class BinColumns extends UIModule {
             JPanel txtpnl = new JPanel();
             txtpnl.setLayout(new GridBagLayout());
             textualColumnLabels = new JList();
+            textualColumnLabels.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             textualColumnLabels.addListSelectionListener(new TextualListener());
             textualColumnLabels.setModel(new DefaultListModel());
             textUniqueVals = new JList();
@@ -562,8 +570,9 @@ public class BinColumns extends UIModule {
                         return;
                     Object[] sel = textUniqueVals.getSelectedValues();
                     for (int i = 0; i < sel.length; i++) {
-                        textUniqueModel.removeElement(sel[i]);
-                        textCurrentModel.addElement(sel[i]);
+                        // textUniqueModel.removeElement(sel[i]);
+                        if (!textCurrentModel.contains(sel[i]))
+                            textCurrentModel.addElement(sel[i]);
                     }
                 }
             });
@@ -580,7 +589,7 @@ public class BinColumns extends UIModule {
                     Object[] sel = textCurrentGroup.getSelectedValues();
                     for (int i = 0; i < sel.length; i++) {
                         textCurrentModel.removeElement(sel[i]);
-                        textUniqueModel.addElement(sel[i]);
+                        // textUniqueModel.addElement(sel[i]);
                     }
                 }
             });
@@ -613,15 +622,18 @@ public class BinColumns extends UIModule {
                 public void actionPerformed (ActionEvent e) {
                     Object[] sel = textCurrentModel.toArray();
                     Object val = textualColumnLabels.getSelectedValue();
-                    //vered:
-                    if(val == null){
-                      ErrorDialog.showDialog("you must choose a column to bin.", "Error");
-                      return;
-                    }
-
                     int idx = ((Integer)columnLookup.get(val)).intValue();
-                    BinDescriptor bd = createTextualBin(idx, textBinName.getText(),
+
+                    String textualBinName;
+
+                    if (textBinName.getText().length() == 0)
+                       textualBinName = "bin" + uniqueTextualIndex++;
+                     else
+                        textualBinName = textBinName.getText();
+
+                    BinDescriptor bd = createTextualBin(idx, textualBinName,
                             sel);
+
                     HashSet set = uniqueColumnValues[idx];
                     for (int i = 0; i < sel.length; i++) {
                         textCurrentModel.removeElement(sel[i]);
