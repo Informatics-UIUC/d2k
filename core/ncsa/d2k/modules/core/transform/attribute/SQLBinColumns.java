@@ -33,6 +33,10 @@ public class SQLBinColumns extends UIModule {
     JOptionPane msgBoard = new JOptionPane();
 
     private NumberFormat nf;
+    public double[] mins, maxes, totals;
+    public boolean[] colTypes;
+    public int totalRows;
+    public ConnectionWrapper wrapper;
 
     /**
      * get the name of the module
@@ -47,7 +51,28 @@ public class SQLBinColumns extends UIModule {
      * @return A description for the module
      */
     public String getModuleInfo () {
-        return  "<html>  <head>      </head>  <body>    Allows the user to interactively bin data.  </body></html>";
+      String s = "<p> Overview: ";
+      s += "This module allows the user to interactively bin data. </p>";
+      s += "<p> Detailed Description: ";
+      s += "This module makes a connection to a database and provides a ";
+      s += "user-interface to bin data for the specified table, fields and ";
+      s += "query conditions. For the scalar fields, data can be binned by ";
+      s += "the uniform ranges, specified ranges, bin intervals, or uniform ";
+      s += "weight. Histograms for data distribution based on the specified ";
+      s += "binning methods are provided. For the nominal fields, data can ";
+      s += "grouped by unique values. Binning data is a very important preprocessing ";
+      s += "step in many data mining processes, especially for continuous numeric data. ";
+      s += "By clustering similar data together, interesting patterns can be ";
+      s += "discovered between clusters. However, data binning is an optional ";
+      s += "process. For data set with a small number of unique values, especially ";
+      s += "a small nominal data set, binning may not be necessary. You can skip ";
+      s += "this step by clicking 'Done' button without any actions. ";
+      s += "<p> Restrictions: ";
+      s += "We currently only support Oracle database. This module consumes ";
+      s += "substantial CPU and memory to display data histograms. Sufficient ";
+      s += "memory is essencial to run this module for huge data set.";
+
+      return s;
     }
 
     /**
@@ -69,8 +94,7 @@ public class SQLBinColumns extends UIModule {
      * @return A object of class BinTransform
      */
     public String[] getOutputTypes () {
-        String[] types =  {
-				  "ncsa.d2k.modules.core.datatype.table.transformations.BinTransform"
+        String[] types =  {"ncsa.d2k.modules.core.datatype.table.transformations.BinTransform"
         };
         return  types;
     }
@@ -83,13 +107,13 @@ public class SQLBinColumns extends UIModule {
     public String getInputInfo (int i) {
         switch (i) {
             case 0:
-                return "DBConnection";
+                return "The database connection.";
             case 1:
-                return "Field names.";
+                return "The fields selected from the specified table.";
             case 2:
-                return "Table name";
+                return "The selected table from a database.";
             case 3:
-                return "Where clause";
+                return "The query conditions.";
             default:
                 return  "No such input";
         }
@@ -103,7 +127,7 @@ public class SQLBinColumns extends UIModule {
     public String getOutputName (int i) {
         switch (i) {
             case 0:
-                return "BinTransformation";
+                return "Bin Transform";
             default:
                 return  "no such output!";
         }
@@ -117,13 +141,13 @@ public class SQLBinColumns extends UIModule {
     public String getInputName (int i) {
         switch (i) {
             case 0:
-                return "DBConnection";
+                return "Database Connection";
             case 1:
-                return "FieldName";
+                return "Selected Fields";
             case 2:
-                return "TableName";
+                return "Selected Table";
             case 3:
-                return "WhereClause";
+                return "Query Condition";
             default:
                 return  "No such input";
         }
@@ -167,7 +191,6 @@ public class SQLBinColumns extends UIModule {
         String[] fieldNames;
         String tableName;
         String whereClause;
-        ConnectionWrapper wrapper;
         Connection con;
         Statement stmt;
         String queryStr;
@@ -186,39 +209,7 @@ public class SQLBinColumns extends UIModule {
        *  @return return true if the column is numeric column, false otherwise
        */
       public boolean isColumnNumeric(int i) {
-        try {
-          String colName = fieldNames[i];
-          con = wrapper.getConnection();
-          metadata = con.getMetaData();
-          String[] names = {"TABLE"};
-          ResultSet tableNames = metadata.getTables(null,"%", tableName, names);
-          while (tableNames.next()) {
-            ResultSet columns = metadata.getColumns(null, "%", tableNames.getString("TABLE_NAME"), "%");
-            while (columns.next()) {
-              String columnName = columns.getString("COLUMN_NAME");
-              String dataType = columns.getString("TYPE_NAME");
-              if (colName.equals(columnName)) {
-                if (dataType.equals("NUMBER") ||
-                  dataType.equals("INTEGER") ||
-                  dataType.equals("FLOAT") ||
-                  dataType.equals("NUMERIC")) {
-                  return true;
-                }
-                else
-                  return false;
-              }
-            }
-            return false;
-          }
-          return false;
-        }
-        catch (Exception e) {
-	  JOptionPane.showMessageDialog(msgBoard,
-                e.getMessage(), "Error",
-                JOptionPane.ERROR_MESSAGE);
-          System.out.println("Error occoured in isColumnNumeric.");
-          return false;
-        }
+        return colTypes[i];
       }
 
       /** get the minimum value in a column
@@ -226,24 +217,7 @@ public class SQLBinColumns extends UIModule {
        *  @return the minimum value
        */
       public double getMin(int col) {
-        try {
-          String colName = fieldNames[col];
-          con = wrapper.getConnection();
-          queryStr = "select min(" + colName + ") from " + tableName;
-          stmt = con.createStatement();
-          ResultSet minSet = stmt.executeQuery(queryStr);
-          minSet.next();
-          double val = minSet.getDouble(1);
-          stmt.close();
-          return(val);
-        }
-        catch (Exception e) {
-	  JOptionPane.showMessageDialog(msgBoard,
-                e.getMessage(), "Error",
-                JOptionPane.ERROR_MESSAGE);
-          System.out.println("Error occoured in getMin.");
-          return 0;
-        }
+        return mins[col];
       }
 
       /** get the maximum value in a column
@@ -251,48 +225,14 @@ public class SQLBinColumns extends UIModule {
        *  @return the maximum value
        */
       public double getMax(int col) {
-        try {
-          String colName = fieldNames[col];
-          con = wrapper.getConnection();
-          queryStr = "select max(" + colName + ") from " + tableName;
-          stmt = con.createStatement();
-          ResultSet maxSet = stmt.executeQuery(queryStr);
-          maxSet.next();
-          double val = maxSet.getDouble(1);
-          stmt.close();
-          return (val);
-        }
-        catch (Exception e) {
-	  JOptionPane.showMessageDialog(msgBoard,
-                e.getMessage(), "Error",
-                JOptionPane.ERROR_MESSAGE);
-          System.out.println("Error occoured in getMax.");
-          return 0;
-        }
+        return maxes[col];
       }
 
       /** get the number of rows in a table
        *  @return the number of rows
        */
       public int getNumRows() {
-        try {
-          String colName = fieldNames[0];
-          con = wrapper.getConnection();
-          queryStr = "select count(" + colName + ") from " + tableName;
-          stmt = con.createStatement();
-          ResultSet cntSet = stmt.executeQuery(queryStr);
-          cntSet.next();
-          int val = cntSet.getInt(1);
-          stmt.close();
-          return(val);
-        }
-        catch (Exception e) {
-	  JOptionPane.showMessageDialog(msgBoard,
-                e.getMessage(), "Error",
-                JOptionPane.ERROR_MESSAGE);
-          System.out.println("Error occoured in getNumRows.");
-          return 0;
-        }
+        return totalRows;
       }
 
       /** get the count of rows which have values in specified ranges
@@ -342,24 +282,7 @@ public class SQLBinColumns extends UIModule {
        *  @return sum of all values
        */
       public double getTotal(int col) {
-        try {
-          String colName = fieldNames[col];
-          con = wrapper.getConnection();
-          queryStr = "select sum(" + colName + ") from " + tableName;
-          stmt = con.createStatement();
-          ResultSet totalSet = stmt.executeQuery(queryStr);
-          totalSet.next();
-          double val = totalSet.getDouble(1);
-          stmt.close();
-          return(val);
-        }
-        catch (Exception e) {
-	  JOptionPane.showMessageDialog(msgBoard,
-                e.getMessage(), "Error",
-                JOptionPane.ERROR_MESSAGE);
-          System.out.println("Error occoured in getTotal.");
-          return 0;
-        }
+        return totals[col];
       }
     }
 
@@ -434,34 +357,129 @@ public class SQLBinColumns extends UIModule {
 
             if(numArrived == 4) {
                 binCounts = new SQLBinCounts(tableName, fieldNames, whereClause, connectionWrapper);
-            // clear all text fields and lists...
-            curSelName.setText(EMPTY);
-            textBinName.setText(EMPTY);
-            uRangeField.setText(EMPTY);
-            specRangeField.setText(EMPTY);
-            intervalField.setText(EMPTY);
-            weightField.setText(EMPTY);
-            columnLookup = new HashMap();
-            uniqueColumnValues = new HashSet[fieldNames.length];
-            binListModel.removeAllElements();
-            DefaultListModel numModel = (DefaultListModel)numericColumnLabels.getModel(),
-            txtModel = (DefaultListModel)textualColumnLabels.getModel();
-            numModel.removeAllElements();
-            txtModel.removeAllElements();
-            for (int i = 0; i < fieldNames.length; i++) {
-                columnLookup.put(fieldNames[i], new Integer(i));
-                if (binCounts.isColumnNumeric(i))
+
+                // clear all text fields and lists...
+                curSelName.setText(EMPTY);
+                textBinName.setText(EMPTY);
+                uRangeField.setText(EMPTY);
+                specRangeField.setText(EMPTY);
+                intervalField.setText(EMPTY);
+                weightField.setText(EMPTY);
+                columnLookup = new HashMap();
+                uniqueColumnValues = new HashSet[fieldNames.length];
+                maxes = new double[fieldNames.length];
+                mins = new double[fieldNames.length];
+                totals = new double[fieldNames.length];
+                colTypes = new boolean[fieldNames.length];
+                binListModel.removeAllElements();
+                DefaultListModel numModel = (DefaultListModel)numericColumnLabels.getModel(),
+                txtModel = (DefaultListModel)textualColumnLabels.getModel();
+                numModel.removeAllElements();
+                txtModel.removeAllElements();
+                totalRows = getTotalRows();
+                colTypes = getColTypes();
+                for (int i = 0; i < fieldNames.length; i++) {
+                  columnLookup.put(fieldNames[i], new Integer(i));
+                  if (binCounts.isColumnNumeric(i)) {
                     numModel.addElement((String)fieldNames[i]);
-                else {
+                    getMMTValues(i); // compute min, max and total
+                  }
+                  else {
                     txtModel.addElement((String)fieldNames[i]);
-                    uniqueColumnValues[i] = uniqueValues(i);
+                  }
                 }
-            }
-            // finished...
-            setup_complete = true;
-            }
+                // finished...
+                setup_complete = true;
+              }
+
         }
 
+        /** get the number of rows in a table
+         *  @return the number of rows
+         */
+        public int getTotalRows() {
+          try {
+            con = wrapper.getConnection();
+            queryStr = "select count(*) from " + tableName;
+            stmt = con.createStatement();
+            ResultSet cntSet = stmt.executeQuery(queryStr);
+            cntSet.next();
+            int val = cntSet.getInt(1);
+            stmt.close();
+            return(val);
+          }
+          catch (Exception e) {
+            JOptionPane.showMessageDialog(msgBoard,
+                  e.getMessage(), "Error",
+                  JOptionPane.ERROR_MESSAGE);
+            System.out.println("Error occoured in getTotalRows.");
+            return 0;
+          }
+        }
+
+        public void getMMTValues(int col) {
+          try {
+            String colName = fieldNames[col];
+            con = wrapper.getConnection();
+            queryStr = "select min(" + colName + "), max(" + colName + "), sum("
+                     + colName + ") from " + tableName;
+            stmt = con.createStatement();
+            ResultSet totalSet = stmt.executeQuery(queryStr);
+            totalSet.next();
+            mins[col] = totalSet.getDouble(1);
+            maxes[col] = totalSet.getDouble(2);
+            totals[col] = totalSet.getDouble(3);
+            stmt.close();
+          }
+          catch (Exception e) {
+            JOptionPane.showMessageDialog(msgBoard,
+                  e.getMessage(), "Error",
+                  JOptionPane.ERROR_MESSAGE);
+            System.out.println("Error occoured in getMMTValues.");
+          }
+        }
+
+        /** verify whether the column is a numeric column
+         *  @return a boolean array, numeric columns are flaged as true, and
+         *          categorical columns are flaged as false.
+         */
+        public boolean[] getColTypes() {
+          try {
+            con = wrapper.getConnection();
+            DatabaseMetaData metadata = con.getMetaData();
+            String[] names = {"TABLE"};
+            ResultSet tableNames = metadata.getTables(null,"%", tableName, names);
+            while (tableNames.next()) {
+              ResultSet columns = metadata.getColumns(null, "%", tableNames.getString("TABLE_NAME"), "%");
+              while (columns.next()) {
+                String columnName = columns.getString("COLUMN_NAME");
+                String dataType = columns.getString("TYPE_NAME");
+                for (int col = 0; col < fieldNames.length; col++) {
+                  if (fieldNames[col].equals(columnName)) {
+                    if (dataType.equals("NUMBER") ||
+                      dataType.equals("INTEGER") ||
+                      dataType.equals("FLOAT") ||
+                      dataType.equals("NUMERIC")) {
+                      colTypes[col] = true;
+                    }
+                    else {
+                      colTypes[col] = false;
+                    }
+                    break;
+                  }
+                }
+              }
+            }
+            return colTypes;
+          }
+          catch (Exception e) {
+            JOptionPane.showMessageDialog(msgBoard,
+                  e.getMessage(), "Error",
+                  JOptionPane.ERROR_MESSAGE);
+            System.out.println("Error occoured in getColTypes.");
+            return null;
+          }
+        }
 
 
         /**
@@ -957,7 +975,8 @@ public class SQLBinColumns extends UIModule {
             setLayout(new BorderLayout());
             add(bxl, BorderLayout.CENTER);
             add(buttonPanel, BorderLayout.SOUTH);
-        }
+          }  // initView
+
 
         /** find unique values in a column
          *  @param col the column to check for
@@ -1031,17 +1050,7 @@ public class SQLBinColumns extends UIModule {
             } catch (NumberFormatException e) {
                 return;
             }
-            double[] maxes = new double[fieldNames.length];
-            double[] mins = new double[fieldNames.length];
-            for (int i = 0; i < fieldNames.length; i++) {
-              for (int j = 0; j < colIdx.length; j++) {
-                // if the column is selected, then find the max and min
-                if (i == colIdx[j]) {
-                  maxes[i] = binCounts.getMax(i);
-                  mins[i] = binCounts.getMin(i);
-                }
-              }
-            }
+
             for (int i = 0; i < fieldNames.length; i++) {
               for (int j = 0; j < colIdx.length; j++) {
                 if (i == colIdx[j]) {
@@ -1119,19 +1128,6 @@ public class SQLBinColumns extends UIModule {
                 return;
             }
 
-            // find the mins and maxes
-            double[] maxes = new double[fieldNames.length];
-            double[] mins = new double[fieldNames.length];
-
-            for (int i = 0; i < fieldNames.length; i++) {
-              for (int j = 0; j < colIdx.length; j++) {
-                // if the column is selected, then find the max and min
-                if (i == colIdx[j]) {
-                  maxes[i] = binCounts.getMax(i);
-                  mins[i] = binCounts.getMin(i);
-                }
-              }
-            }
             for (int i = 0; i < fieldNames.length; i++) {
               for (int j = 0; j < colIdx.length; j++) {
                 if (i == colIdx[j]) {
@@ -1349,6 +1345,9 @@ public class SQLBinColumns extends UIModule {
                     Object lbl = textualColumnLabels.getSelectedValue();
                     if (lbl != null) {
                         int idx = ((Integer)columnLookup.get(lbl)).intValue();
+                        if (uniqueColumnValues[idx]==null) {
+                          uniqueColumnValues[idx] = uniqueValues(idx);
+                        }
                         HashSet unique = uniqueColumnValues[idx];
                         textUniqueModel.removeAllElements();
                         textCurrentModel.removeAllElements();
