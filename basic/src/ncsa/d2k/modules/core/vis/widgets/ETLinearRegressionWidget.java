@@ -19,6 +19,10 @@ public class ETLinearRegressionWidget extends ETScatterPlotWidget {
 	public ETLinearRegressionWidget(ExampleTable table) {
 		super(table);
 	}
+	public ETLinearRegressionWidget(ExampleTable table, boolean m) {
+          this(table);
+          plotMissingValues = m;
+        }
 
 	protected JFrame getHelpWindow() {
 		return new ETLRHelpWindow(getHelpString());
