@@ -13,42 +13,46 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 */
 public abstract class Chart extends JPanel {
 	// Legend
-	double legendleftoffset, legendtopoffset;
-	double legendwidth, legendheight;
+
+        /* FOLLOWING VARIABLES WERE MADE PROTECTED BY RITESH
+
+        */
+	protected double legendleftoffset, legendtopoffset;
+        protected double legendwidth, legendheight;
 	// Offset from left
-	double leftoffset;
+	protected double leftoffset;
 
 	// Offset from right
-	double rightoffset;
+	protected double rightoffset;
 
 	// Offset from top
-	double topoffset;
+	protected double topoffset;
 
 	// Offset from bottom
-	double bottomoffset;
+	protected double bottomoffset;
 
 	// Empty space
-	int smallspace = 5;
+	protected int smallspace = 5;
 	int largespace = 10;
-	double samplecolorsize = 8;
+	protected double samplecolorsize = 8;
 
 	// the data
 	protected DataSet set;
 	GraphSettings settings;
 	protected Table table;
-	int bins;
+	protected int bins;
 
 	// dimensions of the chart
 	double graphwidth, graphheight;
-	int gridsize;
+	protected int gridsize;
 
 	// labels to show
-	String title, xlabel, ylabel;
+	protected String title, xlabel, ylabel;
 
 	// Font
 	Font font;
-	FontMetrics metrics;
-	int fontheight, fontascent;
+	protected FontMetrics metrics;
+	protected int fontheight, fontascent;
 
 	// color generation
 	/*Color[] colors = {
@@ -68,7 +72,7 @@ public abstract class Chart extends JPanel {
 	};*/
 
         // add more colors - Dora Cai 03/09/29
-       Color[] colors = {new Color(30, 60, 90), new Color(30, 60, 150),
+       protected Color[] colors = {new Color(30, 60, 90), new Color(30, 60, 150),
                new Color(30, 120, 90), new Color(30, 120, 150),
                new Color(90, 60, 90), new Color(90, 60, 150),
                new Color(90, 120, 90), new Color(150, 90, 30),

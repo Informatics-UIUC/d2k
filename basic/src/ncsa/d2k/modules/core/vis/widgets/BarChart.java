@@ -16,41 +16,45 @@ import ncsa.d2k.userviews.swing.*;
 public class BarChart extends Chart
     implements MouseListener, MouseMotionListener {
 
+  // private variable
+  // Added by Ritesh
+  boolean debug = true;
+
   // Minimum and maximum scale values
-  double xminimum, xmaximum;
-  double yminimum, ymaximum;
+  protected double xminimum, xmaximum;
+  protected double yminimum, ymaximum;
 
   // Units per increment
-  double xvalueincrement, yvalueincrement;
+  protected double xvalueincrement, yvalueincrement;
 
   // Pixels per increment
-  double xoffsetincrement, yoffsetincrement;
-  double minimumxoffsetincrement = 40;
-  double minimumyoffsetincrement = 15;
+  protected double xoffsetincrement, yoffsetincrement;
+  protected double minimumxoffsetincrement = 40;
+  protected double minimumyoffsetincrement = 15;
 
   // Units per pixel
-  double xscale, yscale;
+  protected double xscale, yscale;
 
   // Minimum and maximum data values
   double xdataminimum, xdatamaximum;
   double ydataminimum, ydatamaximum;
 
-  int tickmarksize = 4;
+  protected int tickmarksize = 4;
 
   static final int LEFTOFFSET = 20;
   static final int RIGHTOFFSET = 20;
   static final int TOPOFFSET = 20;
   static final int BOTTOMOFFSET = 20;
 
-  double minimumgraphwidth;
-  double minimumgraphheight;
+  protected double minimumgraphwidth;
+  protected double minimumgraphheight;
 
-  int legendspace = 35;
+  protected int legendspace = 35;
 
-  int longestwidthx;
-  int longestwidthy;
+  protected int longestwidthx;
+  protected int longestwidthy;
 
-  int maximumcharacters = 15;
+  protected int maximumcharacters = 15;
 
   boolean resize = true;
   Rectangle2D.Double rectangle;
@@ -58,36 +62,47 @@ public class BarChart extends Chart
 
   public BarChart(Table table, DataSet set, GraphSettings settings) {
     super(table, set, settings);
+    if ( debug ) System.out.println("BarChart - Constructor " );
     addMouseListener(this);
-
     setBackground(Color.white);
 
-    title = settings.title;
-    xlabel = settings.xaxis;
-    ylabel = settings.yaxis;
 
-    // Find interval for y data
-    if ((settings.yminimum == null) || (settings.ymaximum == null)) {
-      double[] mm = getMinAndMax(table, set.y);
-      yminimum = mm[0] - .25 * mm[0];
-      if (yminimum < 0)
-        yminimum = 0;
-      ymaximum = mm[1] + .25 * mm[1];
-    }
-    else {
-      yminimum = settings.yminimum.doubleValue();
-      ymaximum = settings.ymaximum.doubleValue();
-    }
+   // Added by Ritesh to make MultipleBarChart Working
+  setInitialVariable(table,set, settings);
 
-    settings.displaylegend = false;
+ }
 
-    gridsize = settings.gridsize;
-    // Dora add the following 2 lines to fix the problem when ymaximum < 10
-    if ((ymaximum-yminimum) < gridsize)
-      gridsize = (int) (ymaximum-yminimum);
+ public void setInitialVariable( Table table, DataSet set, GraphSettings settings )
+ {
+   if ( debug ) System.out.println("BarChart - setInitialVariable()");
+   title = settings.title;
+   xlabel = settings.xaxis;
+   ylabel = settings.yaxis;
 
-    yvalueincrement = (ymaximum-yminimum)/gridsize;
-  }
+// Find interval for y data
+   if ((settings.yminimum == null) || (settings.ymaximum == null)) {
+     double[] mm = getMinAndMax(table, set.y);
+     yminimum = mm[0] - .25 * mm[0];
+     if (yminimum < 0)
+       yminimum = 0;
+     ymaximum = mm[1] + .25 * mm[1];
+   }
+   else {
+     yminimum = settings.yminimum.doubleValue();
+     ymaximum = settings.ymaximum.doubleValue();
+   }
+
+   settings.displaylegend = false;
+
+   gridsize = settings.gridsize;
+// Dora add the following 2 lines to fix the problem when ymaximum < 10
+   if ((ymaximum-yminimum) < gridsize)
+     gridsize = (int) (ymaximum-yminimum);
+
+   yvalueincrement = (ymaximum-yminimum)/gridsize;
+
+ }
+
 
   public BarChart(Table table, DataSet set, GraphSettings settings, int xincrement, int yincrement, int characters) {
     this(table, set, settings);
@@ -97,6 +112,7 @@ public class BarChart extends Chart
 
     maximumcharacters = characters;
   }
+
 
   public double[] getMinAndMax(Table table, int ndx) {
     double[] minAndMax = new double[2];
@@ -115,6 +131,7 @@ public class BarChart extends Chart
 
     return minAndMax;
   }
+
 
   protected double maxScale(double d) {
 
