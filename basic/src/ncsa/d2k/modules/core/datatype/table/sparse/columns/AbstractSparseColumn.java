@@ -525,6 +525,10 @@ abstract public class AbstractSparseColumn
     ( (SparseMutableTable) t).sort(getNewOrder());
   }
 
+
+
+
+
   /**
    * Sorts the rows in the range <codE>[begin, end]</code> in <code>t</code>
    * according to the natural sorting order of this column's rows in the
@@ -679,6 +683,9 @@ abstract public class AbstractSparseColumn
    * Returns the hash map that holds all the elements of this map
    */
   protected abstract VHashMap getElements();
+
+
+  //this method is for test units only.
   public boolean equals(Object other){
     boolean retVal = true;
     if(!(other instanceof AbstractSparseColumn)) return false;

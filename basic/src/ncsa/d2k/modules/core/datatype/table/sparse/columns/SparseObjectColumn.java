@@ -763,11 +763,15 @@ public class SparseObjectColumn
 
   }
 
+
+/*
+   VERED (7-13-04) commented this method out - this is already covered by
+ AbstractSparseColumn
   public VIntIntHashMap getNewOrder() {
     int[] validRows = getIndices();
     return getNewOrder(validRows);
 
-  }
+  }*/
 
   /**
        * Returns an int to int hash map with old row numbers mapped to new row numbers,

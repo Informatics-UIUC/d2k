@@ -5,6 +5,7 @@ package ncsa.d2k.modules.core.datatype.table.sparse.primitivehash;
 //==============
 import java.util.*;
 import java.io.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.ObjectComparator;
 
 //===============
 // Other Imports
@@ -179,7 +180,7 @@ public class VIntObjectHashMap
     for (int i = 0; i < keysInRange.length; i++)
       values[i] = get(keysInRange[i]);
 
-    Arrays.sort(values);
+    Arrays.sort(values, new ObjectComparator());
     return values;
   }
 
@@ -226,7 +227,7 @@ public class VIntObjectHashMap
     int[] validKeys = VHashService.getIndices(this);
 
     Object[] values = getValues();
-    Arrays.sort(values);
+    Arrays.sort(values, new ObjectComparator());
 
     return getSortedOrder(validKeys, values);
   }
@@ -317,7 +318,7 @@ public class VIntObjectHashMap
       currVal = get(validKeys[i]);
 
       //finding the index of its mapped String
-      int newKey = Arrays.binarySearch(values, currVal);
+      int newKey = Arrays.binarySearch(values, currVal, new ObjectComparator());
 
       //because binarySearch can return the same index for items that are identical
       //checking for this option too.
