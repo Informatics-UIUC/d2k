@@ -29,7 +29,8 @@ import java.util.*;
 public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantModule {
 
 	public String[] getInputTypes() {
-		String[] in = {"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode",
+		String[] in = {
+			"ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode",
 			"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
 		return in;
 	}
@@ -37,9 +38,9 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
 	public String getInputInfo(int i) {
 		switch(i) {
 			case(0):
-				return "The training data that was used to build the decision tree.";
-			case(1):
 				return "The root node of the unpruned decision tree.";
+			case(1):
+				return "The training data that was used to build the decision tree.";
 			default:
 				return "";
 		}
@@ -48,9 +49,9 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
 	public String getInputName(int i) {
 		switch(i) {
 			case(0):
-				return "Example Table";
-			case(1):
 				return "Decision Tree Root";
+			case(1):
+				return "Example Table";
 			default:
 				return "";
 		}
@@ -73,7 +74,7 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
 	public String getOutputName(int i) {
 		switch(i) {
 			case(0):
-				return "Decision Tree Root";
+				return "Pruned Decision Tree Root";
 			case(1):
 				return "Example Table";
 			default:
@@ -82,8 +83,8 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
 	}
 
 	public String getModuleInfo() {
-          String s = "<p>Overview: Prune a decision tree built by the C4.5 Tree Builder. "+
-              "<p>Detailed Description: Prune a decision tree by using a reduced-error "+
+          String s = "<p>Overview: This module prunes a decision tree built by the C4.5 Tree Builder. "+
+              "<p>Detailed Description: This module prunes a decision tree using a reduced-error "+
               "pruning technique.  Error estimates for the leaves and subtrees are "+
               "computed by classifying all the examples of the Example Table. "+
               "Both subtree replacement and subtree raising are used.  Subtree "+
@@ -97,7 +98,7 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
               "built by the C4.5 Tree Builder."+
               "<p>Data Handling: This module will attempt to classify the examples "+
               "in the Example Table N times, where N is the number of nodes in the tree."+
-              "<p>Scalability: This module will classify the examples in the ExampleTable "+
+              "<p>Scalability: This module will classify the examples in the Example Table "+
               "at least once for each node of the tree.  This module will need "+
               "enough memory to hold those predictions.";
               return s;
@@ -332,3 +333,7 @@ public class C45TreePruner extends /*ReentrantComputeModule*/OrderedReentrantMod
         }
 
 }
+
+// Start QA Comments
+// 3/30/03 - Ruth corrected order of labels on input ports.
+// End QA Comments
