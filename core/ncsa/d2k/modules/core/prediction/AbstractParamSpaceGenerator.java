@@ -95,15 +95,15 @@ abstract public class AbstractParamSpaceGenerator extends ncsa.d2k.core.modules.
 	 * @return the information about the module.
 	 */
 	public String getModuleInfo() {
-		return "Overview: This module will produce a parameter space object that     constrains the search space"+
-			" for parameter optimization.Detailed Description: For model builders to work, they must have"+
+		return "<p>Overview: This module will produce a parameter space object that     constrains the search space"+
+			" for parameter optimization. <p>Detailed Description: For model builders to work, they must have"+
 			" an input that     defines their control parameters. For example, a neural net will often  "+
-			"   quire an integer that defines the number of hidden layers and an     activation value. The"+
+			"  require an integer that defines the number of hidden layers and an     activation value. The"+
 			" optimal settings for these parameters for a given     dataset to model are not usually known"+
-			" before the run begins. Therefor,     several models can often be built and evaluated to find"+
-			" the best settings     for these control parameters.To automate this, we define an API that"+
+			" before the run begins. Therefore,     several models can often be built and evaluated to find"+
+			" the best settings     for these control parameters. To automate this, we define an API that"+
 			" allows the optimization of these     control parameters. The range of possible values for each"+
-			" control     parameters must therefor be defined for the optimization to search the     space"+
+			" control     parameters must therefore be defined for the optimization to search the     space"+
 			" of possible parameters. We use the <i>ParameterSpace</i> object to     define these spaces."+
 			" This module defines those spaces.";
 	}
