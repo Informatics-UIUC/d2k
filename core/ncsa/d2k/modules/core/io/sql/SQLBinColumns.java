@@ -278,6 +278,8 @@ public class SQLBinColumns extends UIModule {
 
       public int[] getCounts(int col, double[] borders) {
         System.out.println("col is " + col);
+        for(int z = 0; z < borders.length; z++)
+            System.out.println("b["+z+"]: "+borders[z]);
         int[] counts = new int[borders.length+1];
         String colName = fieldNames[col];
         double low = 0;
@@ -485,8 +487,9 @@ public class SQLBinColumns extends UIModule {
 
                     String txt = uRangeField.getText();
                     if(txt != null && txt.length() != 0) {
+                    String col = (String)numericColumnLabels.getSelectedValue();
                     final Histogram H = new UniformHistogram(binCounts,
-                            uRangeField.getText(), colLook);
+                            uRangeField.getText(), colLook, col);
                     JD2KFrame frame = new JD2KFrame("Uniform Range");
                     frame.getContentPane().setLayout(new GridBagLayout());
                     Constrain.setConstraints(frame.getContentPane(), H, 0,
@@ -573,8 +576,9 @@ public class SQLBinColumns extends UIModule {
                         }
                     }
                     JD2KFrame frame = new JD2KFrame("Specified Range");
+                    String col = (String)numericColumnLabels.getSelectedValue();
                     frame.getContentPane().add(new RangeHistogram(binCounts,
-                            /*Histogram.HISTOGRAM_RANGE,*/ specRangeField.getText(), colLook));
+                            /*Histogram.HISTOGRAM_RANGE,*/ specRangeField.getText(), colLook, col));
                              frame.pack();
                              frame.setVisible(true);
                 }
@@ -608,8 +612,9 @@ public class SQLBinColumns extends UIModule {
                     }
                     String txt = intervalField.getText();
                     if(txt != null && txt.length() != 0) {
+                        String col = (String)numericColumnLabels.getSelectedValue();
                     final Histogram H = new IntervalHistogram(binCounts,
-                            /*Histogram.HISTOGRAM_INTERVAL,*/ intervalField.getText(), colLook);
+                            /*Histogram.HISTOGRAM_INTERVAL,*/ intervalField.getText(), colLook, col);
                              JD2KFrame frame = new JD2KFrame("Bin Interval");
                              frame.getContentPane().setLayout(new GridBagLayout());
                              Constrain.setConstraints(frame.getContentPane(), H, 0,
