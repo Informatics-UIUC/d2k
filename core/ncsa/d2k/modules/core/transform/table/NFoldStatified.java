@@ -53,24 +53,24 @@ public class NFoldStatified extends NFoldExTable{
                             return "output1";
                     case 2:
                             return "output2";
-                    case 3:
-                            return "output3";
+//                    case 3:
+//                            return "output3";
                     default: return "NO SUCH OUTPUT!";
             }
     }
 
     public String getOutputInfo(int i){
             switch (i) {
-                    case 0: return "The Example Table";
-                    case 1: return "The Test Table";
-                    case 2: return "The Train Table";
-                    case 3: return "The N that was set in the properties";
+//                    case 0: return "The Example Table";
+                    case 0: return "The Test Table";
+                    case 1: return "The Train Table";
+                    case 2: return "The N that was set in the properties";
                     default: return "No such output";
             }
     }
 
     public String[] getOutputTypes(){
-            String[] types = {"ncsa.d2k.modules.core.datatype.table.ExampleTable",
+            String[] types = {/*"ncsa.d2k.modules.core.datatype.table.ExampleTable",*/
                               "ncsa.d2k.modules.core.datatype.table.TestTable",
                               "ncsa.d2k.modules.core.datatype.table.TrainTable",
                               "java.lang.Integer"};
@@ -130,12 +130,12 @@ public class NFoldStatified extends NFoldExTable{
         TestTable testT = examples.getTestTable();
         TrainTable trainT = examples.getTrainTable();
 
-        this.pushOutput(examples, 0);
-        this.pushOutput (testT, 1);
-        this.pushOutput (trainT, 2);
+//        this.pushOutput(examples, 0);
+        this.pushOutput (testT, 0);
+        this.pushOutput (trainT, 1);
         if(numFires==0){
 //            this.pushOutput (new Integer(breaks.length+1), 3);
-            this.pushOutput (new Integer(N), 3);
+            this.pushOutput (new Integer(N), 2);
         }
 
         numFires++;
@@ -151,7 +151,7 @@ public class NFoldStatified extends NFoldExTable{
         }
     }
 
-
+/*
         private void printTable(Table t){
             System.out.println("PRINTING TABLE");
             int rows = t.getNumRows();
@@ -173,7 +173,7 @@ public class NFoldStatified extends NFoldExTable{
             }
             System.out.println("*************************************");
         }
-
+*/
 
 
     /**
@@ -213,7 +213,7 @@ public class NFoldStatified extends NFoldExTable{
         }//outer for
 //printHashtable(uniqueOutputToRows);
     }//createUniqueOutputToRowsHash
-
+/*
     private void printVector (Vector v) {
 //DEBUG
       System.out.println(v);
@@ -230,7 +230,7 @@ public class NFoldStatified extends NFoldExTable{
             System.out.println("........................................................");
         }
     }
-
+*/
     protected void createTestTrainSets(){
         // loop through all the keys of the hash table and retrive stored row indices
             // if the number of row indices retrived 'n' is > N
