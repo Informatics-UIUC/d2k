@@ -6,15 +6,11 @@ import java.awt.geom.*;
 import java.util.*;
 import javax.swing.*;
 import java.awt.image.*;
+
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
-/*
- DecisionTreeVis
+public class Viewport {
 
- Represents a decision tree node with a bar graph
-*/
-public class ViewNode {
-/*
   private static final String GREATER_THAN = ">";
   private static final String LESS_THAN = "<";
   private static final String GREATER_THAN_EQUAL_TO = ">=";
@@ -23,19 +19,16 @@ public class ViewNode {
   private static final String EQUAL_TO = "==";
 
   // Decision tree model
-  ViewableDTModel dmodel;
-
-  ViewableDTNode dnode;
-  ViewNode parent;
+  ViewableDTModel model;
+  ViewableDTNode node;
+  Viewport parent;
   ArrayList children;
 
-  // Distribution values
-  double[] values;
-
-  boolean search = false;
-  boolean searchbackground = false;
+  View view;
 
   boolean collapsed = false;
+
+  boolean search = false;
 
   // X is midpoint of node, y is top left of bar graph
   double x, y;
@@ -44,63 +37,88 @@ public class ViewNode {
   public static double xspace = 20;
   public static double yspace = 80;
 
-  double gwidth;
-  double gheight = 45;
-  double leftinset = 5;
-  double rightinset = 5;
-  double barwidth = 16;
-  double barspace = 5;
-  double ygrid = 5;
-  double tickmark = 3;
+  double width = 45;
 
-  String branchlabel;
+  double height = 40;
 
-  double searchspace = 4;
+  boolean first = true;
+
+  String label;
 
   double tside = 8;
   double tspace = 10;
   double theight;
 
-  double yscale;
-  double scalesize = 100;
-  double xincrement, yincrement;
-
-  static JFrame graphicsframe;
+  static JFrame graphics;
 
   DecisionTreeScheme scheme;
 
-  public ViewNode(ViewableDTModel model, ViewableDTNode node, ViewNode vnode, String label) {
-    dmodel = model;
-    dnode = node;
-    parent = vnode;
-    branchlabel = label;
-    children = new ArrayList(dnode.getNumChildren());
+  public Viewport(ViewableDTModel model, ViewableDTNode node, Viewport parent, String label) {
+    this.model = model;
+    this.node = node;
+    this.parent = parent;
+    this.label = label;
 
-    findValues();
+    children = new ArrayList(node.getNumChildren());
 
     scheme = new DecisionTreeScheme();
 
-    gwidth = leftinset + tickmark + (barwidth + barspace)*values.length + rightinset;
-    yincrement = gheight/(ygrid+1);
-    yscale = (gheight - 2*yincrement)/scalesize;
+    if (node instanceof ScalarViewableDTNode) {
+      ScalarView view = new ScalarView();
+      view.setData(model, node);
+      setView(view);
+    }
 
-    if (graphicsframe == null) {
-      graphicsframe = new JFrame();
-      graphicsframe.addNotify();
-      graphicsframe.setFont(DecisionTreeScheme.textfont);
+    else if (node instanceof NominalViewableDTNode) {
+      NominalView view = new NominalView();
+      view.setData(model, node);
+      setView(view);
+    }
+
+    if (graphics == null) {
+      graphics = new JFrame();
+      graphics.addNotify();
+      graphics.setFont(DecisionTreeScheme.textfont);
     }
   }
 
-  public ViewNode(ViewableDTModel model, ViewableDTNode node, ViewNode vnode) {
-    this(model, node, vnode, null);
+  public Viewport(ViewableDTModel model, ViewableDTNode node) {
+    this(model, node, null, null);
   }
 
-  public void addChild(ViewNode vnode) {
-    children.add(vnode);
+  public void addChild(Viewport viewport) {
+    children.add(viewport);
   }
 
-  public ViewNode getChild(int index) {
-    return (ViewNode) children.get(index);
+  public View getView() {
+    return view;
+  }
+
+  public void setView(View view) {
+    this.view = view;
+
+    width = view.getWidth();
+
+    double viewheight = view.getHeight();
+
+    if (first) {
+      height = viewheight;
+      first = false;
+    }
+    else if (viewheight > height)
+      height = viewheight;
+  }
+
+  public double getViewWidth() {
+    return view.getWidth();
+  }
+
+  public double getViewHeight() {
+    return view.getHeight();
+  }
+
+  public Viewport getChild(int index) {
+    return (Viewport) children.get(index);
   }
 
   public int getNumChildren() {
@@ -121,43 +139,34 @@ public class ViewNode {
     return parent.getDepth() + 1;
   }
 
+  public String getLabel() {
+    return node.getLabel();
+  }
+
   public String getBranchLabel(int index) {
-    return dnode.getBranchLabel(index);
+    return node.getBranchLabel(index);
   }
 
-  public void findValues() {
-    String[] output = dmodel.getUniqueOutputValues();
-    values = new double[output.length];
-    for (int index = 0; index < values.length; index++){
-      try {
-        values[index] = 100*(double)dnode.getOutputTally(output[index])/(double)dnode.getTotal();
-      } catch (Exception exception) {
-        System.out.println("Exception from getOutputTally");
-      }
-    }
-  }
-
+  // Width for finding offset
   public double getWidth() {
-    Graphics g = null;
+    FontMetrics metrics = graphics.getGraphics().getFontMetrics();
 
-    while (g == null)
-      g = graphicsframe.getGraphics();
+    double swidth1, swidth2;
 
-    FontMetrics metrics = g.getFontMetrics();
-    int swidth1;
-
-    if (branchlabel != null)
-      swidth1 = metrics.stringWidth(branchlabel);
+    if (label != null)
+      swidth1 = 2*metrics.stringWidth(label);
     else
       swidth1 = 0;
 
-    double width1 = swidth1*2;
-    double width2 = xspace + gwidth + xspace;
-
-    if (width1 > width2)
-      return width1;
+    if (view != null)
+      swidth2 = xspace + view.getWidth() + xspace;
     else
-      return width2;
+      swidth2 = xspace + width + xspace;
+
+    if (swidth1 > swidth2)
+      return swidth1;
+    else
+      return swidth2;
   }
 
   public double findSubtreeWidth() {
@@ -167,8 +176,8 @@ public class ViewNode {
     double subtreewidth = 0;
 
     for (int index = 0; index < getNumChildren(); index++) {
-      ViewNode vchild = getChild(index);
-      subtreewidth += vchild.findSubtreeWidth();
+      Viewport viewport = getChild(index);
+      subtreewidth += viewport.findSubtreeWidth();
     }
 
     return subtreewidth;
@@ -179,16 +188,16 @@ public class ViewNode {
     if (isLeaf())
       return getWidth()/2;
 
-    int numchildren = getNumChildren();
+    int children = getNumChildren();
 
-    if (numchildren%2 == 0) {
-      int midindex = numchildren/2;
-      return findIntervalWidth(0, midindex-1);
+    if (children%2 == 0) {
+      int middle = children/2;
+      return findIntervalWidth(0, middle-1);
     }
     else {
-      int midindex = numchildren/2 + 1;
-      ViewNode midchild = getChild(midindex-1);
-      return findIntervalWidth(0, midindex-2) + midchild.findLeftSubtreeWidth();
+      int middle = children/2 + 1;
+      Viewport viewport = getChild(middle-1);
+      return findIntervalWidth(0, middle-2) + viewport.findLeftSubtreeWidth();
     }
   }
 
@@ -197,60 +206,60 @@ public class ViewNode {
     if (isLeaf())
       return getWidth()/2;
 
-    int numchildren = getNumChildren();
+    int children = getNumChildren();
 
-    if (numchildren%2 == 0) {
-      int midindex = numchildren/2;
-      return findIntervalWidth(midindex, numchildren-1);
+    if (children%2 == 0) {
+      int middle = children/2;
+      return findIntervalWidth(middle, children-1);
     }
     else {
-      int midindex = numchildren/2 + 1;
-      ViewNode midchild = getChild(midindex-1);
-      return findIntervalWidth(midindex, numchildren-1) + midchild.findRightSubtreeWidth();
+      int middle = children/2 + 1;
+      Viewport viewport = getChild(middle-1);
+      return findIntervalWidth(middle, children-1) + viewport.findRightSubtreeWidth();
     }
   }
 
   // Determines offsets of children
   public void findOffsets() {
-    int numchildren = getNumChildren();
+    int children = getNumChildren();
 
-    if (numchildren%2 == 0) {
-      int midindex = numchildren/2;
+    if (children%2 == 0) {
+      int middle = children/2;
 
-      for (int index = 0; index < numchildren; index++) {
-        ViewNode vchild = getChild(index);
+      for (int index = 0; index < children; index++) {
+        Viewport viewport = getChild(index);
 
-        if (index <= midindex-1)
-          vchild.x = x - findIntervalWidth(index+1, midindex-1) - vchild.findRightSubtreeWidth();
+        if (index <= middle-1)
+          viewport.x = x - findIntervalWidth(index+1, middle-1) - viewport.findRightSubtreeWidth();
         else
-          vchild.x = x + findIntervalWidth(midindex, index-1) + vchild.findLeftSubtreeWidth();
+          viewport.x = x + findIntervalWidth(middle, index-1) + viewport.findLeftSubtreeWidth();
 
-        vchild.y = y + gheight + yspace;
+        viewport.y = y + height + yspace;
       }
     }
     else {
-      int midindex = numchildren/2 + 1;
-      ViewNode midchild = getChild(midindex-1);
+      int middle = children/2 + 1;
+      Viewport middleviewport = getChild(middle-1);
 
-      for (int index = 0; index < numchildren; index++) {
-        ViewNode vchild = getChild(index);
+      for (int index = 0; index < children; index++) {
+        Viewport viewport = getChild(index);
 
-        if (index < midindex-1) {
-          if (index == midindex-2)
-            vchild.x = x - midchild.findLeftSubtreeWidth() - vchild.findRightSubtreeWidth();
+        if (index < middle-1) {
+          if (index == middle-2)
+            viewport.x = x - middleviewport.findLeftSubtreeWidth() - viewport.findRightSubtreeWidth();
           else
-            vchild.x = x - midchild.findLeftSubtreeWidth() - findIntervalWidth(index+1, midindex-2) - vchild.findRightSubtreeWidth();
+            viewport.x = x - middleviewport.findLeftSubtreeWidth() - findIntervalWidth(index+1, middle-2) - viewport.findRightSubtreeWidth();
         }
-        else if (index == midindex-1)
-          vchild.x = x;
+        else if (index == middle-1)
+          viewport.x = x;
         else {
-          if (index == midindex)
-            vchild.x = x + midchild.findRightSubtreeWidth() + vchild.findLeftSubtreeWidth();
+          if (index == middle)
+            viewport.x = x + middleviewport.findRightSubtreeWidth() + viewport.findLeftSubtreeWidth();
           else
-            vchild.x = x + midchild.findRightSubtreeWidth() + findIntervalWidth(midindex, index-1) + vchild.findLeftSubtreeWidth();
+            viewport.x = x + middleviewport.findRightSubtreeWidth() + findIntervalWidth(middle, index-1) + viewport.findLeftSubtreeWidth();
         }
 
-        vchild.y = y + gheight + yspace;
+        viewport.y = y + height + yspace;
       }
     }
   }
@@ -259,8 +268,8 @@ public class ViewNode {
     double intervalwidth = 0;
 
     for (; start <= end; start++) {
-      ViewNode vchild = getChild(start);
-      intervalwidth += vchild.findSubtreeWidth();
+      Viewport viewport = getChild(start);
+      intervalwidth += viewport.findSubtreeWidth();
     }
 
     return intervalwidth;
@@ -272,7 +281,7 @@ public class ViewNode {
       return -1;
 
     for (int index = 0; index < parent.getNumChildren(); index++) {
-      ViewNode node = parent.getChild(index);
+      Viewport node = parent.getChild(index);
 
       if (node == this)
         return index;
@@ -289,64 +298,42 @@ public class ViewNode {
   }
 
   public boolean isVisible() {
-    ViewNode vnode = this;
-    while (vnode.parent != null) {
-      if (vnode.parent.collapsed)
+    Viewport viewport = this;
+    while (viewport.parent != null) {
+      if (viewport.parent.collapsed)
         return false;
-      vnode = vnode.parent;
+      viewport = viewport.parent;
     }
 
     return true;
   }
 
+  public void setSearchBackground(boolean value) {
+  }
+
   // Determine if given point falls in bounds of node
   public int test(int x1, int y1, double scale) {
-    if (x1 >= scale*(x - gwidth/2) && x1 <= scale*(x + gwidth/2))
+    if (x1 >= scale*(x - width/2) && x1 <= scale*(x + width/2))
       return 1;
 
-    if (x1 >= scale*(x + gwidth/2) && x1 <= scale*(x + gwidth/2 + tspace + tside + tspace)) {
-      if (y1 >= scale*(y + gheight - tside - tspace) && y1 <= scale*(y + gheight))
+    if (x1 >= scale*(x + width/2) && x1 <= scale*(x + width/2 + tspace + tside + tspace)) {
+      if (y1 >= scale*(y + height - tside - tspace) && y1 <= scale*(y + height))
         return 2;
     }
 
     return -1;
   }
 
-  public void drawViewNode(Graphics2D g2) {
-    double x1, y1;
-
-    if (search) {
-      g2.setColor(scheme.searchcolor);
-      g2.setStroke(new BasicStroke(.5f));
-      g2.draw(new Rectangle2D.Double(x-gwidth/2-searchspace, y-searchspace, gwidth+2*searchspace, gheight+2*searchspace));
+  public void draw(Graphics2D g2) {
+    if (view != null) {
+      g2.translate((double) (x-width/2), (double) y);
+      view.drawView(g2);
+      g2.translate((double) (-x+width/2), (double) -y);
     }
-
-    // Background
-    if (searchbackground)
-      g2.setColor(scheme.viewsearchbackgroundcolor);
-    else
+    else {
       g2.setColor(scheme.viewbackgroundcolor);
-
-    g2.fill(new Rectangle2D.Double(x-gwidth/2, y, gwidth, gheight));
-
-    // Tickmarks
-    g2.setColor(scheme.viewtickcolor);
-    g2.setStroke(new BasicStroke(1));
-    x1 = x - gwidth/2 + leftinset;
-    y1 = y + yincrement;
-    for (int index = 0; index < ygrid; index++) {
-      g2.draw(new Line2D.Double(x1, y1, x1+tickmark, y1));
-      y1 += yincrement;
-    }
-
-    // Bars
-    x1 = x - gwidth/2 + leftinset + tickmark + barspace;
-    for (int index = 0; index < values.length; index++) {
-      double barheight = yscale*values[index];
-      y1 = y + 1 + gheight - yincrement - barheight;
-      g2.setColor(scheme.getNextColor());
-      g2.fill(new Rectangle2D.Double(x1, y1, barwidth, barheight));
-      x1 += barwidth + barspace;
+      g2.setStroke(new BasicStroke(2));
+      g2.drawRect((int) (x-width/2), (int) y, (int) width, (int) height);
     }
 
     // Triangle
@@ -354,13 +341,15 @@ public class ViewNode {
       return;
 
     theight = .866025*tside;
+
+    double x1, y1;
     double ycomponent = tside/2;
     double xcomponent = .577350*ycomponent;
     double xcenter, ycenter;
 
     if (collapsed) {
-      xcenter = x + gwidth/2 + tspace + xcomponent;
-      ycenter = y + gheight - ycomponent;
+      xcenter = x + width/2 + tspace + xcomponent;
+      ycenter = y + height - ycomponent;
 
       int xpoints[] = {(int) (xcenter-xcomponent), (int) (xcenter+theight-xcomponent), (int) (xcenter-xcomponent)};
       int ypoints[] = {(int) (ycenter-ycomponent), (int) ycenter, (int) (ycenter+ycomponent)};
@@ -376,8 +365,8 @@ public class ViewNode {
       g2.fill(triangle);
     }
     else {
-      xcenter = x + gwidth/2 + tspace + xcomponent;
-      ycenter = y + gheight - ycomponent;
+      xcenter = x + width/2 + tspace + xcomponent;
+      ycenter = y + height - ycomponent;
 
       int xpoints[] = {(int) (xcenter-ycomponent), (int) (xcenter+ycomponent), (int) (xcenter)};
       int ypoints[] = {(int) (ycenter-xcomponent), (int) (ycenter-xcomponent), (int) (ycenter+ycomponent)};
@@ -394,41 +383,50 @@ public class ViewNode {
     }
   }
 
-  // Search functions
-  public void setSearchBackground(boolean search) {
-    searchbackground = search;
+  public boolean getSearch() {
+    return search;
+  }
+
+  public void setSearch(boolean value) {
+    search = value;
   }
 
   public double findPurity() {
-    double sum = 0;
-    double numerator = 0;
-    double base = Math.log(2.0);
+    if (model instanceof NominalViewableDTModel) {
+      double sum = 0;
+      double numerator = 0;
+      double base = Math.log(2.0);
 
-    try {
-      String[] outputs = dmodel.getUniqueOutputValues();
-      for (int index = 0; index < outputs.length; index++) {
-        double tally = dnode.getOutputTally(outputs[index]);
-        numerator += -1.0*tally*Math.log(tally)/base;
-        sum += tally;
+      try {
+        String[] outputs = ((NominalViewableDTModel) model).getUniqueOutputValues();
+        for (int index = 0; index < outputs.length; index++) {
+          double tally = ((NominalViewableDTNode) node).getOutputTally(outputs[index]);
+          numerator += -1.0*tally*Math.log(tally)/base;
+          sum += tally;
+        }
+        numerator += sum*Math.log(sum)/base;
+      } catch (Exception exception) {
+        System.out.println(exception);
       }
-      numerator += sum*Math.log(sum)/base;
-    } catch (Exception exception) {
-      System.out.println(exception);
+      return numerator/sum;
     }
-    return numerator/sum;
+
+    return 0;
   }
 
   // Determine type of condition and call specific evaluate function
   protected boolean evaluate(SearchPanel.Condition condition) {
     try {
-      if (condition instanceof SearchPanel.PopulationCondition) {
-        int population = dnode.getOutputTally(condition.attribute);
-        return evaluate(population, condition.value, condition.operator);
-      }
+      if (node instanceof NominalViewableDTNode) {
+        if (condition instanceof SearchPanel.PopulationCondition) {
+          int population = ((NominalViewableDTNode) node).getOutputTally(condition.attribute);
+          return evaluate(population, condition.value, condition.operator);
+        }
 
-      else if (condition instanceof SearchPanel.PercentCondition) {
-        double percent = 100*(double)dnode.getOutputTally(condition.attribute)/(double)dnode.getTotal();
-        return evaluate(percent, condition.value, condition.operator);
+        else if (condition instanceof SearchPanel.PercentCondition) {
+          double percent = 100*(double) ((NominalViewableDTNode) node).getOutputTally(condition.attribute)/(double) node.getTotal();
+          return evaluate(percent, condition.value, condition.operator);
+        }
       }
 
       else if (condition instanceof SearchPanel.PurityCondition) {
@@ -518,11 +516,10 @@ public class ViewNode {
     if (parent == null)
       return false;
 
-    if (!(parent.dnode instanceof NumericViewableDTNode))
+    if (!(parent.node instanceof NumericViewableDTNode))
       return false;
 
-
-    NumericViewableDTNode numericparent = (NumericViewableDTNode) parent.dnode;
+    NumericViewableDTNode numericparent = (NumericViewableDTNode) parent.node;
 
     String attribute = numericparent.getSplitAttribute();
 
@@ -540,10 +537,10 @@ public class ViewNode {
     if (parent == null)
       return false;
 
-    if (!(parent.dnode instanceof CategoricalViewableDTNode))
+    if (!(parent.node instanceof CategoricalViewableDTNode))
       return false;
 
-    CategoricalViewableDTNode categoricalparent = (CategoricalViewableDTNode) parent.dnode;
+    CategoricalViewableDTNode categoricalparent = (CategoricalViewableDTNode) parent.node;
 
     String attribute = categoricalparent.getSplitAttribute();
 
@@ -556,5 +553,4 @@ public class ViewNode {
 
     return evaluate(splitvalue, condition.svalue, condition.operator);
   }
-*/
 }

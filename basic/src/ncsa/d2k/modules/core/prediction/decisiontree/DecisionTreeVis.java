@@ -16,19 +16,18 @@ import ncsa.gui.*;
 /*
  DecisionTreeVis
  */
-public final class DecisionTreeVis
-    extends VisModule {
+public final class DecisionTreeVis extends VisModule {
 
-  private static final String zoomicon = File.separator + "images" +
-      File.separator + "zoom.gif";
-  private static final String searchicon = File.separator + "images" +
-      File.separator + "search.gif";
-  private static final String printicon = File.separator + "images" +
-      File.separator + "printit.gif";
-  private static final String homeicon = File.separator + "images" +
-      File.separator + "home.gif";
-  private static final String helpicon = File.separator + "images" +
-      File.separator + "help.gif";
+  private static final String zoomicon = File.separator+"images"+
+      File.separator+"zoom.gif";
+  private static final String searchicon = File.separator+"images"+
+      File.separator+"search.gif";
+  private static final String printicon = File.separator+"images"+
+      File.separator+"printit.gif";
+  private static final String homeicon = File.separator+"images"+
+      File.separator+"home.gif";
+  private static final String helpicon = File.separator+"images"+
+      File.separator+"help.gif";
 
   private static final Dimension buttonsize = new Dimension(22, 22);
 
@@ -78,12 +77,12 @@ public final class DecisionTreeVis
   }
 
   public String getModuleInfo() {
-    String s = "<p>Overview: Visualize a decision tree. " +
-        "<p>Detailed Description: Given a ViewableDTModel, display the structure " +
-        "and contents of the nodes of the decision tree.  The <i>Navigator</i> " +
-        "on the left shows a small view of the entire tree.  The main area " +
-        "shows an expanded view of the tree. For more information look up the help " +
-	"provided in the UI of the module";
+    String s = "<p>Overview: Visualize a decision tree. "+
+        "<p>Detailed Description: Given a ViewableDTModel, display the structure "+
+        "and contents of the nodes of the decision tree.  The <i>Navigator</i> "+
+        "on the left shows a small view of the entire tree.  The main area "+
+        "shows an expanded view of the tree. For more information look up the help "+
+        "provided in the UI of the module";
     return s;
   }
 
@@ -91,12 +90,10 @@ public final class DecisionTreeVis
     return "Decision Tree Visualization";
   }
 
-    public PropertyDescription[] getPropertiesDescriptions() {
-	return new PropertyDescription[0]; // so that "WindowName" property
-	// is invisible
-    }
-
-
+  public PropertyDescription[] getPropertiesDescriptions() {
+    return new PropertyDescription[0]; // so that "WindowName" property
+    // is invisible
+  }
 
   protected UserView createUserView() {
     return new DecisionTreeUserView();
@@ -109,9 +106,7 @@ public final class DecisionTreeVis
   /*
    DecisionTreeUserView
    */
-  private class DecisionTreeUserView
-      extends ncsa.d2k.userviews.swing.JUserPane
-      implements ActionListener, Printable {
+  private class DecisionTreeUserView extends ncsa.d2k.userviews.swing.JUserPane implements ActionListener, Printable {
 
     private BrushPanel brushpanel;
     private TreeScrollPane treescrollpane;
@@ -160,16 +155,14 @@ public final class DecisionTreeVis
     public void setInput(Object object, int index) {
       model = (ViewableDTModel) object;
 
-      String[] outputs = model.getUniqueOutputValues();
-      scheme = new DecisionTreeScheme(outputs.length);
-
-      colortable = new Hashtable(outputs.length);
-      ordertable = new Hashtable(outputs.length);
-
-      for (int outindex = 0; outindex < outputs.length; outindex++) {
+      /*String[] outputs = model.getUniqueOutputValues();
+             scheme = new DecisionTreeScheme(outputs.length);
+             colortable = new Hashtable(outputs.length);
+             ordertable = new Hashtable(outputs.length);
+             for (int outindex = 0; outindex < outputs.length; outindex++) {
         colortable.put(outputs[outindex], scheme.getNextColor());
         ordertable.put(outputs[outindex], new Integer(outindex));
-      }
+             }*/
 
       // Menu
       JMenu optionsmenu = new JMenu("Options");
@@ -180,16 +173,13 @@ public final class DecisionTreeVis
       menubar.add(viewsmenu);
       menubar.add(toolsmenu);
 
-      JMenu colorsmenu = new JMenu("Set Colors");
-      coloritems = new ColorMenuItem[outputs.length];
-
-      JMenu currentmenu = colorsmenu;
-      int items = 0;
-
-      for (int outindex = 0; outindex < coloritems.length; outindex++) {
+      /*JMenu colorsmenu = new JMenu("Set Colors");
+             coloritems = new ColorMenuItem[outputs.length];
+             JMenu currentmenu = colorsmenu;
+             int items = 0;
+             for (int outindex = 0; outindex < coloritems.length; outindex++) {
         coloritems[outindex] = new ColorMenuItem(outputs[outindex]);
         coloritems[outindex].addActionListener(this);
-
         if (items == MENUITEMS) {
           JMenu nextmenu = new JMenu("More...");
           currentmenu.insert(nextmenu, 0);
@@ -201,7 +191,7 @@ public final class DecisionTreeVis
           currentmenu.add(coloritems[outindex]);
           items++;
         }
-      }
+             }*/
 
       printtree = new JMenuItem("Print Tree...");
       printtree.addActionListener(this);
@@ -211,11 +201,11 @@ public final class DecisionTreeVis
 
       saveAsPmml = new JMenuItem("Save as PMML...");
       saveAsPmml.addActionListener(this);
-      if (! (model instanceof DecisionTreeModel)) {
+
+      if (!(model instanceof NominalViewableDTModel))
         saveAsPmml.setEnabled(false);
 
-      }
-      optionsmenu.add(colorsmenu);
+      //optionsmenu.add(colorsmenu);
       optionsmenu.addSeparator();
       optionsmenu.add(printtree);
       optionsmenu.add(printwindow);
@@ -243,6 +233,9 @@ public final class DecisionTreeVis
       search = new JMenuItem("Search...");
       search.addActionListener(this);
 
+      if (!(model instanceof NominalViewableDTModel))
+        search.setEnabled(false);
+
       toolsmenu.add(search);
 
       // Tool panel
@@ -250,10 +243,10 @@ public final class DecisionTreeVis
 
       Image image = getImage(homeicon);
       ImageIcon icon = null;
-      if (image != null) {
+      if (image!=null) {
         icon = new ImageIcon(image);
       }
-      if (icon != null) {
+      if (icon!=null) {
         resetbutton = new JButton(icon);
         resetbutton.setMaximumSize(buttonsize);
         resetbutton.setPreferredSize(buttonsize);
@@ -266,10 +259,10 @@ public final class DecisionTreeVis
 
       image = getImage(printicon);
       icon = null;
-      if (image != null) {
+      if (image!=null) {
         icon = new ImageIcon(image);
       }
-      if (icon != null) {
+      if (icon!=null) {
         printbutton = new JButton(icon);
         printbutton.setMaximumSize(buttonsize);
         printbutton.setPreferredSize(buttonsize);
@@ -282,26 +275,29 @@ public final class DecisionTreeVis
 
       image = getImage(searchicon);
       icon = null;
-      if (image != null) {
+      if (image!=null) {
         icon = new ImageIcon(image);
       }
-      if (icon != null) {
+      if (icon!=null) {
         searchbutton = new JButton(icon);
         searchbutton.setMaximumSize(buttonsize);
         searchbutton.setPreferredSize(buttonsize);
       }
-      else {
+      else
         searchbutton = new JButton("Search");
-      }
+
       searchbutton.addActionListener(this);
       searchbutton.setToolTipText("Search");
 
+      if (!(model instanceof NominalViewableDTModel))
+        searchbutton.setEnabled(false);
+
       image = getImage(zoomicon);
       icon = null;
-      if (image != null) {
+      if (image!=null) {
         icon = new ImageIcon(image);
       }
-      if (icon != null) {
+      if (icon!=null) {
         zoombutton = new JToggleButton(icon);
         zoombutton.setMaximumSize(buttonsize);
         zoombutton.setPreferredSize(buttonsize);
@@ -313,10 +309,10 @@ public final class DecisionTreeVis
       zoombutton.setToolTipText("Zoom");
 
       image = getImage(helpicon);
-      if (image != null) {
+      if (image!=null) {
         icon = new ImageIcon(image);
       }
-      if (icon != null) {
+      if (icon!=null) {
         helpbutton = new JButton(icon);
         helpbutton.setMaximumSize(buttonsize);
         helpbutton.setPreferredSize(buttonsize);
@@ -365,7 +361,8 @@ public final class DecisionTreeVis
       spacingframe = new JD2KFrame("Node Spacing");
 
       searchframe = new JD2KFrame("Search");
-      searchpanel = new SearchPanel(treescrollpane, searchframe);
+      if (model instanceof NominalViewableDTModel)
+        searchpanel = new SearchPanel(treescrollpane, searchframe);
 
       sidepanel = new JPanel();
       sidepanel.setMinimumSize(new Dimension(0, 0));
@@ -405,17 +402,17 @@ public final class DecisionTreeVis
       double cHeight = getHeight();
 
       double scale = 1;
-      if (cWidth >= pageWidth) {
-        scale = pageWidth / cWidth;
+      if (cWidth>=pageWidth) {
+        scale = pageWidth/cWidth;
       }
-      if (cHeight >= pageHeight) {
-        scale = Math.min(scale, pageHeight / cHeight);
+      if (cHeight>=pageHeight) {
+        scale = Math.min(scale, pageHeight/cHeight);
 
       }
-      double cWidthOnPage = cWidth * scale;
-      double cHeightOnPage = cHeight * scale;
+      double cWidthOnPage = cWidth*scale;
+      double cHeightOnPage = cHeight*scale;
 
-      if (pi >= 1) {
+      if (pi>=1) {
         return Printable.NO_SUCH_PAGE;
       }
 
@@ -435,7 +432,7 @@ public final class DecisionTreeVis
         Color newcolor = JColorChooser.showDialog(this, "Choose Color",
                                                   oldcolor);
 
-        if (newcolor != null) {
+        if (newcolor!=null) {
           colortable.put(coloritem.getText(), newcolor);
 
           Enumeration keys = colortable.keys();
@@ -452,7 +449,7 @@ public final class DecisionTreeVis
         }
       }
 
-      else if (source == showlabels) {
+      else if (source==showlabels) {
         treescrollpane.toggleLabels();
 
         /*else if (source == zoom) {
@@ -464,7 +461,7 @@ public final class DecisionTreeVis
             }*/
 
       }
-      else if (source == zoombutton) {
+      else if (source==zoombutton) {
         /*if (zoombutton.isSelected())
          zoom.setSelected(true);
              else
@@ -474,7 +471,7 @@ public final class DecisionTreeVis
         treescrollpane.toggleZoom();
       }
 
-      else if (source == depth) {
+      else if (source==depth) {
         depthframe.getContentPane().removeAll();
         depthframe.getContentPane().add(new DepthPanel(depthframe,
             treescrollpane));
@@ -482,7 +479,7 @@ public final class DecisionTreeVis
         depthframe.setVisible(true);
       }
 
-      else if (source == spacing) {
+      else if (source==spacing) {
         spacingframe.getContentPane().removeAll();
         spacingframe.getContentPane().add(new SpacingPanel(spacingframe,
             treescrollpane, navigatorpanel));
@@ -490,7 +487,7 @@ public final class DecisionTreeVis
         spacingframe.setVisible(true);
       }
 
-      else if (source == printtree || source == printbutton) {
+      else if (source==printtree||source==printbutton) {
         PrinterJob pj = PrinterJob.getPrinterJob();
         pj.setPrintable(treescrollpane.getPrintable());
         if (pj.printDialog()) {
@@ -503,7 +500,7 @@ public final class DecisionTreeVis
         }
       }
 
-      else if (source == printwindow) {
+      else if (source==printwindow) {
         PrinterJob pj = PrinterJob.getPrinterJob();
         pj.setPrintable(this);
         if (pj.printDialog()) {
@@ -516,25 +513,25 @@ public final class DecisionTreeVis
         }
       }
 
-      else if (source == resetbutton) {
+      else if (source==resetbutton) {
         treescrollpane.reset();
       }
 
-      else if (source == search || source == searchbutton) {
+      else if (source==search||source==searchbutton) {
         searchframe.getContentPane().add(searchpanel);
         searchframe.pack();
         searchframe.setVisible(true);
       }
-      else if (source == saveAsPmml) {
+      else if (source==saveAsPmml) {
         JFileChooser jfc = new JFileChooser();
 
         int returnVal = jfc.showSaveDialog(null);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
+        if (returnVal==JFileChooser.APPROVE_OPTION) {
           try {
             // get the selected file
             File newFile = jfc.getSelectedFile();
 
-	    //TODO add back PMML
+            //TODO add back PMML
             //WriteDecisionTreePMML.writePMML( (DecisionTreeModel) model,
             //                                newFile.getAbsolutePath());
           }
@@ -543,7 +540,7 @@ public final class DecisionTreeVis
           }
         }
       }
-      else if(source ==  helpbutton)
+      else if (source==helpbutton)
         helpWindow.setVisible(true);
     }
 
@@ -552,20 +549,19 @@ public final class DecisionTreeVis
       Dimension left = navigatorpanel.getPreferredSize();
       Dimension mainarea = treescrollpane.getPreferredSize();
 
-      int width = (int) left.getWidth() + (int) mainarea.getWidth();
-      int height = (int) top.getHeight() + (int) mainarea.getHeight();
+      int width = (int) left.getWidth()+(int) mainarea.getWidth();
+      int height = (int) top.getHeight()+(int) mainarea.getHeight();
 
-      if (width > 800) {
+      if (width>800) {
         width = 800;
       }
-      if (height > 600) {
+      if (height>600) {
         height = 600;
       }
       return new Dimension(width, height);
     }
 
-    private class ColorMenuItem
-        extends JMenuItem {
+    private class ColorMenuItem extends JMenuItem {
       ColorMenuItem(String s) {
         super(s);
       }
@@ -576,13 +572,11 @@ public final class DecisionTreeVis
     }
   }
 
-  class SpacingPanel
-      extends JPanel
-      implements ActionListener {
+  class SpacingPanel extends JPanel implements ActionListener {
     JD2KFrame spacingframe;
     TreeScrollPane treescrollpane;
     NavigatorPanel navigatorpanel;
-    ViewNode viewroot;
+    Viewport viewroot;
 
     JLabel hlabel, vlabel;
     JTextField hfield, vfield;
@@ -647,11 +641,11 @@ public final class DecisionTreeVis
     public void actionPerformed(ActionEvent event) {
       Object source = event.getSource();
 
-      if (source == close) {
+      if (source==close) {
         spacingframe.setVisible(false);
 
       }
-      if (source == cancel) {
+      if (source==cancel) {
         viewroot.xspace = xspace;
         viewroot.yspace = yspace;
 
@@ -661,7 +655,7 @@ public final class DecisionTreeVis
         spacingframe.setVisible(false);
       }
 
-      if (source == apply) {
+      if (source==apply) {
         String hsvalue = hfield.getText();
         String vsvalue = vfield.getText();
 
@@ -683,9 +677,7 @@ public final class DecisionTreeVis
     }
   }
 
-  class DepthPanel
-      extends JPanel
-      implements ActionListener {
+  class DepthPanel extends JPanel implements ActionListener {
     JD2KFrame depthframe;
     TreeScrollPane treescrollpane;
 
@@ -738,17 +730,17 @@ public final class DecisionTreeVis
     public void actionPerformed(ActionEvent event) {
       Object source = event.getSource();
 
-      if (source == close) {
+      if (source==close) {
         depthframe.setVisible(false);
 
       }
-      if (source == cancel) {
+      if (source==cancel) {
         treescrollpane.setDepth(depth);
 
         depthframe.setVisible(false);
       }
 
-      if (source == apply) {
+      if (source==apply) {
         String svalue = dfield.getText();
 
         try {
@@ -764,8 +756,7 @@ public final class DecisionTreeVis
     }
   }
 
-  private final class HelpWindow
-      extends JD2KFrame {
+  private final class HelpWindow extends JD2KFrame {
     HelpWindow() {
       super("About NaiveBayesVis");
       JEditorPane jep = new JEditorPane("text/html", getHelpString());
@@ -780,81 +771,57 @@ public final class DecisionTreeVis
     s.append("<p>Overview: Decision Tree Vis is an interactive display of the ");
     s.append("contents of a decision tree.");
     s.append("<hr>");
-    s.append(
-        "<p>Detailed Description: Decision Tree Vis is comprised of three main ");
+    s.append("<p>Detailed Description: Decision Tree Vis is comprised of three main ");
     s.append("components: the Main Area, the Navigator, and the Node Info.");
     s.append("<p>The Main Area shows the decision tree.  When the cursor is ");
-    s.append(
-        "positioned over a node in the tree, the Node Info is updated to show ");
-    s.append(
-        "the contents of the node.  The main area also shows the branch labels ");
-    s.append(
-        "of the decision tree.  The labels are displayed approximately halfway ");
+    s.append("positioned over a node in the tree, the Node Info is updated to show ");
+    s.append("the contents of the node.  The main area also shows the branch labels ");
+    s.append("of the decision tree.  The labels are displayed approximately halfway ");
     s.append("between the parent and child.  Subtrees in the Main Area can be ");
     s.append("collapsed using the arrow widget next to a node in the tree.  A ");
-    s.append(
-        "single-click on a node will show an expanded view of the node.  This ");
-    s.append(
-        "will show the distributions of the outputs at this particular node.");
-    s.append(
-        "<p>The Navigator displays a smaller view of the Main Area.  The current");
-    s.append(
-        "portion of the tree that is displayed by the Main Area is shown by a ");
+    s.append("single-click on a node will show an expanded view of the node.  This ");
+    s.append("will show the distributions of the outputs at this particular node.");
+    s.append("<p>The Navigator displays a smaller view of the Main Area.  The current");
+    s.append("portion of the tree that is displayed by the Main Area is shown by a ");
     s.append("box in the Navigator.");
-    s.append(
-        "<p>The Node Info shows the distributions of the classified values at ");
+    s.append("<p>The Node Info shows the distributions of the classified values at ");
     s.append("the node under the mouse cursor.");
     s.append("<hr>");
     s.append("Menu Options:");
     s.append("<ul>");
     s.append("<li>Options");
     s.append("<ul>");
-    s.append(
-        "	<li>Set Colors: The color used to display each unique classified");
+    s.append("	<li>Set Colors: The color used to display each unique classified");
     s.append("	value can be changed.");
-    s.append(
-        "	<li>Print Tree: The entire tree can be printed using this option.");
+    s.append("	<li>Print Tree: The entire tree can be printed using this option.");
     s.append("	This will be the entire contents of the Main Area.");
-    s.append(
-        "	<li>Print Window: The Decision Tree Window itself can be printed");
+    s.append("	<li>Print Window: The Decision Tree Window itself can be printed");
     s.append("	using this option.");
     s.append("  <li>Save as PMML: The Decision Tree Model is saved in a PMML file.");
     s.append("	</ul>");
     s.append("<li>Views");
     s.append("	<ul>");
-    s.append(
-        "	<li>Maximum Depth: The maximum depth of the tree to be shown can");
+    s.append("	<li>Maximum Depth: The maximum depth of the tree to be shown can");
     s.append("	be selected using the maximum depth option.  Nodes with a depth");
     s.append("	greater than this number will not be displayed.");
     s.append("	<li>Node Spacing: The space in pixels between nodes in the tree");
     s.append("	can be adjusted using this option.");
-    s.append(
-        "	<li>Show labels: Toggles the display of branch labels in the Main");
+    s.append("	<li>Show labels: Toggles the display of branch labels in the Main");
     s.append("	Area.");
     s.append("	</ul>");
     s.append("<li>Tools");
     s.append("	<ul>");
     s.append("	<li>Search: ");
-    s.append(
-        "Searches for nodes that satisfy the logical expression. The expression is the ");
-    s.append(
-        "logical AND or logical OR of conditions. The most basic condition is an ");
-    s.append(
-        "inequality based on the node population, percent, purity or split value. The ");
-    s.append(
-        "population is the number of records with the given output value. The percent ");
-    s.append(
-        "is the population of the given output value relative to the total number of ");
-    s.append(
-        "records. The purity is a measure of the entropy. The split value is the input ");
-    s.append(
-        "value used to split the node. A series of conditions is added to the Current ");
-    s.append(
-        "Conditions list. Pairs of conditions can then be selected and logically ");
-    s.append(
-        "combined using Replace. The single remaining condition is then used to search ");
-    s.append(
-        "the tree. The search result nodes can be visited  by using Next and Previous.");
+    s.append("Searches for nodes that satisfy the logical expression. The expression is the ");
+    s.append("logical AND or logical OR of conditions. The most basic condition is an ");
+    s.append("inequality based on the node population, percent, purity or split value. The ");
+    s.append("population is the number of records with the given output value. The percent ");
+    s.append("is the population of the given output value relative to the total number of ");
+    s.append("records. The purity is a measure of the entropy. The split value is the input ");
+    s.append("value used to split the node. A series of conditions is added to the Current ");
+    s.append("Conditions list. Pairs of conditions can then be selected and logically ");
+    s.append("combined using Replace. The single remaining condition is then used to search ");
+    s.append("the tree. The search result nodes can be visited  by using Next and Previous.");
     s.append("	</ul>");
     s.append("</ul>");
     s.append("<hr>");

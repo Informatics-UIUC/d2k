@@ -13,8 +13,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 	and uses the decision tree to predict the outcome for each row
 	in the data set.
 */
-public class DecisionTreeModel extends PredictionModelModule
-	implements Serializable, ViewableDTModel {
+public class DecisionTreeModel extends PredictionModelModule implements Serializable, NominalViewableDTModel {
 
 	static final long serialVersionUID = 6788778863299676465L;
 

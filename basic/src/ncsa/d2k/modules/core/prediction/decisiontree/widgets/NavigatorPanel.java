@@ -89,7 +89,7 @@ public final class NavigatorPanel extends JPanel {
       findTreeOffsets(sroot);
 
       dwidth = sroot.findSubtreeWidth();
-      dheight = (sroot.yspace + sroot.gheight)*(mdepth + 1) + sroot.yspace;
+      dheight = (sroot.yspace + sroot.height)*(mdepth + 1) + sroot.yspace;
 
       findSize();
 
@@ -118,7 +118,7 @@ public final class NavigatorPanel extends JPanel {
       findTreeOffsets(sroot);
 
       dwidth = sroot.findSubtreeWidth();
-      dheight = (sroot.yspace + sroot.gheight)*(mdepth + 1) + sroot.yspace;
+      dheight = (sroot.yspace + sroot.height)*(mdepth + 1) + sroot.yspace;
 
       findSize();
 
@@ -196,7 +196,7 @@ public final class NavigatorPanel extends JPanel {
         ScaledNode schild = (ScaledNode) snode.getChild(index);
 
         double x1 = snode.x;
-        double y1 = snode.y + snode.gheight;
+        double y1 = snode.y + snode.height;
         double x2 = schild.x;
         double y2 = schild.y;
 

@@ -7,7 +7,7 @@ import java.util.*;
 import javax.swing.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 
-public class ScaledNode extends ViewNode {
+public class ScaledNode extends Viewport {
 
 	public ScaledNode(ViewableDTModel model, ViewableDTNode node, ScaledNode snode, String label) {
 		super(model, node, snode, label);
@@ -20,8 +20,9 @@ public class ScaledNode extends ViewNode {
 	public void drawScaledNode(Graphics2D g2) {
 		// Background
 		g2.setColor(DecisionTreeScheme.scaledviewbackgroundcolor);
-		g2.fill(new Rectangle2D.Double(x-gwidth/2, y, gwidth, gheight));
+		g2.fill(new Rectangle2D.Double(x-width/2, y, width, height));
 
+                /*
 		// Bars
 		g2.setColor(DecisionTreeScheme.scaledviewbarcolor);
 		double x1 = x - gwidth/2 + leftinset + tickmark + barspace;
@@ -31,5 +32,6 @@ public class ScaledNode extends ViewNode {
 			g2.fill(new Rectangle2D.Double(x1, y1, barwidth, barheight));
 			x1 += barwidth + barspace;
 		}
+                */
 	}
 }

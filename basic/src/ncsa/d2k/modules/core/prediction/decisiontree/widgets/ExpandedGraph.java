@@ -14,7 +14,7 @@ import ncsa.d2k.modules.core.vis.widgets.*;
 	Graph displayed when mouse clicks a node in tree scroll pane
 */
 public final class ExpandedGraph extends JPanel {
-
+/*
 	double left = 15;
 	double right = 15;
 	double top = 15;
@@ -355,4 +355,5 @@ public final class ExpandedGraph extends JPanel {
 	public Dimension getMinimumSize() {
 		return getPreferredSize();
 	}
+*/
 }

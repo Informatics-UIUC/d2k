@@ -10,8 +10,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 	as there are values of the attribute that this node tests on.
 	@author David Clutter
 */
-public final class CategoricalDecisionTreeNode extends DecisionTreeNode
-	implements Serializable, CategoricalViewableDTNode {
+public final class CategoricalDecisionTreeNode extends DecisionTreeNode implements Serializable, NominalViewableDTNode {
 
 	/* Maps an output to a specific child.  Used in evaluate() */
 	private HashMap outputToChildMap;
@@ -150,6 +149,10 @@ public final class CategoricalDecisionTreeNode extends DecisionTreeNode
 		retVal = (String[])branchLabels.toArray(retVal);
 		return retVal;
 	}
+
+        public double getSplitValue() {
+          return 0;
+        }
 
 	/**
 	 * Get the split attribute.
