@@ -10,6 +10,7 @@ import java.io.*;
 // Other Imports
 //===============
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.*;
 
 /**
  * <p>Title: TableCluster</p>
@@ -37,11 +38,22 @@ public class TableCluster implements Serializable {
   private TableCluster _cluster1 = null;
   private TableCluster _cluster2 = null;
 
+  //for sparse tables
+  private double[] _spcentroid = null;
+  private int[] _cind = null;
+
   private int _label = assignID();
 
   //===========
   //Properties
   //===========
+  private boolean _sparse = false;
+  public void setSparse(boolean b){
+    _sparse = b;
+  }
+  public boolean getSparse(){
+    return _sparse;
+  }
 
   private String _txtLabel = null;
   public void setTextClusterLabel(String i) {
@@ -69,9 +81,11 @@ public class TableCluster implements Serializable {
     _table = table;
     _members = new int[1];
     _members[0] = row;
-    if (_table instanceof ExampleTable) {
-      _centroid = new double[ ( (ExampleTable) _table).getInputFeatures().
-          length];
+    if (_table instanceof SparseTable){
+      setSparse(true);
+      //Thread.currentThread().dumpStack();
+    }else if (_table instanceof ExampleTable) {
+      _centroid = new double[ ( (ExampleTable) _table).getInputFeatures().length];
     } else {
       _centroid = new double[_table.getNumColumns()];
     }
@@ -80,9 +94,11 @@ public class TableCluster implements Serializable {
   public TableCluster(Table table, int[] rows) {
     _table = table;
     _members = rows;
-    if (_table instanceof ExampleTable) {
-      _centroid = new double[ ( (ExampleTable) _table).getInputFeatures().
-          length];
+    if (_table instanceof SparseTable){
+      setSparse(true);
+      //Thread.currentThread().dumpStack();
+    }else if (_table instanceof ExampleTable) {
+      _centroid = new double[ ( (ExampleTable) _table).getInputFeatures().length];
     } else {
       _centroid = new double[_table.getNumColumns()];
     }
@@ -92,9 +108,11 @@ public class TableCluster implements Serializable {
     _table = table;
     _cluster1 = c1;
     _cluster2 = c2;
-    if (_table instanceof ExampleTable) {
-      _centroid = new double[ ( (ExampleTable) _table).getInputFeatures().
-          length];
+    if (_table instanceof SparseTable){
+      setSparse(true);
+      //Thread.currentThread().dumpStack();
+    }else if (_table instanceof ExampleTable) {
+      _centroid = new double[ ( (ExampleTable) _table).getInputFeatures().length];
     } else {
       _centroid = new double[_table.getNumColumns()];
     }
@@ -175,41 +193,76 @@ public class TableCluster implements Serializable {
     }
     int[] members = this.getMemberIndices();
 
-    if (_table instanceof ExampleTable) {
-      double sum = 0;
-      int[] feats = ( (ExampleTable) _table).getInputFeatures();
-      for (int i = 0, n = feats.length; i < n; i++) {
-        sum = 0;
-        for (int j = 0, m = members.length; j < m; j++) {
-          sum += _table.getDouble(members[j], feats[i]);
+    if (!getSparse()){
+      if (_table instanceof ExampleTable) {
+        double sum = 0;
+        int[] feats = ( (ExampleTable) _table).getInputFeatures();
+        for (int i = 0, n = feats.length; i < n; i++) {
+          sum = 0;
+          for (int j = 0, m = members.length; j < m; j++) {
+            sum += _table.getDouble(members[j], feats[i]);
+          }
+          _centroid[i] = sum;
         }
-        _centroid[i] = sum;
+      } else {
+        double sum = 0;
+        for (int i = 0, n = _table.getNumColumns(); i < n; i++) {
+          sum = 0;
+          for (int j = 0, m = members.length; j < m; j++) {
+            sum += _table.getDouble(members[j], i);
+          }
+          _centroid[i] = sum;
+        }
       }
-//    } else if (_table instanceof SparseTable){
-//    }
+      int cnt = members.length;
+      for (int i = 0, n = _centroid.length; i < n; i++) {
+        _centroid[i] = _centroid[i] / cnt;
+      }
     } else {
       double sum = 0;
-      for (int i = 0, n = _table.getNumColumns(); i < n; i++) {
-        sum = 0;
-        for (int j = 0, m = members.length; j < m; j++) {
-          sum += _table.getDouble(members[j], i);
+      double[] temp = new double[_table.getNumColumns()];
+      for (int j = 0, m = members.length; j < m; j++) {
+        int feats[] = ((SparseTable)_table).getRowIndices(members[j]);
+        for (int i = 0, n = feats.length; i < n; i++) {
+          temp[i] += _table.getDouble(members[j], feats[i]);
         }
-        _centroid[i] = sum;
+      }
+      double[] tempv = new double[_table.getNumColumns()];
+      int[] tempi = new int[_table.getNumColumns()];
+      int cnt = 0;
+      for (int i = 0, n = temp.length; i < n; i++){
+        if (temp[i] != 0){
+          tempi[cnt] = i;
+          tempv[cnt] = temp[i];
+          cnt++;
+        }
+      }
+      _cind = new int[cnt];
+      _spcentroid = new double[cnt];
+      System.arraycopy(tempi, 0, this._cind, 0, cnt);
+      System.arraycopy(tempv,0,this._spcentroid, 0, cnt);
+      cnt = members.length;
+      for (int i = 0, n = _spcentroid.length; i < n; i++) {
+        _spcentroid[i] = _spcentroid[i] / cnt;
       }
     }
-    int cnt = members.length;
-    for (int i = 0, n = _centroid.length; i < n; i++) {
-      _centroid[i] = _centroid[i] / cnt;
-    }
+
     _centroidComputed = true;
   }
 
   public double getCentroidNorm() {
     computeCentroid();
+
     if (_centroid_norm < 0) {
       double temp = 0;
-      for (int i = 0, n = _centroid.length; i < n; i++) {
-        temp += Math.pow(_centroid[i], 2);
+      if (!getSparse()){
+        for (int i = 0, n = _centroid.length; i < n; i++) {
+          temp += Math.pow(_centroid[i], 2);
+        }
+      } else {
+        for (int i = 0, n = _spcentroid.length; i < n; i++) {
+          temp += Math.pow(_spcentroid[i], 2);
+        }
       }
       _centroid_norm = Math.sqrt(temp);
     }
@@ -222,6 +275,16 @@ public class TableCluster implements Serializable {
   public double[] getCentroid() {
     computeCentroid();
     return this._centroid;
+  }
+
+  public double[] getSparseCentroidValues(){
+    computeCentroid();
+    return this._spcentroid;
+  }
+
+  public int[] getSparseCentroidInd(){
+    computeCentroid();
+    return this._cind;
   }
 
   public int[] getMemberIndices() {

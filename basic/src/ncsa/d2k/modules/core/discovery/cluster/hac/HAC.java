@@ -9,6 +9,7 @@ import java.util.*;
 // Other Imports
 //===============
 import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.*;
 import ncsa.d2k.modules.core.discovery.cluster.*;
 import ncsa.d2k.modules.core.discovery.cluster.util.*;
 
@@ -652,33 +653,128 @@ public class HAC {
    * @return distance value as double
    */
   static public double distance(TableCluster tc1, TableCluster tc2, int dm) {
-    double[] centroid1 = tc1.getCentroid();
-    double[] centroid2 = tc2.getCentroid();
-    if (dm == HAC.s_Euclidean) {
-      double diffs = 0;
-      for (int i = 0, n = centroid1.length; i < n; i++) {
-        double diff = centroid1[i] - centroid2[i];
-        diffs += Math.pow(diff, 2);
+
+    if (!tc1.getSparse()){
+
+      double[] centroid1 = tc1.getCentroid();
+      double[] centroid2 = tc2.getCentroid();
+      if (dm == HAC.s_Euclidean) {
+        double diffs = 0;
+        for (int i = 0, n = centroid1.length; i < n; i++) {
+          double diff = centroid1[i] - centroid2[i];
+          diffs += Math.pow(diff, 2);
+        }
+        return Math.sqrt(diffs);
+      } else if (dm == HAC.s_Manhattan) {
+        double diffs = 0;
+        for (int i = 0, n = centroid1.length; i < n; i++) {
+          double diff = centroid1[i] - centroid2[i];
+          diffs += Math.abs(diff);
+        }
+        return diffs;
+      } else if (dm == HAC.s_Cosine) {
+        double prods = 0;
+        for (int i = 0, n = centroid1.length; i < n; i++) {
+          double prod = centroid1[i] * centroid2[i];
+          prods += prod;
+        }
+        return Math.abs(1 - (prods / (tc1.getCentroidNorm() * tc2.getCentroidNorm())));
+      } else {
+        //this should never happen
+        System.out.println("Unknown distance metric ... ");
+        return -1;
       }
-      return Math.sqrt(diffs);
-    } else if (dm == HAC.s_Manhattan) {
-      double diffs = 0;
-      for (int i = 0, n = centroid1.length; i < n; i++) {
-        double diff = centroid1[i] - centroid2[i];
-        diffs += Math.abs(diff);
-      }
-      return diffs;
-    } else if (dm == HAC.s_Cosine) {
-      double prods = 0;
-      for (int i = 0, n = centroid1.length; i < n; i++) {
-        double prod = centroid1[i] * centroid2[i];
-        prods += prod;
-      }
-      return Math.abs(1 - (prods / (tc1.getCentroidNorm() * tc2.getCentroidNorm())));
     } else {
-      //this should never happen
-      System.out.println("Unknown distance metric ... ");
-      return -1;
+
+      int[] ind1 = tc1.getSparseCentroidInd();
+      double[] val1 = tc1.getSparseCentroidValues();
+
+      int[] ind2 = tc2.getSparseCentroidInd();
+      double[] val2 = tc2.getSparseCentroidValues();
+
+      if (dm == HAC.s_Euclidean) {
+
+        double dist = 0;
+        int x = 0;
+        int y = 0;
+        //System.out.println(m_termIDS.length + " "  + terms.length);
+        while ( (x < ind1.length) && (y < ind2.length)) {
+          if (ind1[x] == ind2[y]) {
+            //System.out.println(x + " "  + y);
+            dist += Math.pow(val1[x] - val2[y], 2);
+            x++;
+            y++;
+          } else if (ind1[x] < ind2[y]) {
+            dist += Math.pow(val1[x], 2);
+            x++;
+          } else {
+            dist += Math.pow(val2[y], 2);
+            y++;
+          }
+        }
+        while (x < ind1.length){
+          dist += Math.pow(val1[x], 2);
+          x++;
+        }
+        while (y < ind2.length){
+          dist += Math.pow(val2[y], 2);
+          y++;
+        }
+
+        return Math.sqrt(dist);
+      } else if (dm == HAC.s_Manhattan) {
+        double dist = 0;
+        int x = 0;
+        int y = 0;
+        //System.out.println(m_termIDS.length + " "  + terms.length);
+        while ( (x < ind1.length) && (y < ind2.length)) {
+          if (ind1[x] == ind2[y]) {
+            //System.out.println(x + " "  + y);
+            dist += Math.abs(val1[x] - val2[y]);
+            x++;
+            y++;
+          } else if (ind1[x] < ind2[y]) {
+            dist += Math.abs(val1[x]);
+            x++;
+          } else {
+            dist += Math.abs(val2[y]);
+            y++;
+          }
+        }
+        while (x < ind1.length){
+          dist += Math.abs(val1[x]);
+          x++;
+        }
+        while (y < ind2.length){
+          dist += Math.abs(val2[y]);
+          y++;
+        }
+        return dist;
+      } else if (dm == HAC.s_Cosine) {
+        double prods = 0;
+        int x = 0;
+        int y = 0;
+        //System.out.println(m_termIDS.length + " "  + terms.length);
+        while ( (x < ind1.length) && (y < ind2.length)) {
+          if (ind1[x] == ind2[y]) {
+            //System.out.println(x + " "  + y);
+            prods += val1[x]*val2[y];
+            x++;
+            y++;
+          } else if (ind1[x] < ind2[y]) {
+            x++;
+          } else {
+            y++;
+          }
+        }
+        return Math.abs(1 - (prods / (tc1.getCentroidNorm() * tc2.getCentroidNorm())));
+      } else {
+        //this should never happen
+        System.out.println("Unknown distance metric ... ");
+        return -1;
+      }
+
+
     }
   }
 

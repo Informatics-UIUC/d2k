@@ -29,7 +29,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn{
 
    //a value to be returned if getDouble recieves a parameter for row number that
    //is not valid.
-   public static double NOT_EXIST = -1 * Double.MAX_VALUE;
+   public static double NOT_EXIST = 0;//-1 * Double.MAX_VALUE;
 
 
      /**
