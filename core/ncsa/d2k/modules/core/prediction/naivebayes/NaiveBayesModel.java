@@ -535,7 +535,7 @@ public final class NaiveBayesModel
    */
   public String[] getInputTypes() {
     String[] in = {
-        "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
+        "ncsa.d2k.modules.core.datatype.table.Table"};
     return in;
   }
 
