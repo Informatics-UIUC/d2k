@@ -66,13 +66,16 @@ public class ReadFileToADTree extends InputModule {
     public void doit() {
         FlatFileParser ffr = (FlatFileParser)pullInput(0);
         ADTree adt = new ADTree(ffr.getNumColumns());
-        for(int i = 0; i < ffr.getNumColumns(); i++)
+				//there are two levels of debug for an ADTree; set the first one only
+				adt.setDebug1(debug);
+		    for(int i = 0; i < ffr.getNumColumns(); i++)
             adt.setLabel(i+1, ffr.getColumnLabel(i));
         for(int i = 0; i < ffr.getNumRows(); i++) {
             String[] vals = new String[ffr.getNumColumns()];
             char[][] row = ffr.getRowElements(i);
             for(int j = 0; j < row.length; j++)
                 vals[j] = new String(row[j]);
+						//System.out.println("countingLine for " + i + ": " +  vals.toString());
             adt.countLine(adt, vals);
         }
 
@@ -122,4 +125,16 @@ public class ReadFileToADTree extends InputModule {
         pushOutput(adt, 0);
         pushOutput(meta, 1);
     }
+
+		boolean debug = false;
+
+
+		public void setDebug(boolean b){
+		  debug=b;
+	  }
+
+		public boolean getDebug(){
+		  return debug;
+	  }
+
 }
