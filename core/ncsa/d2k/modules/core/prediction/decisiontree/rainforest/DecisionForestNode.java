@@ -197,9 +197,91 @@ public abstract class DecisionForestNode implements ViewableDTNode, Serializable
 
 		@param vt the Table with the data
 		@param row the row of the table to evaluate
-		@return the result of evaluating the record
+		@return the class label of the row
 	*/
-	abstract public Object evaluate(Table vt, int row);
+	public Object evaluate(DecisionForestNode node, Table vt, int row) {
+          if (node.isLeaf()) {
+            return node.getLabel();
+          }
+          else {
+            for (int branchIdx=0; branchIdx<node.getNumChildren(); branchIdx++) {
+              DecisionForestNode childNode = (DecisionForestNode)node.getChild(branchIdx);
+              String branchLabel = node.getBranchLabel(branchIdx);
+              branchLabel = branchLabel.replace('-', '_');
+              branchLabel = branchLabel.toUpperCase();
+              branchLabel = squeezeSpace(branchLabel);
+              for (int colIdx=0; colIdx<vt.getNumColumns(); colIdx++) {
+                String colLabel = vt.getColumnLabel(colIdx);
+                colLabel = colLabel.replace('-','_');
+                colLabel = colLabel.toUpperCase();
+                colLabel = squeezeSpace(colLabel);
+                if (branchLabel.indexOf(colLabel)>=0) { // column label match the branch label
+                  if (vt.isColumnNumeric(colIdx)) { // numeric column
+                    double numVal = vt.getDouble(row,colIdx);
+                    if (inRange(branchLabel, numVal)) { // value match the range
+                      return evaluate(childNode, vt, row);
+                    }
+                  }
+                  else { // non-numeric column
+                    String strVal = vt.getString(row, colIdx);
+                    strVal = strVal.toUpperCase();
+                    if (branchLabel.indexOf(strVal)>=0) { // values match
+                      return evaluate(childNode, vt, row);
+                    }
+                  }
+                  break;
+                }
+              }
+            }
+            // should never get here
+            System.out.println("something is wrong in evaluate");
+            return node.label;
+          }
+	}
+
+       /**
+       * Squeeze out spaces from the string value
+       * @param value The string to edit
+       * @return The string after spaces are squeezed out
+       */
+        public String squeezeSpace(String value)
+        {
+          int j;
+          String newStr = "";
+          for (j=0; j<value.length();j++)
+          {
+            if (value.charAt(j)!=' ')
+            newStr = newStr + value.charAt(j);
+          }
+          return(newStr);
+        }
+
+        /**
+         * check whether numVal is belong to the branch
+         * @param branchLabel the branch label which contains the attribute name and value
+         * @param numVal the value to test
+         * @return true if numVal is belong to the branch, false otherwise
+         */
+        public boolean inRange(String branchLabel, double numVal) {
+          int idx;
+          idx = branchLabel.indexOf(">=");
+          if (idx >= 0) {
+            double tmpValue = Double.parseDouble(branchLabel.substring(idx+2, branchLabel.length()));
+            if (numVal >= tmpValue)
+              return true;
+            else
+              return false;
+          }
+          idx = branchLabel.indexOf("<");
+          if (idx >= 0) {
+            double tmpValue = Double.parseDouble(branchLabel.substring(idx+1, branchLabel.length()));
+            if (numVal < tmpValue)
+              return true;
+            else
+              return false;
+          }
+          return false;
+        }
 
 	/**
 		Add a branch to this node, given the label of the branch and

@@ -19,7 +19,7 @@ import java.util.*;
 public class DecisionForestModel extends PredictionModelModule
 	implements Serializable, ViewableDTModel {
 
-	static final long serialVersionUID = 6788778863299676465L;
+	static final long serialVersionUID = -473168938003511128L;
 
 	// The root of the decision tree
 	private DecisionForestNode root;
@@ -109,7 +109,8 @@ public class DecisionForestModel extends PredictionModelModule
 
 	// change to prediction table
 	public String[] getOutputTypes() {
-		String[] out = {"ncsa.d2k.modules.core.prediction.decisiontree.rainforest.DecisionForestModel"};
+		String[] out = {"ncsa.d2k.modules.core.datatype.table.PredictionTable",
+                               "ncsa.d2k.modules.core.prediction.decisiontree.rainforest.DecisionForestModel"};
 		return out;
 	}
 
@@ -132,11 +133,19 @@ public class DecisionForestModel extends PredictionModelModule
     }
 
 	public String getOutputInfo(int i) {
-		    return "Decision tree model";
+          switch (i) {
+            case 0: return "The data set with an extra column of predictions.";
+            case 1: return "Decision tree model.";
+            default: return "No such output.";
+          }
 	}
 
     public String getOutputName(int i) {
-		    return "Decision tree model";
+          switch (i) {
+            case 0: return "Predictions";
+            case 1: return "DTModel";
+            default: return "No such output.";
+          }
     }
 
 	public int getTrainingSetSize() {
@@ -185,18 +194,59 @@ public class DecisionForestModel extends PredictionModelModule
 		Get the class names.
 		@return the class names
 	*/
-        /*
   	public String[] getClassNames() {
   	//public final String[] getClassNames() {
 		return classNames;
-	} */
+	}
 
 	/**
 		Pull in the table and pass it to predict.
 	*/
 	public void doit() {
 		ExampleTable et = (ExampleTable)pullInput(0);
-		pushOutput(this, 0);
+                PredictionTable retVal = predict(et);
+                pushOutput(retVal, 0);
+                pushOutput(this, 1);
+	}
+
+	/**
+		Predict an outcome for each row of the table using the
+		decision tree.
+		@param val the table
+		@return the table with an extra column of predictions at the end
+	*/
+	public PredictionTable predict(ExampleTable val) {
+		table = (ExampleTable)val;
+
+                // When building model by RainForest algorithm, prediction table
+                // does not exist, the date type of the prediction column is "object".
+                // When using model to predict testing examples, the prediction
+                // table is created, and the data type of the prediction column is "String".
+                if (table.getColumnType(table.getNumColumns()-1)==9) {
+                  return null;
+                }
+		numExamples = table.getNumRows();
+
+		PredictionTable pt = null;
+		if (table instanceof PredictionTable)
+			pt = (PredictionTable) table;
+		else
+			pt = table.toPredictionTable();
+
+		int[] outputs = pt.getOutputFeatures();
+		int[] preds = pt.getPredictionSet();
+
+		if(preds.length == 0) {
+			String [] predic = new String[pt.getNumRows()];
+			pt.addPredictionColumn(predic, "Predictions");
+			preds = pt.getPredictionSet();
+		}
+
+		for(int i = 0; i < pt.getNumRows(); i++) {
+			String pred = (String)root.evaluate(root, pt, i);
+			pt.setStringPrediction(pred, i, 0);
+		}
+		return pt;
 	}
 
 	/**
@@ -271,16 +321,12 @@ public class DecisionForestModel extends PredictionModelModule
 	}
 
 	public String[] getUniqueInputValues(int index) {
+          // this method has only been used to get the unique values in the class column.
           return classNames;
-		//return uniqueInputs[index];
 	}
 
 	public boolean scalarInput(int index) {
             return inputIsScalar[index];
 	}
-
-        public PredictionTable predict(ExampleTable val) {
-          return null;
-        }
 
 }
