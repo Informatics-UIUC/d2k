@@ -15,6 +15,7 @@ import ncsa.d2k.modules.core.datatype.table.Example;
 import ncsa.d2k.modules.core.datatype.table.TableFactory;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.*;
 
 /**
  * SparseExampleTable is identical to SparseTable with a few addtions:
@@ -329,30 +330,91 @@ public class SparseExampleTable
     SparseExampleTable retVal = (SparseExampleTable) ( (SparseMutableTable)
         SparseMutableTable.getSubset(start, len, this)).toExampleTable();
 
-    int[] indices = new int[len];
-    for (int i = 0; i < len; i++) {
-      indices[i] = start + i;
-
-      //getting sub set sof the testing and training sets
-    }
     retVal.getSubArrays(this, start, len);
 
     //copying hte input and output columns
     retVal.inputColumns = this.copyArray(inputColumns);
-
     retVal.outputColumns = this.copyArray(outputColumns);
 
     return retVal;
   }
 
-  private void getSubArrays(SparseExampleTable srcTable, int start, int len) {
+  public Table getSubset(int[] rows) {
+    SparseExampleTable retVal = (SparseExampleTable) ( (SparseMutableTable)
+        SparseMutableTable.getSubset(rows, this)).toExampleTable();
 
-    testSet = getSubArray(srcTable.testSet, start, len);
-    trainSet = getSubArray(srcTable.trainSet, start, len);
+    retVal.getSubArrays(this, rows);
 
+    //copying hte input and output columns
+    retVal.inputColumns = this.copyArray(inputColumns);
+    retVal.outputColumns = this.copyArray(outputColumns);
+
+    return retVal;
   }
 
-  private int[] getSubArray(int[] arr, int start, int len) {
+  public Table getSubsetByReference(int pos, int len) {
+    Table t = super.getSubsetByReference(pos, len);
+    ExampleTable et  = t.toExampleTable();
+
+    int[] newin = new int[inputColumns.length];
+    System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
+    int[] newout = new int[outputColumns.length];
+    System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
+
+    et.setInputFeatures(newin);
+    et.setOutputFeatures(newout);
+
+    // now figure out the test and train sets
+    int[] traincpy = new int[trainSet.length];
+    System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
+    int[] testcpy = new int[testSet.length];
+    System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
+
+    int[] newtrain = getSubArray(traincpy, pos, len);
+    int[] newtest = getSubArray(testcpy, pos, len);
+
+    et.setTrainingSet(newtrain);
+    et.setTestingSet(newtest);
+
+    return et;
+  }
+
+  public Table getSubsetByReference(int[] rows) {
+    Table t = super.getSubsetByReference(rows);
+    ExampleTable et = t.toExampleTable();
+    int[] newin = new int[inputColumns.length];
+    System.arraycopy(inputColumns, 0, newin, 0, inputColumns.length);
+    int[] newout = new int[outputColumns.length];
+    System.arraycopy(outputColumns, 0, newout, 0, outputColumns.length);
+
+    et.setInputFeatures(newin);
+    et.setOutputFeatures(newout);
+
+    // now figure out the test and train sets
+    int[] traincpy = new int[trainSet.length];
+    System.arraycopy(trainSet, 0, traincpy, 0, trainSet.length);
+    int[] testcpy = new int[testSet.length];
+    System.arraycopy(testSet, 0, testcpy, 0, testSet.length);
+
+    int[] newtrain = getSubArray(traincpy, rows);
+    int[] newtest = getSubArray(testcpy, rows);
+
+    et.setTrainingSet(newtrain);
+    et.setTestingSet(newtest);
+    return et;
+  }
+
+  protected void getSubArrays(SparseExampleTable srcTable, int start, int len) {
+    testSet = getSubArray(srcTable.testSet, start, len);
+    trainSet = getSubArray(srcTable.trainSet, start, len);
+  }
+
+  protected void getSubArrays(SparseExampleTable srcTable, int[] rows) {
+    testSet = getSubArray(srcTable.testSet, rows);
+    trainSet = getSubArray(srcTable.trainSet, rows);
+  }
+
+  protected int[] getSubArray(int[] arr, int start, int len) {
     int[] tempSet = new int[len];
     int j = 0;
     for (int i = 0; i < arr.length; i++) {
@@ -367,6 +429,44 @@ public class SparseExampleTable
     return retVal;
 
   }
+
+  /**
+   * Make a subset of the train or test set.  The subset will only contain
+   * the indices that are included in rows.  The indices in the returned value
+   * are numbered so that zero corresponds to rows[0].
+   *
+   * @param ts
+   * @param rows
+   * @return
+   */
+  protected static int[] getSubArray(int[] ts, int[] rows) {
+    // put all the indices of ts into a set
+    HashSet oldset = new HashSet();
+    for(int i = 0; i < ts.length; i++)
+      oldset.add(new Integer(ts[i]));
+
+    // create a list to hold the new indices
+    List newset = new ArrayList();
+    // for each row
+    for(int i = 0; i < rows.length; i++) {
+      // look up the value of the row in oldset
+      Integer ii = new Integer(rows[i]);
+      if(oldset.contains(ii)) {
+        // if it was contained, add i to the newset
+        newset.add(new Integer(i));
+      }
+    }
+
+    // copy all the values into an int array
+    int[] retVal = new int[newset.size()];
+    for(int i = 0; i < retVal.length; i++) {
+      Integer ii = (Integer)newset.get(i);
+      retVal[i] = ii.intValue();
+    }
+
+    return retVal;
+  }
+
 
   /**
    * Returns a TestTable or a TrainTable with data from row index no. <code>

@@ -296,6 +296,117 @@ class PagingTestTable
     return ptt;
   }
 
+  public Table getSubset(int[] rows) {
+    PagingTestTable ptt =
+        (PagingTestTable) ( (PagingExampleTable) ( (PagingTable) original.copy()).
+                           toExampleTable().getTestTable());
+    ptt.predictionColumnsTable = (MutablePagingTable) predictionColumnsTable.
+        copy();
+
+    int[] newTestingSet = new int[rows.length];
+    for (int i = 0; i < rows.length; i++) {
+      //newTestingSet[i - start] = testSet[i];
+      newTestingSet[i] = testSet[i];
+    }
+
+    newTestingSet = subsetTrainOrTest(testSet, rows);
+    ptt.testSet = newTestingSet;
+
+    return ptt;
+  }
+
+  public Table getSubsetByReference(int start, int len) {
+    /*    PagingTestTable ptt =
+         (PagingTestTable) ( (PagingExampleTable) ( (PagingTable) original.copy()).
+                               toExampleTable().getTestTable());
+         ptt.predictionColumnsTable = (MutablePagingTable) predictionColumnsTable.
+            copy();
+        int[] newTestingSet = new int[len];
+        for (int i = start; i < start + len; i++) {
+          newTestingSet[i - start] = testSet[i];
+        }
+        ptt.testSet = newTestingSet;
+        return ptt;
+     */
+
+    PagingExampleTable pet = (PagingExampleTable) ( (PagingTable) original.
+        getSubsetByReference(start, len).toExampleTable());
+    PagingTestTable ppt = new PagingTestTable(pet, pages, manager);
+
+    ppt.predictionColumnsTable = (MutablePagingTable) predictionColumnsTable.
+        getSubsetByReference(start, len);
+
+// copy indirection, prediction, prediction set
+    int[] newIndirection = new int[indirection.length];
+    boolean[] newPrediction = new boolean[prediction.length];
+
+    int[] newPredictionSet = new int[1];
+    if (predictionSet != null) {
+      newPredictionSet = new int[predictionSet.length];
+
+    }
+    for (int i = 0; i < indirection.length; i++) {
+      newIndirection[i] = indirection[i];
+      newPrediction[i] = prediction[i];
+    }
+    if (predictionSet != null) {
+      newPredictionSet = new int[predictionSet.length];
+      for (int i = 0; i < predictionSet.length; i++) {
+        newPredictionSet[i] = predictionSet[i];
+      }
+    }
+
+    ppt.indirection = newIndirection;
+    ppt.prediction = newPrediction;
+
+    ppt.predictionSet = null;
+
+    if (predictionSet != null) {
+      ppt.predictionSet = newPredictionSet;
+
+    }
+    return ppt;
+
+//    PagingTestTable ptt = null;
+
+//    return null;
+  }
+
+  public Table getSubsetByReference(int[] rows) {
+    PagingExampleTable pet = (PagingExampleTable)((PagingTable)original.getSubsetByReference(rows).toExampleTable());
+    PagingTestTable ppt = new PagingTestTable(pet, pages, manager);
+
+    ppt.predictionColumnsTable = (MutablePagingTable)predictionColumnsTable.getSubsetByReference(rows);
+
+    // copy indirection, prediction, prediction set
+    int[] newIndirection = new int[indirection.length];
+    boolean[] newPrediction = new boolean[prediction.length];
+
+    int[] newPredictionSet = new int[1];
+    if (predictionSet != null)
+       newPredictionSet = new int[predictionSet.length];
+
+    for (int i = 0; i < indirection.length; i++) {
+       newIndirection[i] = indirection[i];
+       newPrediction[i] = prediction[i];
+    }
+    if (predictionSet != null) {
+       newPredictionSet = new int[predictionSet.length];
+       for (int i = 0; i < predictionSet.length; i++)
+          newPredictionSet[i] = predictionSet[i];
+    }
+
+    ppt.indirection = newIndirection;
+    ppt.prediction = newPrediction;
+
+    ppt.predictionSet = null;
+
+    if (predictionSet != null)
+       ppt.predictionSet = newPredictionSet;
+
+    return ppt;
+  }
+
   public Table copy() {
     PagingTestTable ptt =
         (PagingTestTable) ( (PagingExampleTable) ( (PagingTable) original.copy()).

@@ -12,7 +12,7 @@ import ncsa.d2k.modules.core.datatype.table.sparse.examples.
 import ncsa.d2k.modules.core.datatype.table.Example;
 import java.io.*;
 import java.util.Arrays;
-import ncsa.d2k.modules.core.datatype.table.PredictionTable;
+import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.datatype.table.basic.Column;
 
@@ -112,6 +112,10 @@ public class SparsePredictionTable
     }
 
   } //end ctor
+
+  protected SparsePredictionTable(SparseExampleTable table, boolean flag) {
+    super(table);
+  }
 
   /**
    * copies all attributes from <code>t</code>
@@ -1084,21 +1088,105 @@ public class SparsePredictionTable
    * @param len       number of consequentinve rows in the retrieved subset.
    * @return          SparsePredictionTable with data from rows no. <code>start</code>
    *                  through </codE>start+len</code> from this table.
-   */
-  public Table getSubset(int start, int len) {
+   /
+     public Table getSubset(int start, int len) {
     //getting a subset of the example part.
     SparseExampleTable temp = (SparseExampleTable)super.getSubset(start, len);
-
     //creating a prediction table from the example subset.
     SparsePredictionTable retVal = new SparsePredictionTable(temp);
     //getting a subset from the prediction part
-    retVal.predictionColumns = (SparseMutableTable) predictionColumns.getSubset(
+       retVal.predictionColumns = (SparseMutableTable) predictionColumns.getSubset(
         start, len);
     //copying the prediction indices.
     retVal.predictions = copyArray(predictions);
     retVal.numPredictions = numPredictions;
-
     return retVal;
+     }*/
+
+  public Table getSubset(int pos, int len) {
+    //Table t = super.getSubset(pos, len);
+    //ExampleTable et  = t.toExampleTable();
+    SparseExampleTable temp = (SparseExampleTable)super.getSubset(pos, len);
+
+     //PredictionTableImpl pt = new PredictionTableImpl(et.getNumColumns());
+    SparsePredictionTable retVal = new SparsePredictionTable(temp, true);
+
+    //retVal.setPredictionSet(newpred);
+    retVal.predictionColumns = (SparseMutableTable) predictionColumns.getSubset(
+        pos, len);
+    //copying the prediction indices.
+    retVal.predictions = copyArray(predictions);
+    retVal.numPredictions = numPredictions;
+    //retVal.columns = ((SparseExampleTable)temp).columns;
+    //pt.setInputFeatures(newin);
+    //pt.setOutputFeatures(newout);
+    //pt.setTrainingSet(newtrain);
+    //pt.setTestingSet(newtest);
+    return retVal;
+  }
+
+  public Table getSubset(int[] rows) {
+    //Table t = super.getSubset(pos, len);
+    //ExampleTable et  = t.toExampleTable();
+    SparseExampleTable temp = (SparseExampleTable)super.getSubset(rows);
+
+     //PredictionTableImpl pt = new PredictionTableImpl(et.getNumColumns());
+    SparsePredictionTable retVal = new SparsePredictionTable(temp, true);
+
+    //retVal.setPredictionSet(newpred);
+    retVal.predictionColumns = (SparseMutableTable) predictionColumns.getSubset(
+        rows);
+    //copying the prediction indices.
+    retVal.predictions = copyArray(predictions);
+    retVal.numPredictions = numPredictions;
+    //retVal.columns = ((SparseExampleTable)temp).columns;
+    //pt.setInputFeatures(newin);
+    //pt.setOutputFeatures(newout);
+    //pt.setTrainingSet(newtrain);
+    //pt.setTestingSet(newtest);
+    return retVal;
+  }
+
+  public Table getSubsetByReference(int pos, int len) {
+//Table t = super.getSubset(pos, len);
+//ExampleTable et  = t.toExampleTable();
+    SparseExampleTable temp = (SparseExampleTable)super.getSubsetByReference(
+        pos, len);
+
+//PredictionTableImpl pt = new PredictionTableImpl(et.getNumColumns());
+    SparsePredictionTable retVal = new SparsePredictionTable(temp, true);
+
+//retVal.setPredictionSet(newpred);
+    retVal.predictionColumns = (SparseMutableTable) predictionColumns.
+        getSubsetByReference(
+        pos, len);
+//copying the prediction indices.
+    retVal.predictions = copyArray(predictions);
+    retVal.numPredictions = numPredictions;
+//retVal.columns = ((SparseExampleTable)temp).columns;
+//pt.setInputFeatures(newin);
+//pt.setOutputFeatures(newout);
+//pt.setTrainingSet(newtrain);
+//pt.setTestingSet(newtest);
+    return retVal;
+  }
+
+  public Table getSubsetByReference(int[] rows) {
+    SparseExampleTable temp = (SparseExampleTable)super.getSubsetByReference(
+        rows);
+
+//PredictionTableImpl pt = new PredictionTableImpl(et.getNumColumns());
+    SparsePredictionTable retVal = new SparsePredictionTable(temp, true);
+
+//retVal.setPredictionSet(newpred);
+    retVal.predictionColumns = (SparseMutableTable) predictionColumns.
+        getSubsetByReference(
+        rows);
+//copying the prediction indices.
+    retVal.predictions = copyArray(predictions);
+    retVal.numPredictions = numPredictions;
+    return retVal;
+
   }
 
   /**

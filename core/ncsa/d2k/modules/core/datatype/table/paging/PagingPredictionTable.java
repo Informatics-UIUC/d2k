@@ -754,6 +754,119 @@ catch(InterruptedException e){System.out.println("whoa");e.printStackTrace();}
 
    }
 
+   public Table getSubset(int[] rows) {
+
+      PagingExampleTable pet = (PagingExampleTable)((PagingTable)original.getSubset(rows).toExampleTable());
+      PagingPredictionTable ppt = new PagingPredictionTable(pet, pages, manager);
+
+      ppt.predictionColumnsTable = (MutablePagingTable)predictionColumnsTable.getSubset(rows);
+
+      // copy indirection, prediction, prediction set
+      int[] newIndirection = new int[indirection.length];
+      boolean[] newPrediction = new boolean[prediction.length];
+
+      int[] newPredictionSet = new int[1];
+      if (predictionSet != null)
+         newPredictionSet = new int[predictionSet.length];
+
+      for (int i = 0; i < indirection.length; i++) {
+         newIndirection[i] = indirection[i];
+         newPrediction[i] = prediction[i];
+      }
+      if (predictionSet != null) {
+         newPredictionSet = new int[predictionSet.length];
+         for (int i = 0; i < predictionSet.length; i++)
+            newPredictionSet[i] = predictionSet[i];
+      }
+
+      ppt.indirection = newIndirection;
+      ppt.prediction = newPrediction;
+
+      ppt.predictionSet = null;
+
+      if (predictionSet != null)
+         ppt.predictionSet = newPredictionSet;
+
+      return ppt;
+
+   }
+
+   public Table getSubsetByReference(int start, int len) {
+
+      PagingExampleTable pet = (PagingExampleTable)((PagingTable)original.getSubsetByReference(start, len).toExampleTable());
+      PagingPredictionTable ppt = new PagingPredictionTable(pet, pages, manager);
+
+      ppt.predictionColumnsTable = (MutablePagingTable)predictionColumnsTable.getSubsetByReference(start, len);
+
+      // copy indirection, prediction, prediction set
+      int[] newIndirection = new int[indirection.length];
+      boolean[] newPrediction = new boolean[prediction.length];
+
+      int[] newPredictionSet = new int[1];
+      if (predictionSet != null)
+         newPredictionSet = new int[predictionSet.length];
+
+      for (int i = 0; i < indirection.length; i++) {
+         newIndirection[i] = indirection[i];
+         newPrediction[i] = prediction[i];
+      }
+      if (predictionSet != null) {
+         newPredictionSet = new int[predictionSet.length];
+         for (int i = 0; i < predictionSet.length; i++)
+            newPredictionSet[i] = predictionSet[i];
+      }
+
+      ppt.indirection = newIndirection;
+      ppt.prediction = newPrediction;
+
+      ppt.predictionSet = null;
+
+      if (predictionSet != null)
+         ppt.predictionSet = newPredictionSet;
+
+      return ppt;
+
+   }
+
+   public Table getSubsetByReference(int[] rows) {
+
+      PagingExampleTable pet = (PagingExampleTable)((PagingTable)original.getSubsetByReference(rows).toExampleTable());
+      PagingPredictionTable ppt = new PagingPredictionTable(pet, pages, manager);
+
+      ppt.predictionColumnsTable = (MutablePagingTable)predictionColumnsTable.getSubsetByReference(rows);
+
+      // copy indirection, prediction, prediction set
+      int[] newIndirection = new int[indirection.length];
+      boolean[] newPrediction = new boolean[prediction.length];
+
+      int[] newPredictionSet = new int[1];
+      if (predictionSet != null)
+         newPredictionSet = new int[predictionSet.length];
+
+      for (int i = 0; i < indirection.length; i++) {
+         newIndirection[i] = indirection[i];
+         newPrediction[i] = prediction[i];
+      }
+      if (predictionSet != null) {
+         newPredictionSet = new int[predictionSet.length];
+         for (int i = 0; i < predictionSet.length; i++)
+            newPredictionSet[i] = predictionSet[i];
+      }
+
+      ppt.indirection = newIndirection;
+      ppt.prediction = newPrediction;
+
+      ppt.predictionSet = null;
+
+      if (predictionSet != null)
+         ppt.predictionSet = newPredictionSet;
+
+      return ppt;
+
+   }
+
+
+
    public Table copy() {
       PagingExampleTable pet = (PagingExampleTable)((PagingTable)original.copy().toExampleTable());
       PagingPredictionTable ppt = new PagingPredictionTable(pet, pages, manager);
