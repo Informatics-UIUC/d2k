@@ -7,7 +7,6 @@ import java.util.*;
 import javax.swing.*;
 import ncsa.d2k.util.*;
 import ncsa.d2k.util.datatype.*;
-//import ncsa.d2k.modules.compute.learning.modelgen.decisiontree.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.*;
 import ncsa.d2k.modules.core.prediction.decisiontree.widgets.*;
 
@@ -278,7 +277,7 @@ public class TreeScrollPane extends JScrollPane {
 			ExpandedGraph graph = new ExpandedGraph(dmodel, dnode);
 
 			JFrame frame = new JFrame();
-			frame.getContentPane().add(graph);
+			frame.getContentPane().add(new JScrollPane(graph));
 			frame.pack();
 			frame.setVisible(true);
 		}

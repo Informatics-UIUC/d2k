@@ -32,6 +32,7 @@ public class ExpandedGraph extends JPanel {
 	double pathwidth, pathheight;
 	double ypathspace = 15;
 	String[] path;
+	int pathindex;
 
 	double xdata, ydata;
 	double dataleft = 10;
@@ -68,8 +69,8 @@ public class ExpandedGraph extends JPanel {
 
 	ViewableDTNode dnode;
 
-	String[] outputs = {"one", "two", "three"};
-	double[] values = {40, 10, 50};
+	String[] outputs;
+	double[] values;
 	int datasize;
 
 	DecisionTreeScheme scheme;
@@ -85,13 +86,20 @@ public class ExpandedGraph extends JPanel {
 		outputs = model.getUniqueOutputValues();
 		values = new double[outputs.length];
 		for(int index = 0; index < outputs.length; index++){
-			try{
-			values[index] = 100*(double)dnode.getOutputTally(outputs[index])/(double)dnode.getTotal();
-			}catch(Exception e){
-				System.out.println("getOutputTally threw an Exception");
+			try {
+				values[index] = 100*(double)dnode.getOutputTally(outputs[index])/(double)dnode.getTotal();
+			} catch (Exception exception) {
+				System.out.println("Exception from getOutputTally");
 			}
 		}
 		datasize = values.length;
+
+		int depth = dnode.getDepth();
+		path = new String[depth];
+		if (path.length > 0) {
+			pathindex = depth - 1;
+			findPath(dnode);
+		}
 
 		scheme = new DecisionTreeScheme();
 
@@ -107,6 +115,23 @@ public class ExpandedGraph extends JPanel {
 		percentwidth = smallmetrics.stringWidth("100");
 
 		setBackground(scheme.expandedbackgroundcolor);
+	}
+
+	public void findPath(ViewableDTNode node) {
+		ViewableDTNode parent = node.getViewableParent();
+
+		if (parent == null)
+			return;
+
+		for (int index = 0; index < parent.getNumChildren(); index++) {
+			ViewableDTNode child = parent.getViewableChild(index);
+			if (child == node) {
+				path[pathindex] = parent.getBranchLabel(index);
+				pathindex--;
+			}
+		}
+
+		findPath(parent);
 	}
 
 	public void paintComponent(Graphics g) {
@@ -147,7 +172,6 @@ public class ExpandedGraph extends JPanel {
 	}
 
 	public void drawData(Graphics2D g2) {
-
 		// Background
 		g2.setColor(scheme.expandedborderbackgroundcolor);
 		g2.fill(new Rectangle2D.Double(xdata, ydata, datawidth, dataheight));
@@ -178,7 +202,6 @@ public class ExpandedGraph extends JPanel {
 	}
 
 	public void drawGraph(Graphics2D g2) {
-
 		// Background
 		g2.setColor(scheme.expandedborderbackgroundcolor);
 		g2.fill(new Rectangle2D.Double(xgraph, ygraph, graphwidth, graphheight));
@@ -253,15 +276,17 @@ public class ExpandedGraph extends JPanel {
 		xpath = xlabel;
 		ypath = ylabel + ylabelspace;
 
-		path = new String[0];
-		pathwidth = 0;
 		for (int index=0; index < path.length; index++) {
 			int twidth = smallmetrics.stringWidth(path[index]);
 			if (twidth > pathwidth)
 				pathwidth = twidth;
 		}
-		pathwidth += pathleft + pathright;
-		pathheight = pathtop + path.length*smallascent + (path.length-1)*pathleading + pathbottom;
+
+		pathwidth = 0;
+		if (path.length > 0) {
+			pathwidth += pathleft + pathright;
+			pathheight = pathtop + path.length*smallascent + (path.length-1)*pathleading + pathbottom;
+		}
 
 		// Data bounds
 		xdata = xpath;

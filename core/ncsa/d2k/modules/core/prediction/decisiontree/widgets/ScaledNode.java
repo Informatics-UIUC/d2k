@@ -23,7 +23,7 @@ public class ScaledNode {
 	ArrayList children;
 
 	// Distribution values
-	double[] values = {40, 10, 50};
+	double[] values;
 
 	double x, y;
 	double xspace = 20;
@@ -82,6 +82,15 @@ public class ScaledNode {
 	}
 
 	public void findValues() {
+		String[] output = dmodel.getUniqueOutputValues();
+		values = new double[output.length];
+		for(int index = 0; index < values.length; index++){
+			try{
+				values[index] = 100*(double)dnode.getOutputTally(output[index])/(double)dnode.getTotal();
+			} catch(Exception exception){
+				System.out.println("Exception from getOutputTally");
+			}
+		}
 	}
 
 	public double getWidth() {

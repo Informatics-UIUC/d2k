@@ -106,7 +106,7 @@ public class ViewNode {
 			try{
 			values[index] = 100*(double)dnode.getOutputTally(output[index])/(double)dnode.getTotal();
 			}catch(Exception e){
-				System.out.println("getOutputTally threw an exception");
+				System.out.println("Exception from getOutputTally");
 			}
 		}
 	}

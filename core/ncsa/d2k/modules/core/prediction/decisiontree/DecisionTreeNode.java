@@ -7,7 +7,7 @@ import ncsa.d2k.util.datatype.VerticalTable;
 /**
 	A DecisionTree is made up of DecisionTreeNodes.
 */
-public abstract class DecisionTreeNode 
+public abstract class DecisionTreeNode
 	implements ViewableDTNode, Serializable {
 
 	DecisionTreeNode parent = null;
@@ -98,8 +98,12 @@ public abstract class DecisionTreeNode
 		}
 	}
 
+	public ViewableDTNode getViewableParent() {
+		return (ViewableDTNode) parent;
+	}
+
 	/**
-		Get the parent of this node.
+			Get the parent of this node.
 	*/
 	public DecisionTreeNode getParent() {
 		return parent;
