@@ -34,7 +34,7 @@ public class SimpleModelEvaluator
     pds[2] = new PropertyDescription(
         "filterByPredictedOutput",
         "Filter By Predicted Output",
-        "When only the top and/or bottom fraction of the examples, ranked my predicted output, are used for error assesment");
+        "When only the top and/or bottom fraction of the examples, ranked by predicted output, are used for error assesment");
 
     pds[3] = new PropertyDescription(
         "filterOutputLowerFraction",
@@ -187,7 +187,7 @@ public class SimpleModelEvaluator
   public String getOutputName(int i) {
     switch (i) {
       case 0:
-        return "Objective Space Point";
+        return "Objective Parameter Point";
     }
     return "";
   }

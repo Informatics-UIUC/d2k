@@ -41,7 +41,7 @@ public class MultiTrainTestBiasEvaluator
 	pds[3] = new PropertyDescription(
 		"batchSize",
 		"Batch Size",
-		"The maximum number of parallel evaluations to allow and must be equal or les than Num Repetitions");
+		"The maximum number of parallel evaluations to allow and must be equal or less than Num Repetitions");
 
 	pds[5] = new PropertyDescription(
 		"recycleExamples",
@@ -131,7 +131,7 @@ public class MultiTrainTestBiasEvaluator
   }
 
   public String getModuleName() {
-	return "MultiTrainTestBiasEvaluator";
+	return "Multi Train Test Bias Evaluator";
   }
 
   public String getModuleInfo() {
@@ -143,7 +143,7 @@ public class MultiTrainTestBiasEvaluator
   public String getInputName(int i) {
 	switch (i) {
 	  case 0:
-		return "Control Space Point";
+		return "Control Parameter Point";
 	  case 1:
 		return "Example Table";
 	  case 2:
@@ -178,7 +178,7 @@ public class MultiTrainTestBiasEvaluator
   public String getOutputName(int i) {
 	switch (i) {
 	  case 0:
-		return "Control Space Point";
+		return "Control Parameter Point";
 	  case 1:
 		return "Train Example Table";
 	  case 2:
