@@ -304,7 +304,6 @@ public class CreateDelimitedParser extends InputModule {
                     String dd = null;
                     if(delim.isSelected()) {
                         dd = delimfld.getText(); // dd = delim.getText();
-												//System.out.println("dd.lenght " + dd.length() + " dd " + dd);
                         if(dd.length() != 1)
                             throw new Exception("The delimiter must be one character long.");
                     }
@@ -318,22 +317,6 @@ public class CreateDelimitedParser extends InputModule {
             return didChange;
         }
     }
-
-    /*private int inOutRow = -1;
-    public int getInOutRow() {
-        return inOutRow;
-    }
-    public void setInOutRow(int i) {
-        inOutRow = i;
-    }*/
-
-    /*private int nomScalarRow = -1;
-    public int getNomScalarRow() {
-        return nomScalarRow;
-    }
-    public void setNomScalarRow(int i) {
-        nomScalarRow = i;
-    }*/
 
     public String[] getInputTypes() {
         String[] in = {"java.lang.String"};
@@ -350,7 +333,7 @@ public class CreateDelimitedParser extends InputModule {
     }
 
     public String getOutputInfo(int i) {
-        return "A DelimitedFileParser for the specified file.";
+        return "A Delimited File Parser for the specified file.";
     }
 
     public String getInputName(int i) {
@@ -361,30 +344,34 @@ public class CreateDelimitedParser extends InputModule {
         return "File Parser";
     }
 
-    /*public String getModuleInfo() {
-        return "Create a DelimitedFileReader for the specified file.  Properties: "+
-                " labelsRow: the row of the file that contains labels, indexed from "+
-                " zero.  If the file does not contain column labels, this should be "+
-                " a negative number.  typesRow: the row of the file that contains types, "+
-                " indexed from zero.  If the file does not contain column types, this "+
-                " should be a negative number.";
-    }*/
-
     public String getModuleInfo() {
         StringBuffer s = new StringBuffer("<p>Overview: ");
-        s.append("This module creates a DelimitedFileParser for the specified file. ");
-        s.append("<p>DetailedDescription: ");
-        s.append("DelimitedFileParser is used to read data from a delimited file. ");
+        s.append("This module creates a parser for the specified file. The file is expected to ");
+	s.append("have a consistent delimiter character. ");
+
+        s.append("</p><p>DetailedDescription: ");
+        s.append("This module creates a parser that can be ");
+	s.append("used to read data from a file that uses a single delimiter ");
+	s.append("character to separate the data into fields. ");
         s.append("The delimiter can be found automatically, or it can be input in the properties ");
-        s.append("editor.  The file can contain a row of labels, and a row of data ");
-        s.append("types.  These are also input in the properties editor.");
-        s.append("<p>Properties are used to specify the delimiter, the labels row number, ");
+        s.append("editor.  If the delimiter is to be found automatically, the file must be ");
+	s.append("contain at least 2 rows. ");
+	s.append("The file can contain a row of labels, and a row of data ");
+        s.append("types.  These are also specified via the properties editor.");
+
+        s.append("</p><p>Properties are used to specify the delimiter, the labels row number, ");
         s.append("and the types row number. The row numbers are indexed from zero.");
+
+        s.append("</p><p>Typically the <i>File Parser</i> output port of this ");
+        s.append("module is connected to the <i>File Parser</i> input port of ");
+        s.append("a module whose name begins with 'Parse File', for example, ");
+        s.append("<i>Parse File To Table</i> or  <i>Parse File To Paging Table</i>.");
+
         s.append("<p>Data Type Restrictions: ");
         s.append("The input to this module must be a delimited file. If the file is ");
-				s.append("large a java OutOfMemory error might occur");
+	s.append("large a java OutOfMemory error might occur");
         s.append("<p>Data Handling: ");
-				s.append("The module does not destroy or modify the input data.");
+	s.append("The module does not destroy or modify the input data.");
         return s.toString();
     }
 
@@ -424,4 +411,6 @@ public class CreateDelimitedParser extends InputModule {
 // 2/16/03 - Anca started QA process.  Updated module info and changed input
 //           name to File Name.
 // 2/?/03 - checked into basic.
+// 3/21/03 - Updated module info to include note about min rows required to automatically find
+//           delim.   Also, about common use in itineraries.
 // END QA Comments
