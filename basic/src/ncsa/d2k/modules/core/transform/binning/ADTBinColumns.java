@@ -85,7 +85,7 @@ public class ADTBinColumns extends HeadlessUIModule {
 			case 0 :
 				return "An ADTree containing counts.";
 			case 1 :
-				return "ExampleTable containing the names of the input/output features.";
+				return "MetaData ExampleTable containing the names of the input/output features.";
 			default :
 				return "No such input";
 		}
@@ -117,7 +117,7 @@ public class ADTBinColumns extends HeadlessUIModule {
 			case 0 :
 				return "AD Tree";
 			case 1 :
-				return "Example Table";
+				return "Meta Data Example Table";
 			default :
 				return "no such input";
 		}

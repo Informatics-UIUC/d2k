@@ -57,7 +57,7 @@ public class ADTAutoBin extends DataPrepModule {
 			case 0 :
 				return "The ADTree containing counts";
 			case 1 :
-				return "ExampleTable containing the names of the input/output features";
+				return "MetaData ExampleTable containing the names of the input/output features";
 			default :
 				return "No such input";
 		}
