@@ -545,8 +545,8 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
 //      }
       //now we need to get the combinations.
       ArrayList param = new ArrayList(path);
-      int supp =  ((FPTreeNode)path.get(path.size()-1)).getCount();
-      combos2(param,supp,alpha);
+      //int supp =  ((FPTreeNode)path.get(path.size()-1)).getCount();
+      combos2(param,alpha);
       return;
     }
 
@@ -565,26 +565,6 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
       FPPattern pat = new FPPattern(alpha, fte.getCnt());
       pat.addPatternElt(fte.getLabel());
       _patterns.add(pat);
-
-      /*
-       I believe this block of code gives slightly corrupted results in the actual patterns formed
-       */
-
-//      if (ptrs.size() == 1){
-//        FPTreeNode node = (FPTreeNode) ptrs.get(0);
-//        if (node.getParent().isRoot()){
-//          continue;
-//        }
-//        List l = this.getPath(node);
-//
-//        //now we need to get the combinations.
-//        int[] newalpha = new int[alpha.length + 1];
-//        System.arraycopy(alpha,0,newalpha,0,alpha.length);
-//        newalpha[newalpha.length-1] = node.getLabel();
-//        int supp = ( (FPTreeNode) l.get(l.size() - 1)).getCount();
-//        combos2(l, supp, newalpha);
-//        continue;
-//      }
 
       FPSparse otab = new FPSparse(headers.size());
       int[] colmap = new int[headers.size()];
@@ -620,33 +600,37 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
 
   }
 
-  private void combos2(List list, int support, int[] alpha){
-
-    int pattern_len, i;
-    int[] ind = new int[list.size() + 1];
-    pattern_len = list.size();
-    if (pattern_len > 0) {
-      //initialize index
-      while (ind[pattern_len] == 0) {
-        //adjust index
-        i = 0;
-        ind[i]++;
-        while (ind[i] > 1) {
-          ind[i] = 0;
-          ind[++i]++;
-        }
-        if (ind[pattern_len] == 0) {
-          FPPattern pat = new FPPattern(alpha, support);
-          for (i = pattern_len - 1; i >= 0; i--){
-            if (ind[i] == 1) {
-              pat.addPatternElt(((FPTreeNode)list.get(i)).getLabel());
-            }
+  private void combos2 (List list, int[] alpha) {
+      int pattern_len, i;
+      int[] ind = new int[list.size() + 1];
+      pattern_len = list.size();
+      if (pattern_len > 0) {
+          //initialize index
+          while (ind[pattern_len] == 0) {
+              //adjust index
+              i = 0;
+              ind[i]++;
+              while (ind[i] > 1) {
+                  ind[i] = 0;
+                  ind[++i]++;
+              }
+              if (ind[pattern_len] == 0) {
+                  FPPattern pat = new FPPattern(alpha, 0);
+                  int min = Integer.MAX_VALUE;
+                  for (i = pattern_len - 1; i >= 0; i--) {
+                      if (ind[i] == 1) {
+                        FPTreeNode nd = (FPTreeNode)list.get(i);
+                        pat.addPatternElt(nd.getLabel());
+                        if (nd.getCount() < min){
+                          min = nd.getCount();
+                        }
+                      }
+                  }
+                  pat.setSupport(min);
+                  _patterns.add(pat);
+              }
           }
-          _patterns.add(pat);
-        }
       }
-    }
-
   }
 
 
