@@ -123,7 +123,7 @@ public class DefineVariables
      @return the UserView.
    */
   protected UserView createUserView() {
-    return new InnerClassofEMO1();
+    return new DefineVarView();
   }
 
   /**
@@ -137,7 +137,7 @@ public class DefineVariables
   /**
      The GUI for feeding the information of the variables of the problem.
    */
-  private class InnerClassofEMO1
+  private class DefineVarView
       extends ncsa.d2k.userviews.swing.JUserPane {
 
     private TableImpl table1;
@@ -147,7 +147,7 @@ public class DefineVariables
     private JTable tb;
 
     private DefaultTableModel model;
-    private JLabel total_string_length = new JLabel(" Total String Length:");
+    private JLabel total_string_length = new JLabel("Total String Length:");
 
     public void initView(ViewModule viewmodule) {
       setLayout(new BorderLayout());
@@ -239,10 +239,10 @@ public class DefineVariables
       // is pressed it calculates the string length.
       // if all the values are not entered a warning dialog
       // box is displayed.
-      JButton calStrLenBt = new JButton("Calc. String Len");
+      //JButton calStrLenBt = new JButton("Calc. String Len");
       //calStrLenBt.setBackground(buttonColor);
 
-      calStrLenBt.addActionListener(new ActionListener() {
+      /*calStrLenBt.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent actionevent) {
           boolean flag = false;
           for (int i = 0; i < model.getRowCount(); i++) {
@@ -303,7 +303,7 @@ public class DefineVariables
                                         totalLength + " ");
           }
         }
-      });
+      });*/
 
       /**
        * 4 panels created, 2 of JPanel type, and 2 of Box type
@@ -330,7 +330,7 @@ public class DefineVariables
       bottom_left_panel.add(Box.createHorizontalStrut(100));
       bottom_left_panel.add(updateBt);
       bottom_left_panel2.add(Box.createHorizontalStrut(55));
-      bottom_left_panel2.add(calStrLenBt);
+      //bottom_left_panel2.add(calStrLenBt);
 
       /**
        * myBox holds the left panels with rigid areas between them
@@ -380,6 +380,78 @@ public class DefineVariables
         public boolean isCellEditable(int row, int col) {
           return (col != 5 && col != 0);
         }
+
+        public void setValueAt(Object value, int row, int col) {
+          super.setValueAt(value, row, col);
+          if (col == 4) {
+            String val = (String)value;
+
+            try {
+//              double d = Double.parseDouble(val);
+//System.out.println("hello: "+d);
+              boolean flag = false;
+              for (int i = 0; i < model.getRowCount(); i++) {
+                if ( model.getValueAt(i, 2) != null && ((String) model.getValueAt(i, 2)).trim().length() == 0) {
+                  flag = true;
+                  break;
+                }
+
+                if ( model.getValueAt(i, 3) != null &&  ((String) model.getValueAt(i, 3)).trim().length() == 0) {
+                  flag = true;
+                  break;
+                }
+                //if ( ( (String) model.getValueAt(i, 4)).trim().length() == 0) {
+                //  flag = true;
+                //  break;
+                //}
+              }
+
+              /*if (flag) {
+                JOptionPane.showMessageDialog(null,
+                                              "Please enter all information",
+                                              "alert", JOptionPane.ERROR_MESSAGE);
+              }*/
+
+              //this is the total length of the binary
+              //string that will be used to encode the
+              //individuals in the GA population.
+              //else {
+                int totalLength = 0;
+                for (int i = 0; i < model.getRowCount(); i++) {
+                  float numU, numL, numP, temp;
+
+                  int sLength;
+                  numU = Float.parseFloat( (String) model.getValueAt(i, 3));
+                  numL = Float.parseFloat( (String) model.getValueAt(i, 2));
+                  numP = Float.parseFloat( (String) model.getValueAt(i, 4));
+                  if (numU < numL) {
+                    JOptionPane.showMessageDialog(null,
+                        "Upper Value is less than lower value at row" + (i + 1) +
+                        " ", "alert",
+                        JOptionPane.ERROR_MESSAGE);
+                    break;
+                  }
+                  temp = (numU - numL) / numP;
+                  temp = temp + 1;
+                  temp = (float) Math.log( (double) temp);
+                  double temp1 = 2.0;
+                  temp = (float) (temp / Math.log(temp1));
+                  sLength = (int) temp;
+                  if ( (temp - sLength) > 0.00001) {
+                    sLength = sLength + 1;
+                  }
+                  totalLength += sLength;
+                  model.setValueAt(new Integer(sLength), i, 5);
+                }
+                // display the total length of the string
+                total_string_length.setText(" Total String Length : " +
+                                            totalLength + " ");
+            }
+            catch(Exception e) {
+              return;
+            }
+          }
+        }
       };
 
       CachedRowValue[] cvr = getSavedRows();
@@ -401,6 +473,12 @@ public class DefineVariables
        * gridcolor
        */
       tb = new JTable(model);
+      DefaultCellEditor dce = new DefaultCellEditor(new JTextField());
+      dce.setClickCountToStart(1);
+      tb.getColumnModel().getColumn(1).setCellEditor(dce);
+      tb.getColumnModel().getColumn(2).setCellEditor(dce);
+      tb.getColumnModel().getColumn(3).setCellEditor(dce);
+      tb.getColumnModel().getColumn(4).setCellEditor(dce);
       //tb.setBackground(background_color);
       tb.setGridColor(Color.lightGray);
       //tb.setSelectionBackground(buttonColor);
@@ -509,8 +587,8 @@ public class DefineVariables
        */
       bottom_button_panel = new JPanel();
       //bottom_button_panel.setBackground(background_color);
-      bottom_button_panel.add(doneBt);
       bottom_button_panel.add(abrtBt);
+      bottom_button_panel.add(doneBt);
 
       /**
        * Mainpanel adds bottom_button_panel
