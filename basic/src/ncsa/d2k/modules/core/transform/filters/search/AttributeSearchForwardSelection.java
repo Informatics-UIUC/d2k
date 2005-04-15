@@ -226,7 +226,9 @@ public class AttributeSearchForwardSelection extends ComputeModule {
    * @exception Exception if start set can't be set.
    */
   public void setStartSet (String startSet) throws Exception {
-    m_startRange.setRanges(startSet);
+  	 if(m_startRange == null ) m_startRange = new Range();
+		if (startSet != null) m_startRange.setRanges(startSet);
+   
   }
 
   /**

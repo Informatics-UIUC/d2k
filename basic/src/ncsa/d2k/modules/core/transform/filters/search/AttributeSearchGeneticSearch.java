@@ -59,7 +59,7 @@ public class AttributeSearchGeneticSearch extends ComputeModule {
 
 
   /** holds the start set for the search as a Range */
-  private Range m_startRange;
+  private Range m_startRange=null;
 
   /** the number of individual solutions */
   private int m_popSize =20;
@@ -230,8 +230,9 @@ public class AttributeSearchGeneticSearch extends ComputeModule {
    * @exception Exception if start set can't be set.
    */
   public void setStartSet (String startSet) throws Exception {
-    m_startRange.setRanges(startSet);
-  }
+  	 if(m_startRange == null ) m_startRange = new Range();
+		if (startSet != null) m_startRange.setRanges(startSet);
+    }
 
   /**
    * Returns a list of attributes (and or attribute ranges) as a String
