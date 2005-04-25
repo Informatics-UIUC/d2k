@@ -48,6 +48,9 @@ public class PGraphUI extends UIModule {
       sb.append("<p>Acknowledgement: ");
       sb.append("This module uses functionality from the JUNG project. See ");
       sb.append("http://jung.sourceforge.net.</p>");
+      sb.append("<p>Acknowledgement: ");
+      sb.append("This module uses functionality from the Piccolo project. See ");
+      sb.append("http://www.cs.umd.edu/hcil/piccolo/.</p>");
       return sb.toString();
    }
 
