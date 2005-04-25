@@ -170,8 +170,10 @@ public class TableToGraph extends DataPrepModule {
    }
 
    public String getModuleInfo() {
-      return "This module takes a <i>Table</i> and creates a graph (as " +
-             "defined by the JUNG package) with vertices and edges.";
+      return "<p>Overview: This module takes a <i>Table</i> and creates a graph (as " +
+             "defined by the JUNG package) with vertices and edges.</p><p>Acknowledgement: " +
+             "This module uses functionality from the JUNG project. See " +
+             "http://jung.sourceforge.net.</p>";
    }
 
    public String getModuleName() {

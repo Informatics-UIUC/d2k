@@ -40,7 +40,17 @@ public class PGraphUI extends UIModule {
       return new String[] {"edu.uci.ics.jung.graph.Graph"};
    }
 
-   public String getModuleInfo() { return null; }
+   public String getModuleInfo() {
+      StringBuffer sb = new StringBuffer("<p>Overview: ");
+      sb.append("This module implements a zooming user interface of a JUNG ");
+      sb.append("graph. It provides some layout and clustering options as ");
+      sb.append("well.</p>");
+      sb.append("<p>Acknowledgement: ");
+      sb.append("This module uses functionality from the JUNG project. See ");
+      sb.append("http://jung.sourceforge.net.</p>");
+      return sb.toString();
+   }
+
    public String getOutputInfo(int index) { return null; }
    public String[] getOutputTypes() { return null; }
 

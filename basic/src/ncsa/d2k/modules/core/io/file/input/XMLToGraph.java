@@ -29,7 +29,9 @@ public class XMLToGraph extends InputModule {
 
    public String getModuleInfo() {
       return "<p>Overview: This module creates a Jung Graph object from a " +
-             "GraphML file.</p>";
+             "GraphML file.</p><p>Acknowledgement: This module uses " +
+             "functionality from the JUNG project. See " +
+             "http://jung.sourceforge.net.</p>";
    }
 
    public String getOutputInfo(int index) {
