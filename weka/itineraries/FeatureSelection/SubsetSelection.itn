@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAAXdwgAAAAfAAAAEXQAHEF0dHJpYnV0ZVNlYXJjaEdlbmV0aWNTZWFyY2hzcgAbbmNzYS5kMmsu
+Y29yZS5SZXNvdXJjZUVudHJ51S4sIEIDJtICAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5n
+L09iamVjdDtMAA9vYmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0AEtuY3Nh
+LmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmZpbHRlcnMuc2VhcmNoLkF0dHJpYnV0ZVNlYXJj
+aEdlbmV0aWNTZWFyY2h0ABlSZWFkRGF0YUZvckZpbHRlcnNfRmFuT3V0c3EAfgAEcHQAIm5jc2Eu
+ZDJrLmNvcmUubW9kdWxlcy5GYW5PdXRNb2R1bGV0AA9JbnB1dCBGaWxlIE5hbWVzcQB+AARwdAAy
+bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV0ABFCZXN0
+IEZpcnN0IFNlYXJjaHNxAH4ABHB0AEduY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmZp
+bHRlcnMuc2VhcmNoLkF0dHJpYnV0ZVNlYXJjaEJlc3RGaXJzdHQAL1JlYWREYXRhRm9yRmlsdGVy
+c19DcmVhdGUgRGVsaW1pdGVkIEZpbGUgUGFyc2Vyc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMu
+Y29yZS5pby5maWxlLmlucHV0LkNyZWF0ZURlbGltaXRlZFBhcnNlcnQAH0F0dHJpYnV0ZVNlYXJj
+aEZvcndhcmRTZWxlY3Rpb25zcQB+AARwdABObmNzYS5kMmsubW9kdWxlcy5jb3JlLnRyYW5zZm9y
+bS5maWx0ZXJzLnNlYXJjaC5BdHRyaWJ1dGVTZWFyY2hGb3J3YXJkU2VsZWN0aW9udAAtUmVhZERh
+dGFGb3JGaWx0ZXJzX1JlcGxhY2UgTm9taW5hbHMgV2l0aCBJbnRzc3EAfgAEcHQAQW5jc2EuZDJr
+Lm1vZHVsZXMuY29yZS50cmFuc2Zvcm0uYXR0cmlidXRlLlJlcGxhY2VOb21pbmFsc1dpdGhJbnRz
+dAASUmVhZERhdGFGb3JGaWx0ZXJzc3EAfgAEcHQAMm5jc2EuZDJrLmNvcmUubW9kdWxlcy5hZ2Vu
+ZGEuTmVzdGVkSXRpbmVyYXJ5TW9kdWxldAAiUmVhZERhdGFGb3JGaWx0ZXJzX0lucHV0IEZpbGUg
+TmFtZXNxAH4ABHB0ADJuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5JbnB1dDFG
+aWxlTmFtZXQAFENGUyBTdWJzZXQgRXZhbHVhdG9yc3EAfgAEcHQAQG5jc2EuZDJrLm1vZHVsZXMu
+Y29yZS50cmFuc2Zvcm0uZmlsdGVycy5ldmFsdWF0aW9uLlN1YnNldEV2YWxDRlN0ABNBdHRyaWJ1
+dGUgU2VsZWN0b3Ixc3EAfgAEcHQAL25jc2EuZDJrLm1vZHVsZXMud2VrYS5maWx0ZXJzLkF0dHJp
+YnV0ZVNlbGVjdG9ydAAcQ29uc2lzdGVuY3kgU3Vic2V0IEV2YWx1YXRvcnNxAH4ABHB0AEhuY3Nh
+LmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmZpbHRlcnMuZXZhbHVhdGlvbi5TdWJzZXRFdmFs
+Q29uc2lzdGVuY3l0ACZSZWFkRGF0YUZvckZpbHRlcnNfUGFyc2UgRmlsZSBUbyBUYWJsZXNxAH4A
+BHB0ADRuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1RhYmxl
+dAAbQXR0cmlidXRlU2VhcmNoUmFuZG9tU2VhcmNoc3EAfgAEcHQASm5jc2EuZDJrLm1vZHVsZXMu
+Y29yZS50cmFuc2Zvcm0uZmlsdGVycy5zZWFyY2guQXR0cmlidXRlU2VhcmNoUmFuZG9tU2VhcmNo
+dAAkUmVhZERhdGFGb3JGaWx0ZXJzX0Nob29zZSBBdHRyaWJ1dGVzc3EAfgAEcHQAOm5jc2EuZDJr
+Lm1vZHVsZXMuY29yZS50cmFuc2Zvcm0uYXR0cmlidXRlLkNob29zZUF0dHJpYnV0ZXN0ACdSZWFk
+RGF0YUZvckZpbHRlcnNfQXBwbHkgVHJhbnNmb3JtYXRpb25zcQB+AARwdAAzbmNzYS5kMmsubW9k
+dWxlcy5jb3JlLnRyYW5zZm9ybS5BcHBseVRyYW5zZm9ybWF0aW9udAAfQXR0cmlidXRlU2VhcmNo
+RXhoYXVzdGl2ZVNlYXJjaHNxAH4ABHB0AE5uY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3Jt
+LmZpbHRlcnMuc2VhcmNoLkF0dHJpYnV0ZVNlYXJjaEV4aGF1c3RpdmVTZWFyY2h4" label="SubsetSelection.itn">
+    <annotation><![CDATA[<HTML>
+</HTML>]]></annotation>
+    <module alias="Best First Search" classname="ncsa.d2k.modules.weka.filters.search.AttributeSearchBestFirst" xloc="61" yloc="126">
+      <output index="0" classname="ncsa.d2k.modules.projects.anca.attributeSelection.search.ASSearch"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="direction" value="0"/>
+      <property name="startSet" value=""/>
+      <property name="searchTermination" value="5"/>
+    </module>
+    <module alias="ReadDataForFilters" classname="ncsa.d2k.core.modules.agenda.NestedItineraryModule" xloc="45" yloc="23">
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Attribute Selector1" index="0"/>
+      </output>
+      <itinerary label="ReadDataForFilters">
+        <module alias="ReadDataForFilters_Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="18" yloc="46">
+          <output index="0" classname="java.lang.String">
+            <destination alias="ReadDataForFilters_Create Delimited File Parser" index="0"/>
+          </output>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+          <property name="fileName" value="data/UCI/iris.csv"/>
+          <property name="fileFilterExtension" value=""/>
+        </module>
+        <module alias="ReadDataForFilters_Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="118" yloc="46">
+          <input index="0" classname="java.lang.String"/>
+          <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+            <destination alias="ReadDataForFilters_Parse File To Table" index="0"/>
+          </output>
+          <property name="typesRow" value="1"/>
+          <property name="labelsRow" value="0"/>
+          <property name="hasSpecDelim" value="false"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+          <property name="hasTypes" value="true"/>
+          <property name="hasLabels" value="true"/>
+        </module>
+        <module alias="ReadDataForFilters_Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="291" yloc="46">
+          <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+            <destination alias="ReadDataForFilters_FanOut" index="0"/>
+          </output>
+          <property name="useBlanks" value="true"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+        </module>
+        <module alias="ReadDataForFilters_Apply Transformation" classname="ncsa.d2k.modules.core.transform.ApplyTransformation" xloc="582" yloc="166">
+          <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Transformation"/>
+          <input index="1" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+            <destination alias="ReadDataForFilters_Choose Attributes" index="0"/>
+          </output>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+        </module>
+        <module alias="ReadDataForFilters_Replace Nominals With Ints" classname="ncsa.d2k.modules.core.transform.attribute.ReplaceNominalsWithInts" xloc="475" yloc="29">
+          <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ReversibleTransformation">
+            <destination alias="ReadDataForFilters_Apply Transformation" index="0"/>
+          </output>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+          <property name="printMapping" value="false"/>
+        </module>
+        <module alias="ReadDataForFilters_Choose Attributes" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="720" yloc="166">
+          <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+            <destination alias="ReadDataForFilters" index="0"/>
+          </output>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+          <property name="windowName" value="Choose Attributes"/>
+          <property name="selectedInputs" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAR0AAtzZXBhbGxlbmd0
+aHQACnNlcGFsd2lkdGh0AAtwZXRhbGxlbmd0aHQACnBldGFsd2lkdGg="/>
+          <property name="supressGui" value="false"/>
+          <property name="selectedOutputs" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAF0AAVjbGFzcw=="/>
+        </module>
+        <module alias="ReadDataForFilters_FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="431" yloc="90">
+          <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+            <destination alias="ReadDataForFilters_Replace Nominals With Ints" index="0"/>
+          </output>
+          <output index="1" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+            <destination alias="ReadDataForFilters_Apply Transformation" index="1"/>
+          </output>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+        </module>
+      </itinerary>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="enableParallelization" value="false"/>
+    </module>
+    <module alias="AttributeSearchGeneticSearch" classname="ncsa.d2k.modules.weka.filters.search.AttributeSearchGeneticSearch" xloc="157" yloc="389">
+      <output index="0" classname="ncsa.d2k.modules.projects.anca.attributeSelection.search.ASSearch"/>
+      <property name="mutationProb" value="0.0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="maxGenerations" value="5"/>
+      <property name="startSet" value=""/>
+      <property name="populationSize" value="20"/>
+      <property name="reportFrequency" value="5"/>
+      <property name="crossoverProb" value="0.6"/>
+      <property name="seed" value="0"/>
+    </module>
+    <module alias="CFS Subset Evaluator" classname="ncsa.d2k.modules.weka.filters.evaluation.SubsetEvalCFS" xloc="423" yloc="328">
+      <output index="0" classname="ncsa.d2k.modules.projects.anca.attributeSelection.evaluation.ASEvaluation"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="missingSeperate" value="false"/>
+      <property name="locallyPredictive" value="false"/>
+    </module>
+    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="505" yloc="122">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Attribute Selector1" index="3"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="fileName" value=""/>
+      <property name="fileFilterExtension" value=""/>
+    </module>
+    <module alias="AttributeSearchExhaustiveSearch" classname="ncsa.d2k.modules.weka.filters.search.AttributeSearchExhaustiveSearch" xloc="4" yloc="287">
+      <output index="0" classname="ncsa.d2k.modules.projects.anca.attributeSelection.search.ASSearch"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="startSet" value=""/>
+      <property name="verbose" value="true"/>
+    </module>
+    <module alias="Consistency Subset Evaluator" classname="ncsa.d2k.modules.weka.filters.evaluation.SubsetEvalConsistency" xloc="362" yloc="215">
+      <output index="0" classname="ncsa.d2k.modules.projects.anca.attributeSelection.evaluation.ASEvaluation">
+        <destination alias="Attribute Selector1" index="2"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="AttributeSearchForwardSelection" classname="ncsa.d2k.modules.weka.filters.search.AttributeSearchForwardSelection" xloc="3" yloc="357">
+      <output index="0" classname="ncsa.d2k.modules.projects.anca.attributeSelection.search.ASSearch"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="generateRanking" value="false"/>
+      <property name="numToSelect" value="-1"/>
+      <property name="startSet" value=""/>
+      <property name="threshold" value="0.0"/>
+    </module>
+    <module alias="Attribute Selector1" classname="ncsa.d2k.modules.weka.filters.AttributeSelector" xloc="613" yloc="40">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.Table"/>
+      <input index="1" classname="ncsa.d2k.modules.projects.anca.attributeSelection.search.ASSearch"/>
+      <input index="2" classname="ncsa.d2k.modules.projects.anca.attributeSelection.evaluation.ASEvaluation"/>
+      <input index="3" classname="java.lang.String"/>
+      <output index="0" classname="[I"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="seed" value="1"/>
+      <property name="folds" value="10"/>
+    </module>
+    <module alias="AttributeSearchRandomSearch" classname="ncsa.d2k.modules.weka.filters.search.AttributeSearchRandomSearch" xloc="45" yloc="210">
+      <output index="0" classname="ncsa.d2k.modules.projects.anca.attributeSelection.search.ASSearch">
+        <destination alias="Attribute Selector1" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="startSet" value=""/>
+      <property name="searchPercent" value="0.0025"/>
+      <property name="verbose" value="true"/>
+    </module>
+  </itinerary>
+</toolkit>
