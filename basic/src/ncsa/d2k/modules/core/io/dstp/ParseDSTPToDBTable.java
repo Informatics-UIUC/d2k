@@ -177,9 +177,9 @@ public class ParseDSTPToDBTable
     s += "</p>";
 
     s += "<p>";
-    s += "See: http://www.dataspaceweb.net/index.htm.  DataSpaces is a research ";
+    s += "Acknowledgement: DataSpaces is a research ";
     s += "product of The National Center for Data Mining (NCDM) at the University ";
-    s += "of Illinois at Chicago (UIC).";
+    s += "of Illinois at Chicago (UIC). See: http://www.dataspaceweb.net/index.htm.";
     s += "</p>";
 
     s += "<p>Detailed Description: ";
