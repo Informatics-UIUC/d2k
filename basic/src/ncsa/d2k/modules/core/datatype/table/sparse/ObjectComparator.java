@@ -39,7 +39,11 @@ public class ObjectComparator implements Comparator {
       try{
         float f1 = Float.parseFloat(str1);
         float f2 = Float.parseFloat(str2);
-        return (int)(f1 - f2);
+        float result = f1-f2;
+        if(result < 0) return -1;
+        else if(result > 0) return 1;
+        else return 0;
+        
       }
       catch(NumberFormatException e){
         return str1.compareTo(str2);
