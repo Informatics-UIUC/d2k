@@ -135,18 +135,18 @@ public class StreamSource extends DataPrepModule  {
   }
 
   public void doit () {
-    System.out.println("starting streamsource.");
+    //System.out.println("starting streamsource.");
     if (theList == null) {
-      System.out.println("streamsource list init.");
+      //System.out.println("streamsource list init.");
       theList = (List)this.pullInput(0);
       this.pushOutput(new Integer(theList.size()), 1);
-      System.out.println("streamsource PUSHED list size: "+theList.size());
+      //System.out.println("streamsource PUSHED list size: "+theList.size());
     }
     if (this.listIndex < theList.size()) {
-      System.out.println("streamsource pushing output number: "+listIndex);
+      //System.out.println("streamsource pushing output number: "+listIndex);
       this.pushOutput(theList.get(listIndex++),0);
     } else {
-      System.out.println("streamsource NULLIFYIN.");
+      //System.out.println("streamsource NULLIFYIN.");
       theList = null;
     }
 

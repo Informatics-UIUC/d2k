@@ -146,27 +146,27 @@ public class StreamCatcher extends DataPrepModule  {
   public void doit () {
 
     if (getFlags()[1] > 0) {
-      System.out.println("sc: GONNA pull input intvalue.  val is: "+objCnt);
+      //System.out.println("sc: GONNA pull input intvalue.  val is: "+objCnt);
       objCnt = ( (Integer)this.pullInput(1)).intValue();
-      System.out.println("sc: pulled input intvalue.  val is: "+objCnt);
+      //System.out.println("sc: pulled input intvalue.  val is: "+objCnt);
     }
 
     if (getFlags()[0] > 0) {
-      System.out.println("sc: GONNA pull input object.");
+      //System.out.println("sc: GONNA pull input object.");
       while (this.getFlags()[0] > 0) {
-        System.out.println("sc: pulling another input");
+        //System.out.println("sc: pulling another input");
         streamedObjects.add(this.pullInput(0));
-        System.out.println("sc: DONE pulling another input");
+        //System.out.println("sc: DONE pulling another input");
       }
     }
 
     if (streamedObjects.size() == objCnt) {
-      System.out.println("sc: finished loop");
+      //System.out.println("sc: finished loop");
       this.pushOutput(streamedObjects, 0);
-      System.out.println("sc: pushed output -- byebye");
+      //System.out.println("sc: pushed output -- byebye");
     } else {
-      System.out.println("sc: size not equal to count! size is: "+streamedObjects.size()+
-                         "count is: "+objCnt);
+      //System.out.println("sc: size not equal to count! size is: "+streamedObjects.size()+
+      //                   "count is: "+objCnt);
     }
   }
 
