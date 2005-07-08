@@ -1,13 +1,37 @@
 package ncsa.d2k.modules.core.transform.table;
 
-import ncsa.d2k.core.modules.*;
+
+import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.util.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.*;
 import java.util.*;
 
 public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 	//begin setting Properties
+
+
+	public boolean sparse = false;
+	
+	public void setSparse(boolean d){
+		sparse = d;
+	}
+	public boolean getSparse(){
+		return sparse;
+	}
+
+	/**
+	 * Return a list of the property descriptions.
+	 * @return a list of the property descriptions.
+*/
+	
+	public PropertyDescription[] getPropertiesDescriptions () {
+		PropertyDescription [] pds = new PropertyDescription [1];
+		pds[0] = new PropertyDescription ("sparse","Sparse Table", "This value determines if the resulting table will be sparse");
+	   return pds;
+	}
+
 /*
  *
  	String fillerString = new String("*");
@@ -78,6 +102,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 		pds[2] = new PropertyDescription ("fillerNumeric", "Numeric Column Filler", "This value fills any numeric columns.");
 		return pds;
 	}
+
+
 
 	/**
 	 * returns information about the input at the given index.
@@ -244,6 +270,9 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 		Table t2 = (Table)this.pullInput(1);
 		String key = (String) this.pullInput(2);
 
+		//boolean sparse = true;
+		
+
 		// First, hash the column names with the contents of that column.
 		HashMap colMap1 = new HashMap();
 		ArrayList columnNames = new ArrayList();
@@ -281,7 +310,12 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 
 		// Now, append each column of the first table to each column of the second
 		// table to create a new column.
-		MutableTable result = (MutableTable) t1.createTable();
+		MutableTable result;
+		if (getSparse())
+			 result = new SparseMutableTable();
+		else
+			 result = (MutableTable) t1.createTable();
+		
 		int numRows = matches.length;
 		int numColumns = columnNames.size();
 		for (int i = 0; i < numColumns; i++) {
@@ -772,6 +806,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 				result.setColumnLabel (t2.getColumnLabel(secondColumn), i);
 		}
 
+		//System.out.println("result type " + result.getClass().getName());
 		this.pushOutput(result, 0);
 	}
 }
@@ -798,3 +833,5 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
        *    if such value swill be encountered in such column.
 * 12-05-03: module is ready for basic 4.
 */
+// ANCA 06/20/05 - added a property that will determine if the resulting table is a sparse 
+// regular mutable table
