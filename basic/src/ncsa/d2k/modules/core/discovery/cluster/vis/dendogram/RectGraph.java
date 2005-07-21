@@ -315,8 +315,9 @@ public class RectGraph  extends BaseGraph implements MouseInputListener  {
         if (i >= 0){
           TableCluster c = ((RectWrapper)m_shapes.get(i)).getCluster();
           Table tab = null;
-          if (tab instanceof SparseTable){
-            tab = ((SparseMutableTable)c.getTable()).getSubsetByReference(c.getMemberIndices());
+          if (tab instanceof Sparse){
+            //changed from getSubsetByReference -- DDS
+            tab = ((MutableTable)c.getTable()).getSubset(c.getMemberIndices());
           } else {
             tab = c.getTable().getSubset(c.getMemberIndices());
           }
@@ -335,8 +336,9 @@ public class RectGraph  extends BaseGraph implements MouseInputListener  {
           TableCluster c = ((RectWrapper)obs[1]).getCluster();
           JD2KFrame frame = new JD2KFrame("Values for Cluster ID " + c.getClusterLabel());
           Table tab = null;
-          if (tab instanceof SparseTable){
-            tab = ((SparseMutableTable)c.getTable()).getSubsetByReference(c.getMemberIndices());
+          if (tab instanceof Sparse){
+            //changed from getSubsetByReference -- DDS
+            tab = ((MutableTable)c.getTable()).getSubset(c.getMemberIndices());
           } else {
             tab = c.getTable().getSubset(c.getMemberIndices());
           }

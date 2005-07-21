@@ -81,7 +81,7 @@ public class TableCluster implements Serializable {
     _table = table;
     _members = new int[1];
     _members[0] = row;
-    if (_table instanceof SparseTable){
+    if (_table instanceof Sparse){
       setSparse(true);
       //Thread.currentThread().dumpStack();
     }else if (_table instanceof ExampleTable) {
@@ -94,7 +94,7 @@ public class TableCluster implements Serializable {
   public TableCluster(Table table, int[] rows) {
     _table = table;
     _members = rows;
-    if (_table instanceof SparseTable){
+    if (_table instanceof Sparse){
       setSparse(true);
       //Thread.currentThread().dumpStack();
     }else if (_table instanceof ExampleTable) {
@@ -108,7 +108,7 @@ public class TableCluster implements Serializable {
     _table = table;
     _cluster1 = c1;
     _cluster2 = c2;
-    if (_table instanceof SparseTable){
+    if (_table instanceof Sparse){
       setSparse(true);
       //Thread.currentThread().dumpStack();
     }else if (_table instanceof ExampleTable) {
@@ -243,7 +243,7 @@ public class TableCluster implements Serializable {
 
       //System.out.println("Numcols: " + ( (ExampleTable) _table).getInputFeatures().length);
       for (int j = 0, m = members.length; j < m; j++) {
-        int feats[] = ((SparseTable)_table).getRowIndices(members[j]);
+        int feats[] = ((Sparse)_table).getRowIndices(members[j]);
         for (int i = 0, n = feats.length; i < n; i++) {
           if (ofeats.contains(new Integer(feats[i]))){
             temp[feats[i]] += _table.getDouble(members[j], feats[i]);
@@ -297,10 +297,10 @@ public class TableCluster implements Serializable {
     computeCentroid();
     if (this.getSparse()){
       int sz = 0;
-      if (this.getTable() instanceof SparseExampleTable){
-        sz = ((SparseExampleTable)this.getTable()).getInputFeatures().length;
+      if (this.getTable() instanceof ExampleTable){
+        sz = ((ExampleTable)this.getTable()).getInputFeatures().length;
       } else {
-        sz = this.getTable().getNumRows();
+        sz = this.getTable().getNumColumns();
       }
       double[] centroid = new double[sz];
       for (int i = 0, n = sz; i < n; i++){

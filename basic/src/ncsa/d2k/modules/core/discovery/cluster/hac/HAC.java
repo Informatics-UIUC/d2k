@@ -584,7 +584,7 @@ public class HAC {
       }
     }
     if (bcnts != ifeatures.length) {
-      if (! (itable instanceof SparseTable)) {
+      if (! (itable instanceof Sparse)) {
         for (int i = 0, n = itable.getNumRows(); i < n; i++) {
           for (int j = 0, m = ifeatures.length; j < m; j++) {
             if (! (itable.getColumnType(ifeatures[j]) == ColumnTypes.BOOLEAN)) {
@@ -602,7 +602,7 @@ public class HAC {
       } else {
         gnu.trove.TIntHashSet ihash = new gnu.trove.TIntHashSet(ifeatures);
         for (int i = 0, n = itable.getNumRows(); i < n; i++) {
-          int[] cols = ((SparseTable)itable).getRowIndices(i);
+          int[] cols = ((Sparse)itable).getRowIndices(i);
           for (int j = 0, m = cols.length; j < m; j++) {
             if (ihash.contains(cols[j])){
               if (! (itable.getColumnType(cols[j]) == ColumnTypes.BOOLEAN)) {
