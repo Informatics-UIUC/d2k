@@ -204,29 +204,29 @@ abstract public class AbstractColumn
     // Could be more efficient but as is used only in Junit tests,
     // less code is more important than speed of execution.
     // should also compare missing and empty arrays
-    public boolean equals (Object col) {
-        Column column;
-        try {
-            column = (Column)col;
-        } catch (Exception e) {
-            return  false;
-        }
-        /*if(internal.length != column.getNumRows()) return false;
-         for (int i =0; i < internal.length; i ++)
-         if(internal[i] != column.getInt(i))
-         return false;
-         return true;
-         */
-        if (getNumEntries() != column.getNumEntries())
-            return  false;
-        for (int i = 0; i < getNumEntries(); i++) {
-            Object ob1 = getObject(i);
-            Object ob2 = column.getObject(i);
-            if (!ob1.equals(ob2))
-                return  false;
-        }
-        return  true;
-    }
+//    public boolean equals (Object col) {
+//        Column column;
+//        try {
+//            column = (Column)col;
+//        } catch (Exception e) {
+//            return  false;
+//        }
+//        /*if(internal.length != column.getNumRows()) return false;
+//         for (int i =0; i < internal.length; i ++)
+//         if(internal[i] != column.getInt(i))
+//         return false;
+//         return true;
+//         */
+//        if (getNumEntries() != column.getNumEntries())
+//            return  false;
+//        for (int i = 0; i < getNumEntries(); i++) {
+//            Object ob1 = getObject(i);
+//            Object ob2 = column.getObject(i);
+//            if (!ob1.equals(ob2))
+//                return  false;
+//        }
+//        return  true;
+//    }
 }
 
 
