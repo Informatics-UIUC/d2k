@@ -352,7 +352,7 @@ public class ChooseAttributes extends HeadlessUIModule {
                 miAlphaOrder.setEnabled(true);
             }
             inputList = new JList();
-            inputList.setModel(null);
+            //inputList.setModel(null);
             DefaultListModel dlm = new DefaultListModel();
             for (int i = 0; i < labels.length; i++)
                 dlm.addElement(labels[i]);
@@ -417,7 +417,7 @@ public class ChooseAttributes extends HeadlessUIModule {
                 outputList.setSelectedIndices(ints);
             }
             outputList.setModel(dlm);
-            outputList.setModel(null);
+            //outputList.setModel(null);
             JScrollPane leftScrollPane = new JScrollPane(inputList);
             JScrollPane rightScrollPane = new JScrollPane(outputList);
             inputLabel = new JLabel("Input Attributes");
