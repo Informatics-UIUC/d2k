@@ -498,7 +498,7 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
       cntStmt.close();
     }
     catch (Exception e){
-      if(!this.getSuppressGui()){
+      if(!this.getSupressGui()){
         JOptionPane.showMessageDialog(msgBoard,
                                       e.getMessage(), "Error",
                                       JOptionPane.ERROR_MESSAGE);
@@ -538,7 +538,7 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
       return true;
     }
     catch (Exception e){
-      if(!this.getSuppressGui()){
+      if(!this.getSupressGui()){
         JOptionPane.showMessageDialog(msgBoard,
                                       e.getMessage(), "Error",
                                       JOptionPane.ERROR_MESSAGE);
