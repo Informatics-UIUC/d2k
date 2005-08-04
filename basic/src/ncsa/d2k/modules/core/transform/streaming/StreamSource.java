@@ -20,6 +20,10 @@ public class StreamSource extends DataPrepModule  {
 
   }
 
+  public void beginExecution() {
+     listIndex = 0;
+  }
+
   /**
    * Return the name of this module.
    * @return the dislay name for this module.
