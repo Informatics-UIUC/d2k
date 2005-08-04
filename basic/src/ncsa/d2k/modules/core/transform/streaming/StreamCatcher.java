@@ -20,6 +20,10 @@ public class StreamCatcher extends DataPrepModule  {
 
   }
 
+  public void beginExecution() {
+     streamedObjects.clear();
+  }
+
   /**
    * Return the name of this module.
    * @return the dislay name for this module.
@@ -149,6 +153,7 @@ public class StreamCatcher extends DataPrepModule  {
       //System.out.println("sc: GONNA pull input intvalue.  val is: "+objCnt);
       objCnt = ( (Integer)this.pullInput(1)).intValue();
       //System.out.println("sc: pulled input intvalue.  val is: "+objCnt);
+      return;
     }
 
     if (getFlags()[0] > 0) {
