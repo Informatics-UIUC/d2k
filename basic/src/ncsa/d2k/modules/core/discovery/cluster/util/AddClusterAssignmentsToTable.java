@@ -206,14 +206,18 @@ public class AddClusterAssignmentsToTable
       if (itable.getColumnLabel(itable.getNumColumns() - 1).equals(HAC._CLUSTER_COLUMN_LABEL)) {
         itable.removeColumn(itable.getNumColumns() - 1);
       }
-      itable.addColumn(new IntColumn(itable.getNumRows()));
+      if (itable instanceof Sparse){
+        itable.addColumn(((Sparse)itable).getTableFactory().createColumn(ColumnTypes.INTEGER));
+      } else {
+        itable.addColumn(new IntColumn(itable.getNumRows()));
+      }
       itable.setColumnLabel(HAC._CLUSTER_COLUMN_LABEL, itable.getNumColumns() - 1);
       if (itable instanceof ExampleTable){
         int[] outs = ((ExampleTable)itable).getOutputFeatures();
         int[] newouts = new int[outs.length + 1];
         System.arraycopy(outs,0,newouts,0,outs.length);
         //LAM-tlr, I change the following : newouts[newouts.length-1] = newouts.length-1;
-        // to: 
+        // to:
 		newouts[newouts.length-1] = itable.getNumColumns()-1;
         ((ExampleTable)itable).setOutputFeatures(newouts);
       }
