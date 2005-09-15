@@ -274,7 +274,7 @@ public class ConnectToDB extends HeadlessUIModule {
      */
 
     public void setUrl(String u) {
-
+//System.out.println("URL: "+url);
         url = u;
 
     }
@@ -507,7 +507,7 @@ public class ConnectToDB extends HeadlessUIModule {
         private JComboBox cbV;
 
         // we currently only support Oracle, SQLServer , DB2 and MySQL
-        private String[] Vendors = {"Oracle", "SQLServer", "MySQL", "DB2"};
+        private String[] Vendors = {"Oracle", "SQLServer", "MySQL", "DB2", "PostgreSQL"};
 
         private int dbFlag;
 
@@ -615,6 +615,10 @@ public class ConnectToDB extends HeadlessUIModule {
                     else if (newSelection == "DB2") {
                         tfPo.setText("6789");
                         tfD.setText("COM.ibm.db2.jdbc.net.DB2Driver");
+                    }
+                    else if (newSelection == "PostgreSQL") {
+                      tfPo.setText("5432");
+                      tfD.setText("org.postgresql.Driver");
                     }
                 }
             }
@@ -909,6 +913,16 @@ public class ConnectToDB extends HeadlessUIModule {
                         pushOutput (dc, 0);
                         viewDone("Done");
                       }
+                  }
+                  else if(_driver.equals("org.postgresql.Driver")) {
+                    setUrl("jdbc:postgresql://"+getMachine()+":"+getPort()+"/"+getDbInstance());
+                    PostgresDBConnection dc = new PostgresDBConnection(getUrl().trim(),
+                        getDriver().trim(), getUsername().trim(), getPassword().trim());
+                      if (dc.getConnection() != null) {
+                        pushOutput (dc, 0);
+                        viewDone("Done");
+                      }
+
                   }
 
                   else {
