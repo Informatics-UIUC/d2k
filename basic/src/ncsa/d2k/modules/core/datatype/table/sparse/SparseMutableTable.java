@@ -1583,6 +1583,8 @@ public class SparseMutableTable extends SparseTable
 
     //DUANE - added method below for testing purposes
     public boolean equals (Object mt) {
+        if(mt == null)
+          return false;
         SparseMutableTable mti = (SparseMutableTable)mt;
         int _numColumns = mti.getNumColumns();
         int _numRows = mti.getNumRows();

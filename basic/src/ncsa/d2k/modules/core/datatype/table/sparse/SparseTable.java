@@ -118,8 +118,22 @@ public abstract class SparseTable extends DefaultMissingValuesTable
      */
     public SparseTable (SparseTable T) {
         //VERED: making all references to refer to T's objects
-        columnRef = T.columnRef;
-        columns = T.columns;
+        //columnRef = T.columnRef;
+        //columns = T.columns;
+
+        columnRef = new VIntIntHashMap(T.columnRef.size());
+        int[] keys = T.columnRef.keys();
+        for(int i = 0; i < keys.length; i++) {
+          columnRef.put(keys[i], T.columnRef.get(keys[i]));
+        }
+
+        columns = new VIntObjectHashMap(T.columns.size());
+        keys = T.columns.keys();
+        for(int i = 0; i < keys.length; i++) {
+          columns.put(keys[i], T.columns.get(keys[i]));
+        }
+
+
         comment = T.comment;
         label = T.label;
         numColumns = T.numColumns;
