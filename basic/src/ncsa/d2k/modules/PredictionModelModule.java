@@ -3,6 +3,8 @@ package  ncsa.d2k.modules;
 import  ncsa.d2k.core.modules.*;
 import  ncsa.d2k.modules.core.datatype.table.*;
 import  ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 import  java.util.*;
 
 
@@ -302,54 +304,117 @@ ModelModule
               for (int i = 0; i < outputFeatureTypes.length; i++) {
                 // add the prediction columns
                 int type = outputFeatureTypes[i];
+
+                boolean isSparse = pt instanceof Sparse;
+
                 switch (type) {
                   case ColumnTypes.DOUBLE:
-                    pt.addColumn(new DoubleColumn(pt.getNumRows()));
+                    if(isSparse) {
+                      pt.addColumn(new SparseDoubleColumn(pt.getNumRows()));
+                    }
+                    else {
+                      pt.addColumn(new DoubleColumn(pt.getNumRows()));
+                    }
                     predSet[i] = pt.getNumColumns() - 1;
                     break;
                   case ColumnTypes.STRING:
-                    pt.addColumn(new StringColumn(pt.getNumRows()));
+                    if(isSparse) {
+                      pt.addColumn(new SparseStringColumn(pt.getNumRows()));
+                    }
+                    else {
+                      pt.addColumn(new StringColumn(pt.getNumRows()));
+                    }
                     predSet[i] = pt.getNumColumns() - 1;
                     break;
                     //VERED: added cases for all column types
                   case ColumnTypes.INTEGER:
-                    pt.addColumn(new IntColumn(pt.getNumRows()));
+                    if(isSparse) {
+                      pt.addColumn(new SparseIntColumn(pt.getNumRows()));
+                    }
+                    else {
+                      pt.addColumn(new IntColumn(pt.getNumRows()));
+                    }
                     predSet[i] = pt.getNumColumns() - 1;
                     break;
                   case ColumnTypes.FLOAT:
-                    pt.addColumn(new FloatColumn(pt.getNumRows()));
+                    if(isSparse) {
+                      pt.addColumn(new SparseFloatColumn(pt.getNumRows()));
+                    }
+                    else {
+                      pt.addColumn(new FloatColumn(pt.getNumRows()));
+                    }
                     predSet[i] = pt.getNumColumns() - 1;
                     break;
                   case ColumnTypes.LONG:
-                    pt.addColumn(new LongColumn(pt.getNumRows()));
+                    if(isSparse) {
+                      pt.addColumn(new SparseLongColumn(pt.getNumRows()));
+                    }
+                    else {
+                      pt.addColumn(new LongColumn(pt.getNumRows()));
+                    }
                     predSet[i] = pt.getNumColumns() - 1;
                     break;
                   case ColumnTypes.SHORT:
-                    pt.addColumn(new ShortColumn(pt.getNumRows()));
+                    if(isSparse) {
+                      pt.addColumn(new SparseShortColumn(pt.getNumRows()));
+                    }
+                    else {
+                      pt.addColumn(new ShortColumn(pt.getNumRows()));
+                    }
                     predSet[i] = pt.getNumColumns() - 1;
                     break;
                   case ColumnTypes.BYTE:
-                    pt.addColumn(new ByteColumn(pt.getNumRows()));
+                    if(isSparse) {
+                      pt.addColumn(new SparseByteColumn(pt.getNumRows()));
+                    }
+                    else {
+                      pt.addColumn(new ByteColumn(pt.getNumRows()));
+                    }
                     predSet[i] = pt.getNumColumns() - 1;
                     break;
                   case ColumnTypes.CHAR:
-                    pt.addColumn(new CharColumn(pt.getNumRows()));
+                    if(isSparse) {
+                      pt.addColumn(new SparseCharColumn(pt.getNumRows()));
+                    }
+                    else {
+                      pt.addColumn(new CharColumn(pt.getNumRows()));
+                    }
                     predSet[i] = pt.getNumColumns() - 1;
                     break;
                   case ColumnTypes.BYTE_ARRAY:
-                    pt.addColumn(new ByteArrayColumn(pt.getNumRows()));
+                    if(isSparse) {
+                      pt.addColumn(new SparseByteArrayColumn(pt.getNumRows()));
+                    }
+                    else {
+                      pt.addColumn(new ByteArrayColumn(pt.getNumRows()));
+                    }
                     predSet[i] = pt.getNumColumns() - 1;
                     break;
                   case ColumnTypes.CHAR_ARRAY:
-                    pt.addColumn(new CharArrayColumn(pt.getNumRows()));
+                    if(isSparse) {
+                      pt.addColumn(new SparseCharArrayColumn(pt.getNumRows()));
+                    }
+                    else {
+                      pt.addColumn(new CharArrayColumn(pt.getNumRows()));
+                    }
                     predSet[i] = pt.getNumColumns() - 1;
                     break;
                   case ColumnTypes.OBJECT:
-                    pt.addColumn(new ObjectColumn(pt.getNumRows()));
+                    if(isSparse) {
+                      pt.addColumn(new SparseObjectColumn(pt.getNumRows()));
+                    }
+                    else {
+                      pt.addColumn(new ObjectColumn(pt.getNumRows()));
+                    }
                     predSet[i] = pt.getNumColumns() - 1;
                     break;
                   case ColumnTypes.BOOLEAN:
-                    pt.addColumn(new BooleanColumn(pt.getNumRows()));
+                    if(isSparse) {
+                      pt.addColumn(new SparseBooleanColumn(pt.getNumRows()));
+                    }
+                    else {
+                      pt.addColumn(new BooleanColumn(pt.getNumRows()));
+                    }
                     predSet[i] = pt.getNumColumns() - 1;
                     break;
                   default:
