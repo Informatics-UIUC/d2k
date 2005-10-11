@@ -12,25 +12,25 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 	//begin setting Properties
 
 
-	public boolean sparse = false;
-	
+	/*public boolean sparse = false;
+
 	public void setSparse(boolean d){
 		sparse = d;
 	}
 	public boolean getSparse(){
 		return sparse;
-	}
+	}*/
 
 	/**
 	 * Return a list of the property descriptions.
 	 * @return a list of the property descriptions.
 */
-	
-	public PropertyDescription[] getPropertiesDescriptions () {
+
+	/*public PropertyDescription[] getPropertiesDescriptions () {
 		PropertyDescription [] pds = new PropertyDescription [1];
 		pds[0] = new PropertyDescription ("sparse","Sparse Table", "This value determines if the resulting table will be sparse");
 	   return pds;
-	}
+	}*/
 
 /*
  *
@@ -139,7 +139,10 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 	 * @return string array containing the datatypes of the inputs.
 	 */
 	public String[] getInputTypes() {
-		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table","ncsa.d2k.modules.core.datatype.table.Table","java.lang.String"};
+		String[] types = {"ncsa.d2k.modules.core.datatype.table.Table",
+                    "ncsa.d2k.modules.core.datatype.table.Table",
+                    "java.lang.String",
+                "ncsa.d2k.modules.core.datatype.table.TableFactory"};
 		return types;
 	}
 
@@ -269,9 +272,10 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 		Table t1 = (Table)this.pullInput(0);
 		Table t2 = (Table)this.pullInput(1);
 		String key = (String) this.pullInput(2);
+                TableFactory factory = (TableFactory)pullInput(3);
 
 		//boolean sparse = true;
-		
+
 
 		// First, hash the column names with the contents of that column.
 		HashMap colMap1 = new HashMap();
@@ -310,12 +314,13 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 
 		// Now, append each column of the first table to each column of the second
 		// table to create a new column.
-		MutableTable result;
-		if (getSparse())
+		MutableTable result = (MutableTable)factory.createTable();
+		/*if (getSparse())
 			 result = new SparseMutableTable();
 		else
 			 result = (MutableTable) t1.createTable();
-		
+                        */
+
 		int numRows = matches.length;
 		int numColumns = columnNames.size();
 		for (int i = 0; i < numColumns; i++) {
@@ -360,7 +365,14 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					Column col = new IntColumn(vals);
+                                        Column col = factory.createColumn(ColumnTypes.INTEGER);
+					//Column col = new IntColumn(vals);
+
+                                        col.setNumRows(vals.length);
+                                        for(int ri = 0; ri < vals.length; ri++) {
+                                          col.setInt(vals[ri], ri);
+                                        }
+
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
 						if (missing[ri])
@@ -399,7 +411,13 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					Column col = new FloatColumn(vals);
+					//Column col = new FloatColumn(vals);
+                                        Column col = factory.createColumn(ColumnTypes.FLOAT);
+                                        col.setNumRows(vals.length);
+                                        for(int ri = 0; ri < vals.length; ri++) {
+                                          col.setFloat(vals[ri], ri);
+                                        }
+
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
 						if (missing[ri])
@@ -438,7 +456,13 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					Column col = new DoubleColumn(vals);
+					//Column col = new DoubleColumn(vals);
+                                        Column col = factory.createColumn(ColumnTypes.DOUBLE);
+                                        col.setNumRows(vals.length);
+                                        for(int ri = 0; ri < vals.length; ri++) {
+                                          col.setDouble(vals[ri], ri);
+                                        }
+
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
 						if (missing[ri])
@@ -477,7 +501,13 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					Column col = new ShortColumn(vals);
+					//Column col = new ShortColumn(vals);
+                                        Column col = factory.createColumn(ColumnTypes.SHORT);
+                                        col.setNumRows(vals.length);
+                                        for(int ri = 0; ri < vals.length; ri++) {
+                                          col.setShort(vals[ri], ri);
+                                        }
+
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
 						if (missing[ri])
@@ -516,7 +546,14 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					Column col = new LongColumn(vals);
+					//Column col = new LongColumn(vals);
+                                        Column col = factory.createColumn(ColumnTypes.LONG);
+                                        col.setNumRows(vals.length);
+                                        for(int ri = 0; ri < vals.length; ri++) {
+                                          col.setLong(vals[ri], ri);
+                                        }
+
+
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
 						if (missing[ri])
@@ -555,7 +592,13 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					Column col = new StringColumn(vals);
+					//Column col = new StringColumn(vals);
+                                        Column col = factory.createColumn(ColumnTypes.STRING);
+                                        col.setNumRows(vals.length);
+                                        for(int ri = 0; ri < vals.length; ri++) {
+                                          col.setString(vals[ri], ri);
+                                        }
+
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
 						if (missing[ri])
@@ -594,7 +637,13 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					Column col = new CharArrayColumn(vals);
+					//Column col = new CharArrayColumn(vals);
+                                        Column col = factory.createColumn(ColumnTypes.CHAR_ARRAY);
+                                        col.setNumRows(vals.length);
+                                        for(int ri = 0; ri < vals.length; ri++) {
+                                          col.setChars(vals[ri], ri);
+                                        }
+
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
 						if (missing[ri])
@@ -633,7 +682,13 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					Column col = new ByteArrayColumn(vals);
+					//Column col = new ByteArrayColumn(vals);
+                                        Column col = factory.createColumn(ColumnTypes.BYTE_ARRAY);
+                                        col.setNumRows(vals.length);
+                                        for(int ri = 0; ri < vals.length; ri++) {
+                                          col.setBytes(vals[ri], ri);
+                                        }
+
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
 						if (missing[ri])
@@ -672,7 +727,13 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					Column col = new BooleanColumn(vals);
+					//Column col = new BooleanColumn(vals);
+                                        Column col = factory.createColumn(ColumnTypes.BOOLEAN);
+                                        col.setNumRows(vals.length);
+                                        for(int ri = 0; ri < vals.length; ri++) {
+                                          col.setBoolean(vals[ri], ri);
+                                        }
+
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
 						if (missing[ri])
@@ -711,7 +772,14 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					Column col = new ObjectColumn(vals);
+					//Column col = new ObjectColumn(vals);
+                                        Column col = factory.createColumn(ColumnTypes.OBJECT);
+                                        col.setNumRows(vals.length);
+                                        for(int ri = 0; ri < vals.length; ri++) {
+                                          col.setObject(vals[ri], ri);
+                                        }
+
+
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
 						if (missing[ri])
@@ -750,7 +818,13 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					Column col = new ByteColumn(vals);
+					//Column col = new ByteColumn(vals);
+                                        Column col = factory.createColumn(ColumnTypes.BYTE);
+                                        col.setNumRows(vals.length);
+                                        for(int ri = 0; ri < vals.length; ri++) {
+                                          col.setByte(vals[ri], ri);
+                                        }
+
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
 						if (missing[ri])
@@ -789,7 +863,13 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 					}
 
 					// add the column
-					Column col = new CharColumn(vals);
+					//Column col = new CharColumn(vals);
+                                        Column col = factory.createColumn(ColumnTypes.CHAR);
+                                        col.setNumRows(vals.length);
+                                        for(int ri = 0; ri < vals.length; ri++) {
+                                          col.setChar(vals[ri], ri);
+                                        }
+
 					for (int ri = 0 ; ri < missing.length ; ri++){
 						col.setValueToMissing(missing[ri],ri);
 						if (missing[ri])
@@ -833,5 +913,8 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
        *    if such value swill be encountered in such column.
 * 12-05-03: module is ready for basic 4.
 */
-// ANCA 06/20/05 - added a property that will determine if the resulting table is a sparse 
+// ANCA 06/20/05 - added a property that will determine if the resulting table is a sparse
 // regular mutable table
+
+// clutter 10/11/05 -- removed the sparse property.  Added a table factory as
+// input.  The output table type is determined by this table factory.
