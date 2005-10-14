@@ -435,7 +435,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn {
      * @param pos - the row number to set its value
      */
     public void setDouble (double newEntry, int pos) {
-        elements.remove(pos);
+      //  elements.remove(pos);
         elements.put(pos, newEntry);
     }
 

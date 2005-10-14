@@ -485,7 +485,7 @@ public class SparseFloatColumn extends AbstractSparseColumn {
      * @param pos the position
      */
     public void setFloat (float newEntry, int pos) {
-        elements.remove(pos);
+    //    elements.remove(pos);
         elements.put(pos, newEntry);
     }
 

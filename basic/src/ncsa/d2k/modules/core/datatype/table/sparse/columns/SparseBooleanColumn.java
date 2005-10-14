@@ -212,7 +212,7 @@ public class SparseBooleanColumn extends AbstractSparseColumn {
      * @param pos            the position (row number)
      */
     public void setBoolean (boolean newEntry, int pos) {
-        elements.remove(pos);
+   //     elements.remove(pos);
         elements.put(pos, newEntry);
     }
 

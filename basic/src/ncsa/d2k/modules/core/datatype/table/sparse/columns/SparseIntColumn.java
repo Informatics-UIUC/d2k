@@ -504,7 +504,7 @@ public class SparseIntColumn extends AbstractSparseColumn {
      * @param pos the position
      */
     public void setInt (int newEntry, int pos) {
-        elements.remove(pos);
+    //    elements.remove(pos);
         elements.put(pos, newEntry);
     }
 

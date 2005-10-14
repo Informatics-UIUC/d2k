@@ -222,7 +222,7 @@ public class SparseCharArrayColumn extends SparseObjectColumn {
      @param pos the position
      */
     public void setChars (char[] newEntry, int pos) {
-        elements.remove(pos);
+  //      elements.remove(pos);
         elements.put(pos, newEntry);
     }
 

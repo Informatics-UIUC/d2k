@@ -408,7 +408,7 @@ public class SparseLongColumn extends AbstractSparseColumn {
      @param pos the position
      */
     public void setLong (long newEntry, int pos) {
-        elements.remove(pos);
+  //      elements.remove(pos);
         elements.put(pos, newEntry);
     }
 

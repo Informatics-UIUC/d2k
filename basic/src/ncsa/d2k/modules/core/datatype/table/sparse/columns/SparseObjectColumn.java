@@ -491,7 +491,7 @@ public class SparseObjectColumn extends AbstractSparseColumn {
      * param pos - the row number to be set.
      */
     public void setObject (Object newEntry, int pos) {
-        elements.remove(pos);
+    //    elements.remove(pos);
         elements.put(pos, newEntry);
     }
 

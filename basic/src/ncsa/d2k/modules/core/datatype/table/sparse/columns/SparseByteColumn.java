@@ -506,7 +506,7 @@ public class SparseByteColumn extends AbstractSparseColumn {
      * @param pos            the position to place <code>newEntry</code>
      */
     public void setByte (byte newEntry, int pos) {
-        elements.remove(pos);
+      //  elements.remove(pos);
         elements.put(pos, newEntry);
     }
 

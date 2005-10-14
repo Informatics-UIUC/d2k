@@ -23,6 +23,7 @@ import  ncsa.d2k.modules.core.datatype.table.basic.Column;
  * Company:      ncsa
  * @author vered goren
  * @version 1.0
+*
  */
 public class SparseByteArrayColumn extends SparseObjectColumn {
 
@@ -158,7 +159,7 @@ public class SparseByteArrayColumn extends SparseObjectColumn {
      @param pos the position to store newEntry
      */
     public void setBytes (byte[] newEntry, int pos) {
-        elements.remove(pos);
+      //  elements.remove(pos);
         elements.put(pos, newEntry);
     }
 

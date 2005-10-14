@@ -570,7 +570,7 @@ public class SparseShortColumn extends AbstractSparseColumn {
      * @param pos the position
      */
     public void setShort (short newEntry, int pos) {
-        elements.remove(pos);
+ //       elements.remove(pos);
         elements.put(pos, newEntry);
     }
 

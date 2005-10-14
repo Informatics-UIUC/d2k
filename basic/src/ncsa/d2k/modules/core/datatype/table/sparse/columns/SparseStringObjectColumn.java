@@ -320,7 +320,7 @@ public class SparseStringObjectColumn extends SparseObjectColumn {
      * @param s - a String to be stored at row #<code>row</code>
      */
     public void setString (String s, int row) {
-        elements.remove(row);
+     //   elements.remove(row);
         elements.put(row, s);
     }
     /**
