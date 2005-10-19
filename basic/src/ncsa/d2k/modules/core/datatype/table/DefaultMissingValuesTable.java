@@ -14,7 +14,8 @@ package ncsa.d2k.modules.core.datatype.table;
  */
 abstract public class DefaultMissingValuesTable implements Table {
 
- static final long serialVersionUID = -2665265507442721687L;
+ //static final long serialVersionUID = -2665265507442721687L;
+static final long serialVersionUID = -3647609596218447012L;
 
 	/** this is the missing value for longs, ints, and shorts. */
 	protected int defaultMissingInt = 0;

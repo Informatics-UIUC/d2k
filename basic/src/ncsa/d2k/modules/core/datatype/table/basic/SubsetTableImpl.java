@@ -9,6 +9,9 @@ import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
  * the accessor methods access only those rows.
  */
 public class SubsetTableImpl extends MutableTableImpl {
+
+    static final long serialVersionUID = 5892308948909543785L;
+
    protected int[] subset;
 
    /**
@@ -286,7 +289,7 @@ public class SubsetTableImpl extends MutableTableImpl {
     */
    public void setColumns (Column[] newColumns) {
       Column copyColumns [] = new Column [this.getNumColumns()];
-      
+
       // Resize the columns array if necessary
       if (columns.length != newColumns.length) {
       	Column [] nc = new Column[newColumns.length];
@@ -295,7 +298,7 @@ public class SubsetTableImpl extends MutableTableImpl {
       		nc[i] = columns[i];
       	columns = nc;
       }
-      	
+
       for (int i = 0 ; i < this.getNumColumns() ; i++)
               this.setColumn(this.expandColumn(newColumns[i]),i);
    }

@@ -11,19 +11,19 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 
 /**
- * A paging table is a collection of tabular data where not all the data resides in 
+ * A paging table is a collection of tabular data where not all the data resides in
  * memory simultaneously. The data is segmented into pages of data, each of approximately
  * equal size. The number of table rows each page contains is user configurable. As the data
  * is being accessed, only those pages that are being accessed are in memory.
  * <p>
  * There are several caveats with this table implementation:<p>
  * <ul>
- * <li>Paging table are slow, since the data must be read and re-read from disk. This impacts 
+ * <li>Paging table are slow, since the data must be read and re-read from disk. This impacts
  * average access time significantly, since periodically page faults will be encountered,
- * and the next page of data must be read in. 
+ * and the next page of data must be read in.
  * <li>Paging tables are designed for sequential access, not random access. Random access to
  * paging tables will result in frequent page faults and disk thrashing.
- * <li>Only single threaded write access is supported. Multithreaded writes may result in 
+ * <li>Only single threaded write access is supported. Multithreaded writes may result in
  * corrupted data.
  * <li>Limitations on the volumn of data that can be addressed does still exist. Currently
  * subset must be initialized by a single array, and that single array must fit in memory. However,
@@ -38,36 +38,36 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
  * A paging table contains a reference to a PageCache object. This object contains an array of Page
  * objects. Pages are responsible for reading and writing the pages to the disk. It will contain a
  * reference to the table and subset array as long as they are needed. When the PageCache
- * determins that the page is no longer needed, it will tell the Page to purge it's data. The 
+ * determins that the page is no longer needed, it will tell the Page to purge it's data. The
  * SubsetPagingTable has a reference to the Page currently being referenced. From the page, it gets
  * the table, subset and columns currently being accessed by it's accessor methods.
  * @author redman
  */
 public class SubsetPagingTable extends AbstractTable implements MutableTable {
-	
+
 	/** this is the page we are looking at. */
 	Table table;
-	
+
 	/** these are the columns included here only for efficiency. */
 	protected Column [] columns;
-	
+
 	/** the offset of this page. */
 	int offset = -1;
-	
+
 	/** this is the cache. */
 	PageCache cache;
-	
+
 	/** this is the current page. */
 	Page currentPage;
-	
+
 	/** this is the subset. */
 	int [] subset;
-	
+
 	/** list of transformations performed. */
 	ArrayList transformations = new ArrayList();
 
 	final static int DEFAULT_PAGESIZE = 50000;
-	
+
 	/**
 	 * This is the initial test for paging tables, but
 	 * it can also server an example of how to create and use
@@ -78,7 +78,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 	static public void main(String [] args) {
 		int tableSize = Integer.parseInt(args[0]);
 		int numTables = Integer.parseInt(args[1]);
-			
+
 		// Now let's do a regular table to compare time.
 		Column[] cols = new Column[4];
 		cols[0] = new IntColumn(tableSize);
@@ -92,7 +92,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			mti.setInt(i, i, 2);
 			mti.setInt(i, i, 3);
 		}
-		
+
 		System.out.println();
 		System.out.println("--------------- Doing a mutable table ----------------");
 		long start = System.currentTimeMillis();
@@ -110,7 +110,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		}
 		System.out.println("Total access for mutable table took "+(System.currentTimeMillis()-start));
 		mti = null;
-		
+
 		// Now let's do a subset table to compare time.
 		cols = new Column[4];
 		cols[0] = new IntColumn(tableSize);
@@ -142,7 +142,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		}
 		System.out.println("Total access for subset table took "+(System.currentTimeMillis()-start));
 		sti = null;
-		
+
 		System.out.println("Constructing pages...");
 		Page[] pages = new Page[numTables];
 		int [] offset = new int [numTables];
@@ -168,7 +168,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			}
 			offset[whichTable] = whichTable*tableSize;
 		}
-		
+
 		// Create a paging table, check it's performance.
 		PageCache pc = new PageCache(pages, offset, tableSize);
 		ExamplePagingTable spt = new ExamplePagingTable(pc);
@@ -181,25 +181,25 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			if (value != i) {
 				System.out.println("Data wrong, row = "+i+" column = 0 value = "+value);
 				System.exit(0);
-			} 
+			}
 			value = spt.getInt(i, 1);
 			if (value != i) {
 				System.out.println("Data wrong, row = "+i+" column = 1 value = "+value);
 				System.exit(0);
-			} 
+			}
 			value = spt.getInt(i, 2);
 			if (value != i) {
 				System.out.println("Data wrong, row = "+i+" column = 2 value = "+value);
 				System.exit(0);
-				} 
+				}
 			value = spt.getInt(i, 3);
 			if (value != i) {
 				System.out.println("Data wrong, row = "+i+" column = 3 value = "+value);
 				System.exit(0);
-			} 
+			}
 		}
 		long total = System.currentTimeMillis()-start;
-		
+
 		System.out.println("Total access for paging took "+total);
 		long sum = 0;
 		for (int i = 0; i < pages.length; i++) {
@@ -207,7 +207,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		}
 		System.out.println("Time spent on Data access = "+(total-sum));
 	}
-	
+
 	/**
 	 * default empty paging table.
 	 *
@@ -224,7 +224,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		cache = new PageCache(pages, offsets, DEFAULT_PAGESIZE);
 		this.offset = -1;
 	}
-	
+
 	/**
 	 * Given only the page cache. the first data access will cause a page fault.
 	 * @param pager
@@ -234,11 +234,11 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		this.offset = -1;
 		this.getPage(0);
 	}
-		
+
 	/////////////////////////////////
 	// Getter methods.
 	/////////////////////////////////
-	
+
 	/**
 	 * Grab the next page and init the columns.
 	 * @param where the row we are to access next.
@@ -250,7 +250,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		this.offset = cache.getOffsetAt(where);
 		columns = ((TableImpl)table).getRawColumns();
 	}
-	
+
 	/**
 	 * Refresh the page we are on now. This is done when the table has changed,
 	 * and we need to update our fields.
@@ -264,7 +264,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		this.offset = cache.getOffsetAt(offset);
 		columns = ((TableImpl)table).getRawColumns();
 	}
-	
+
 	/**
 	 * Get the object at the given row and column indices, reading a new page if
 	 * necessary.
@@ -278,14 +278,14 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			return columns[column].getObject(where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
 			return columns[column].getObject(where);
 		}
 	}
-	
+
 	/**
 	 * Get the int at the given row and column indices, reading a new page if
 	 * necessary.
@@ -299,14 +299,14 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			return columns[column].getInt(where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
 			return columns[column].getInt(where);
 		}
 	}
-	
+
 	/**
 	 * Get the short at the given row and column indices, reading a new page if
 	 * necessary.
@@ -320,14 +320,14 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			return columns[column].getShort(where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
 			return columns[column].getShort(where);
 		}
 	}
-	
+
 	/**
 	 * Get the float at the given row and column indices, reading a new page if
 	 * necessary.
@@ -341,14 +341,14 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			return columns[column].getFloat(where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
 			return columns[column].getFloat(where);
 		}
 	}
-	
+
 	/**
 	 * Get the double at the given row and column indices, reading a new page if
 	 * necessary.
@@ -362,14 +362,14 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			return columns[column].getDouble(where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
 			return columns[column].getDouble(where);
 		}
 	}
-	
+
 	/**
 	 * Get the long at the given row and column indices, reading a new page if
 	 * necessary.
@@ -383,14 +383,14 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			return columns[column].getLong(where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
 			return columns[column].getLong(where);
 		}
 	}
-	
+
 	/**
 	 * Get the string at the given row and column indices, reading a new page if
 	 * necessary.
@@ -404,7 +404,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			return columns[column].getString(where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -425,7 +425,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			return columns[column].getBytes(where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -446,7 +446,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			return columns[column].getBoolean(where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -467,7 +467,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			return columns[column].getChars(where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -488,7 +488,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			return columns[column].getByte(where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -509,18 +509,18 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			return columns[column].getChar(where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
 			return columns[column].getChar(where);
 		}
 	}
-	
+
 	/////////////////////////////////
 	// Setter methods.
 	/////////////////////////////////
-	
+
 	/**
 	 * Set the value at the given row and column to the value provided.
 	 * @param element the value to set the entry to.\
@@ -533,7 +533,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			columns[column].setObject(data, where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -541,7 +541,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		}
 		currentPage.mark(true);
 	}
-	
+
 	/**
 	 * Set the int value at the given row and column to the value provided.
 	 * @param data the value to set the entry to.\
@@ -554,7 +554,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			columns[column].setInt(data, where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -575,7 +575,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			columns[column].setShort(data, where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -596,7 +596,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			columns[column].setFloat(data, where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -617,7 +617,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			columns[column].setDouble(data, where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -638,7 +638,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			columns[column].setLong(data, where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -659,7 +659,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			columns[column].setString(data, where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -680,7 +680,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			columns[column].setBytes(data, where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -701,7 +701,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			columns[column].setBoolean(data, where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -722,7 +722,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			columns[column].setChars(data, where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -743,7 +743,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			columns[column].setByte(data, where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -764,7 +764,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			columns[column].setChar(data, where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -794,7 +794,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 	public String getColumnComment(int position) {
 		return cache.getColumnComment(position);
 	}
-	
+
 	/**
 	 * Set the column label for the given column.
 	 * @param label the new column label
@@ -803,7 +803,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 	public void setColumnLabel(String label, int position) {
 		cache.setColumnLabel(label, position);
 	}
-	
+
 	/**
 	 * Set the column comment.
 	 * @param comment the new column comment for the column.
@@ -816,7 +816,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 	///////////////////////////////////////////////////////////////
 	// Column modifier methods.
 	///////////////////////////////////////////////////////////////
-	
+
 	/**
 	 * Set the column. The column passed in is expected to be only
 	 * a template. It should define the type and the label and comment,
@@ -830,7 +830,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		this.cache.setColumn(col, where);
 		this.refresh();
 	}
-	
+
 	/**
 	 * Add a column. The column passed in is expected to be only
 	 * a template. It should define the type and the label and comment,
@@ -844,7 +844,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		cache.addColumn(datatype);
 		this.refresh();
 	}
-	
+
 	/**
 	 * Add columns. The columns passed in is expected to be only
 	 * a template. It should define the type and the label and comment,
@@ -858,7 +858,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		cache.addColumns(datatype);
 		this.refresh();
 	}
-	
+
 	/**
 	 * Insert the column. The column passed in is expected to be only
 	 * a template. It should define the type and the label and comment,
@@ -872,7 +872,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		cache.insertColumn(col, where);
 		this.refresh();
 	}
-	
+
 	/**
 	 * insert columns. The columns passed in is expected to be only
 	 * a template. It should define the type and the label and comment,
@@ -886,7 +886,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		cache.insertColumns(datatype, where);
 		this.refresh();
 	}
-	
+
 	/**
 	 * Remove the column from each table.
 	 */
@@ -894,7 +894,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		cache.removeColumn(position);
 		this.refresh();
 	}
-	
+
 	/**
 	 * Remove len columns starting at start.
 	 * @param start the first column to delete.
@@ -904,7 +904,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		cache.removeColumns(start, len);
 		this.refresh();
 	}
-	
+
 	/**
 	 * This is easy, just add the rows to the last page.
 	 * @param howMany how many rows to add.
@@ -913,7 +913,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		cache.addRows(howMany);
 		this.refresh();
 	}
-	
+
 	/**
 	 * Remove a row. Take the row out of the table, and then decrement
 	 * each of the offsets for the subsequent tables offsets.
@@ -945,9 +945,9 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		this.refresh();
 		return new SubsetPagingTable(pc);
 	}
-	
+
 	/**
-	 * Swap two rows. They can potentially be in different pages, but it doesn't matter, 
+	 * Swap two rows. They can potentially be in different pages, but it doesn't matter,
 	 * we treat them the same either way.
 	 * @param pos1 the first position.
 	 * @param pos2 the second postion.
@@ -955,7 +955,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 	public void swapRows(int pos1, int pos2) {
 		cache.swapRows(pos1, pos2);
 	}
-	
+
 	/**
 	 * Swap the position of two columns.
 	 * @param pos1
@@ -965,11 +965,11 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		cache.swapColumns(pos1, pos2);
 		this.refresh();
 	}
-	
+
 	/////////////////////////////////////////////
 	// transformation support.
 	/////////////////////////////////////////////
-	
+
 	/**
 	 * add a reversible transformation.
 	 * @param tm the transformation.
@@ -989,7 +989,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 	///////////////////////////////////////////
 	// Missing and empty value support.
 	///////////////////////////////////////////
-	
+
 	/**
 	 * Set the missing value flag for the data.
 	 * @param b true or fals if missing or not.
@@ -1002,14 +1002,14 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			columns[col].setValueToMissing(b, where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
 			columns[col].setValueToMissing(b, where);
 		}
 	}
-	
+
 	/**
 	 * Set the empty flag
 	 * @param b the flag, true if the cell is empty.
@@ -1022,7 +1022,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			columns[col].setValueToEmpty(b, where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -1042,7 +1042,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			return columns[col].isValueMissing(where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
@@ -1062,19 +1062,19 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			where = subset[row-offset];
 			return columns[col].isValueEmpty(where);
 		} catch (ArrayIndexOutOfBoundsException aioobe) {
-					
+
 			// Get the next page.
 			this.getPage(row);
 			where = subset[row-offset];
 			return columns[col].isValueEmpty(where);
 		}
 	}
-	
+
 	/**
 	 * If there are any missing values in the table, return true.
 	 * @return true if there are any missing values in the table.
 	 */
-	public boolean hasMissingValues() {	
+	public boolean hasMissingValues() {
 		for (int row = 0; row < this.getNumRows(); row++) {
 			for (int col = 0; col < this.getNumColumns(); col++) {
 				if (this.isValueMissing(row, col))
@@ -1083,7 +1083,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * If there are any missing values in the specified column of the
 	 * table, return true.
@@ -1096,7 +1096,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Return the total number of rows.
 	 * @return the number of rows.
@@ -1147,7 +1147,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		}
 		return new SubsetPagingTable(fudge);
 	}
-	
+
 	/**
 	 * Make a deep copy of this table.
 	 * @returns the copy of this table.
@@ -1155,7 +1155,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 	public Table copy() {
 		return new SubsetPagingTable(cache.copy(null));
 	}
-	
+
 	/**
 	 * Make a copy of the table data from start for len.
 	 * @param start the first entry of the new table.
@@ -1168,7 +1168,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		}
 		return new SubsetPagingTable(cache.copy(newsubset));
 	}
-	
+
 	/**
 	 * Copy only the specified rows.
 	 */
@@ -1179,7 +1179,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		}
 		return new SubsetPagingTable(cache.copy(newsubset));
 	}
-	
+
 	/**
 	 * Copy the table, but not it's contents. The new table will
 	 * share the same data.
@@ -1189,7 +1189,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		spt.subset = this.subset;
 		return spt;
 	}
-	
+
 	/**
 	 * Create a new table.
 	 */
@@ -1197,9 +1197,9 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		Page [] pg = new Page[0];
 		int [] os = new int[0];
 		return new SubsetPagingTable(new PageCache(pg, os, this.cache.defaultPageSize));
-		
+
 	}
-	
+
 	/**
 	 * if the column contains nominal data, return true, otherwise false.
 	 * @param position the column index.
@@ -1217,7 +1217,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 	public boolean isColumnScalar(int position) {
 		return cache.isColumnScalar(position);
 	}
-	
+
 	/**
 	 * set the a flag that indicates if the column is treated as nominal or not.
 	 * @param value the new nominal value flag.
@@ -1226,7 +1226,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 	public void setColumnIsNominal(boolean value, int position) {
 		cache.setColumnIsNominal(value, position);
 	}
-	
+
 	/**
 	 * set the a flag that indicates if the column is treated as scalar or not.
 	 * @param value the new scalar value flag.
@@ -1235,7 +1235,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 	public void setColumnIsScalar(boolean value, int position) {
 		cache.setColumnIsScalar(value, position);
 	}
-	
+
 	/**
 	 * return true if the column is numeric.
 	 * @return true if the column is numeric.
@@ -1245,7 +1245,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		   return true;
 		return false;
 	}
-	
+
 	/**
 	 * Returns the datatype of the column.
 	 * @param postion the column index.
@@ -1271,7 +1271,7 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	/**
 	 * The example table is a shallow copy of this one, shares the same
 	 * page manager and all.
@@ -1279,22 +1279,22 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 	public ExampleTable toExampleTable() {
 		return new ExamplePagingTable(cache);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see ncsa.d2k.modules.core.datatype.table.MutableTable#sortByColumn(int)
 	 */
 	public void sortByColumn(int col) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	/* (non-Javadoc)
 	 * @see ncsa.d2k.modules.core.datatype.table.MutableTable#sortByColumn(int, int, int)
 	 */
 	public void sortByColumn(int col, int begin, int end) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	public boolean equals(Object mt) {
 	  Table mti = (Table) mt;
 	  int numColumns = mti.getNumColumns();
@@ -1309,5 +1309,9 @@ public class SubsetPagingTable extends AbstractTable implements MutableTable {
 			return false;
 	  return true;
 	}
+
+        public TableFactory getTableFactory(){
+          return null;
+        }
 
 }

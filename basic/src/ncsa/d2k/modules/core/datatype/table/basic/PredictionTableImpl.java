@@ -15,6 +15,9 @@ import java.util.*;
  did not have any outputs, it is up to the ModelModule to add prediction Columns.
  */
 public class PredictionTableImpl extends ExampleTableImpl implements PredictionTable {
+
+     static final long serialVersionUID = 6560109930974102679L;
+
     protected int[] predictionSet;
 
 	public PredictionTableImpl(int i) {
@@ -36,7 +39,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	 */
 	public PredictionTableImpl (ExampleTableImpl ttt) {
  		super(ttt.columns);
-        
+
 		// copies the fields from the example table.
 		this.comment = ttt.getComment();
 		this.setTrainingSet(ttt.getTrainingSet());
@@ -47,7 +50,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 		this.setComment (ttt.getComment());
 		this.transformations = ttt.transformations;
 		this.subset = ttt.subset;
-		
+
 		if (outputColumns == null) {
 			predictionSet = new int[0];
 			outputColumns = new int[0];
@@ -61,7 +64,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 
 		// Create new columns which will contain the predicted values.
 		for (int i2 = 0; i2 < outputColumns.length; i++, i2++) {
-			Column col = ColumnUtilities.createColumn(ttt.getColumnType(outputColumns[i2]), 
+			Column col = ColumnUtilities.createColumn(ttt.getColumnType(outputColumns[i2]),
 						columns[outputColumns[i2]].getNumRows());
 			StringBuffer newLabel = new StringBuffer(ttt.getColumnLabel(outputColumns[i2]));
          newLabel.append(PREDICTION_COLUMN_APPEND_TEXT);
@@ -412,7 +415,7 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 	public char getCharPrediction(int row, int predictionColIdx) {
 		return getChar(row, predictionSet[predictionColIdx]);
 	}
-	
+
 	/**
 	 * When we compare to a non prediction table, we will skip the prediction columns.
 	 * @param mt the object to compare to.
@@ -422,12 +425,12 @@ public class PredictionTableImpl extends ExampleTableImpl implements PredictionT
 		int numColumns = mti.getNumColumns();
 		int numRows = mti.getNumRows();
 		int myColumns = getNumColumns();
-		
+
 		/** if this is not  a prediction table, don't compare those columns */
 		if (!(mt instanceof PredictionTableImpl))
 			if (this.getPredictionSet() != null)
 				myColumns -= this.getPredictionSet().length;
-			
+
 		if (myColumns != numColumns)
 			return false;
 		if (getNumRows() != numRows)

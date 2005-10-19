@@ -5,6 +5,8 @@ import java.io.Serializable;
 
 public class ExampleImpl extends RowImpl implements Serializable, Example {
 
+    static final long serialVersionUID = 8401491256285778215L;
+
 	/** these are the input columns. */
 	private Column [] inputColumns;
 
@@ -17,7 +19,7 @@ public class ExampleImpl extends RowImpl implements Serializable, Example {
 	public ExampleImpl () {
 		super ();
 	}
-	
+
 	public ExampleImpl (ExampleTableImpl et) {
 		super(et);
 
@@ -276,5 +278,5 @@ public class ExampleImpl extends RowImpl implements Serializable, Example {
 
 	}
 
-	
+
 }

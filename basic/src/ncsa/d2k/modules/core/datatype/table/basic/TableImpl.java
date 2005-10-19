@@ -13,6 +13,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
  */
 abstract public class TableImpl extends AbstractTable {
 
+    static final long serialVersionUID = -1379483165672439701L;
+
 	/** the columns of data. */
     protected Column[] columns = null;
 
@@ -59,16 +61,16 @@ abstract public class TableImpl extends AbstractTable {
 	Column [] getColumns () {
 		return columns;
 	}
-	
+
 	/**
-	 * This returns the data columns unmodified, so it may not provide a view of the 
+	 * This returns the data columns unmodified, so it may not provide a view of the
 	 * data consistent with the view presented by the table.
 	 * @return
 	 */
 	final public Column [] getRawColumns() {
 		return columns;
 	}
-	
+
 	/**
 	 * Get a Column from the table.
 	 * @param pos the position of the Column to get from table
@@ -409,7 +411,7 @@ abstract public class TableImpl extends AbstractTable {
 
 	}
 
-	
+
 
 	/**
 	 * Return true if any value in this Table is missing.
@@ -434,4 +436,9 @@ abstract public class TableImpl extends AbstractTable {
 				return true;
 		return false;
 	}
+
+
+        public TableFactory getTableFactory() {
+          return new BasicTableFactory();
+        }
 }

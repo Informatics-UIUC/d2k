@@ -5,6 +5,8 @@ import java.io.Serializable;
 
 public class RowImpl implements Row, Serializable {
 
+    static final long serialVersionUID = -8576939977728821145L;
+
 	/** this is the index of the row to access. */
 	protected int index;
 
@@ -16,7 +18,7 @@ public class RowImpl implements Row, Serializable {
 
 	public RowImpl () {
 	}
-	
+
 	RowImpl (TableImpl et) {
 		table = et;
 		columns = table.getColumns();
@@ -144,4 +146,5 @@ public class RowImpl implements Row, Serializable {
 	final public boolean getBoolean(int i) {
 		return columns [i].getBoolean(index);
 	}
+
 }

@@ -67,7 +67,7 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
      * @param indices
      * @return
      */
-    public abstract Column getSubset (int[] indices);
+    //public abstract Column getSubset (int[] indices);
 
     /**
      * copies only the label and the comment of <code>srcCol</code> into this
