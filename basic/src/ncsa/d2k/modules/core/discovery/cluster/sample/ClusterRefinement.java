@@ -192,7 +192,7 @@ public class ClusterRefinement {
         }
 
         // Build clusters for each table row.
-        centers = new ArrayList();
+        centers = new ArrayList(initcenters.getNumRows());
         for (int i = 0, n = initcenters.getNumRows(); i < n; i++) {
           TableCluster tc = new TableCluster(initcenters, i);
           centers.add(tc);
@@ -235,7 +235,7 @@ public class ClusterRefinement {
       }
 
       // Build clusters for each table row.
-      entities = new ArrayList();
+      entities = new ArrayList(initEntities.getNumRows());
       for (int i = 0, n = initEntities.getNumRows(); i < n; i++) {
         TableCluster tc = new TableCluster(initEntities, i);
         entities.add(tc);
@@ -328,7 +328,7 @@ public class ClusterRefinement {
         retarr[ind] = TableCluster.merge(entity, retarr[ind]);
       }
     }
-    ArrayList retval = new ArrayList();
+    ArrayList retval = new ArrayList(retarr.length);
     for (int i = 0, n = retarr.length; i < n; i++) {
       if (retarr[i] != null) {
         retval.add(retarr[i]);
@@ -365,3 +365,7 @@ public class ClusterRefinement {
 //          for readability.  Also, so that multiple copies of msg not printed.
 //        - Ready for Basic.
 // End QA Comments
+
+
+// 11/8/05 DC set the initial sizes of all array lists; that way they do not
+// spend time growing.
