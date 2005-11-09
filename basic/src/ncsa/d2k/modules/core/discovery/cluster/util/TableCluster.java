@@ -11,6 +11,7 @@ import java.io.*;
 //===============
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.*;
+import gnu.trove.TIntHashSet;
 
 /**
  * <p>Title: TableCluster</p>
@@ -223,12 +224,14 @@ public class TableCluster implements Serializable {
       double[] temp = null;
       double[] tempv = null;
       int[] tempi = null;
-      java.util.HashSet ofeats = new java.util.HashSet();
+      //java.util.HashSet ofeats = new java.util.HashSet();
+      TIntHashSet ofeats = new TIntHashSet();
       if (_table instanceof ExampleTable) {
-        ofeats = new java.util.HashSet();
+        //ofeats = new java.util.HashSet();
         int[] xfeats = ( (ExampleTable) _table).getInputFeatures();
+        ofeats = new TIntHashSet(xfeats.length);
         for (int x = 0, y = xfeats.length; x < y; x++){
-          ofeats.add(new Integer(xfeats[x]));
+          ofeats.add(xfeats[x]);
         }
         int numcols = ( (ExampleTable) _table).getInputFeatures().length;
         temp = new double[numcols];
@@ -245,7 +248,8 @@ public class TableCluster implements Serializable {
       for (int j = 0, m = members.length; j < m; j++) {
         int feats[] = ((Sparse)_table).getRowIndices(members[j]);
         for (int i = 0, n = feats.length; i < n; i++) {
-          if (ofeats.contains(new Integer(feats[i]))){
+          //if (ofeats.contains(new Integer(feats[i]))){
+          if (ofeats.contains(feats[i])){
             temp[feats[i]] += _table.getDouble(members[j], feats[i]);
           }
         }
