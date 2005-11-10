@@ -44,27 +44,86 @@ public class ConvertTable extends ComputeModule {
     Table orig = (Table)pullInput(0);
     TableFactory factory = (TableFactory)pullInput(1);
 
+    Sparse sparseOrig = (Sparse)orig;
+    /*for(int i = 0; i < orig.getNumColumns(); i++) {
+      System.out.println(sparse.getColumnNumEntries(i));
+    }
+    if(true)
+      return;*/
+
     int numColumns = orig.getNumColumns();
     int numRows = orig.getNumRows();
 
     MutableTable newTable = (MutableTable)factory.createTable(numColumns);
     for(int i = 0; i < numColumns; i++) {
-      Column newcol = factory.createColumn(orig.getColumnType(i));
-      newcol.setNumRows(numRows);
+      //System.out.println("converting column: "+i);
+      int type = orig.getColumnType(i);
+      Column newcol = factory.createColumn(type);
+      newcol.setNumRows(sparseOrig.getColumnNumEntries(i));
       newcol.setLabel(orig.getColumnLabel(i));
       newcol.setComment(orig.getColumnComment(i));
-      newTable.setColumn(newcol, i);
+      newTable.addColumn(newcol);
 
-      // using Object here as lowest common denominator
-      for(int j = 0; j < numRows; j++) {
-        newcol.setObject(orig.getObject(j, i), j);
+      switch(type) {
+        case ColumnTypes.FLOAT:
+          for(int j = 0; j < numRows; j++) {
+            newcol.setFloat(orig.getFloat(j, i), j);
+          }
+          break;
+        case ColumnTypes.DOUBLE:
+          for(int j = 0; j < numRows; j++) {
+            newcol.setDouble(orig.getDouble(j, i), j);
+          }
+          break;
+        case ColumnTypes.SHORT:
+          for(int j = 0; j < numRows; j++) {
+            newcol.setShort(orig.getShort(j, i), j);
+          }
+          break;
+        case ColumnTypes.STRING:
+          for(int j = 0; j < numRows; j++) {
+            newcol.setString(orig.getString(j, i), j);
+          }
+          break;
+        case ColumnTypes.LONG:
+          for(int j = 0; j < numRows; j++) {
+            newcol.setLong(orig.getLong(j, i), j);
+          }
+          break;
+        case ColumnTypes.BYTE:
+          for(int j = 0; j < numRows; j++) {
+            newcol.setByte(orig.getByte(j, i), j);
+          }
+          break;
+        case ColumnTypes.CHAR:
+          for(int j = 0; j < numRows; j++) {
+            newcol.setChar(orig.getChar(j, i), j);
+          }
+          break;
+        default:
+          for(int j = 0; j < numRows; j++) {
+            newcol.setObject(orig.getObject(j, i), j);
+          }
+          break;
       }
+
+      //((MutableTable)orig).removeColumn(0);
     }
 
     newTable.setLabel(orig.getLabel());
     newTable.setComment(orig.getComment());
 
-    // should take care of example table, prediction table, etc
-    pushOutput(newTable, 0);
+    if(orig instanceof ExampleTable) {
+      int[] inputs = ((ExampleTable)orig).getInputFeatures();
+      int[] outputs = ((ExampleTable)orig).getOutputFeatures();
+
+      ExampleTable newExampleTable = newTable.toExampleTable();
+      newExampleTable.setInputFeatures(inputs);
+      newExampleTable.setOutputFeatures(outputs);
+      pushOutput(newExampleTable, 0);
+    }
+    else {
+      pushOutput(newTable, 0);
+    }
   }
 }
