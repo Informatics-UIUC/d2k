@@ -65,7 +65,7 @@ final public class ColumnUtilities {
             if (!sc.isValueMissing(i))
                dc.setLong(sc.getLong(i), i);
          } catch (NumberFormatException nfe) {
-   
+
             // This column is not numberic.
             dc.setLong(0, i);
          }
@@ -88,7 +88,7 @@ final public class ColumnUtilities {
             if (!sc.isValueMissing(i))
                dc.setShort(sc.getShort(i), i);
          } catch (NumberFormatException nfe) {
-   
+
             // This column is not numberic.
             dc.setShort((short) 0, i);
          }
@@ -112,7 +112,7 @@ final public class ColumnUtilities {
                if (!sc.isValueMissing(i))
                   dc.setFloat(sc.getFloat(i), i);
          } catch (NumberFormatException nfe) {
-   
+
             // This column is not numberic.
             dc.setFloat((float) 0.0, i);
          }
@@ -309,10 +309,10 @@ final public class ColumnUtilities {
 
    /**
    	CopyColumn
-   
+
    	make a copy of the column data in a Table (the interface kind of Table) and return
    	it as a Column (The package 'basic' kind of Column)
-   
+
    	@param sourceTable the table to copy the column out of
    	@param colIndex which column in the table to copy
    	@author pgroves
@@ -437,7 +437,8 @@ final public class ColumnUtilities {
             }
          case (ColumnTypes.STRING) :
             {
-               c = new StringObjectColumn(size);
+//               c = new StringObjectColumn(size);
+               c = new StringColumn(size);
                break;
             }
          case (ColumnTypes.CHAR_ARRAY) :
@@ -497,7 +498,7 @@ final public class ColumnUtilities {
    /**
    	This is for creating a subset from a Table interface object
    	and putting it into a TableImpl object
-   
+
    	@param tbl the original table
    	@param colIndex which column to make a subset of
    	@param subset the indices of the rows from the original
@@ -505,7 +506,7 @@ final public class ColumnUtilities {
    	@return a new Column object of the same datatype as the
    			original column of tbl w/ the entries being the
    			subset values
-   
+
    	@author pgroves 5/30/02
    */
    public static Column createColumnSubset(
@@ -611,7 +612,7 @@ final public class ColumnUtilities {
    }
    /* DONT DELETE THIS! every function needs to cut and
    	paste this switch
-   
+
    	switch(type){
    		case (ColumnTypes.DOUBLE) : {
    			break;
