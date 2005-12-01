@@ -691,9 +691,14 @@ public class SparseDoubleColumn extends AbstractSparseColumn {
         // table is already sparse.  nothing to do.
         //the above comment is not quite correct, empty rows are not the same as
         //non-existent rows -- DDS
-        for (int i = 0, n = number; i < n; i++) {
-            addRow(null);
-        }
+
+        // DC says - no, this is wrong.  the added rows are 'default' and
+        // there is no need to call addRow()
+
+
+//        for (int i = 0, n = number; i < n; i++) {
+//            addRow(null);
+//        }
     }
 
     //===================
