@@ -23,6 +23,8 @@ import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 public class SparseTableFactory
         implements TableFactory {
 
+      static final long serialVersionUID = 1L;
+
     /**
      * put your documentation comment here
      */

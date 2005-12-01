@@ -15,6 +15,7 @@ import ncsa.d2k.core.modules.*;
  */
 public class SparseTableFactoryInjector extends InputModule {
 
+    static final long serialVersionUID = 1L;
 
     //================
     // Constructor(s)

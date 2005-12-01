@@ -28,6 +28,8 @@ import  java.util.*;
 public class SparseExampleTable extends SparseMutableTable
         implements ExampleTable, SparseExampleFunc {
 
+    static final long serialVersionUID = 1L;
+
     //==============
     // Data Members
     //==============

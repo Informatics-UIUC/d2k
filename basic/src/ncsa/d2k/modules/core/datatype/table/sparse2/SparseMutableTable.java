@@ -39,6 +39,9 @@ import  gnu.trove.*;
  */
 public class SparseMutableTable extends SparseTable
         implements MutableTable {
+
+    static final long serialVersionUID = 1L;
+
     //==============
     // Data Members
     //==============

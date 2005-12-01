@@ -45,6 +45,9 @@ import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 public abstract class SparseTable
     extends DefaultMissingValuesTable
     implements Sparse, Serializable {
+
+    static final long serialVersionUID = 1L;
+
   //==============
   // Data Members
   //==============
