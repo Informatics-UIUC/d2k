@@ -45,29 +45,8 @@ public class SparseExampleTable extends SparseMutableTable
 
     /**the indicies of the attributes that are inputs (to the model). */
     protected int[] outputColumns = new int[0];
-    //protected String[] outputNames = new String[0];
-    //protected String[] inputNames = new String[0];
 
-    //================
-    // Constructor(s)
-    //================
-    /* Creates an empty table */
-/*    public NewSparseExampleTable () {
-        super();
-        //    inputColumns = null;
-        //    outputColumns = null;
-        //    testSet = null;
-        //    trainSet = null;
-    }*/
 
-    //  /* Creates an empty table with the specified size */
-    //  public SparseExampleTable(int numRows, int numColumns) {
-    //    super(numRows, numColumns);
-    //    inputColumns = null;
-    //    outputColumns = null;
-    //    testSet = null;
-    //    trainSet = null;
-    //  }
     /* Instantiate this table with the content of <codE>table</code>
      this Table and <code>table</code> will share all references.
      */
@@ -76,56 +55,20 @@ public class SparseExampleTable extends SparseMutableTable
         if (table instanceof SparseExampleTable) {
             SparseExampleTable tbl = (SparseExampleTable)table;
             inputColumns = tbl.inputColumns;
-            //inputNames = tbl.inputNames;
             outputColumns = tbl.outputColumns;
-            //outputNames = tbl.outputNames;
             testSet = tbl.testSet;
             trainSet = tbl.trainSet;
-            //      copyArrays( (SparseExampleTable) table);
         }
         else {
             //initialize arrays to avoid null pointer exception
             inputColumns = new int[0];
-            //inputNames = new String[0];
             outputColumns = new int[0];
-            //outputNames = new String[0];
             testSet = new int[0];
             trainSet = new int[0];
         }
     }
 
-    /* Instantiate this table with the content of <codE>table</code>*/
-/*    public NewSparseExampleTable (int numcols) {
-        super(numcols);
-        //    inputColumns = null;
-        //    outputColumns = null;
-        //    testSet = null;
-        //    trainSet = null;
-    }
 
-    /* Instantiate this table with the content of <codE>table</code>*/
-/*    public NewSparseExampleTable (Column[] cols) {
-        super(cols);
-        //    inputColumns = null;
-        //    outputColumns = null;
-        //    testSet = null;
-        //    trainSet = null;
-    }
-
-    /* Instantiate this table with the content of <codE>table</code>*/
-    /*public NewSparseExampleTable (NewSparseTable table, int[] ss) {
-        this(table);
-        subset = ss;
-    }*/
-
-    /* Instantiate this table with the content of <codE>table</code>*/
-    /*public NewSparseExampleTable (Column[] cols, int[] ss) {
-        super(cols, ss);
-        //    inputColumns = null;
-        //    outputColumns = null;
-        //    testSet = null;
-        //    trainSet = null;
-    }*/
 
     //===================================================================
     //===================================================================
@@ -136,12 +79,6 @@ public class SparseExampleTable extends SparseMutableTable
         if (table.outputColumns != null) {
             outputColumns = copyArray(table.outputColumns);
         }
-        /*if (table.inputNames != null) {
-            inputNames = copyArray(table.inputNames);
-        }
-        if (table.outputNames != null) {
-            outputNames = copyArray(table.outputNames);
-        }*/
         if (table.testSet != null) {
             testSet = copyArray(table.testSet);
         }
@@ -160,17 +97,6 @@ public class SparseExampleTable extends SparseMutableTable
         System.arraycopy(arr, 0, retVal, 0, retVal.length);
         return  retVal;
     }
-
-    /**
-     * put your documentation comment here
-     * @param arr
-     * @return
-     */
-    /*protected String[] copyArray (String[] arr) {
-        String[] retVal = new String[arr.length];
-        System.arraycopy(arr, 0, retVal, 0, retVal.length);
-        return  retVal;
-    }*/
 
     //=========================================================================
     //                      Example Table Interface
@@ -255,10 +181,7 @@ public class SparseExampleTable extends SparseMutableTable
      */
     public void setInputFeatures (int[] inputs) {
         inputColumns = inputs;
-        /*inputNames = new String[inputs.length];
-        for (int i = 0; i < inputNames.length; i++) {
-            inputNames[i] = getColumnLabel(inputs[i]);
-        }*/
+
     }
 
     /**
@@ -268,10 +191,7 @@ public class SparseExampleTable extends SparseMutableTable
      */
     public void setOutputFeatures (int[] outs) {
         outputColumns = outs;
-        /*outputNames = new String[outs.length];
-        for (int i = 0; i < outputNames.length; i++) {
-            outputNames[i] = getColumnLabel(outs[i]);
-        }*/
+
     }
 
     /**
@@ -1794,8 +1714,8 @@ public class SparseExampleTable extends SparseMutableTable
      @return a copy of this column with the rows reordered
      */
     public Table reorderColumns (int[] newOrder) {
-        SparseMutableTable tab = (SparseMutableTable)super.copy();
-        tab = (SparseMutableTable)tab.reorderColumns(newOrder);
+        //SparseMutableTable tab = (SparseMutableTable)super.copy();
+        SparseMutableTable tab = (SparseMutableTable)super.reorderColumns(newOrder);
         SparseExampleTable etab = new SparseExampleTable(tab);
         etab.setTestingSet(this.getTrainingSet());
         etab.setTrainingSet(this.getTrainingSet());
@@ -1838,181 +1758,7 @@ public class SparseExampleTable extends SparseMutableTable
         this.swapInOut(pos1, pos2);
     }
 
-    //  /**
-    //   * Insert a new column into this Table, initialized with integer data.
-    //   * @param newEntry the initial values of the new column.
-    //   * @param position the position to insert the new row
-    //   */
-    //  public void insertColumn(int[] newEntry, int position) {
-    //    this.incrementInOut(position);
-    //    super.insertColumn(newEntry, position);
-    //  }
-    //
-    //  /**
-    //   * Insert a new column into this Table, initialized with float data.
-    //   * @param newEntry the initial values of the new column.
-    //   * @param position the position to insert the new row
-    //   */
-    //  public void insertColumn(float[] newEntry, int position) {
-    //    this.incrementInOut(position);
-    //    super.insertColumn(newEntry, position);
-    //  }
-    //
-    //  /**
-    //   * Insert a new column into this Table, initialized with double data.
-    //   * @param newEntry the initial values of the new column.
-    //   * @param position the position to insert the new row
-    //   */
-    //  public void insertColumn(double[] newEntry, int position) {
-    //    this.incrementInOut(position);
-    //    super.insertColumn(newEntry, position);
-    //  }
-    //
-    //  /**
-    //   * Insert a new column into this Table, initialized with long data.
-    //   * @param newEntry the initial values of the new column.
-    //   * @param position the position to insert the new row
-    //   */
-    //  public void insertColumn(long[] newEntry, int position) {
-    //    this.incrementInOut(position);
-    //    super.insertColumn(newEntry, position);
-    //  }
-    //
-    //  /**
-    //   * Insert a new column into this Table, initialized with short data.
-    //   * @param newEntry the initial values of the new column.
-    //   * @param position the position to insert the new row
-    //   */
-    //  public void insertColumn(short[] newEntry, int position) {
-    //    this.incrementInOut(position);
-    //    super.insertColumn(newEntry, position);
-    //  }
-    //
-    //  /**
-    //   * Insert a new column into this Table, initialized with boolean data.
-    //   * @param newEntry the initial values of the new column.
-    //   * @param position the position to insert the new row
-    //   */
-    //  public void insertColumn(boolean[] newEntry, int position) {
-    //    this.incrementInOut(position);
-    //    super.insertColumn(newEntry, position);
-    //  }
-    //
-    //  /**
-    //   * Insert a new column into this Table, initialized with String data.
-    //   * @param newEntry the initial values of the new column.
-    //   * @param position the position to insert the new row
-    //   */
-    //  public void insertColumn(String[] newEntry, int position) {
-    //    this.incrementInOut(position);
-    //    super.insertColumn(newEntry, position);
-    //  }
-    //
-    //  /**
-    //   * Insert a new column into this Table, initialized with char[] data.
-    //   * @param newEntry the initial values of the new column.
-    //   * @param position the position to insert the new row
-    //   */
-    //  public void insertColumn(char[][] newEntry, int position) {
-    //    this.incrementInOut(position);
-    //    super.insertColumn(newEntry, position);
-    //  }
-    //
-    //  /**
-    //   * Insert a new column into this Table, initialized with byte[] data.
-    //   * @param newEntry the initial values of the new column.
-    //   * @param position the position to insert the new row
-    //   */
-    //  public void insertColumn(byte[][] newEntry, int position) {
-    //    this.incrementInOut(position);
-    //    super.insertColumn(newEntry, position);
-    //  }
-    //
-    //  /**
-    //   * Insert a new column into this Table, initialized with Object data.
-    //   * @param newEntry the initial values of the new column.
-    //   * @param position the position to insert the new row
-    //   */
-    //  public void insertColumn(Object[] newEntry, int position) {
-    //    this.incrementInOut(position);
-    //    super.insertColumn(newEntry, position);
-    //  }
-    //
-    //  /**
-    //   * Insert a new column into this Table, initialized with byte data.
-    //   * @param newEntry the initial values of the new column.
-    //   * @param position the position to insert the new row
-    //   */
-    //  public void insertColumn(byte[] newEntry, int position) {
-    //    this.incrementInOut(position);
-    //    super.insertColumn(newEntry, position);
-    //  }
-    //
-    //  /**
-    //   * Insert a new column into this Table, initialized with char data.
-    //   * @param newEntry the initial values of the new column.
-    //   * @param position the position to insert the new row
-    //   */
-    //  public void insertColumn(char[] newEntry, int position) {
-    //    this.incrementInOut(position);
-    //    super.insertColumn(newEntry, position);
-    //  }
-    //  /**
-    //   * Remove rows from this Table using a boolean map.
-    //   * @param flags an array of booleans to map to this Table's rows.  Those
-    //   * with a true will be removed, all others will not be removed
-    //   */
-    //  public void removeRowsByFlag(boolean[] flags) {
-    //    int numRemoved = 0;
-    //    for (int i = 0; i < flags.length; i++) {
-    //      if (flags[i]) {
-    //        removeRow(i - numRemoved++);
-    //      }
-    //    }
-    //  }
-    //
-    //  /**
-    //   * Remove rows from this Table using a boolean map.
-    //   * @param flags an array of booleans to map to this Table's rows.  Those
-    //   * with a true will be removed, all others will not be removed
-    //   */
-    //  public void removeColumnsByFlag(boolean[] flags) {
-    //    int numRemoved = 0;
-    //    for (int i = 0; i < flags.length; i++) {
-    //      if (flags[i]) {
-    //        removeColumn(i - numRemoved);
-    //      }
-    //    }
-    //  }
-    //
-    //  /**
-    //   * Remove rows from this Table by index.
-    //   * @param indices a list of the rows to remove
-    //   */
-    //  public void removeRowsByIndex(int[] indices) {
-    //    for (int i = 0; i < indices.length; i++) {
-    //      removeRow(indices[i] - i);
-    //    }
-    //  }
-    //
-    //  /**
-    //   * Remove rows from this Table by index.
-    //   * @param indices a list of the rows to remove
-    //   */
-    //  public void removeColumnsByIndex(int[] indices) {
-    //    for (int i = 0; i < indices.length; i++) {
-    //      removeColumn(indices[i] - i);
-    //    }
-    //  }
-    //  /**
-    //   Get a copy of this Table reordered based on the input array of indexes.
-    //   Does not overwrite this Table.
-    //   @param newOrder an array of indices indicating a new order
-    //   @return a copy of this column with the rows reordered
-    //   */
-    //  public Table reorderRows(int[] newOrder) {
-    //    return super.reorderRows(newOrder);
-    //  }
+
     /**
      * Increment all in and out indices greater than position
      */
