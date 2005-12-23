@@ -185,7 +185,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      ResultSet columns = metadata.getColumns(null,"%",tableName,"%");
      while (columns.next()) {
        String columnName = columns.getString("COLUMN_NAME");
-       String columnType = columns.getString("TYPE_NAME").toUpperCase();
+       String columnType = columns.getString("TYPE_NAME");
        colNames.add(columnName);
        colTypes.add(columnType);
      }

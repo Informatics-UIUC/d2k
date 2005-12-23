@@ -34,7 +34,7 @@ public class BinningUtils {
     HashMap columns = StaticMethods.getAvailableAttributes(t);
 
     for (int i=0; i<binDes.length; i++){
-      if(!columns.containsKey(binDes[i].label.toUpperCase()))
+      if(!columns.containsKey(binDes[i].label))
         throw new Exception(commonName + ": Bin " +  binDes[i].toString() + " does not match any column label in the input table. Please reconfigure this module.");
 //
     }//for
@@ -55,7 +55,7 @@ public class BinningUtils {
 
 
    for (int i=0; i<binDes.length; i++){
-    if(!colMap.containsKey(binDes[i].label.toUpperCase()))
+    if(!colMap.containsKey(binDes[i].label))
       throw new Exception(commonName+ ": Bin " +  binDes[i].toString() + " does not match any column label in the database table." +
                                        " Please reconfigure this module via a GUI run so it can run Headless.");
 
@@ -63,9 +63,9 @@ public class BinningUtils {
 
    return true;
  }
- 
+
  public static BinDescriptor[] addMissingValueBins(Table tbl, BinDescriptor[] bins ) {
- 
+
 	HashMap colIndexLookup = new HashMap(tbl.getNumColumns());
 			for (int i = 0; i < tbl.getNumColumns(); i++) {
 				colIndexLookup.put(tbl.getColumnLabel(i), new Integer(i));
@@ -85,8 +85,8 @@ public class BinningUtils {
 				//   System.out.println("COLUMN LABEL NOT FOUND!!!");
 				//binRelevant[bins[i].column_number] = true;
 			}
- 
- 
+
+
  	ArrayList unknowBins = new ArrayList();
  	int numColumns = tbl.getNumColumns();
  	for (int i=0; i < numColumns; i++) {
@@ -94,7 +94,7 @@ public class BinningUtils {
 		 	  if(tbl.getColumn(i).hasMissingValues())
  	  			unknowBins.add( BinDescriptorFactory.createMissingValuesBin(i,tbl));
  	 	}
- 	
+
  	BinDescriptor[] newbins = new BinDescriptor[bins.length + unknowBins.size()];
  	int i;
  	for (i =0; i < bins.length; i++)
@@ -102,24 +102,24 @@ public class BinningUtils {
  	Iterator it = unknowBins.iterator();
  	while (it.hasNext())
  		newbins[i++] = (BinDescriptor)it.next();
- 
- 	return newbins;	
+
+ 	return newbins;
  }
- 
-/* 
+
+/*
  public static BinDescriptor[] addMissingValueBins(ExampleTable tbl, BinDescriptor[] bins ) {
- 	
+
 	 ArrayList unknowBins = new ArrayList();
 	 int [] inputs = tbl.getInputFeatures();
 	 int []outputs = tbl.getOutputFeatures();
 	 for (int i=0; i < inputs.length; i++)
 	   if(tbl.getColumn(inputs[i]).hasMissingValues())
 		 unknowBins.add( BinDescriptorFactory.createMissingValuesBin(inputs[i],tbl));
- 	
+
 	for (int i=0; i < outputs.length; i++)
 		   if(tbl.getColumn(outputs[i]).hasMissingValues())
 			 unknowBins.add( BinDescriptorFactory.createMissingValuesBin(outputs[i],tbl));
- 	
+
 	 BinDescriptor[] newbins = new BinDescriptor[bins.length + unknowBins.size()];
 	 int i;
 	 for (i =0; i < bins.length; i++)
@@ -127,10 +127,10 @@ public class BinningUtils {
 	 Iterator it = unknowBins.iterator();
 	 while (it.hasNext())
 		 newbins[i++] = (BinDescriptor)it.next();
- 
-	 return newbins;	
+
+	 return newbins;
   }
- 
+
 */
 
 }

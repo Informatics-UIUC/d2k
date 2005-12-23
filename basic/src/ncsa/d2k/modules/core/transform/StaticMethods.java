@@ -19,6 +19,16 @@ public class StaticMethods {
   public StaticMethods() {
   }
 
+
+  /**
+   * returns available tables in the DB referenced by <code>cw</code>.
+   * The table names are mapped to an index.
+   * @param cw ConnectionWrapper
+   * @throws Exception
+   * @return HashMap
+   *
+   * @todo: why hashmap and not hashset
+   */
   static public HashMap getAvailableTables(ConnectionWrapper cw) throws Exception{
     HashMap retVal = new HashMap();
     Connection con = cw.getConnection();
@@ -28,12 +38,23 @@ public class StaticMethods {
      int counter = 0;
      while (names.next()) {
        String currName = names.getString("TABLE_NAME");
-       retVal.put(currName.toUpperCase(), new Integer(counter));
+       retVal.put(currName, new Integer(counter));
        counter++;
      } //while
     return retVal;
   }
 
+
+  /**
+   * returns a hashmap with column names in table <code>tableName</code>
+   * fromt he DB referenced by <code>cw</code>
+   * the column names are mapped to an index.
+   * @param cw ConnectionWrapper
+   * @param tableName String
+   * @throws Exception
+   * @return HashMap
+   * @todo: why hash map and not a has set?
+   */
   static public HashMap getAvailableAttributes(ConnectionWrapper cw, String tableName) throws Exception{
    HashMap retVal = new HashMap();
    Connection con = cw.getConnection();
@@ -43,7 +64,7 @@ public class StaticMethods {
     int counter = 0;
     while (columns.next()) {
        String columnName = columns.getString("COLUMN_NAME");
-       retVal.put(columnName.toUpperCase() , new Integer(counter));
+       retVal.put(columnName , new Integer(counter));
        counter++;
      }//while column
 
@@ -54,22 +75,21 @@ public class StaticMethods {
 
   /**
    * builds a hash map of columns' labels in <code>table</code>.
-   * maps column's name <-> column's id.
+   * maps column's name <-> column's index.
    * @param table - its column labels are the keys in the map.
    * @return - a HashMap with column's label <-> column's index.
    */
   static public HashMap getAvailableAttributes(Table table){
     HashMap map = new HashMap(table.getNumColumns());
     for (int i=0; i< table.getNumColumns(); i++)
-      map.put(table.getColumnLabel(i).toUpperCase(), new Integer(i));
-
+      map.put(table.getColumnLabel(i), new Integer(i));
     return map;
   }
 
 
     /**
      * builds a hash map of scalar columns' labels in <code>table</code>.
-     * maps scalar column's name <-> column's id.
+     * maps scalar column's name <-> column's index.
      * @param table - its scalar column labels are the keys in the map.
      * @return - a HashMap with scalar column's label <-> column's index.
      */
@@ -77,31 +97,49 @@ public class StaticMethods {
       HashMap map = new HashMap(table.getNumColumns());
       for (int i=0; i< table.getNumColumns(); i++)
         if(table.isColumnScalar(i))
-          map.put(table.getColumnLabel(i).toUpperCase(), new Integer(i));
-
+          map.put(table.getColumnLabel(i), new Integer(i));
       return map;
     }
 
 
   /**
-   * returns an array of boolean such that if <code>names[i]</code< is a key in
+   * returns an array of boolean such that if <code>names[i]</code<> is a key in
    * <code>available</code> then the i_th boolean in the array is true.
    * @param names - an array of Strings, to check which of them is a key in
    *                <codE>available</code>
-   * @param available - maps name <-> id.
+   * @param available - maps name <-> index.
    * @return   - boolean[], such that if <code>names[i]</codE> is a key in
    *            <code>available</codE> then <code>returned_value[i] = true</code>.
    */
   static public boolean[] getRelevant(String[] names, HashMap available){
     boolean[] relevant = new boolean[names.length];
     for (int i=0; i<names.length; i++)
-      if(available.containsKey(names[i].toUpperCase()))
+      if(available.containsKey(names[i]))
         relevant[i] = true;
       else System.out.println("Label " + names[i] + " was not found in the given input table. "                               );
 
     return relevant;
   }
 
+
+  /**
+   * validates that all string in <code>lookFor</code> are indeed keys in
+   * <code>lookIn</code>
+   * @param lookFor String[] preset attributes
+   * @param lookIn HashMap an attributes map, mapps att name to its index.
+   * @return boolean true if all Strings in <code>lookFor</code> are keys in
+   * <code>lookIn</code>. otherwise returns false.
+   */
+  static public boolean validateAtts(String[] lookFor, HashMap lookIn){
+    for (int i=0; i<lookFor.length; i++){
+      if (!lookIn.containsKey(lookFor[i])) {
+        System.out.println("Label " + lookFor[i] +
+                           " was not found in the given input attribute map. ");
+        return false;
+      }
+    }
+    return true;
+  }
 
   /**
   * returns an array of boolean such that if <code>names[i]</code< is in
@@ -115,13 +153,31 @@ public class StaticMethods {
  static public boolean[] getRelevant(String[] names, Vector available){
    boolean[] relevant = new boolean[names.length];
    for (int i=0; i<names.length; i++)
-     if(available.contains(names[i].toUpperCase()) || available.contains(names[i]))
+     if(available.contains(names[i]) || available.contains(names[i]))
        relevant[i] = true;
      else System.out.println("Label " + names[i] + " was not found in the given input table. " );
 
    return relevant;
  }
 
+
+
+ /**
+  * validates that all Strings in <codE>lookFor</code> are items in <codE>lookIn</code>
+  * @param lookfor String[]
+  * @param lookIn Vector
+  * @return boolean true all Strings in <codE>lookFor</code> are items in <codE>lookIn</code>
+  * otherwise returns false.
+  */
+ static public boolean validate(String[] lookfor, Vector lookIn){
+  for (int i=0; i<lookfor.length; i++){
+    if(!lookIn.contains(lookfor[i]) && !lookIn.contains(lookfor[i])){
+      System.out.println("Label " + lookfor[i] + " was not found in the given attribute vector. " );
+      return false;
+    }
+  }
+  return true;
+}
 
   /**
    * counts how many items in <code>pos</code> are <code>true</cdoe> and returns
@@ -149,7 +205,7 @@ public class StaticMethods {
     boolean[] relevant = getRelevant(desired, available);
     int numPos = getNumPositive(relevant);
     String[] retVal = new String[numPos];
-    for (int i=0, j=0; i<numPos; i++)
+    for (int i=0, j=0; j<numPos && i<desired.length; i++)
       if(relevant[i]){
         retVal[j] = desired[i];
         j++;
@@ -170,7 +226,7 @@ public class StaticMethods {
    boolean[] relevant = getRelevant(desired, available);
    int numPos = getNumPositive(relevant);
    String[] retVal = new String[numPos];
-   for (int i=0, j=0; i<numPos; i++)
+   for (int i=0, j=0; i<desired.length && j<numPos; i++)
      if(relevant[i]){
        retVal[j] = desired[i];
        j++;
@@ -190,9 +246,9 @@ public class StaticMethods {
    boolean[] relevant = getRelevant(desired, available);
    int numPos = getNumPositive(relevant);
    int[] retVal = new int[numPos];
-   for (int i=0, j=0; i<numPos; i++)
+   for (int i=0, j=0;  i<desired.length && j<numPos; i++)
      if(relevant[i]){
-       retVal[j] = ((Integer) available.get(desired[i].toUpperCase())).intValue();
+       retVal[j] = ((Integer) available.get(desired[i])).intValue();
        j++;
      }
    return retVal;
@@ -208,8 +264,8 @@ public class StaticMethods {
   */
  static public int getID(String name, HashMap available){
    int retVal = -1;
-   if(available.containsKey(name.toUpperCase()))
-     retVal = ((Integer) available.get(name.toUpperCase())).intValue();
+   if(available.containsKey(name))
+     retVal = ((Integer) available.get(name)).intValue();
   return retVal;
  }
 

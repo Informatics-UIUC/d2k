@@ -153,7 +153,7 @@ public class ChooseAttributes extends HeadlessUIModule {
         HashMap colindices = new HashMap();
         for (int i = 0; i < table.getNumColumns(); i++) {
             String label = table.getColumnLabel(i);
-            colindices.put(label.toUpperCase(), new Integer(i));
+            colindices.put(label, new Integer(i));
         }
         // Create the input feature index array.
         Object[] selected = this.getSelectedInputs();

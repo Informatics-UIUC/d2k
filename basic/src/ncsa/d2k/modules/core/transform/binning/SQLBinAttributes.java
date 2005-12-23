@@ -535,7 +535,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
               ResultSet columns = metadata.getColumns(null, "%", tableNames.getString("TABLE_NAME"), "%");
               while (columns.next()) {
                 String columnName = columns.getString("COLUMN_NAME");
-                String dataType = (columns.getString("TYPE_NAME")).toUpperCase();
+                String dataType = (columns.getString("TYPE_NAME"));
                 for (int col = 0; col < fieldNames.length; col++) {
                   if (fieldNames[col].equals(columnName)) {
                     if(ColumnTypes.isEqualNumeric(dataType))
@@ -1824,7 +1824,7 @@ int colIdx = ((Integer)columnLookup.get(numericColumnLabels.getSelectedValue()))
 
 
       //verifying that tableName is in the data base
-    if(!StaticMethods.getAvailableTables(wrapper).containsKey(tableName.toUpperCase()))
+    if(!StaticMethods.getAvailableTables(wrapper).containsKey(tableName))
       throw new Exception(getAlias()+ ": Table named " + tableName +
                           " was not found in the database.");
 

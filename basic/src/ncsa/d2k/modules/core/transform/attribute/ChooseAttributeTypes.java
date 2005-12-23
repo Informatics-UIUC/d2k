@@ -531,8 +531,8 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
 
     //going over the scalar columns.
     for (int i=0; i<scalarColumns.length; i++)
-      if(availableColumns.containsKey(scalarColumns[i].toUpperCase())){
-        int index = ( (Integer) availableColumns.get(scalarColumns[i].toUpperCase())).intValue();
+      if(availableColumns.containsKey(scalarColumns[i])){
+        int index = ( (Integer) availableColumns.get(scalarColumns[i])).intValue();
         _table.setColumnIsScalar(true, index);
         _table.setColumnIsNominal(false, index);
         if(!_table.isColumnNumeric(index))
@@ -548,8 +548,8 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
 
     //going over the nominal columns.
     for (int i=0; i<nominalColumns.length; i++)
-      if(availableColumns.containsKey(nominalColumns[i].toUpperCase())){
-        int index = ( (Integer) availableColumns.get(nominalColumns[i].toUpperCase())).intValue();
+      if(availableColumns.containsKey(nominalColumns[i])){
+        int index = ( (Integer) availableColumns.get(nominalColumns[i])).intValue();
         _table.setColumnIsScalar(false, index);
         _table.setColumnIsNominal(true, index);
         if(_table.isColumnNumeric(index))
