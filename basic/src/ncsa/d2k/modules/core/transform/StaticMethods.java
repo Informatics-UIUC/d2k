@@ -4,6 +4,8 @@ import java.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import java.sql.*;
 import ncsa.d2k.modules.core.io.sql.*;
+import gnu.trove.*;
+
 /**
  * <p>Title: </p>
  * <p>Description: </p>
@@ -14,9 +16,10 @@ import ncsa.d2k.modules.core.io.sql.*;
  *
  * this class provides static methods used by many headless ui modules.
  */
-
 public class StaticMethods {
-  public StaticMethods() {
+  // DC made this private becuase no one should ever instantiate an object
+  // of this... the methods are all static after all!
+  private StaticMethods() {
   }
 
 
@@ -121,7 +124,7 @@ public class StaticMethods {
     return relevant;
   }
 
-
+  // DC says this is never used
   /**
    * validates that all string in <code>lookFor</code> are indeed keys in
    * <code>lookIn</code>
@@ -141,6 +144,7 @@ public class StaticMethods {
     return true;
   }
 
+  // DC says this is never used
   /**
   * returns an array of boolean such that if <code>names[i]</code< is in
   * <code>available</code> then the i_th boolean in the array is true.
@@ -153,6 +157,7 @@ public class StaticMethods {
  static public boolean[] getRelevant(String[] names, Vector available){
    boolean[] relevant = new boolean[names.length];
    for (int i=0; i<names.length; i++)
+     // DC says why || ?
      if(available.contains(names[i]) || available.contains(names[i]))
        relevant[i] = true;
      else System.out.println("Label " + names[i] + " was not found in the given input table. " );
@@ -161,7 +166,7 @@ public class StaticMethods {
  }
 
 
-
+  // DC says this is never used
  /**
   * validates that all Strings in <codE>lookFor</code> are items in <codE>lookIn</code>
   * @param lookfor String[]
@@ -171,6 +176,7 @@ public class StaticMethods {
   */
  static public boolean validate(String[] lookfor, Vector lookIn){
   for (int i=0; i<lookfor.length; i++){
+    // DC says why && ?
     if(!lookIn.contains(lookfor[i]) && !lookIn.contains(lookfor[i])){
       System.out.println("Label " + lookfor[i] + " was not found in the given attribute vector. " );
       return false;
@@ -179,19 +185,20 @@ public class StaticMethods {
   return true;
 }
 
+  // DC says this is not used.
   /**
    * counts how many items in <code>pos</code> are <code>true</cdoe> and returns
    * the total.
    * @param pos - a boolean array, to have its positive items counted
    * @return    - number of positive items in <code.pos</code>.
    */
-  static public int getNumPositive(boolean[] pos){
+/*  static public int getNumPositive(boolean[] pos){
     int num = 0;
     for (int i=0; i<pos.length; i++)
       if(pos[i]) num++;
 
     return num;
-  }
+  }*/
 
   /**
    * finds the intersection between <code>desired</code> and <code>available</code>.
@@ -202,7 +209,7 @@ public class StaticMethods {
    *           and <code>available</code>.
    */
   static public String[] getIntersection(String[] desired, HashMap available){
-    boolean[] relevant = getRelevant(desired, available);
+/*    boolean[] relevant = getRelevant(desired, available);
     int numPos = getNumPositive(relevant);
     String[] retVal = new String[numPos];
     for (int i=0, j=0; j<numPos && i<desired.length; i++)
@@ -210,9 +217,26 @@ public class StaticMethods {
         retVal[j] = desired[i];
         j++;
       }
-    return retVal;
+    return retVal;*/
+
+    // DC says this can be made simpler using sets and trove
+    return getIntersection(desired, new HashSet(available.keySet()));
   }
 
+  static private String[] getIntersection(String[] desired, Set availableSet) {
+    ArrayList intersection = new ArrayList();
+    for(int i = 0; i < desired.length; i++) {
+      String label = desired[i];
+      if(availableSet.contains(label))
+        intersection.add(label);
+    }
+
+    String[] retVal = new String[intersection.size()];
+    for(int i = 0; i < retVal.length; i++) {
+      retVal[i] = (String)intersection.get(i);
+    }
+    return retVal;
+  }
 
   /**
   * finds the intersection between <code>desired</code> and <code>available</code>.
@@ -223,7 +247,7 @@ public class StaticMethods {
   *           and <code>available</code>.
   */
  static public String[] getIntersection(String[] desired, Vector available){
-   boolean[] relevant = getRelevant(desired, available);
+/*   boolean[] relevant = getRelevant(desired, available);
    int numPos = getNumPositive(relevant);
    String[] retVal = new String[numPos];
    for (int i=0, j=0; i<desired.length && j<numPos; i++)
@@ -231,7 +255,10 @@ public class StaticMethods {
        retVal[j] = desired[i];
        j++;
      }
-   return retVal;
+   return retVal;*/
+
+    // DC says this can be made simpler using sets and trove
+    return getIntersection(desired, new HashSet(available));
  }
 
  /**
@@ -243,7 +270,7 @@ public class StaticMethods {
   *           and also keys in <codE>available</code>.
   */
  static public int[] getIntersectIds(String[] desired, HashMap available){
-   boolean[] relevant = getRelevant(desired, available);
+/*   boolean[] relevant = getRelevant(desired, available);
    int numPos = getNumPositive(relevant);
    int[] retVal = new int[numPos];
    for (int i=0, j=0;  i<desired.length && j<numPos; i++)
@@ -251,9 +278,21 @@ public class StaticMethods {
        retVal[j] = ((Integer) available.get(desired[i])).intValue();
        j++;
      }
-   return retVal;
+   return retVal;*/
 
+   // DC says this can be made easier by using trove
+   TIntArrayList retVal = new TIntArrayList();
+   for(int i = 0; i < desired.length; i++) {
+     String featureName = desired[i];
+     Integer index = (Integer)available.get(featureName);
+     if(index != null) {
+       retVal.add(index.intValue());
+     }
+   }
+
+   return retVal.toNativeArray();
  }
+
  /**
   * returns the id of <code>name</code> if it is a key in <code>available</code>
   * otherwise returns -1.
@@ -268,6 +307,5 @@ public class StaticMethods {
      retVal = ((Integer) available.get(name)).intValue();
   return retVal;
  }
-
 
 }//StaticMethods
