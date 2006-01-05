@@ -1,7 +1,7 @@
 package ncsa.d2k.modules.core.transform.table;
 
 import java.util.*;
-
+import java.util.regex.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.*;
 
@@ -17,10 +17,16 @@ import ncsa.d2k.modules.core.datatype.*;
  *
  */
 public class FilterExpression implements Expression, java.io.Serializable {
-	private HashMap labelToIndex;
-	private Node root;
-	private Table table;
-	private boolean includeMissingValues = true;
+  private HashMap labelToIndex;
+  private Node root;
+  private Table table;
+  private boolean includeMissingValues = true;
+
+
+public final static String IS_NULL = " *is +null";
+  public final static String IS = " *is ";
+public final static String IS_NOT_NULL = " *is +not +null";
+
 
 	/**
 	 * Constructor for a <code>FilterExpression</code> object that should use
@@ -1069,22 +1075,48 @@ public class FilterExpression implements Expression, java.io.Serializable {
 									.trim()));
 
 			case ' ':      // ANCA added this case to handle is NULL
-					if(expression.charAt(i+1) == 'i' && expression.charAt(i+2) == 's' &&
-						 expression.charAt(i+3) == ' ') {
-							if(expression.substring(i+4, i+8).equals("NULL")) {
-									return new Terminal(
-															OP_IS,
-															parseElement(expression.substring(0,i).trim()),
-															new NominalElement("NULL"));
-							} else {
-									throw new ExpressionException("FilterExpression: malformed IS condition");
-							}
-					}
+//VERED - added here code to look for is null or is not null operator and literal terminals
+        //beforehand it was not allowing is nto null, was not allowing multiple consequitive spaces.
+          String temp = expression.substring(i).toLowerCase();
+
+          Pattern ptIs =  Pattern.compile (IS);
+          Matcher match = ptIs.matcher(temp);
+          if(match.find() && match.start()==0){
+
+
+            //compiling an is null pattern
+            ptIs = Pattern.compile(IS_NULL);
+            match = ptIs.matcher(temp);
+            if (match.find() && match.start() == 0) {
+              return new Terminal(
+                  OP_IS,
+                  parseElement(expression.substring(0, i).trim()),
+                  new NominalElement("NULL"));
+
+            }
+            else { //look for is not null
+              Pattern ptIsNot = Pattern.compile(this.IS_NOT_NULL);
+              match = ptIsNot.matcher(temp);
+              if (match.find() && match.start() == 0) {
+                return new Terminal(
+                    OP_IS,
+                    parseElement(expression.substring(0, i).trim()),
+                    new NominalElement("NOT NULL"));
+
+              }
+              else {
+                throw new ExpressionException(
+                    "FilterExpression: malformed IS condition");
+              }
+            }
+          }//if there is an "is" operator pattern
+
+
 					break;
 
 			}
 
-		}
+		}//for
 
 		// check to see if it's just empty parentheses
 		String test = expression.trim();

@@ -172,7 +172,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
    /** create an ExampleTable object to hold the meta information.
   *  @return an object of Example table
   */
- private ExampleTable createMetaTable() {
+ private ExampleTable createMetaTable(String tableName) {
    // build an ArrayList to keep the column name.
    colNames = new ArrayList();
    // build an ArrayList to keep the column type.
@@ -268,7 +268,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
       }
 
       private void initialize() {
-         table = createMetaTable();
+         table = createMetaTable(tableName);
          this.removeAll();
 
          expression = new FilterExpression(table, getIncludeMissingValues());
@@ -660,7 +660,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
 
 //validting the expression:
      //creating a metadata table
-     ExampleTable et = this.createMetaTable();
+     ExampleTable et = this.createMetaTable(tableName);
      //creating a validator
       FilterExpression expression = new FilterExpression(et, getIncludeMissingValues());
       //replacing the special signs of sql (or, and, = with the regular)
