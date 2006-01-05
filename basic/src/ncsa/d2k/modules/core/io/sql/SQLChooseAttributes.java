@@ -383,7 +383,7 @@ public class SQLChooseAttributes extends HeadlessUIModule {
         else {
           cols[selectedColumn].setIsScalar(false);
         }
-        
+
 		//ANCA: get the count of missing values for this column
 	/*	  int missing =0;
 		  try {
@@ -404,8 +404,8 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 		  if (missing >0) // there are missing values in this column, set the first element to missing
 		      missingValue[selectedColumn] = true;
 		   else
-		   	missingValue[selectedColumn] = false;   
-		*/  
+		   	missingValue[selectedColumn] = false;
+		*/
         if (isInList(colIdx, inputFeatures)) {
           selectedInput[inputIndex] = selectedColumn;
           inputIndex ++;
@@ -449,7 +449,7 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 		   table.setColumnIsNominal(true,colIdx);
 		 }
 	   }
-    
+
     ExampleTable et = table.toExampleTable();
     et.setInputFeatures(selectedInput);
     et.setOutputFeatures(selectedOutput);
@@ -562,9 +562,9 @@ public class SQLChooseAttributes extends HeadlessUIModule {
      while (columns.next()) {
        String columnName = columns.getString("COLUMN_NAME");
        String columnType = columns.getString("TYPE_NAME");
-       availableColumnMap.put( columnName.toUpperCase(), new Integer(counter));
-       Id2ColumnNameMap.put(new Integer(counter), columnName.toUpperCase());
-       columTypes.put(new Integer(counter), columnName.toUpperCase());
+       availableColumnMap.put( columnName, new Integer(counter));
+       Id2ColumnNameMap.put(new Integer(counter), columnName);
+       columTypes.put(new Integer(counter), columnName);
        counter++;
      }//while column
 
@@ -602,9 +602,9 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 
       String finalSelectedOutput = null;
 
-        if (availableColumnMap.containsKey(selectedOutputNames[0].toUpperCase())) {
+        if (availableColumnMap.containsKey(selectedOutputNames[0])) {
           outputFeatures[0] = ( (Integer) availableColumnMap.get(
-              selectedOutputNames[0].toUpperCase())).intValue();
+              selectedOutputNames[0])).intValue();
           finalSelectedOutput = selectedOutputNames[0];
         }
         else throw new Exception (getAlias() +": The selected output " +
@@ -656,7 +656,7 @@ public class SQLChooseAttributes extends HeadlessUIModule {
        else
          cols[selectedColumn].setIsScalar(false);
        selectedOutput[i] = selectedColumn;
- 
+
        selectedColumn++;
 
 
@@ -771,9 +771,9 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 }
 
 /**
- * 
+ *
   *12-11-03 Anca added missing value info to the metadata example table
-* 				The missing value is always in the first row of the column, 
+* 				The missing value is always in the first row of the column,
 * 				and is there just to mark the column as having missing values
 * 01-14-04 Anca - missing value info is present in the SQL table, all null values are
 * 		 		considered missing
