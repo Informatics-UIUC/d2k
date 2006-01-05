@@ -639,7 +639,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
 
      HashMap tables = StaticMethods.getAvailableTables(cw);
      //checking that tableName is in the hashmap
-     if(!tables.containsKey(tableName.toUpperCase()))
+     if(!tables.containsKey(tableName))
        throw new Exception (getAlias() + ": Table " + tableName + " was not found in the data base!");
 
      //getting all attributes names.
