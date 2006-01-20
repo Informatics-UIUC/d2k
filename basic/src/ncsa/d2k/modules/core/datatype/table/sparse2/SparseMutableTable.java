@@ -446,9 +446,21 @@ public class SparseMutableTable extends SparseTable
     protected void addCol2Row (int column, int row) {
         // XIAOLEI - just added some comments
 
-        if(_rows.get(row) == null) {
-
-            TIntArrayList newRow = new TIntArrayList();
+        //VERED - added a try catch for the retrieve of row *row* part.
+        TIntArrayList newRow = null;
+        try{
+          newRow = (TIntArrayList)_rows.get(row);
+        }
+        catch (ArrayIndexOutOfBoundsException ae) { }
+        catch (IndexOutOfBoundsException ie) { }
+        if(newRow == null) {
+          //VERED - ensuring _rows can be called with set method without an exception
+          if(_rows.size() <= row){
+            for(int i=_rows.size(); i<row+1; i++){
+              _rows.add(i, null);
+            }
+          }
+            newRow = new TIntArrayList();
             _rows.set(row, newRow);
         }
 
