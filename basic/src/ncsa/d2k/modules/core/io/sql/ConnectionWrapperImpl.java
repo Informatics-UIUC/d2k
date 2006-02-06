@@ -90,6 +90,7 @@ public class ConnectionWrapperImpl implements ConnectionWrapper, java.io.Seriali
           "properties and verify that the appropriate driver is installed. ", "Error",
           JOptionPane.ERROR_MESSAGE);
         System.out.println("Error occurred when connecting to a database.");
+        e.printStackTrace();
         return null;
       }
     }
