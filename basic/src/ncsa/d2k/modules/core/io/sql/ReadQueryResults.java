@@ -144,6 +144,9 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
                 if (whereClause != null && whereClause.length() > 0)
                    query += " WHERE " + whereClause;
 
+                // DC 2.6.06 --- closed the result set and statement
+                rs.close();
+                stmt.close();
 		// Get the number of columns selected.
 		stmt = con.createStatement();
 		rs = stmt.executeQuery(query);
@@ -259,6 +262,10 @@ be set to the defualt of missing value, when needed. [11-24-03]
                                }
 
                               }//for i
+
+                // DC 2.6.06 --- closed the result set and statement
+                rs.close();
+                stmt.close();
 
 		this.pushOutput (vt, 0);
 	}
