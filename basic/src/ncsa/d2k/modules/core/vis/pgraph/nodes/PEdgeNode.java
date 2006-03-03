@@ -12,6 +12,7 @@ public class PEdgeNode extends PNode {
    public static final String COLOR            = PVertexNode.COLOR;
    public static final String LABEL            = PVertexNode.LABEL;
    public static final String LABELCOLOR       = PVertexNode.LABELCOLOR;
+   public static final String WEIGHT           = PVertexNode.WEIGHT;
 
    /**
     * @deprecated

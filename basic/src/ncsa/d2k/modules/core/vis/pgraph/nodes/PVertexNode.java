@@ -14,6 +14,7 @@ public abstract class PVertexNode extends PNode {
    public static final String HEIGHT           = "height";
    public static final String LABEL            = "label";
    public static final String LABELCOLOR       = "labelcolor";
+   public static final String WEIGHT           = "weight";
 
    /**
     * @deprecated
