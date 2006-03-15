@@ -427,7 +427,10 @@ public class NFoldTrainTest extends ncsa.d2k.core.modules.DataPrepModule {
 		tableBreaks = new int[Nfolds+1];
 		tableBreaks[0] = 0;
 		for(int i = 1; i < Nfolds; i++){
-			tableBreaks[i] = (int) (((double)i/n)*numExamples);
+			if ( Nfolds==numExamples )
+				tableBreaks[i] = i;
+			else	            
+				tableBreaks[i] = (int) (((double)i/n)*numExamples);
 		}
 		tableBreaks[Nfolds] = nExamples;
 
@@ -447,4 +450,6 @@ public class NFoldTrainTest extends ncsa.d2k.core.modules.DataPrepModule {
 //    made sure it wasn't less.  (since no longer possible)
 //   -updated descriptions
 // 3/26/03 - Ready for Basic
+// 3/15/06 - Xavier receiveb from Loretta & Bei Yu
+//           Fix bug on the getTableBreaks when using leave one out (Nfolds==numExamples) to avoid rounding problems
 // End QA Comments
