@@ -125,6 +125,7 @@ String open = getOpenTagRegExp(this.tagName);
       int start = m.start();
       String subString = sections[i].substring(0, start);
       pushOutput(subString, 0);
+      numOut++;
 
       if(this.verbose){
    System.out.println(this.getAlias() + ": found a match for the closing tag " +
@@ -140,6 +141,8 @@ String open = getOpenTagRegExp(this.tagName);
 
 
   }//for
+
+  pushOutput(new Integer(numOut),1);
 
 }//doit
 
@@ -235,8 +238,9 @@ public String getInputName(int index){
 * @return String[]
 */
 public String[] getOutputTypes(){
- String [] types = new String[1];
+ String [] types = new String[2];
  types[0] = "java.lang.String";
+ types[1] ="java.lang.Integer";
  return types;
 }
 
@@ -247,6 +251,7 @@ public String[] getOutputTypes(){
 public String getOutputInfo(int index){
  switch(index){
    case 0: return "Sub String of the <i>Input String</i>.";
+     case 1: return "Number of sub strings that were output. This is good only when expecting one input for this module.";
    default: return "no such output";
  }
 }
@@ -259,6 +264,7 @@ public String getOutputInfo(int index){
 public String getOutputName(int index){
  switch(index){
    case 0: return "Sub String";
+     case 1: return "Number of sub strings that were output";
    default: return "no such output";
  }
 }
@@ -273,6 +279,10 @@ public void setInterval(int val){interval = val;}
 public int getInterval(){return interval;}
 
 
+private int numOut;
+public void beginExecution(){
+  numOut = 0;
+}
 
 
 
