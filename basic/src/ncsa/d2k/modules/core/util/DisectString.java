@@ -78,8 +78,8 @@ protected String getOpenTagRegExp(String str){
 
 /**
 gets the content of the input document.
- splits it into sections that start after the openning anchor tag
- (and end right before another openning anchor tag)
+ splits it into sections that start after the openning tagName
+ (and end right before another openning tagName)
  then for eahc such section - finds the start index of the closing tag
  and gets the sub string of this section from index 0 to the starting index.
  if no match is found for a section i, then no seb string is being pushed out.
@@ -87,7 +87,7 @@ gets the content of the input document.
 protected void doit(){
 
   String content = (String) pullInput(0);
-String open = getOpenTagRegExp(this.anchorTag);
+String open = getOpenTagRegExp(this.tagName);
   if(this.verbose){
 
     System.out.println(this.getAlias() + ": the openning tag " +
@@ -108,7 +108,7 @@ String open = getOpenTagRegExp(this.anchorTag);
   }
 
   //for each string in sections, need to find the closing tag
-  String closeTag = this.getClosingTagRegExp(this.anchorTag);
+  String closeTag = this.getClosingTagRegExp(this.tagName);
 
 
   if(this.verbose){
@@ -144,9 +144,9 @@ String open = getOpenTagRegExp(this.anchorTag);
 }//doit
 
 //properties
-private String anchorTag;
-public String getAnchorTag(){return anchorTag;}
-public void setAnchorTag(String anchor){anchorTag = anchor;}
+private String tagName;
+public String getTagName(){return tagName;}
+public void setTagName(String name){tagName = name;}
 
  /**
   * @return PropertyDescription[]
@@ -154,7 +154,7 @@ public void setAnchorTag(String anchor){anchorTag = anchor;}
  public PropertyDescription[] getPropertiesDescriptions()
 {
    PropertyDescription[] pds = new PropertyDescription[1];
-   pds[0] = new PropertyDescription("anchorTag", "Anchor Tag",
+   pds[0] = new PropertyDescription("tagName", "Tag Name",
                                     "The tag name which is the anchor of disection." +
                                     " See module's description for detailed information.");
    return pds;
@@ -171,10 +171,10 @@ public String getModuleInfo(){
       "This module takes the content of the <i>Input String</i>"
       + " and disects it into smaller strings, which are this modules's output.</p>" +
       "<P><b>Detailed Description</b>:<BR>" +
-      "This module searches for open and close <i>Anchor Tag</i>s in the " +
+      "This module searches for open and close <i>Tag Name</i> tags in the " +
       "<i>Input String</i> and splits it into sub-strings containing only the text " +
      " within these tags.<br>" +
-       "For example, if <i>Anchor Tag</i> value is \"foo\" " +
+       "For example, if <i>Tag Name</i> value is \"foo\" " +
        "then this module will attempt to find &lt;foo&gt; .... &lt;/foo&gt;" +
        " sections in the <i>Input String</i> and output "+
        " the content of the tagged sections as String objects.<BR>" +
