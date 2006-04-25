@@ -18,7 +18,7 @@ import java.sql.*;
 //  Dora 01/06/04: Database data types: numeric, decimal, float, and real, must be
 //                 treated as double in MutableTable, not float. Otherwise, garbage
 //                 numbers will be appended to the value.
-
+//  DC 2.06.06: synchronized on the connection
 
 public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
 /*#end^2 Continue editing. ^#&*/
@@ -94,180 +94,184 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
 		// We need a connection wrapper
 		ConnectionWrapper cw = (ConnectionWrapper) this.pullInput (0);
 		Connection con = cw.getConnection();
-		String[] fieldArray = (String[]) this.pullInput (1);
+                synchronized(con) {
+                  String[] fieldArray = (String[])this.pullInput(1);
 
-		// get the list of fields to read.
-		StringBuffer fieldList = new StringBuffer(fieldArray[0]);
-		for (int i=1; i<fieldArray.length; i++)
-			fieldList.append(", "+fieldArray[i]);
+                  // get the list of fields to read.
+                  StringBuffer fieldList = new StringBuffer(fieldArray[0]);
+                  for (int i = 1; i < fieldArray.length; i++)
+                    fieldList.append(", " + fieldArray[i]);
 
-		// get the name of the table.
-		String tableList = (String) this.pullInput (2);
-                // get the query condition.
-      /*          String whereClause;
-                if((String) this.pullInput(3) == null)
-                  whereClause = "";
-                else
-                  whereClause = (String) this.pullInput (3);
-*/
-                String whereClause="";
-                if (isInputPipeConnected(3)) {
-                  whereClause = (String)pullInput(3);
-                  if (whereClause.length()==0)
+                    // get the name of the table.
+                  String tableList = (String)this.pullInput(2);
+                  // get the query condition.
+                  /*          String whereClause;
+                            if((String) this.pullInput(3) == null)
+                              whereClause = "";
+                            else
+                              whereClause = (String) this.pullInput (3);
+                   */
+                  String whereClause = "";
+                  if (isInputPipeConnected(3)) {
+                    whereClause = (String) pullInput(3);
+                    if (whereClause.length() == 0)
+                      whereClause = null;
+                  }
+                  else if (!isInputPipeConnected(3)) {
                     whereClause = null;
+                  }
+
+                  ////////////////////////////
+                  // Get the number of entries in the table.
+                  String query = "SELECT COUNT(*) FROM " + tableList;
+                  if (whereClause != null && whereClause.length() > 0)
+                    query += " WHERE " + whereClause;
+                  Statement stmt = con.createStatement();
+                  ResultSet rs = stmt.executeQuery(query);
+                  int count = 0;
+                  while (rs.next())
+                    count = rs.getInt(1);
+                  System.out.println("---- Entries - " + count);
+
+                  ///////////////////////////
+                  // Get the column types, and create the appropriate column
+                  // objects
+
+                  // construct the query to get clumn information.
+                  query = "SELECT " + fieldList.toString() + " FROM " + tableList;
+
+                  if (whereClause != null && whereClause.length() > 0)
+                    query += " WHERE " + whereClause;
+
+                    // DC 2.6.06 --- closed the result set and statement
+                  //System.out.println("new code");
+                  rs.close();
+                  stmt.close();
+
+                  // Get the number of columns selected.
+                  stmt = con.createStatement();
+                  rs = stmt.executeQuery(query);
+                  ResultSetMetaData rsmd = rs.getMetaData();
+                  int numColumns = rsmd.getColumnCount();
+                  MutableTableImpl vt = new MutableTableImpl(numColumns);
+
+                  // Now compile a list of the datatypes.
+                  int[] types = new int[numColumns];
+                  for (int i = 0; i < numColumns; i++) {
+                    types[i] = rsmd.getColumnType(i + 1);
+                    switch (types[i]) {
+                      case Types.TINYINT:
+                      case Types.SMALLINT:
+                        ShortColumn intSC = new ShortColumn(count);
+                        intSC.setLabel(fieldArray[i]);
+                        vt.setColumn(intSC, i);
+                        break;
+                      case Types.INTEGER:
+                      case Types.BIGINT:
+                        IntColumn intC = new IntColumn(count);
+                        intC.setLabel(fieldArray[i]);
+                        vt.setColumn(intC, i);
+                        break;
+                      case Types.DOUBLE:
+                      case Types.NUMERIC:
+                      case Types.DECIMAL:
+                      case Types.FLOAT:
+                      case Types.REAL:
+
+                        // Dora changed on 01/06/04: a double column must be created for all these data types
+                        DoubleColumn doubleC = new DoubleColumn(count);
+                        doubleC.setLabel(fieldArray[i]);
+                        vt.setColumn(doubleC, i);
+                        break;
+                      case Types.CHAR:
+                      case Types.VARCHAR:
+                      case Types.LONGVARCHAR:
+                        StringColumn byteC = new StringColumn(count);
+                        byteC.setLabel(fieldArray[i]);
+                        vt.setColumn(byteC, i);
+                        break;
+                      default:
+                        byteC = new StringColumn(count);
+                        byteC.setLabel(fieldArray[i]);
+                        vt.setColumn(byteC, i);
+                        break;
+                    }
+                  }
+
+                  //////////////////////////////////////
+                  // Now fill in the data
+                  //////////////////////////////////////
+
+                  /**
+                   vered - changed the arguments in the call to the setter method, so that it would
+                   be set to the defualt of missing value, when needed. [11-24-03]
+
+                   */
+
+
+                  // Now populate the table.
+                  for (int where = 0; rs.next(); where++) {
+                    for (int i = 0; i < numColumns; i++) {
+                      switch (types[i]) {
+                        case Types.TINYINT:
+                        case Types.SMALLINT:
+                        case Types.INTEGER:
+                        case Types.BIGINT:
+                          if (rs.getString(i + 1) == null) {
+                            vt.setDouble(vt.getMissingInt(), where, i);
+                          }
+                          else
+                            vt.setInt(rs.getInt(i + 1), where, i);
+                          break;
+                        case Types.DOUBLE:
+                          if (rs.getString(i + 1) == null) {
+                            vt.setDouble(vt.getMissingDouble(), where, i);
+                          }
+                          else
+                            vt.setDouble(rs.getDouble(i + 1), where, i);
+                          break;
+                        case Types.NUMERIC:
+                        case Types.DECIMAL:
+                        case Types.FLOAT:
+                        case Types.REAL:
+
+                          // Dora changed from the column type from float to double
+                          if (rs.getString(i + 1) == null) {
+
+                            vt.setDouble(vt.getMissingDouble(), where, i);
+                          }
+                          else
+                            vt.setDouble(rs.getDouble(i + 1), where, i);
+                          break;
+                        case Types.CHAR:
+                        case Types.VARCHAR:
+                        case Types.LONGVARCHAR:
+                          if (rs.getString(i + 1) == null) {
+                            vt.setString(vt.getMissingString(), where, i);
+                          }
+                          else
+                            vt.setString(rs.getString(i + 1), where, i);
+                          break;
+                        default:
+                          vt.setString(rs.getString(i + 1), where, i);
+                          break;
+                      } //switch
+
+                      //vered - added this setting to missing, so that
+                      //the output table would be "aware" of its missing values.
+                      if (rs.getString(i + 1) == null) {
+                        vt.setValueToMissing(true, where, i);
+                      }
+
+                    } //for i
+                  } // for
+
+                  // DC 2.6.06 --- closed the result set and statement
+                  rs.close();
+                  stmt.close();
+
+                  this.pushOutput(vt, 0);
                 }
-                else if (!isInputPipeConnected(3)) {
-                  whereClause = null;
-       }
-
-
-
-		////////////////////////////
-		// Get the number of entries in the table.
-		String query = "SELECT COUNT(*) FROM "+tableList;
-                if (whereClause != null && whereClause.length() > 0)
-                   query += " WHERE " + whereClause;
-		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery(query);
-		int count = 0;
-		while (rs.next ())
-			count = rs.getInt (1);
-                      System.out.println ("---- Entries - "+count);
-
-		///////////////////////////
-		// Get the column types, and create the appropriate column
-		// objects
-
-		// construct the query to get clumn information.
-		query = "SELECT "+fieldList.toString()+" FROM "+tableList;
-
-                if (whereClause != null && whereClause.length() > 0)
-                   query += " WHERE " + whereClause;
-
-                // DC 2.6.06 --- closed the result set and statement
-                rs.close();
-                stmt.close();
-		// Get the number of columns selected.
-		stmt = con.createStatement();
-		rs = stmt.executeQuery(query);
-		ResultSetMetaData rsmd = rs.getMetaData ();
-		int numColumns = rsmd.getColumnCount ();
-		MutableTableImpl vt =  new MutableTableImpl(numColumns);
-
-		// Now compile a list of the datatypes.
-		int [] types = new int [numColumns];
-		for (int i = 0 ; i < numColumns ; i++) {
-			types[i] = rsmd.getColumnType (i+1);
-			switch (types[i]) {
-				case Types.TINYINT:
-				case Types.SMALLINT:
-					ShortColumn intSC = new ShortColumn (count);
-					intSC.setLabel (fieldArray[i]);
-					vt.setColumn (intSC, i);
-					break;
-				case Types.INTEGER:
-				case Types.BIGINT:
-					IntColumn intC = new IntColumn (count);
-					intC.setLabel (fieldArray[i]);
-					vt.setColumn (intC, i);
-					break;
-				case Types.DOUBLE:
-				case Types.NUMERIC:
-				case Types.DECIMAL:
-				case Types.FLOAT:
-				case Types.REAL:
-                                        // Dora changed on 01/06/04: a double column must be created for all these data types
-					DoubleColumn doubleC = new DoubleColumn (count);
-					doubleC.setLabel (fieldArray[i]);
-					vt.setColumn (doubleC, i);
-					break;
-				case Types.CHAR:
-				case Types.VARCHAR:
-				case Types.LONGVARCHAR:
-					StringColumn byteC = new StringColumn (count);
-                                        byteC.setLabel (fieldArray[i]);
-					vt.setColumn (byteC, i);
-					break;
-				default:
-                                        byteC = new StringColumn (count);
-                                        byteC.setLabel (fieldArray[i]);
-                                        vt.setColumn (byteC, i);
-                                        break;
-			}
-		}
-
-		//////////////////////////////////////
-		// Now fill in the data
-		//////////////////////////////////////
-
-/**
-
-vered - changed the arguments in the call to the setter method, so that it would
-be set to the defualt of missing value, when needed. [11-24-03]
-
-*/
-
-
-		// Now populate the table.
-		for (int where = 0; rs.next (); where++)
-			for (int i = 0 ; i < numColumns ; i++) {
-				switch (types[i]) {
-					case Types.TINYINT:
-					case Types.SMALLINT:
-					case Types.INTEGER:
-					case Types.BIGINT:
-                                                if (rs.getString(i+1) == null) {
-                                                  vt.setDouble(vt.getMissingInt(), where, i);
-                                                }
-                                                else
-                                                  vt.setInt (rs.getInt (i+1), where, i);
-						break;
-					case Types.DOUBLE:
-                                                if (rs.getString(i+1) == null) {
-                                                  vt.setDouble(vt.getMissingDouble(), where, i);
-                                                }
-                                                else
-       					          vt.setDouble (rs.getDouble (i+1), where, i);
-						break;
-					case Types.NUMERIC:
-					case Types.DECIMAL:
-					case Types.FLOAT:
-					case Types.REAL:
-                                                // Dora changed from the column type from float to double
-                                                if (rs.getString(i+1) == null) {
-
-                                                  vt.setDouble(vt.getMissingDouble(), where, i);
-                                                }
-                                                else
-                                                  vt.setDouble (rs.getDouble (i+1), where, i);
-						break;
-					case Types.CHAR:
-					case Types.VARCHAR:
-					case Types.LONGVARCHAR:
-                                                if (rs.getString(i+1) == null) {
-                                                  vt.setString(vt.getMissingString(), where, i);
-                                                }
-                                                else
-						  vt.setString (rs.getString (i+1), where, i);
-						break;
-                                        default:
-                                                vt.setString(rs.getString (i+1), where, i);
-                                                break;
-				}//switch
-
-                                //vered - added this setting to missing, so that
-                                //the output table would be "aware" of its missing values.
-                                if (rs.getString(i+1) == null) {
-                                 vt.setValueToMissing(true, where, i);
-                               }
-
-                              }//for i
-
-                // DC 2.6.06 --- closed the result set and statement
-                rs.close();
-                stmt.close();
-
-		this.pushOutput (vt, 0);
 	}
 /*&%^8 Do not modify this section. */
 /*#end^8 Continue editing. ^#&*/
