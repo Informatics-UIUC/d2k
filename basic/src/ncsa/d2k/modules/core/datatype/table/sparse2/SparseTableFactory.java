@@ -1,13 +1,7 @@
 // package ncsa.d2k.modules.core.datatype.table.newsparse_rowlist;
 package ncsa.d2k.modules.core.datatype.table.sparse2;
-import  ncsa.d2k.modules.core.datatype.table.TableFactory;
-import  ncsa.d2k.modules.core.datatype.table.Table;
-import  ncsa.d2k.modules.core.datatype.table.ColumnTypes;
-import  ncsa.d2k.modules.core.datatype.table.basic.Column;
-import  ncsa.d2k.modules.core.datatype.table.ExampleTable;
-import  ncsa.d2k.modules.core.datatype.table.PredictionTable;
-import  ncsa.d2k.modules.core.datatype.table.TestTable;
-import  ncsa.d2k.modules.core.datatype.table.TrainTable;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 
 

@@ -319,12 +319,18 @@ public abstract class SparseTable
    *                null if such column does not exit.
    */
   public String getColumnLabel(int position) {
-    String retval = getColumn(position).getLabel();
-    if (retval == null) {
-      return "column_" + position;
+    try {
+      String retval = getColumn(position).getLabel();
+      if (retval == null) {
+        return "column_" + position;
+      }
+      else {
+        return retval;
+      }
     }
-    else {
-      return retval;
+    catch(RuntimeException ex) {
+        System.out.println(this+" " + this._columns.size() + " " + position);
+        throw ex;
     }
   }
 

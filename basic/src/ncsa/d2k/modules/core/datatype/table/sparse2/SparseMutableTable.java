@@ -3,17 +3,17 @@ package ncsa.d2k.modules.core.datatype.table.sparse2;
 //==============
 // Java Imports
 //==============
-import  java.util.*;
-import  java.io.*;
+import java.io.*;
+import java.util.*;
+
+import gnu.trove.*;
 //===============
 // Other Imports
 //===============
-import  ncsa.d2k.modules.core.datatype.table.*;
-import  ncsa.d2k.modules.core.datatype.table.basic.Column;
-import  ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
-import  ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
-import  ncsa.d2k.modules.core.datatype.table.sparse.examples.SparseRow;
-import  gnu.trove.*;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 
 /**
  * Title:        Sparse Table
@@ -104,8 +104,7 @@ public class SparseMutableTable extends SparseTable
      *                    the subset.
      * @param len         number of consequetive rows to include in the subset.
      */
-    public static Table getSubset (int[] indices, SparseTable table) {
-        // LAM
+    /*public static Table getSubset (int[] indices, SparseTable table) {
         return null;
         //return  new NewSparseSubsetTable(table, indices);
         //    int numrows = table.getNumRows();
@@ -147,15 +146,12 @@ public class SparseMutableTable extends SparseTable
      * @return        a SparseTable containing rows <code>start</code> through
      *                <code>start+len</code>
      */
-    static public Table getSubset (int pos, int len, SparseTable table) {
+    //static public Table getSubset (int pos, int len, SparseTable table) {
         /*int[] sample = new int[len];
         for (int i = 0; i < len; i++) {
             sample[i] = pos + i;
         }
         return  new NewSparseSubsetTable(table, sample);*/
-
-        // LAM
-        return null;
 
         //    int numrows = table.getNumRows();
         //    if ( (start < 0) || ( (start + len - 1) >= numrows)) {
@@ -180,7 +176,7 @@ public class SparseMutableTable extends SparseTable
         //    retVal.computeNumColumns();
         //    retVal.computeNumRows();
         //    return retVal;
-    }           //getSubset
+    //}           //getSubset
 
     //==========================================================================
     // Table Interface Methods
@@ -210,7 +206,14 @@ public class SparseMutableTable extends SparseTable
                     + numRows + " range enterred is start:" + start + " through length: "
                     + len);
         }*/
-        return  getSubset(start, len, this);
+
+        int[] sample = new int[len];
+        for (int i = 0; i < len; i++) {
+          sample[i] = start + i;
+        }
+
+        return new SparseSubsetTable(this, sample);
+        //return  getSubset(start, len, this);
     }           //getSubset
 
     /**
@@ -229,7 +232,8 @@ public class SparseMutableTable extends SparseTable
                         + " row index out of bounds value " + rows[i]);
             }
         }*/
-        return  getSubset(rows, this);
+        //return  getSubset(rows, this);
+        return new SparseSubsetTable(this, rows);
     }
 
     /**
@@ -327,8 +331,7 @@ public class SparseMutableTable extends SparseTable
      * @return
      */
     public Row getRow () {
-        //return  new SparseRow(this);
-        return null;
+        return  new SparseRow(this);
     }
 
     /**
@@ -394,21 +397,12 @@ public class SparseMutableTable extends SparseTable
     //=========================================================================
     // MutableTable Interface Methods
     //=========================================================================
-    public void setColumn (Column newColumn, int position) {
+    public void setColumn (Column col, int index) {
         // DC says I moved the bulk of this to getColumnAsSparse()
 
-        AbstractSparseColumn c = getColumnAsSparse(newColumn);
-        setColumn(position, c);
-    }
+        AbstractSparseColumn c = getColumnAsSparse(col);
+        //setColumn(position, c);
 
-    // LAM----we shouldn't need two setColumn methods
-    /**
-     * updates the columns and rows maps regarding the insertion of a new column.
-     *
-     * @param index     the index insertion of a new column
-     * @param col       the new oclumn.
-     */
-    protected void setColumn (int index, AbstractSparseColumn col) {
         //*****************************************************
         // DC says:
         // when setColumn is called, we will need to do the following:
@@ -429,7 +423,7 @@ public class SparseMutableTable extends SparseTable
         _columns.set(index, col);
 
         //updating the rows sets
-        int[] rowNum = col.getIndices();
+        int[] rowNum = c.getIndices();
         for (int i = 0; i < rowNum.length; i++) {
             addCol2Row(index, rowNum[i]);
         }
@@ -508,7 +502,7 @@ public class SparseMutableTable extends SparseTable
     }
 
     /**
-     * put your documentation comment here
+     * Add columns to this table.
      * @param newColumns
      */
     public void addColumns (Column[] newColumns) {
@@ -524,7 +518,47 @@ public class SparseMutableTable extends SparseTable
      */
     public void insertColumn (Column newColumn, int position) {
         AbstractSparseColumn col = getColumnAsSparse(newColumn);
-        insertColumn(position, col);
+        //insertColumn(position, col);
+        // DC says
+         // when a column is inserted, the rows maps need to be updated ---
+         // 1) the rows for this column must be inserted
+         // 2) the columns after this col all must be incremented in the
+         // rows maps
+
+         // DC says
+         // columnRef is useful here!!!  when a column is inserted, the indices
+         // change, and all the rows maps must be updated to the new indices
+         // but since this is a rarely used function, we will remove columnRef
+         // and do the updating an inefficient way
+
+         int numcols = getNumColumns();
+
+         // every column after position will have its index incremented.
+           for(int i= 0; i < _rows.size(); i++) {
+             // get the row
+             TIntArrayList list = (TIntArrayList)_rows.get(i);
+             // start at the end
+             int c;
+             for (int j = list.size() - 1; j >= 0; j--) {
+               c = list.get(j);
+               if (c >= position) {
+                 list.set(position, c + 1);
+               }
+               else { // since it's sorted
+                 break;
+               }
+             }
+         }
+
+         // now, really add the new column
+         _columns.add(position, col);
+
+         int[] rowNumbers = col.getIndices();
+         for (int i = 0; i < rowNumbers.length; i++) {
+             addCol2Row(position, rowNumbers[i]);
+         }       //for
+
+         updateNumRowsCols();
     }
 
     /**
@@ -536,59 +570,6 @@ public class SparseMutableTable extends SparseTable
         for (int i = newColumns.length - 1; i >= 0; i--) {
             insertColumn(newColumns[i], position);
         }
-    }
-
-    // LAM --- we shouldn't need two of these
-    /**
-     * Insert <codE>newColumn</code> to index <codE>position</codE>.
-     * All columns from index <code>position</code> and on are moved to the next
-     * column down the table.
-     *
-     * @param newColumn     the new column to be inserted at index position.
-     * @param position      the index for the new column.
-     *
-     */
-    protected void insertColumn (int position, AbstractSparseColumn newColumn) {
-      // DC says
-      // when a column is inserted, the rows maps need to be updated ---
-      // 1) the rows for this column must be inserted
-      // 2) the columns after this col all must be incremented in the
-      // rows maps
-
-      // DC says
-      // columnRef is useful here!!!  when a column is inserted, the indices
-      // change, and all the rows maps must be updated to the new indices
-      // but since this is a rarely used function, we will remove columnRef
-      // and do the updating an inefficient way
-
-      int numcols = getNumColumns();
-
-      // every column after position will have its index incremented.
-        for(int i= 0; i < _rows.size(); i++) {
-          // get the row
-          TIntArrayList list = (TIntArrayList)_rows.get(i);
-          // start at the end
-          int c;
-          for (int j = list.size() - 1; j >= 0; j--) {
-            c = list.get(j);
-            if (c >= position) {
-              list.set(position, c + 1);
-            }
-            else { // since it's sorted
-              break;
-            }
-          }
-      }
-
-      // now, really add the new column
-      _columns.add(position, newColumn);
-
-      int[] rowNumbers = newColumn.getIndices();
-      for (int i = 0; i < rowNumbers.length; i++) {
-          addCol2Row(position, rowNumbers[i]);
-      }       //for
-
-      updateNumRowsCols();
     }
 
     /**
@@ -822,17 +803,32 @@ throw new UnsupportedOperationException();
         //retrieve all the column numbers that hold any of these rows
         TIntArrayList r1 = (TIntArrayList)_rows.remove(pos1);
         TIntArrayList r2 = (TIntArrayList)_rows.remove(pos2);
-        TIntHashSet tempSet = new TIntHashSet();                //will be a combination of r1 and r2
-        int[] ref = null;       //will hold the relative column references
-        if (r1 != null) {       //if row pos1 exists
-            _rows.set(pos2, r1);                 //put it at pos2
-            tempSet.addAll(r1.toNativeArray());       //add its valid columns to tempSet
+
+        //will be a combination of r1 and r2
+        TIntHashSet tempSet = new TIntHashSet();
+
+        //will hold the relative column references
+        int[] ref = null;
+
+        //if row pos1 exists
+        if (r1 != null) {
+            //put it at pos2
+            _rows.set(pos2, r1);
+
+            //add its valid columns to tempSet
+            tempSet.addAll(r1.toNativeArray());
         }
-        if (r2 != null) {       //if row pos2 exists
-            _rows.set(pos1, r2);                 //put it at pos1
-            tempSet.addAll(r2.toNativeArray());       //add its valid columns to tempSet
+
+        //if row pos2 exists
+        if (r2 != null) {
+            //put it at pos1
+            _rows.set(pos1, r2);
+            //add its valid columns to tempSet
+            tempSet.addAll(r2.toNativeArray());
         }
-        ref = tempSet.toArray();                //now validColumns hold all the neede indices
+
+        //now ref hold all the neede indices
+        ref = tempSet.toArray();
         //for each valid column in those 2 rows
         for (int i = 0; i < ref.length; i++) {
             //swap the rows.
@@ -1238,6 +1234,9 @@ throw new UnsupportedOperationException();
      * @param col      the index of the Column according to which this table is to be sorted
      */
     public void sortByColumn (int col) {
+
+      // LAM sorting not done
+
         Column sorting = getColumn(col);
         if (sorting != null) {
             VIntIntHashMap sortOrder = ((AbstractSparseColumn)sorting).getSortedOrder();
@@ -1257,6 +1256,9 @@ throw new UnsupportedOperationException();
      * @param edn       the row number at which ends the section to be sorted.
      */
     public void sortByColumn (int col, int begin, int end) {
+
+      // LAM sorting not working
+
         if ((begin < 0) || (begin >= this._numRows)) {
             throw  new java.lang.RuntimeException("Column index out of range: "
                     + begin);
@@ -1411,7 +1413,7 @@ throw new UnsupportedOperationException();
     /**
      * copies the content of <code>srcTable</cdoe> into this table.
      */
-    public void copy (SparseTable srcTable) {
+    protected void copy (SparseTable srcTable) {
         if (srcTable instanceof SparseMutableTable) {
             transformations = (ArrayList)((SparseMutableTable)srcTable).transformations.clone();
         }
