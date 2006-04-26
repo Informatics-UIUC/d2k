@@ -180,6 +180,18 @@ public class ConvertTable
     newTable.setLabel(orig.getLabel());
     newTable.setComment(orig.getComment());
 
+    // missing values preservation
+    for(int i = 0; i < orig.getNumRows(); i++) {
+      for(int j = 0; j < orig.getNumColumns(); j++) {
+        if(orig.isValueEmpty(i, j)) {
+          newTable.setValueToEmpty(true, i, j);
+        }
+        if(orig.isValueMissing(i, j)) {
+          newTable.setValueToMissing(true, i, j);
+        }
+      }
+    }
+
     //System.out.println("pushing converted table.");
 
     if (orig instanceof ExampleTable) {
