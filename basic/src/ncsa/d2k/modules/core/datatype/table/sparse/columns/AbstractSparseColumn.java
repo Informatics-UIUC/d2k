@@ -202,9 +202,9 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
      */
     public void setNumRows (int newCapacity) {
         //    VHashMap column = getElements();
-        int[] indices = this.getIndices();
-        int ignore = 0;
         if (newCapacity < getNumRows()) {
+            int[] indices = this.getIndices();
+            int ignore = 0;
             for (int i = indices.length - 1; (i >= 0) && (newCapacity < indices[i]
                     + 1); i--) {
                 removeRow(indices[i]);
