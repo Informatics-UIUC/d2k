@@ -1,11 +1,10 @@
 package ncsa.d2k.modules.core.datatype.table.sparse2;
 
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.Column;
 import java.util.*;
-import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 
 import gnu.trove.*;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 
 public class SparseSubsetTable
     extends SparseExampleTable {
@@ -259,7 +258,7 @@ public class SparseSubsetTable
    */
   public Table copy() {
     // LAM
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -269,7 +268,7 @@ public class SparseSubsetTable
    */
   public Table copy(int start, int len) {
     // LAM
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -279,7 +278,7 @@ public class SparseSubsetTable
    */
   public Table copy(int[] rows) {
     // LAM
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -354,7 +353,7 @@ public class SparseSubsetTable
    */
   public Row getRow() {
     // LAM
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -393,7 +392,7 @@ public class SparseSubsetTable
    */
   public boolean hasMissingValues() {
     // LAM
-    return false;
+    throw new UnsupportedOperationException();
   }
 
   /** return the default missing value for integers, both short, int and long.
@@ -483,7 +482,7 @@ public class SparseSubsetTable
    */
   public boolean hasMissingValues(int columnIndex) {
     // LAM
-    return false;
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -554,6 +553,7 @@ public class SparseSubsetTable
     */
    public void addRows(int howMany) {
      // LAM
+     throw new UnsupportedOperationException();
    }
 
   /**
@@ -562,6 +562,7 @@ public class SparseSubsetTable
    */
   public void removeRow(int row) {
     // LAM
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -571,6 +572,7 @@ public class SparseSubsetTable
    */
   public void removeRows(int start, int len) {
     // LAM
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -743,6 +745,7 @@ public class SparseSubsetTable
    */
   public void sortByColumn(int col) {
     // LAM
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -753,6 +756,7 @@ public class SparseSubsetTable
    */
   public void sortByColumn(int col, int begin, int end) {
     // LAM
+    throw new UnsupportedOperationException();
   }
 
 /////////// Collect the transformations that were performed. /////////

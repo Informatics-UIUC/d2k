@@ -1,4 +1,3 @@
-// package ncsa.d2k.modules.core.datatype.table.newsparse_rowlist;
 package ncsa.d2k.modules.core.datatype.table.sparse2;
 //==============
 // Java Imports
@@ -656,8 +655,8 @@ public class SparseMutableTable extends SparseTable
         // DC says when you remove a row, you must remove that row from
         // each column.  also, must remove the rows set from rows arraylist.
         // rows set need not change, but the column's remove row must
-        // be smart enough to re-set the row indices!!!!
-        // LAM!!!!!!!!!  The columns don't do this currently!!!!
+        // be smart enough to re-set the row indices
+        // LAM -- verify this
         //*************************************************************
 
         //removing the row from the rows map
@@ -689,7 +688,7 @@ public class SparseMutableTable extends SparseTable
       for(int i =0; i < _columns.size(); i++) {
         AbstractSparseColumn col = (AbstractSparseColumn)_columns.get(i);
         // LAM---- the column MUST be smart enough to decrement row
-        // indices when a row is removed!!!!
+        // indices when a row is removed!!
         col.removeRows(start, len);
       }
       updateNumRowsCols();
@@ -740,7 +739,7 @@ public class SparseMutableTable extends SparseTable
 
 
 
-   // LAM----verify correctness
+   // LAM implement this..?
 
     /**
      * Reorders the rows in this table, s.t.:
@@ -1211,7 +1210,7 @@ throw new UnsupportedOperationException();
      * @param position  the column index which its label is being set
      */
     public void setColumnLabel (String label, int position) {
-            ((AbstractSparseColumn)getColumn(position)).setLabel(label);
+            getColumn(position).setLabel(label);
     }
 
     /**
@@ -1221,7 +1220,7 @@ throw new UnsupportedOperationException();
      * @param position    the column index which its comment is being set
      */
     public void setColumnComment (String comment, int position) {
-            ((AbstractSparseColumn)getColumn(position)).setComment(comment);
+            getColumn(position).setComment(comment);
     }
 
     /**
@@ -1237,12 +1236,14 @@ throw new UnsupportedOperationException();
 
       // LAM sorting not done
 
-        Column sorting = getColumn(col);
+      /*  Column sorting = getColumn(col);
         if (sorting != null) {
             VIntIntHashMap sortOrder = ((AbstractSparseColumn)sorting).getSortedOrder();
             sort(sortOrder);
             //  sorting.sort(this);
-        }
+        }*/
+
+      throw new UnsupportedOperationException();
     }
 
     /**
@@ -1259,7 +1260,7 @@ throw new UnsupportedOperationException();
 
       // LAM sorting not working
 
-        if ((begin < 0) || (begin >= this._numRows)) {
+      /*  if ((begin < 0) || (begin >= this._numRows)) {
             throw  new java.lang.RuntimeException("Column index out of range: "
                     + begin);
         }
@@ -1277,7 +1278,9 @@ throw new UnsupportedOperationException();
                     end);
             sort(sortOrder);
             //      sorting.sort(this, begin, end);
-        }
+        }*/
+
+      throw new UnsupportedOperationException();
     }
 
     /**
@@ -1307,7 +1310,7 @@ throw new UnsupportedOperationException();
      * @param col     the column index of the value to be set.
      */
     public void setValueToMissing (boolean val, int row, int col) {
-            ((AbstractSparseColumn)getColumn(col)).setValueToMissing(val, row);
+            getColumn(col).setValueToMissing(val, row);
     }
 
     /**
@@ -1318,7 +1321,7 @@ throw new UnsupportedOperationException();
      * @param col     the column index of the value to be set.
      */
     public void setValueToEmpty (boolean val, int row, int col) {
-            ((AbstractSparseColumn)getColumn(col)).setValueToEmpty(val, row);
+            getColumn(col).setValueToEmpty(val, row);
     }
 
     //===========================================================================

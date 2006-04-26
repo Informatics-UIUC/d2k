@@ -1,4 +1,3 @@
-// package ncsa.d2k.modules.core.datatype.table.newsparse_rowlist;
 package ncsa.d2k.modules.core.datatype.table.sparse2;
 
 //===============
@@ -12,6 +11,8 @@ import java.util.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+
+import gnu.trove.*;
 
 /**
  * SparseExampleTable is identical to SparseTable with a few addtions:
@@ -522,6 +523,26 @@ public class SparseExampleTable
       return retVal;
     }
     catch (Exception ex) {
+      // LAM is this correct
+
+      SparseExampleTable retVal = new SparseExampleTable();
+      retVal.copy(this);
+      int[] newins = new int[inputColumns.length];
+      System.arraycopy(inputColumns, 0, newins, 0, inputColumns.length);
+      int[] newouts = new int[outputColumns.length];
+      System.arraycopy(outputColumns, 0, newouts, 0, outputColumns.length);
+      int[] newtest = new int[testSet.length];
+      System.arraycopy(testSet, 0, newtest, 0, testSet.length);
+      int[] newtrain = new int[trainSet.length];
+      System.arraycopy(trainSet, 0, newtrain, 0, trainSet.length);
+
+      retVal.setInputFeatures(newins);
+      retVal.setOutputFeatures(newouts);
+      retVal.setTestingSet(newtest);
+      retVal.setTrainingSet(newtrain);
+
+      return  retVal;
+
       /*NewSparseTable vt;
                // Copy failed, maybe objects in a column that are not serializable.
                Column[] cols = new Column[this.getNumColumns()];
@@ -558,8 +579,6 @@ public class SparseExampleTable
         transformations = null;
                }
                return mti;*/
-      // LAM
-      return null;
     }
   }
 
@@ -1288,7 +1307,21 @@ public class SparseExampleTable
    *                  of row no. <codE>row</code>.
    */
   public int[] getOutputFeatures(int row) {
-    throw new UnsupportedOperationException();
+    int[] retVal = new int[0];
+
+    TIntArrayList temp = (TIntArrayList)_rows.get(row);
+
+    int[] tempArr = new int[outputColumns.length];
+    int j = 0;
+    for (int i = 0; i < outputColumns.length; i++) {
+        if (temp.contains(outputColumns[i])) {
+            tempArr[j] = outputColumns[i];
+            j++;
+        }
+    }
+    retVal = new int[j];
+    System.arraycopy(tempArr, 0, retVal, 0, j);
+    return  retVal;
   }
 
   /**
@@ -1300,7 +1333,21 @@ public class SparseExampleTable
    *                  of row no. <codE>row</code>.
    */
   public int[] getInputFeatures(int row) {
-    throw new UnsupportedOperationException();
+    int[] retVal = new int[0];
+
+    TIntArrayList temp = (TIntArrayList)_rows.get(row);
+
+    int[] tempArr = new int[inputColumns.length];
+    int j = 0;
+    for (int i = 0; i < inputColumns.length; i++) {
+        if (temp.contains(inputColumns[i])) {
+            tempArr[j] = inputColumns[i];
+            j++;
+        }
+    }
+    retVal = new int[j];
+    System.arraycopy(tempArr, 0, retVal, 0, j);
+    return  retVal;
   }
 
   /**
@@ -2014,4 +2061,5 @@ public class SparseExampleTable
     } //for
     return true;
   } //equals
+
 }

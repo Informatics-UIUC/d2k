@@ -45,7 +45,7 @@ public abstract class SparseTable
     extends DefaultMissingValuesTable
     implements Sparse, Serializable {
 
-    static final long serialVersionUID = 1L;
+  static final long serialVersionUID = 1L;
 
   //==============
   // Data Members
@@ -89,11 +89,13 @@ public abstract class SparseTable
    */
   public SparseTable(int numRows, int numCols) {
     _columns = new ArrayList(numCols);
-    for(int i = 0; i < numCols; i++)
+    for (int i = 0; i < numCols; i++) {
       _columns.add(null);
+    }
     _rows = new ArrayList(numRows);
-    for(int i = 0; i < numRows; i++)
+    for (int i = 0; i < numRows; i++) {
       _rows.add(new TIntArrayList());
+    }
     _numRows = numRows;
     _numColumns = numCols;
   }
@@ -108,10 +110,10 @@ public abstract class SparseTable
     //columns = T.columns;
 
     /*columnRef = new VIntIntHashMap(T.columnRef.size());
-    int[] keys = T.columnRef.keys();
-    for (int i = 0; i < keys.length; i++) {
+         int[] keys = T.columnRef.keys();
+         for (int i = 0; i < keys.length; i++) {
       columnRef.put(keys[i], T.columnRef.get(keys[i]));
-    }*/
+         }*/
 
     /*
              columns = new VIntObjectHashMap(T.columns.size());
@@ -328,9 +330,9 @@ public abstract class SparseTable
         return retval;
       }
     }
-    catch(RuntimeException ex) {
-        System.out.println(this+" " + this._columns.size() + " " + position);
-        throw ex;
+    catch (RuntimeException ex) {
+      System.out.println(this +" " + this._columns.size() + " " + position);
+      throw ex;
     }
   }
 
@@ -547,7 +549,7 @@ public abstract class SparseTable
    */
   public boolean hasMissingValues() {
     for (int i = 0; i < _columns.size(); i++) {
-      if ( ( (Column) getColumn(i)).hasMissingValues()) {
+      if ( getColumn(i).hasMissingValues()) {
         return true;
       }
     }
@@ -699,7 +701,7 @@ public abstract class SparseTable
    * @return
    */
   public int[] getRowIndicesUnsorted(int rowNumber) {
-    return ((TIntArrayList)_rows.get(rowNumber)).toNativeArray();
+    return ( (TIntArrayList) _rows.get(rowNumber)).toNativeArray();
   }
 
   /**
@@ -719,7 +721,7 @@ public abstract class SparseTable
       //}
     }
     return keys.toNativeArray();
-  }*/
+     }*/
 
   /**
    * Returns the numbers of all the valid rows in this table
