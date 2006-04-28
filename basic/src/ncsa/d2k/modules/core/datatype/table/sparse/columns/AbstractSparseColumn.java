@@ -877,6 +877,49 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
         return  getSortedOrder(keys());
     }
 
+
+    /**
+      * returns an int array with valid indices from this column, such that
+      * values in return_value[i] < value in return_value[i+1]
+      * @return int[] the order to sort this column by.
+      * @author Vered Goren - this method is used by sparse mutable table in sparse2
+      */
+     public int[] getColumnSortedOrder () {
+         int[] _keys = keys();
+         int[] retVal = new int[_keys.length];
+            Element[] values = getValuesForSort(_keys);
+            Arrays.sort(values, new ObjectComparator());
+            for (int i = 0; i < values.length; i++) {
+                retVal[i] = values[i].getIndex();
+            }
+            return  retVal;
+
+     }
+
+     /**
+      * returns an array of integers that are valid indices in the range [begin, end]
+      * in this column, such that value at return_value[i] is smaller than return_value[i+1]
+      * @param begin int row index to begin sorting
+      * @param end int row index to end sorting
+      * @return int[] valid indices in the range [begin, end]
+      * in this column, such that value at return_value[i] is smaller than return_value[i+1]
+      * @author Vered Goren - this method is used by sparse mutable table in sparse2
+      */
+     public int[] getColumnSortedOrder (int begin, int end) {
+         int[] keys = VHashService.getIndicesInRange(begin, end, getElements());
+         int[] retVal = new int[keys.length];
+            Element[] values = getValuesForSort(keys);
+            Arrays.sort(values, new ObjectComparator());
+            for (int i = 0; i < values.length; i++) {
+                retVal[i] = values[i].getIndex();
+            }
+            return  retVal;
+
+     }
+
+
+
+
     /**
      * put your documentation comment here
      * @param validRows
