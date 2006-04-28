@@ -1571,8 +1571,7 @@ throw new UnsupportedOperationException("reorderRows(VIntIntHashMap newOrder) is
           int counter = 0; //counts rows with no values in column col
           //for each row that has no value in column col
           for (int i=0; i < newOrder.length; i++) {
-            if(((AbstractSparseColumn)sorting).isValueDefault(i) ||
-               sorting.isValueEmpty(i) || sorting.isValueMissing(i)){
+            if(!((AbstractSparseColumn)sorting).doesValueExist(i)){
               //put its index at the end of new order
               newOrder[sortOrder.length + counter] = i;
               counter++;
