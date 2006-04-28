@@ -977,6 +977,11 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
         missing = missing.reorder(order);
         empty = empty.reorder(order);
     }
+
+    public VIntHashSet getMissing() {
+      return missing;
+    }
+
 }               //AbstractSparseColumn
 
 
