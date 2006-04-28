@@ -161,6 +161,8 @@ public class CascadeSort {
           } */
 
         public void reorder(int [] sortorder) {
+//VG - replaced the commented out code with this one. there was a bug with
+          //reordering of the column - it did not work....
 
       //an arrayof the old indices and how we are swapping among them.
           int[] indirection = new int[table.getNumColumns()];
@@ -170,8 +172,11 @@ public class CascadeSort {
           for (int i = 0; i < sortorder.length; i++) {
             //if what's in sortorder[i] and indirection[i] is the same don't do anything
             if (indirection[i] == sortorder[i])continue;
+
+            //if not - swao the ith column with column
+            //indexed_what_should_be_in_the_ith_column
             table.swapColumns(i, sortorder[i]);
-            //also sqapping these indices in indirection
+            //also swapping these indices in indirection
             int temp = indirection[i];
             indirection[i] = indirection[sortorder[i]];
             indirection[sortorder[i]] = temp;
