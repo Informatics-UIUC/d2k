@@ -1,0 +1,68 @@
+<project name="basic" default="compile">
+    
+   <property file="build.properties" />    
+   <property name="CLASSES" value="modules" />
+   <property name="SOURCE" value="src" />
+   <property name="LIB" value="lib" />
+
+   <path id="compile.classpath">
+    <fileset dir="${LIB}">
+        <include name="**/*.jar" />
+        <include name="**/*.zip" />
+     </fileset>
+     <fileset dir="${D2K_LIB_DIR}" >
+        <include name="**/*.jar" />
+        <include name="**/*.zip" />
+      </fileset>
+    </path>
+   
+   <path id="run.classpath">
+    <fileset dir="${LIB}">
+        <include name="**/*.jar" />
+        <include name="**/*.zip" />
+     </fileset>
+     <fileset dir="${D2K_LIB_DIR}" >
+        <include name="**/*.jar" />
+        <include name="**/*.zip" />
+      </fileset>
+    </path>    
+    
+    
+   <target name="init">
+      <tstamp/>
+   </target>
+
+   <target name="clean">
+      <delete dir="${CLASSES}" />
+   </target>   
+   
+   <target name="compile" depends="copy-resources">
+      <mkdir dir="${CLASSES}" />
+      <javac srcdir="${SOURCE}" destdir="${CLASSES}" source="1.4" target="1.4" debug="off" optimize="on" fork="true" memoryMaximumSize="128M">
+         <classpath refid="compile.classpath"/>
+      </javac>
+   </target>   
+   
+    <target name="rund2k" depends="compile">
+        <java classname="ncsa.d2k.gui.ToolKit" fork="yes" maxmemory="1024m">
+            <classpath refid="run.classpath"/>
+        </java>
+    </target>   
+
+    <target name="copy-resources">
+        <mkdir dir="${CLASSES}" />
+        <copy todir="${CLASSES}">
+        <fileset dir="${SOURCE}">
+            <exclude name="**/*.java"/>
+        </fileset>
+    </copy>
+    </target>       
+   
+   <!--<target name="build" depends="compile">
+      <mkdir dir="${BUILD}" />
+      <jar destfile="${BUILD}/infrastructure.jar" duplicate="fail">
+         <fileset dir="${CLASSES}" />
+         <fileset dir="${SOURCE}" includes="**/*.xsd"/>
+      </jar>
+   </target>    -->
+</project>
