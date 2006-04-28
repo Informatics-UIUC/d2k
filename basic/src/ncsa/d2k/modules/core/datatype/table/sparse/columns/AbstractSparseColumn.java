@@ -864,7 +864,8 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
     public Element[] getValuesForSort (int[] keys) {
         Element[] retVal = new Element[keys.length];
         for (int i = 0; i < retVal.length; i++) {
-            retVal[i] = new Element(getObject(keys[i]), keys[i]);
+            retVal[i] = new Element(getObject(keys[i]), keys[i], this.isValueMissing(keys[i]),
+                this.isValueEmpty(keys[i]), this.isValueDefault(keys[i]), this.doesValueExist(keys[i]));
         }       //for
         return  retVal;
     }
