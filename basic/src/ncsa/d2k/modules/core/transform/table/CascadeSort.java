@@ -162,27 +162,37 @@ public class CascadeSort {
 
         public void reorder(int [] sortorder) {
 
+      //an arrayof the old indices and how we are swapping among them.
+          int[] indirection = new int[table.getNumColumns()];
+          for (int i = 0; i < indirection.length; i++)
+            indirection[i] = i;
 
-                        int[] indirection = new int[table.getNumColumns()];
+          for (int i = 0; i < sortorder.length; i++) {
+            //if what's in sortorder[i] and indirection[i] is the same don't do anything
+            if (indirection[i] == sortorder[i])continue;
+            table.swapColumns(i, sortorder[i]);
+            //also sqapping these indices in indirection
+            int temp = indirection[i];
+            indirection[i] = indirection[sortorder[i]];
+            indirection[sortorder[i]] = temp;
 
+          }
 
-                        for (int i = 0; i < indirection.length; i++)
-                           indirection[i] = i;
+          /*
+          for (int i = 0; i < indirection.length; i++)
+            indirection[i] = i;
 
+          for (int i = 0; i < sortorder.length; i++) {
 
-                        for(int i = 0; i < sortorder.length; i++) {
+            table.swapColumns(i, indirection[sortorder[i]]);
 
+            int tmp = indirection[i];
+            indirection[i] = indirection[sortorder[i]];
+            indirection[sortorder[i]] = tmp;
 
-                           table.swapColumns(i, indirection[sortorder[i]]);
-
-
-                           int tmp = indirection[i];
-                           indirection[i] = indirection[sortorder[i]];
-                           indirection[sortorder[i]] = tmp;
-
-
-                        }
-        }
+          }
+      */
+      }
 
 
 }
