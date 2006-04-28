@@ -215,10 +215,10 @@ public class ItemSets implements Serializable {
 		// name in the unique names hashmap is set correctly. Now we will just
 		// create an array of unique names in the order sorted by frequency.
 		names = new String [unique.size()];
-		Iterator enum = unique.values().iterator();
+		Iterator enum1 = unique.values().iterator();
 		Iterator enum2 = unique.keySet().iterator();
-		while (enum.hasNext ()) {
-			int [] tmp = (int[]) enum.next ();
+		while (enum1.hasNext ()) {
+			int [] tmp = (int[]) enum1.next ();
 			String tmpName = (String) enum2.next ();
 			names[tmp[1]] = tmpName;
 		}
