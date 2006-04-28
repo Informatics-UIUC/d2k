@@ -918,6 +918,26 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
 
      }
 
+     /**
+      * returns an int array with values from rows in a new order
+      * such that element in row number returned_value[i] is less than
+      * or equal to element in row number returned_value[i+1]
+      * @param validRows int[] indices in this columns
+      * @return int[] contains values from rows in a new order
+      * such that element in row number returned_value[i] is less than
+      */
+     public int[] getColumnSortedOrder(int[] rows) {
+
+       int[] retVal = new int[rows.length];
+       Element[] values = getValuesForSort(rows);
+       Arrays.sort(values, new ObjectComparator());
+       for (int i = 0; i < values.length; i++) {
+         retVal[i] = values[i].getIndex();
+       }
+       return retVal;
+
+     }
+
 
 
 
