@@ -413,9 +413,11 @@ public class SparseMutableTable extends SparseTable
 
         // get the old col; we will need to remove its rows from the rows sets
         AbstractSparseColumn oldCol = (AbstractSparseColumn)_columns.get(index);
-        int[] oldRows = oldCol.getIndices();
-        for(int i = 0; i < oldRows.length; i++) {
-          removeColFromRow(index, oldRows[i]);
+        if(oldCol != null){
+          int[] oldRows = oldCol.getIndices();
+          for (int i = 0; i < oldRows.length; i++) {
+            removeColFromRow(index, oldRows[i]);
+          }
         }
 
         // set the column
@@ -738,10 +740,326 @@ public class SparseMutableTable extends SparseTable
     }
 
 
+    /**
+     * reorders this table's rows such that row number
+     * newOrder[i] is placed in the i_th position post process.
+     * @param newOrder int[] indices of this table's rows in their new order.
+     * @throws Exception if newOrder's length is not equal to number of rows
+     * in this Table, or if one of the indices in newOrder exceeds the bounds
+     * of this table's rows array list.
+     *
+     */
+    protected void reorderRows(int[] newOrder) throws Exception{
+      if(newOrder.length != this._rows.size()){
+        throw new Exception("Cannot reorder rows with the given new order. " +
+                            "new order array has " + newOrder.length +
+                            " indices in it, while this Table has " + this._rows.size() +
+                            " rows.");
+      }
+      try{
+        ArrayList newRows = new ArrayList(newOrder.length);
+
+        for (int i = 0; i < newOrder.length; i++) {
+          newRows.add(i, this._rows.get(newOrder[i]));
+        }
+        this._rows = newRows;
+      }catch(IndexOutOfBoundsException e){
+        throw new Exception("Could not reorder rows with given new order. Some of the " +
+                      "indices in the new order array are exceeding the bounds of " +
+                      "this Table's total number of rows.", e);
+      }
+
+    }
+
+    /**
+     * reorders the rows from startRow till startRow+length in this Table
+     * such that row number newOrder[i] is at position i+startOffset post processing.
+     * @param newOrder int[] the new order for the subset of the rows. length of newOrder
+     * should not exceed number of rows in this Table (otherwise an exception is throws)
+     * length of newOrder+startOffset should not exceed the number of rows in this
+     * Table either for the same reason.
+     * @param startOffset int start row index for reordering
+     *
+     * @throws Exception if any of the indices exceeds the bounds of this Table's rows.
+     */
+    protected void reorderRows(int[] newOrder, int startOffset) throws Exception{
+      if(newOrder.length+startOffset <= this._rows.size()){
+        throw new Exception("Cannot reorder rows with the given new order. " +
+                            "new order array has " + newOrder.length +
+                            " indices in it, and offset index is " +
+                            startOffset + " while this Table has " + this._rows.size() +
+                            " rows.");
+      }
+      try{
+        ArrayList newRows = new ArrayList(_rows.size());
+        //copying rows as they are before the start offset
+        for(int i=0; i<startOffset; i++){
+          newRows.add(i, this._rows.get(i));
+        }
+//        reordering the rows from start offset and on according to new order.
+        for (int i = startOffset; i < newOrder.length; i++) {
+          newRows.set(i, this._rows.get(newOrder[i]));
+        }
+  //copying the rest of the rows as they are.
+        for (int i = startOffset+newOrder.length; i < _rows.size(); i++) {
+          newRows.add(i, this._rows.get(i));
+        }
+
+
+        this._rows = newRows;
+      }catch(IndexOutOfBoundsException e){
+        throw new Exception("Could not reorder rows with given new order. Some of the " +
+                      "indices int he new order array are exceeding the bounds of " +
+                      "this Table's total number of rows.", e);
+      }
+
+    }
+
+    /**
+     * reorder the rows in this table for rows startOffset through rows number
+     * startOffset+length. Row number newOrder[i] will be positioned in row number
+     * i post processing. This method addresses only the indices between startOffset
+     * and startOffset+length in newOrder.
+     *
+     * @param newOrder int[] the new order of the rows. should have a length equals
+     * to the number of rows in this Table.
+     * @param startOffset int begin row index for reordering
+     * @param length int number of consequitive rows to reorder
+     * @throws Exception if any of the indices exceeds the bounds of this table's rows indices.
+     */
+    protected void reorderRows(int[] newOrder, int startOffset, int length) throws Exception{
+      if(newOrder.length != this._rows.size()){
+        throw new Exception("Cannot reorder rows with the given new order. " +
+                            "new order array has " + newOrder.length +
+                            " indices in it, while this Table has " + this._rows.size() +
+                            " rows.");
+      }
+      try{
+        ArrayList newRows = new ArrayList(_rows.size());
+        //copying rows as they are before the start offset
+        for(int i=0; i<startOffset; i++){
+          newRows.add(i, this._rows.get(i));
+        }
+//        reordering the rows from start offset and on according to new order.
+        for (int i = startOffset; i < length; i++) {
+          newRows.set(i, this._rows.get(newOrder[i]));
+        }
+  //copying the rest of the rows as they are.
+        for (int i = startOffset+length; i < _rows.size(); i++) {
+          newRows.add(i, this._rows.get(i));
+        }
+
+
+        this._rows = newRows;
+      }catch(IndexOutOfBoundsException e){
+        throw new Exception("Could not reorder rows with given new order. Some of the " +
+                      "indices int he new order array are exceeding the bounds of " +
+                      "this Table's total number of rows.", e);
+      }
+
+    }
+
+
+
+    /**
+     * reorder the rows element for some of the columns of this Table.
+     * DOES NOT call reorderRows on the columns objects theselves!!!
+     * @param newOrder int[] the new order of rows indices. Row number
+     * newOrder[i] will be at index i post processing
+     * @param startCol int begin column index to reorder
+     * @param endCol int end column index to reorder (including)
+     * @throws Exception newOrder's length is not equal to number of rows
+     * in this Table, or if one of the indices in newOrder exceeds the bounds
+     * of this table's rows array list. Also throws exception if startCol or endCol
+     * are out of bounds of this Table's columns indices.
+
+     */
+    protected void reorderRowsSubColumns(int[] newOrder, int startCol, int endCol) throws Exception{
+     if(newOrder.length != this._rows.size()){
+       throw new Exception("Cannot reorder rows with the given new order. " +
+                           "new order array has " + newOrder.length +
+                           " indices in it, while this Table has " + this._rows.size() +
+                           " rows.");
+     }
+     try{
+
+       //for each row in new order
+       for (int i = 0; i < newOrder.length; i++) {
+         TIntArrayList oldRow = (TIntArrayList)this._rows.get(newOrder[i]);
+         TIntArrayList newRow = (TIntArrayList)this._rows.get(i);
+         //for each column in the range - swap the indices.
+         for (int col = startCol; col <= endCol; col++) {
+           oldRow.remove(col);
+           newRow.add(col);
+         }
+
+       }
+
+     }catch(IndexOutOfBoundsException e){
+       throw new Exception("Could not reorder rows with given new order. Some of the " +
+                     "indices in the new order array are exceeding the bounds of " +
+                     "this Table's total number of rows.", e);
+     }
+
+   }
+
+
+   /**
+    * reorders the rows for column startCol through column endCol (including)
+    * beginning reordering at row indexed startRow. The number of rows to be
+    * reordered in equal to the length of newOrder.
+    * post processing indices of columns in the range [startCol, endCol] that were
+    * including the set of row number newOrder[i] will be included in the set of
+    * row number startRow+i
+    * @param newOrder int[] defines the new order
+    * @param startCol int column index to begin reordering for
+    * @param endCol int column index to end reordering for (including)
+    * @param startRow int row index to begin reordering for
+    * @throws Exception
+    *     if startRow is out of the bounds of this Table's rows.
+    *     if (startRow+newOrder's length) is out of the bounds of this Table's rows.
+    *     if startCol or endCol are out of the bounds of this Table's columns
+    *     if newOrder's indices are out of the bounds of this Table's rows.
+    */
+   protected void reorderRowsSubColumns(int[] newOrder, int startCol, int endCol, int startRow) throws Exception{
+     if(newOrder.length + startRow > this._rows.size()){
+       throw new Exception("Cannot reorder rows with the given new order. " +
+                           "new order array has " + newOrder.length +
+                           " indices in it, and startRow is " + startRow +
+                           "while this Table has " + this._rows.size() +
+                           " rows.");
+     }
+
+     if(startRow > this._rows.size() || startRow < 0){
+       throw new Exception("startRow value (" + startRow + " is out of bounds of " +
+                           "this Table's rows");
+     }
+
+
+     if (startCol > this._columns.size() || startCol < 0) {
+       throw new Exception("startRow value (" + startCol +
+                           " is out of bounds of " +
+                           "this Table's columns");
+     }
+     if (endCol > this._columns.size() || endCol < 0) {
+       throw new Exception("startRow value (" + endCol +
+                           " is out of bounds of " +
+                           "this Table's columns");
+     }
+
+
+
+     try{
+
+       //for each row in new order
+       for (int i = 0; i < newOrder.length; i++) {
+         TIntArrayList oldRow = (TIntArrayList)this._rows.get(newOrder[i]);
+         TIntArrayList newRow = (TIntArrayList)this._rows.get(i+startRow);
+         //for each column in the range - swap the indices.
+         for (int col = startCol; col <= endCol; col++) {
+           oldRow.remove(col);
+           newRow.add(col);
+         }
+
+       }
+
+     }catch(IndexOutOfBoundsException e){
+       throw new Exception("Could not reorder rows with given new order. Some of the " +
+                     "indices in the new order array are exceeding the bounds of " +
+                     "this Table's total number of rows.", e);
+     }
+
+   }
+
+
+
+   /**
+    * reorders the rows in this table, starting at row number startRow through
+    * row number startRow+length. Reordering is performed only on the rows columns
+    * indices set, only for columns number startCol through endCol (indlucding).
+    * newOrder is expecting to be of length equal to number of rows int his Table.
+    * startRow ans startRow+length should be in the bound of newOrder.
+    * post processing column indices from the range [startCol, endCol] that were
+    * included in a row set indexed newOrder[i] will be included in the row set with index
+    * i (and i is in the range [startRow, startRow+length)
+    * @param newOrder int[] defines the new order for the rows
+    * @param startCol int column index to begin new ordering for
+    * @param endCol int column index to end new ordering for (including)
+    * @param startRow int row index to start reordering
+    * @param length int number of consequitive rows to be reordered
+    * @throws Exception
+    *    if newOrder's length is not equla this Table's number of rows
+    *    if startRow is out of bounds of newOrder
+    *    if startRow+length is out of bounds of newOrder
+    *    if startCol is out of bounds of this Table's columns
+    *    if endCol is out of bounds of this Table's columns
+    *
+    */
+   protected void reorderRowsSubColumns(int[] newOrder, int startCol, int endCol,
+                                        int startRow, int length) throws Exception{
+        if(newOrder.length != this._rows.size()){
+          throw new Exception("Cannot reorder rows with the given new order. " +
+                              "new order array has " + newOrder.length +
+                              " indices in it, and startRow is while this Table has " +
+                              this._rows.size() +
+                              " rows.");
+        }
+
+        if(startRow > this._rows.size() || startRow < 0){
+          throw new Exception("startRow value (" + startRow + " is out of bounds of " +
+                              "this Table's rows");
+        }
+
+        if (startRow + length > this._rows.size() || startRow + length < 0) {
+          throw new Exception("startRow + length value (" + (startRow + length) +
+                              " is out of bounds of " +
+                              "this Table's rows");
+        }
+
+        if (startCol > this._columns.size() || startCol < 0) {
+          throw new Exception("startRow value (" + startCol +
+                              " is out of bounds of " +
+                              "this Table's columns");
+        }
+        if (endCol > this._columns.size() || endCol < 0) {
+          throw new Exception("startRow value (" + endCol +
+                              " is out of bounds of " +
+                              "this Table's columns");
+        }
+
+
+
+        try{
+
+          //for each row in new order
+          for (int i = startRow; i < length; i++) {
+            TIntArrayList oldRow = (TIntArrayList)this._rows.get(newOrder[i]);
+            TIntArrayList newRow = (TIntArrayList)this._rows.get(i);
+            //for each column in the range - swap the indices.
+            for (int col = startCol; col <= endCol; col++) {
+              oldRow.remove(col);
+              newRow.add(col);
+            }
+
+          }
+
+        }catch(IndexOutOfBoundsException e){
+          throw new Exception("Could not reorder rows with given new order. Some of the " +
+                        "indices in the new order array are exceeding the bounds of " +
+                        "this Table's total number of rows.", e);
+        }
+
+      }
+
+
 
    // LAM implement this..?
 
     /**
+     * April 27, 2006 - Vered Goren: since sparse2 package implements the row via an array list
+     * there is no need for such complecated method (with a mapping of the new
+     * order). need only to implement reorderRows(int[]).     *
+     *
      * Reorders the rows in this table, s.t.:
      * for each key k in <codE>newOrder</code>: put the row which its index is
      * mapped to k in <code>newOrder</code> at index k in the returned value.
@@ -769,7 +1087,9 @@ public class SparseMutableTable extends SparseTable
         retVal.columns = newColumns;*/
 
 
-throw new UnsupportedOperationException();
+throw new UnsupportedOperationException("reorderRows(VIntIntHashMap newOrder) is not supported in "
+                                       +"ncsa.d2k.modules.core.datatype.table.sparse2 package. " +
+                                       "use reorderTows(int[] newOrder) instead.");
 /*// !!: ???
         NewSparseMutableRLTable retVal = new NewSparseMutableRLTable();
         Column[] newColumns = new Column[columns.size()];
@@ -868,6 +1188,12 @@ throw new UnsupportedOperationException();
           therow.add(pos1);
         }
       }
+
+      //VG: need also to swap the columns in the array list _columns!
+      Object col1 = _columns.get(pos1);
+      Object col2 = _columns.get(pos2);
+      _columns.set(pos1, col2);
+      _columns.set(pos2, col1);
 
     }  //swapColumns
 
@@ -1225,25 +1551,48 @@ throw new UnsupportedOperationException();
 
     /**
      * Sorts this Table according to the natural order of Column no. <code>col</code>
-     *
-     * @todo there is a problem with this method: getNewOrder will return a
-     * mapping of the new order that contains only rows from the sorting column.
-     * which means, some columns might be half sorted.
+     * rows in column no. col that have no value in it (for whatever reason) are sorted
+     * to the end of the new order.
      *
      * @param col      the index of the Column according to which this table is to be sorted
      */
     public void sortByColumn (int col) {
 
-      // LAM sorting not done
-
-      /*  Column sorting = getColumn(col);
+      try{
+        Column sorting = getColumn(col);
         if (sorting != null) {
-            VIntIntHashMap sortOrder = ((AbstractSparseColumn)sorting).getSortedOrder();
-            sort(sortOrder);
-            //  sorting.sort(this);
-        }*/
+          //sortOrder contains only indices of column col.
+          int[] sortOrder = ( (AbstractSparseColumn) sorting).getColumnSortedOrder();
 
-      throw new UnsupportedOperationException();
+//newOrder will contain all rows indices
+          int[] newOrder = new int[this.getNumRows()];
+          //copying first the sort order of column col
+          System.arraycopy(sortOrder, 0, newOrder, 0, sortOrder.length);
+          int counter = 0; //counts rows with no values in column col
+          //for each row that has no value in column col
+          for (int i=0; i < newOrder.length; i++) {
+            if(((AbstractSparseColumn)sorting).isValueDefault(i) ||
+               sorting.isValueEmpty(i) || sorting.isValueMissing(i)){
+              //put its index at the end of new order
+              newOrder[sortOrder.length + counter] = i;
+              counter++;
+            }
+          }
+          //for each column - get it sorted according to newOrder
+          for (int i = 0; i < this.getNumColumns(); i++) {
+            Column newCol = this.getColumn(i).reorderRows(newOrder);
+            this.setColumn(newCol, i);
+          }
+          //reorder the rows set.
+          this.reorderRows(newOrder);
+
+        }
+      }catch(Exception e){
+        System.out.println(e.getMessage());
+        e.printStackTrace();
+      }
+
+
     }
 
     /**
@@ -1260,7 +1609,7 @@ throw new UnsupportedOperationException();
 
       // LAM sorting not working
 
-      /*  if ((begin < 0) || (begin >= this._numRows)) {
+        if ((begin < 0) || (begin >= this._numRows)) {
             throw  new java.lang.RuntimeException("Column index out of range: "
                     + begin);
         }
@@ -1269,10 +1618,55 @@ throw new UnsupportedOperationException();
                     + end);
         }
         if (end < begin) {
-            throw  new java.lang.RuntimeException("End parameter, " + end +
-                    ", is less than begin, " + begin);
+            //throw  new java.lang.RuntimeException("End parameter, " + end +
+              //      ", is less than begin, " + begin);
+              System.out.println("SparseMutableTable: WARNING - sortByColumn was " +
+                                 "called with end argument = " + end +
+                                 " which is less than the beging argument = " + begin +
+                                 ". Doing nothing.");
+              return;
         }
-        Column sorting = getColumn(col);
+        try{
+          Column sorting = getColumn(col);
+          if (sorting != null) {
+            int[] sortOrder = ( (AbstractSparseColumn) sorting).
+                getColumnSortedOrder(begin,
+                                     end);
+
+            int[] newOrder = new int[this.getNumRows()];
+            //keeping the order of the first beging-1 rows as is.
+            for (int i = 0; i < begin; i++) {
+              newOrder[i] = i;
+            }
+
+            //copying the new order from sortOrder.
+            System.arraycopy(sortOrder, 0, newOrder, begin, sortOrder.length);
+            int counter = 0; //counts rows with no values in column col in the range [begin, end]
+
+            //for each row that has no value in column col
+            for (int i = begin; i <= end; i++) {
+              if ( ( (AbstractSparseColumn) sorting).isValueDefault(i) ||
+                  sorting.isValueEmpty(i) || sorting.isValueMissing(i)) {
+                //put its index at the end of the sub new order
+                newOrder[end + 1 + counter] = i;
+                counter++;
+              }
+            }
+
+            for (int i = end + 1; i < newOrder.length; i++) {
+              newOrder[i] = i;
+            }
+
+            for (int i = 0; i < this.getNumColumns(); i++) {
+              Column newCol = this.getColumn(i).reorderRows(newOrder);
+              this.setColumn(newCol, i);
+            }
+            this.reorderRows(newOrder);
+          }
+        }catch(Exception e){
+          e.printStackTrace();
+        }
+      /*  Column sorting = getColumn(col);
         if (sorting != null) {
             VIntIntHashMap sortOrder = ((AbstractSparseColumn)sorting).getSortedOrder(begin,
                     end);
@@ -1280,7 +1674,7 @@ throw new UnsupportedOperationException();
             //      sorting.sort(this, begin, end);
         }*/
 
-      throw new UnsupportedOperationException();
+
     }
 
     /**
