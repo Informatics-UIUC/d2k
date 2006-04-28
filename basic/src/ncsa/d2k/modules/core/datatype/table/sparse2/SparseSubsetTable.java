@@ -5,12 +5,30 @@ import java.util.*;
 import gnu.trove.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 
+/**
+ * A representation of a subset.  The columns are shared with the full table,
+ * but only the row indices in the subset are exposed.
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2005</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ */
 public class SparseSubsetTable
     extends SparseExampleTable {
 
+  /**
+   * The subset of rows
+   */
   protected int[] subset;
 
+  /**
+   *
+   * @param table SparseTable
+   */
   protected SparseSubsetTable(SparseTable table) {
     super(table);
 
@@ -18,7 +36,6 @@ public class SparseSubsetTable
       setSubset( ((SparseSubsetTable)table).getSubset());
     }
     else {
-
       int[] rows = new int[table.getNumRows()];
       for (int i = 0; i < rows.length; i++) {
         rows[i] = i;
@@ -27,7 +44,11 @@ public class SparseSubsetTable
     }
   }
 
-
+  /**
+   *
+   * @param table SparseTable
+   * @param rows int[]
+   */
   public SparseSubsetTable(SparseTable table, int[] rows) {
     super(table);
     setSubset(rows);
@@ -236,10 +257,18 @@ public class SparseSubsetTable
           @param len the length of the subset
           @return a subset of this Table
    */
-  /*public Table getSubset(int start, int len) {
-    // LAM
-    return null;
-     }*/
+  public Table getSubset(int start, int len) {
+
+    int[] sample = new int[len];
+    for (int i = 0; i < len; i++) {
+      sample[i] = subset[start+i];
+    }
+
+    SparseSubsetTable tbl = new SparseSubsetTable(this);
+    tbl.setSubset(sample);
+
+    return tbl;
+  }
 
   /**
    * get a subset of the table consisting of the rows identified by the array
@@ -247,9 +276,15 @@ public class SparseSubsetTable
    * @param rows the rows to be in the subset.
    * @return
    */
-  /*public Table getSubset(int[] rows) {
-    return new SparseSubsetTable(this, rows);
-     }*/
+  public Table getSubset(int[] rows) {
+    int[] sample = new int[rows.length];
+    for(int i = 0; i < rows.length; i++) {
+      sample[i] = subset[rows[i]];
+    }
+    SparseSubsetTable tbl = new SparseSubsetTable(this);
+    tbl.setSubset(sample);
+    return tbl;
+  }
 
   /**
    * Create a copy of this Table. This is a deep copy, and it contains a copy of
@@ -257,8 +292,8 @@ public class SparseSubsetTable
    * @return a copy of this Table
    */
   public Table copy() {
-    // LAM
-    throw new UnsupportedOperationException();
+    Table t = super.copy(subset);
+    return t;
   }
 
   /**
@@ -267,8 +302,12 @@ public class SparseSubsetTable
    * @return a copy of this Table
    */
   public Table copy(int start, int len) {
-    // LAM
-    throw new UnsupportedOperationException();
+    int[] newsubset = new int[len];
+    for(int i = 0; i < len; i++) {
+      newsubset[i] = subset[start+i];
+    }
+
+    return super.copy(newsubset);
   }
 
   /**
@@ -277,8 +316,12 @@ public class SparseSubsetTable
    * @return a copy of this Table
    */
   public Table copy(int[] rows) {
-    // LAM
-    throw new UnsupportedOperationException();
+    int [] tmp = new int [rows.length];
+    for (int i = 0; i < rows.length; i++) {
+       tmp[i] = subset[rows[i]];
+    }
+
+    return super.copy(tmp);
   }
 
   /**
@@ -352,8 +395,7 @@ public class SparseSubsetTable
    * @return a Row object that can access the rows of the table.
    */
   public Row getRow() {
-    // LAM
-    throw new UnsupportedOperationException();
+    return new SparseRow(this);
   }
 
   /**
@@ -362,7 +404,6 @@ public class SparseSubsetTable
    */
   public ExampleTable toExampleTable() {
     // LAM
-    //return null;
     return this;
   }
 
@@ -391,8 +432,17 @@ public class SparseSubsetTable
    * @return true if there are any missing values, false if there are no missing values
    */
   public boolean hasMissingValues() {
-    // LAM
-    throw new UnsupportedOperationException();
+    for (int i = 0; i < _columns.size(); i++) {
+      AbstractSparseColumn c = (AbstractSparseColumn)_columns.get(i);
+
+      VIntHashSet missing = c.getMissing();
+      // now loop through the subset and see if any are contained in the missing set
+      for(int j = 0; j < subset.length; j++) {
+        if(missing.contains(subset[j]))
+          return true;
+      }
+    }
+    return false;
   }
 
   /** return the default missing value for integers, both short, int and long.
@@ -481,8 +531,15 @@ public class SparseSubsetTable
    * @return true if there are any missing values, false if there are no missing values
    */
   public boolean hasMissingValues(int columnIndex) {
-    // LAM
-    throw new UnsupportedOperationException();
+    AbstractSparseColumn c = (AbstractSparseColumn)_columns.get(columnIndex);
+
+    VIntHashSet missing = c.getMissing();
+    // now loop through the subset and see if any are contained in the missing set
+    for(int j = 0; j < subset.length; j++) {
+      if(missing.contains(subset[j]))
+        return true;
+    }
+    return false;
   }
 
   /**
@@ -552,17 +609,31 @@ public class SparseSubsetTable
     * @param howMany
     */
    public void addRows(int howMany) {
-     // LAM
-     throw new UnsupportedOperationException();
+     int mark = super.getNumRows();
+     super.addRows(howMany);
+     int[] newsubset = new int[subset.length + howMany];
+     System.arraycopy(subset, 0, newsubset, 0, subset.length);
+     for (int i = subset.length ; i < subset.length  + howMany; i++){
+       newsubset[i] = mark++;
+     }
+     subset = newsubset;
    }
 
   /**
    * Remove a row from this Table.
    * @param row the row to remove
    */
-  public void removeRow(int row) {
-    // LAM
-    throw new UnsupportedOperationException();
+  public void removeRow(int pos) {
+    int[] newsubset = new int[subset.length - 1];
+
+    System.arraycopy(subset, 0, newsubset, 0, pos);
+    System.arraycopy(
+       subset,
+       pos + 1,
+       newsubset,
+       pos,
+       subset.length - pos - 1);
+    subset = newsubset;
   }
 
   /**
@@ -570,9 +641,17 @@ public class SparseSubsetTable
           @param start the start position of the range to remove
           @param len the number to remove-the length of the range
    */
-  public void removeRows(int start, int len) {
-    // LAM
-    throw new UnsupportedOperationException();
+  public void removeRows(int pos, int cnt) {
+    int[] newsubset = new int[subset.length - cnt];
+    System.arraycopy(subset, 0, newsubset, 0, pos);
+    System.arraycopy(
+       subset,
+       pos + cnt,
+       newsubset,
+       pos,
+       subset.length - pos - cnt);
+
+    subset = newsubset;
   }
 
   /**
@@ -744,8 +823,10 @@ public class SparseSubsetTable
           @param col the column to sort by
    */
   public void sortByColumn(int col) {
-    // LAM
-    throw new UnsupportedOperationException();
+    AbstractSparseColumn asc = (AbstractSparseColumn)getColumn(col);
+
+    int[] neworder = asc.getColumnSortedOrder(subset);
+    this.setSubset(neworder);
   }
 
   /**
@@ -755,8 +836,10 @@ public class SparseSubsetTable
    @param end the row no. which marks the end of the column segment to be sorted
    */
   public void sortByColumn(int col, int begin, int end) {
-    // LAM
-    throw new UnsupportedOperationException();
+    AbstractSparseColumn asc = (AbstractSparseColumn)getColumn(col);
+
+    int[] neworder = asc.getColumnSortedOrder(begin, end);
+    this.setSubset(neworder);
   }
 
 /////////// Collect the transformations that were performed. /////////
@@ -1275,7 +1358,7 @@ public class SparseSubsetTable
    * @return int[] Array of index values.
    */
   public int[] getRowIndices (int rowNumber) {
-    int[] idx = super.getRowIndicesUnsorted(subset[rowNumber]);
+    int[] idx = getRowIndicesUnsorted(rowNumber);
     Arrays.sort(idx);
     return idx;
   }
@@ -1322,6 +1405,4 @@ public class SparseSubsetTable
    * @return
    */
   //public TableFactory getTableFactory();
-
-
 }
