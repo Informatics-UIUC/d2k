@@ -11,8 +11,10 @@ import java.util.*;
 
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-
+import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 import gnu.trove.*;
+
+import java.util.*;
 
 /**
  * SparseExampleTable is identical to SparseTable with a few addtions:
@@ -592,6 +594,12 @@ public class SparseExampleTable
    * @return a new copy of the table.
    */
   public Table copy(int start, int length) {
+
+    int[] subset = new int[length];
+    for(int i=0; i<length; i++){
+      subset[i] = start + i;
+    }
+    return this.copy(subset);
     //          int[] newsubset = this.resubset(start, length);
     // Copy failed, maybe objects in a column that are not serializable.
     /*Column[] cols = new Column[this.getNumColumns()];
@@ -638,65 +646,132 @@ public class SparseExampleTable
              }
              return  mti;*/
 
-    // LAM
-    return null;
+
   }
 
   /**
-   * Make a deep copy of the table, include length rows begining at start
-   * @param start the first row to include in the copy
-   * @param length the number of rows to include
-   * @return a new copy of the table.
+   * creates a deep copy of this table, includes only rows form subset int array
+   * @param subset int[] an array of indices of rows in this table to be included in the returned value
+   * @return Table returns a SparseExampleTable with only a subset of its rows,
+   * defined by subset.
    */
   public Table copy(int[] subset) {
-    //          TableImpl vt;
-    //          int[] newsubset = this.resubset(subset);
-    // Copy failed, maybe objects in a column that are not serializable.
-    /*Column[] cols = new Column[this.getNumColumns()];
-             //Column[] oldcols = this.getColumns();
-             for (int i = 0; i < cols.length; i++) {
-        //System.out.println(i);
-        cols[i] = getColumn(i).getSubset(subset);
-             }
-             // Copy the subset, the inputs set, the output set, and the test and train sets.
-             int len = inputColumns == null ? 0 : inputColumns.length;
-             int[] newins = new int[len];
-             if (len > 0)
-        System.arraycopy(inputColumns, 0, newins, 0, inputColumns.length);
-             len = outputColumns == null ? 0 : outputColumns.length;
-             int[] newouts = new int[len];
-             if (len > 0)
-        System.arraycopy(outputColumns, 0, newouts, 0, outputColumns.length);
-             //    len = testSet == null ? 0 : testSet.length;
-             //    int[] newtest = new int[len];
-             //    if (len > 0)
-             //      System.arraycopy(testSet, 0, newtest, 0, testSet.length);
-             //
-             //    len = trainSet == null ? 0 : trainSet.length;
-             //    int[] newtrain = new int[len];
-             //    if (len > 0)
-             //      System.arraycopy(trainSet, 0, newtrain, 0, trainSet.length);
-             NewSparseExampleTable mti = new NewSparseExampleTable(cols);
-             //          int [] ns = new int [newsubset.length];
-             //          for (int i = 0 ; i < ns.length ; i++) ns [i] = i;
-             //          mti.subset = ns;
-             mti.setInputFeatures(newins);
-             mti.setOutputFeatures(newouts);
-             // LAM-tlr, this is wrong, we need to subset the test and train sets here.
-             mti.setTestingSet(new int[0]);
-             mti.setTrainingSet(new int[0]);
-             mti.setLabel(this.getLabel());
-             mti.setComment(this.getComment());
-             //copy the transformations
-             try {
-     transformations = (ArrayList)((ArrayList)this.getTransformations()).clone();
-             } catch (Exception e) {
-        e.printStackTrace();
-        transformations = null;
-             }
-             return  mti;*/
-    // LAM
-    return null;
+    //the returned value
+    SparseExampleTable newTable = new SparseExampleTable();
+
+    //sorting the subset
+    Arrays.sort(subset);
+
+
+/*
+    //will hold indices of rows that are not included in the subset
+    TIntArrayList removeRows = new TIntArrayList();
+
+    //i index of rows in this table. ctr index into subset.
+    int i,ctr;
+    //for each row in this table
+    for(i=0, ctr=0; ctr<subset.length && i<this.getNumRows(); i++){
+      //if it is part of subset then promote ctr
+      if(subset[ctr] == i){
+        ctr++;
+      }else{
+      //otherwise add it to removeRows
+        removeRows.add(i);
+      }
+    }
+    //if there are still rows left after last index in subset
+    //add them to removeRows
+    if(i<this._rows.size()){
+      for(; i<_rows.size(); i++){
+        removeRows.add(i);
+      }
+    }
+    */
+
+    ArrayList newColumns = new ArrayList();
+    for( int i=0; i<_columns.size(); i++){
+      AbstractSparseColumn col = (AbstractSparseColumn)_columns.get(i);
+      Column subCol = col.getSubset(subset);
+      newTable.addColumn(subCol);
+//      newColumns.add(i, subCol);
+    }
+
+
+   /*
+    //this will be the rows in the returned value
+    ArrayList newRows = new ArrayList();
+    //for each index in subset
+    for( i=0; i<subset.length; i++){
+      //get the row element
+      TIntArrayList row = (TIntArrayList)this._rows.get(subset[i]);
+      //remove indices of columns that now no longer have values in this row
+      for(int j=0; j<this._columns.size(); j++){
+        AbstractSparseColumn currCol = (AbstractSparseColumn )_columns.get(j);
+        if(!currCol.doesValueExist(subset[i])){
+          row.remove(j);
+        }//if value does not exist
+      }//for columns
+      newRows.add(i, row);
+    }//for subset
+
+    */
+
+    //setting the columns and the rows
+//    newTable._columns = newColumns;
+  //  newTable._rows = newRows;
+
+
+    //setting input and output columns
+    newTable.inputColumns = new int[this.inputColumns.length];
+    System.arraycopy(this.inputColumns, 0, newTable.inputColumns, 0, this.inputColumns.length);
+    newTable.outputColumns = new int[this.outputColumns.length];
+    System.arraycopy(this.outputColumns, 0, newTable.outputColumns, 0, this.outputColumns.length);
+
+//setting the number of rows
+//    newTable.setNumRows(subset.length);
+
+
+    //creating the train set and test set:
+
+    //building hash sets of the current train and test sets
+    TIntHashSet currentTestSet = new TIntHashSet();
+    for(int i=0; i<this.testSet.length; i++){
+      currentTestSet.add(this.testSet[i]);
+    }
+    TIntHashSet currentTrainSet = new TIntHashSet();
+    for( int i=0; i<this.trainSet.length; i++){
+      currentTrainSet.add(this.trainSet[i]);
+    }
+
+    TIntHashSet newTestSet = new TIntHashSet();
+    TIntHashSet newTrainSet= new TIntHashSet();
+    //for each index in subset
+    for( int i=0; i<subset.length; i++){
+      //if it is in this table's train set
+      if(currentTrainSet.contains(subset[i])){
+        //add i to the new table train set
+        newTrainSet.add(i);
+      }
+      //if it is in this table's test set
+      if(currentTestSet.contains(subset[i])){
+        //add i to the new table's test set
+        newTestSet.add(i);
+      }
+    }//for i
+
+    //set the hash sets as arrays in the new table.
+    newTable.testSet = newTestSet.toArray();
+    newTable.trainSet = newTrainSet.toArray();
+
+    //setting properties of SparseTable...
+    newTable.setLabel(this.getLabel());
+    newTable.setComment(this.getComment());
+    newTable.setNumColumns(this.getNumColumns());
+
+    //copying the transformations
+    newTable.transformations = (ArrayList)((ArrayList)this.getTransformations()).clone();
+
+    return newTable;
   }
 
   /**
