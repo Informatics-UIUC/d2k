@@ -919,6 +919,33 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
      }
 
      /**
+      * returns an int array with values from rows[begin] through rows[end] (including)
+      * such that value at row retruned_value[i] is less than or equal to value
+      * at row number returned_value[i+1]
+      * @param begin int beginning offset for values in rows
+      * @param end int end offset for values in rows
+      * @return int[] contains values from rows[begin] through rows[end] (including)
+      * such that value at row retruned_value[i] is less than or equal to value
+      * at row number returned_value[i+1]
+
+      */
+     public int[] getColumnSortedOrder (int[] rows, int begin, int end) {
+        int[] keys = new int[end - begin + 1];
+        for(int i=0; i<keys.length; i++){
+          keys[0] = rows[begin+i];
+        }
+        int[] retVal = new int[keys.length];
+           Element[] values = getValuesForSort(keys);
+           Arrays.sort(values, new ObjectComparator());
+           for (int i = 0; i < values.length; i++) {
+               retVal[i] = values[i].getIndex();
+           }
+           return  retVal;
+
+    }
+
+
+     /**
       * returns an int array with values from rows in a new order
       * such that element in row number returned_value[i] is less than
       * or equal to element in row number returned_value[i+1]
