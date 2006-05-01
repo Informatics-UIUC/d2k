@@ -839,7 +839,8 @@ public class SparseSubsetTable
     AbstractSparseColumn asc = (AbstractSparseColumn)getColumn(col);
 
     int[] neworder = asc.getColumnSortedOrder(begin, end);
-    this.setSubset(neworder);
+    System.arraycopy(neworder, 0, this.subset, begin, neworder.length);
+ //   this.setSubset(neworder);
   }
 
 /////////// Collect the transformations that were performed. /////////
