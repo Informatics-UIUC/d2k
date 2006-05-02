@@ -17,6 +17,7 @@ import java.util.*;
 import javax.swing.*;
 
 import ncsa.d2k.modules.core.transform.StaticMethods;
+import ncsa.d2k.modules.projects.vered.test.PrintTable;
 
 
 import ncsa.d2k.core.modules.*;
@@ -168,6 +169,8 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
         if(sortorder != null && sortorder.length != 0)
           cSort.sort(sortorder);
 
+
+
           if(this.reorderColumns) cSort.reorder(sortorder);
 
         pushOutput(table,0);
@@ -176,23 +179,54 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
        //vered - added this method, to figure out the cascading sort order
        //according to sortOrderNames
        private int[] getSortOrder(Table table) throws Exception{
-
          int[] retVal = new int[0];
          HashMap columns = StaticMethods.getAvailableAttributes(table);
          if(columns.size() == 0)
            System.out.println(getAlias() + ": Warning - The input table has no columns.");
 
+           //VG - with new code to reorder columns the sorted order has to
+           //include all columns
+           retVal = new int[columns.size()];
+           for(int i=0; i<this.sortOrderNames.length; i++){
+             int idx = ((Integer)columns.get(this.sortOrderNames[i])).intValue();
+             retVal[i] = idx;
+           }
 
-
-         retVal = StaticMethods.getIntersectIds(sortOrderNames, columns);
-         if(retVal.length < sortOrderNames.length){
-
-
+           //adding indices that are not of columns in sortOrderNames
+           //to the end of retVal.
+         int[] toSortBy = StaticMethods.getIntersectIds(sortOrderNames, columns);
+         if(toSortBy.length < sortOrderNames.length){
            throw new Exception(getAlias() +
-               ": Some of the configured labels were found in the input table. " +
+               ": Some of the configured labels were not found in the input table. " +
                "\nPlease reconfigure this module.");
          }
 
+         Arrays.sort(toSortBy);
+         //j index into toSortBy, i index into the columns of the input table
+         //k index into retVal
+         int i,j,k;
+           for(i=0, j=0, k=sortOrderNames.length;
+               i<columns.size() && j<toSortBy.length && k<retVal.length; i++){
+             //if i is an index of a column already in retVal - promote j and do nothing.
+             if(i == toSortBy[j]) {
+               j++;
+               continue;
+             }
+             //otherwise i is an index to be put in retVal[k]
+             retVal[k] = i;
+             k++;
+           }//for i,j,k
+
+           for(; k<retVal.length && i<columns.size(); i++,k++){
+             retVal[k] = i;
+           }
+         /*
+         retVal = StaticMethods.getIntersectIds(sortOrderNames, columns);
+         if(retVal.length < sortOrderNames.length){
+           throw new Exception(getAlias() +
+               ": Some of the configured labels were not found in the input table. " +
+               "\nPlease reconfigure this module.");
+         }*/
          return retVal;
        }//getSortOrder
 
