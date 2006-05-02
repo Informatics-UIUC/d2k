@@ -836,11 +836,18 @@ public class SparseSubsetTable
    @param end the row no. which marks the end of the column segment to be sorted
    */
   public void sortByColumn(int col, int begin, int end) {
+    //the sorting column
     AbstractSparseColumn asc = (AbstractSparseColumn)getColumn(col);
-
-    int[] neworder = asc.getColumnSortedOrder(begin, end);
+    //getting the row indices that are in subset[begin] through subset[end]
+    int[] validRows = new int[end - begin + 1];
+    for(int i=0; i<validRows.length; i++){
+      validRows[i] = subset[i+begin];
+    }
+    //getting the new order for these indices
+    int[] neworder = asc.getColumnSortedOrder(validRows);
+    //copying neworder into the subset, between index begin through end.
     System.arraycopy(neworder, 0, this.subset, begin, neworder.length);
- //   this.setSubset(neworder);
+
   }
 
 /////////// Collect the transformations that were performed. /////////
