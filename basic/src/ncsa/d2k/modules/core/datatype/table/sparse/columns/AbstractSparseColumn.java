@@ -17,7 +17,7 @@ import  ncsa.d2k.modules.core.datatype.table.basic.*;
 import  ncsa.d2k.modules.core.datatype.table.sparse.*;
 import  ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import  java.util.*;
-
+import gnu.trove.*;
 
 /**
  * Title:        Sparse Table
@@ -907,6 +907,8 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
       * @author Vered Goren - this method is used by sparse mutable table in sparse2
       */
      public int[] getColumnSortedOrder (int begin, int end) {
+
+
          int[] keys = VHashService.getIndicesInRange(begin, end, getElements());
          int[] retVal = new int[keys.length];
             Element[] values = getValuesForSort(keys);
