@@ -1644,11 +1644,6 @@ throw new UnsupportedOperationException("reorderRows(VIntIntHashMap newOrder) is
           Column sorting = getColumn(col);
           if (sorting != null) {
 
-            //debug
-            if(begin == 12 && end == 12 && col == 7){
-              System.out.println("Stop here.");
-            }
-            //end debug
 
             int[] sortOrder = ( (AbstractSparseColumn) sorting).
                 getColumnSortedOrder(begin,
