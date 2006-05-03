@@ -1643,12 +1643,19 @@ throw new UnsupportedOperationException("reorderRows(VIntIntHashMap newOrder) is
         try{
           Column sorting = getColumn(col);
           if (sorting != null) {
+
+            //debug
+            if(begin == 12 && end == 12 && col == 7){
+              System.out.println("Stop here.");
+            }
+            //end debug
+
             int[] sortOrder = ( (AbstractSparseColumn) sorting).
                 getColumnSortedOrder(begin,
                                      end);
 
             int[] newOrder = new int[this.getNumRows()];
-            //keeping the order of the first beging-1 rows as is.
+            //keeping the order of the first begin-1 rows as is.
             for (int i = 0; i < begin; i++) {
               newOrder[i] = i;
             }
@@ -1658,14 +1665,15 @@ throw new UnsupportedOperationException("reorderRows(VIntIntHashMap newOrder) is
             int counter = 0; //counts rows with no values in column col in the range [begin, end]
 
             //for each row that has no value in column col
-            for (int i = begin; i <= end; i++) {
+            //VG - this was supposed to be taken care of already by the comparing method of Element.
+/*            for (int i = begin; i <= end; i++) {
               if ( ( (AbstractSparseColumn) sorting).isValueDefault(i) ||
                   sorting.isValueEmpty(i) || sorting.isValueMissing(i)) {
                 //put its index at the end of the sub new order
-                newOrder[end + 1 + counter] = i;
+                newOrder[begin + sortOrder.length + counter] = i;
                 counter++;
               }
-            }
+            }*/
 
             for (int i = end + 1; i < newOrder.length; i++) {
               newOrder[i] = i;
