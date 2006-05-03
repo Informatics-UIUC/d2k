@@ -52,6 +52,37 @@ public class SparseSubsetTable
   public SparseSubsetTable(SparseTable table, int[] rows) {
     super(table);
     setSubset(rows);
+    //subsetting the train and test set.
+    if(table instanceof ExampleTable ){
+      ExampleTable et = (ExampleTable) table;
+      this.trainSet = this.getSubArray(et.getTrainingSet(), this.trainSet);
+      this.testSet = this.getSubArray(et.getTestingSet(), this.testSet);
+
+    }
+  }
+
+
+  /**
+   * returns an int array with indices that appear both in subsetMe and includeMe.
+   *
+   * @param includeMe int[] indices that may be included in the returned value
+   * @param subsetMe int[] an aray to be subset according to the intersection of subsetMe and includeMe
+   * @return int[] the intersection of subsetMe and includeMe.
+   */
+  protected int[] getSubArray(int[] includeMe, int[] subsetMe){
+    TIntHashSet setInclude = new TIntHashSet();
+    TIntArrayList listReturned = new TIntArrayList();
+    setInclude.addAll(includeMe);
+    //retain all indices from subsetMe that are also in includeMe and put them in listReturned
+    for (int subIdx = 0; subIdx < subsetMe.length; subIdx++) {
+      if (setInclude.contains(subsetMe[subIdx])) {
+        listReturned.add(subsetMe[subIdx]);
+      }
+    }
+
+    return listReturned.toNativeArray();
+
+
   }
 
   /**

@@ -349,6 +349,7 @@ public class SparseMutableTable extends SparseTable
       if (newColumn instanceof AbstractSparseColumn) {
           col = (AbstractSparseColumn)newColumn;
       }
+
       else {
           switch (newColumn.getType()) {
               case ColumnTypes.BOOLEAN:
@@ -390,6 +391,20 @@ public class SparseMutableTable extends SparseTable
                   break;
           }                   //switch case
       }
+
+      //VG: added this - copy missing and empty values
+      for(int i=0; i<newColumn.getNumRows(); i++){
+        if(newColumn.isValueEmpty(i)){
+          col.setValueToEmpty(true, i);
+        }
+      }
+      for (int i = 0; i < newColumn.getNumRows(); i++) {
+        if (newColumn.isValueMissing(i)) {
+          col.setValueToMissing(true, i);
+        }
+      }
+
+
       return col;
     }
 
@@ -1606,7 +1621,7 @@ throw new UnsupportedOperationException("reorderRows(VIntIntHashMap newOrder) is
      */
     public void sortByColumn (int col, int begin, int end) {
 
-      // LAM sorting not working
+
 
         if ((begin < 0) || (begin >= this._numRows)) {
             throw  new java.lang.RuntimeException("Column index out of range: "

@@ -341,7 +341,7 @@ public class SparseExampleTable
     //*******************************************************
      // DC says we may need to modify the train and test sets.
      // should we make copies of the arrays for the subset??
-     // LAM!
+     // VG had introduced code that subsets the train and test sets to include only indices from sample
      int[] sample = new int[len];
     for (int i = 0; i < len; i++) {
       sample[i] = pos + i;
@@ -381,7 +381,7 @@ public class SparseExampleTable
     //*******************************************************
      // DC says we may need to modify the train and test sets.
      // should we make copies of the arrays for the subset??
-     // LAM!
+     // // VG had introduced code that subsets the train and test sets to include only indices from rows
      SparseSubsetTable et = new SparseSubsetTable(this, rows);
     return et;
 
