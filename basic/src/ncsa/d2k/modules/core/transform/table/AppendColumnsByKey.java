@@ -114,6 +114,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 			case 0: return "<p>      First of two tables to append together.    </p>";
 			case 1: return "<p>      Second of two tables to append together.    </p>";
 			case 2: return "<p>      This is the name of the key column whose values will be used to match       rows in the first table to rows in the second.    </p>";
+        case 3: return "<P>A Table Factory to determine the output table type.</p>";
 			default: return "No such input";
 		}
 	}
@@ -130,6 +131,7 @@ public class AppendColumnsByKey extends ncsa.d2k.core.modules.DataPrepModule {
 				return "Second Table";
 			case 2:
 				return "Key Column Name";
+      case 3: return "Table Factory";
 			default: return "NO SUCH INPUT!";
 		}
 	}
