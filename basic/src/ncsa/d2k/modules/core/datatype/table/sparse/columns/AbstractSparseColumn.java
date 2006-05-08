@@ -1015,6 +1015,39 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
       missing = new VIntHashSet(_missing);
     }
 
+//VERED GOREN: implementing missing values related methods from Column interface.
+    public boolean[] getMissingValues(){
+      boolean[] retVal = new boolean[0];
+      //get the missing values indices
+      int[] _missing = this.missing.toArray();
+      //if there are non return retVal as is
+      if(_missing.length == 0) return retVal;
+      //if there are some sort them
+      Arrays.sort(_missing);
+      //instantiate the missing values array to have as many itmes as the last index + 1
+      retVal = new boolean[_missing[_missing.length-1] + 1];
+      //for each index in retVal
+      for(int r=0,m=0; r<retVal.length && m<_missing.length; r++){
+        //if it is a missing value index
+        if(r == _missing[m]) {
+          //set it to true and promot m the index into _missing
+          retVal[r] = true;
+          m++;
+        }//if r is missing
+      }//for r, m
+      return retVal;
+    }//getMissingValues
+
+
+  public void setMissingValues(boolean[] miss){
+    this.missing = new VIntHashSet();
+    for(int i=0; i<miss.length; i++){
+      if(miss[i]){
+        missing.add(i);
+      }//if it is missing
+    }//for i
+  }//setMissingValues
+
 }               //AbstractSparseColumn
 
 
