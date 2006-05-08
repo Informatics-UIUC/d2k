@@ -7,6 +7,7 @@ import java.util.Iterator;
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.datatype.table.basic.BooleanColumn;
 import ncsa.d2k.modules.core.datatype.table.Column;
+import ncsa.d2k.modules.core.datatype.table.NumericColumn;
 import ncsa.d2k.modules.core.datatype.table.basic.ContinuousByteArrayColumn;
 import ncsa.d2k.modules.core.datatype.table.basic.ContinuousCharArrayColumn;
 import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
@@ -14,7 +15,6 @@ import ncsa.d2k.modules.core.datatype.table.basic.FloatColumn;
 import ncsa.d2k.modules.core.datatype.table.basic.IntColumn;
 import ncsa.d2k.modules.core.datatype.table.basic.LongColumn;
 import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
-import ncsa.d2k.modules.core.datatype.table.basic.NumericColumn;
 import ncsa.d2k.modules.core.datatype.table.basic.ShortColumn;
 import ncsa.d2k.modules.core.datatype.table.basic.StringColumn;
 

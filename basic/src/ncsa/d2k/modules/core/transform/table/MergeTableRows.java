@@ -7,9 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.gui.*;
 
 import ncsa.d2k.modules.core.transform.StaticMethods;
 
