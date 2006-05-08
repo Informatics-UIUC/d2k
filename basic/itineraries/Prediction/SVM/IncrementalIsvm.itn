@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
-  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAAgdwgAAAAMAAAAEHQAKERlbGltaXRlZEZpbGVUb1RhYmxlX1BhcnNlIEZpbGUgVG8gVGFibGVz
-cgAbbmNzYS5kMmsuY29yZS5SZXNvdXJjZUVudHJ51S4sIEIDJtICAAJMAAxjYWNoZWRPYmplY3R0
-ABJMamF2YS9sYW5nL09iamVjdDtMAA9vYmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmlu
-Zzt4cHB0ADRuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1Rh
-YmxldAARQ3JlYXRlIElzdm0gTW9kZWxzcQB+AARwdAAzbmNzYS5kMmsubW9kdWxlcy5wcm9qZWN0
-cy52ZXJlZC5zdm0uQ3JlYXRlSXN2bU1vZGVsdAARSW5jcmVtZW50YWxNb2R1bGVzcQB+AARwdAA1
-bmNzYS5kMmsubW9kdWxlcy5wcm9qZWN0cy52ZXJlZC5zdm0uSW5jcmVtZW50YWxNb2R1bGV0AA9F
-dmFsdWF0ZSBNb2RlbHNzcQB+AARwdAAvbmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRpY3Rpb24u
-RXZhbHVhdGVNb2RlbHN0ADFEZWxpbWl0ZWRGaWxlVG9UYWJsZV9DcmVhdGUgRGVsaW1pdGVkIEZp
-bGUgUGFyc2Vyc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LkNy
-ZWF0ZURlbGltaXRlZFBhcnNlcnQAJENob29zZSBBdHRyaWJ1dGVzIGZvciBTdHJlYW1pbmcgRGF0
-YXNxAH4ABHB0ADpuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmF0dHJpYnV0ZS5DaG9v
-c2VBdHRyaWJ1dGVzdAAGRmFuT3V0c3EAfgAEcHQAIm5jc2EuZDJrLmNvcmUubW9kdWxlcy5GYW5P
-dXRNb2R1bGV0AAZGYW5JbjFzcQB+AARwdAAhbmNzYS5kMmsuY29yZS5tb2R1bGVzLkZhbkluTW9k
-dWxldAAiQ2hvb3NlIEF0dHJpYnV0ZXMgZm9yIHRlc3QgZGF0YXNldHNxAH4ABHBxAH4AF3QAHkNy
-ZWF0ZSBNb2RlbCBDb21wYXJpc29uIFRhYmxlMXNxAH4ABHB0ADtuY3NhLmQyay5tb2R1bGVzLmNv
-cmUucHJlZGljdGlvbi5DcmVhdGVNb2RlbENvbXBhcmlzb25UYWJsZXQAF1ByZWRpY3Rpb24gVGFi
-bGUgUmVwb3J0c3EAfgAEcHQAL25jc2EuZDJrLm1vZHVsZXMuY29yZS52aXMuUHJlZGljdGlvblRh
-YmxlUmVwb3J0dAANTG9hZCBUZXN0IFNldHNxAH4ABHB0ADJuY3NhLmQyay5jb3JlLm1vZHVsZXMu
-YWdlbmRhLk5lc3RlZEl0aW5lcmFyeU1vZHVsZXQAB0Zhbk91dDFzcQB+AARwdAAibmNzYS5kMmsu
-Y29yZS5tb2R1bGVzLkZhbk91dE1vZHVsZXQAE0luY3JlbWVudGluZyBNb2R1bGVzcQB+AARwdAAz
-bmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRpY3Rpb24uSW5jcmVtZW50aW5nTW9kdWxldAAkRGVs
-aW1pdGVkRmlsZVRvVGFibGVfSW5wdXQgRmlsZSBOYW1lc3EAfgAEcHQAMm5jc2EuZDJrLm1vZHVs
-ZXMuY29yZS5pby5maWxlLmlucHV0LklucHV0MUZpbGVOYW1ldAALQ2F0Y2ggTW9kZWxzcQB+AARw
-dAArbmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRpY3Rpb24uQ2F0Y2hNb2RlbHg=" label="IncrementalIsvm.itn">
+AAARdwgAAAAXAAAAD3QAHkNyZWF0ZSBNb2RlbCBDb21wYXJpc29uIFRhYmxlMXNyABtuY3NhLmQy
+ay5jb3JlLlJlc291cmNlRW50cnkAAAAAAAAAAQIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xh
+bmcvT2JqZWN0O0wAD29iamVjdENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAO25j
+c2EuZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLkNyZWF0ZU1vZGVsQ29tcGFyaXNvblRhYmxl
+dAAPRXZhbHVhdGUgTW9kZWxzc3EAfgAEcHQAL25jc2EuZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0
+aW9uLkV2YWx1YXRlTW9kZWxzdAAqTG9hZCBUZXN0IFNldF9DcmVhdGUgRGVsaW1pdGVkIEZpbGUg
+UGFyc2Vyc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LkNyZWF0
+ZURlbGltaXRlZFBhcnNlcnQAC0NhdGNoIE1vZGVsc3EAfgAEcHQAK25jc2EuZDJrLm1vZHVsZXMu
+Y29yZS5wcmVkaWN0aW9uLkNhdGNoTW9kZWx0ABNJbmNyZW1lbnRpbmcgTW9kdWxlc3EAfgAEcHQA
+M25jc2EuZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLkluY3JlbWVudGluZ01vZHVsZXQAIUxv
+YWQgVGVzdCBTZXRfUGFyc2UgRmlsZSBUbyBUYWJsZXNxAH4ABHB0ADRuY3NhLmQyay5tb2R1bGVz
+LmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1RhYmxldAAdTG9hZCBUZXN0IFNldF9JbnB1
+dCBGaWxlIE5hbWVzcQB+AARwdAAybmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQu
+SW5wdXQxRmlsZU5hbWV0ACRDaG9vc2UgQXR0cmlidXRlcyBmb3IgU3RyZWFtaW5nIERhdGFzcQB+
+AARwdAA6bmNzYS5kMmsubW9kdWxlcy5jb3JlLnRyYW5zZm9ybS5hdHRyaWJ1dGUuQ2hvb3NlQXR0
+cmlidXRlc3QAB0Zhbk91dDFzcQB+AARwdAAibmNzYS5kMmsuY29yZS5tb2R1bGVzLkZhbk91dE1v
+ZHVsZXQABkZhbk91dHNxAH4ABHBxAH4AIHQABkZhbkluMXNxAH4ABHB0ACFuY3NhLmQyay5jb3Jl
+Lm1vZHVsZXMuRmFuSW5Nb2R1bGV0ACJDaG9vc2UgQXR0cmlidXRlcyBmb3IgdGVzdCBkYXRhc2V0
+c3EAfgAEcHEAfgAddAANTG9hZCBUZXN0IFNldHNxAH4ABHB0ADJuY3NhLmQyay5jb3JlLm1vZHVs
+ZXMuYWdlbmRhLk5lc3RlZEl0aW5lcmFyeU1vZHVsZXQAF1ByZWRpY3Rpb24gVGFibGUgUmVwb3J0
+c3EAfgAEcHQAL25jc2EuZDJrLm1vZHVsZXMuY29yZS52aXMuUHJlZGljdGlvblRhYmxlUmVwb3J0
+dAARQ3JlYXRlIElzdm0gTW9kZWxzcQB+AARwdAA0bmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRp
+Y3Rpb24uc3ZtLkNyZWF0ZUlzdm1Nb2RlbHg=" label="IncrementalIsvm.itn">
     <annotation><![CDATA[<p>
       <b>Incremental Isvm: </b>
     </p>
@@ -136,6 +134,10 @@ imitateDataStream.itn</i> (hereinafter - &quot;<i>streaming data itinerary</i>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
     </module>
+    <module alias="Catch Model" classname="ncsa.d2k.modules.core.prediction.CatchModel" xloc="566" yloc="148">
+      <input index="0" classname="ncsa.d2k.modules.PredictionModelModule"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+    </module>
     <module alias="Choose Attributes for Streaming Data" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="99" yloc="146">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
@@ -143,11 +145,16 @@ imitateDataStream.itn</i> (hereinafter - &quot;<i>streaming data itinerary</i>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
       <property name="windowName" value="Choose Attributes for Streaming Data"/>
-      <property name="supressGui" value="false"/>
+      <property name="suppressGui" value="false"/>
     </module>
-    <module alias="Catch Model" classname="ncsa.d2k.modules.core.prediction.CatchModel" xloc="566" yloc="148">
-      <input index="0" classname="ncsa.d2k.modules.PredictionModelModule"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+    <module alias="Incrementing Module" classname="ncsa.d2k.modules.core.prediction.IncrementingModule" xloc="303" yloc="108">
+      <input index="0" classname="ncsa.d2k.modules.projects.vered.svm.UpdateableModelModule"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.projects.vered.svm.UpdateableModelModule">
+        <destination alias="FanOut1" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="deepCopy" value="true"/>
     </module>
     <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="539" yloc="331">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable"/>
@@ -159,15 +166,6 @@ imitateDataStream.itn</i> (hereinafter - &quot;<i>streaming data itinerary</i>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
     </module>
-    <module alias="Incrementing Module" classname="ncsa.d2k.modules.core.prediction.IncrementingModule" xloc="303" yloc="108">
-      <input index="0" classname="ncsa.d2k.modules.projects.vered.svm.UpdateableModelModule"/>
-      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
-      <output index="0" classname="ncsa.d2k.modules.projects.vered.svm.UpdateableModelModule">
-        <destination alias="FanOut1" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="deepCopy" value="true"/>
-    </module>
     <module alias="Choose Attributes for test dataset" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="209" yloc="266">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
@@ -175,7 +173,7 @@ imitateDataStream.itn</i> (hereinafter - &quot;<i>streaming data itinerary</i>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
       <property name="windowName" value="Choose Attributes for test dataset"/>
-      <property name="supressGui" value="false"/>
+      <property name="suppressGui" value="false"/>
     </module>
     <module alias="FanIn1" classname="ncsa.d2k.core.modules.FanInModule" xloc="205" yloc="38">
       <input index="0" classname="ncsa.d2k.modules.projects.vered.svm.UpdateableModelModule"/>
@@ -203,6 +201,8 @@ imitateDataStream.itn</i> (hereinafter - &quot;<i>streaming data itinerary</i>
             <destination alias="Load Test Set_Create Delimited File Parser" index="0"/>
           </output>
           <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+          <property name="fileName" value=""/>
+          <property name="fileFilterExtension" value=""/>
         </module>
         <module alias="Load Test Set_Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="130" yloc="18">
           <input index="0" classname="java.lang.String"/>
@@ -218,6 +218,7 @@ imitateDataStream.itn</i> (hereinafter - &quot;<i>streaming data itinerary</i>
         </module>
       </itinerary>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="orderOutputs" value="false"/>
       <property name="enableParallelization" value="false"/>
     </module>
     <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="393" yloc="184">
