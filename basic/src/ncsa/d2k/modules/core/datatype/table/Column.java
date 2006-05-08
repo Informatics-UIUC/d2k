@@ -16,7 +16,8 @@ import ncsa.d2k.modules.core.datatype.table.*;
 public interface Column extends java.io.Serializable {
 
 	//static final long serialVersionUID = 8383279130438086351L;
-	static final long serialVersionUID = 63054574851515523L;
+	//static final long serialVersionUID = 63054574851515523L;
+    static final long serialVersionUID = 1L;
 
 	/**
 		Get the label associated with this Column.
