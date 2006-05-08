@@ -16,7 +16,7 @@ import  java.util.*;
 //===============
 import  gnu.trove.*;
 import  ncsa.d2k.modules.core.datatype.table.*;
-import  ncsa.d2k.modules.core.datatype.table.basic.*;
+//import  ncsa.d2k.modules.core.datatype.table.basic.*;
 import  ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 import  ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 

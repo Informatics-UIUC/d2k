@@ -1,6 +1,9 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 
-import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.MutableTable;
+import ncsa.d2k.modules.core.datatype.table.Column;
+import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
+
 
 import java.io.*;
 import java.util.*;

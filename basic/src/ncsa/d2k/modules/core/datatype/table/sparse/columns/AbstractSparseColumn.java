@@ -13,7 +13,7 @@ package  ncsa.d2k.modules.core.datatype.table.sparse.columns;
 // Other Imports
 //===============
 import  ncsa.d2k.modules.core.datatype.table.*;
-import  ncsa.d2k.modules.core.datatype.table.basic.*;
+import  ncsa.d2k.modules.core.datatype.table.basic.AbstractColumn;
 import  ncsa.d2k.modules.core.datatype.table.sparse.*;
 import  ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import  java.util.*;
@@ -1009,6 +1009,10 @@ abstract public class AbstractSparseColumn extends AbstractColumn {
 
     public VIntHashSet getMissing() {
       return missing;
+    }
+
+    public void setMissing(int[] _missing){
+      missing = new VIntHashSet(_missing);
     }
 
 }               //AbstractSparseColumn

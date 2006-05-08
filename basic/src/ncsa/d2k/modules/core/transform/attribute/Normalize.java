@@ -23,7 +23,7 @@ import ncsa.d2k.core.modules.ViewModule;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
 import ncsa.d2k.modules.core.datatype.table.Transformation;
-import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.Column;
 import ncsa.d2k.modules.core.datatype.table.basic.ColumnUtilities;
 import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
 import ncsa.d2k.userviews.swing.JUserPane;

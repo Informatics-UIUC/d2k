@@ -4,7 +4,7 @@ import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.impl.ParameterPointImpl;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.Column;
 import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
 import ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl;
 import ncsa.d2k.modules.core.optimize.random.UniformSampling;
@@ -136,7 +136,7 @@ public class CreateExample extends ComputeModule {
 					outputNames[v] = "out" + (v + 1);
 				outputs[v] = index;
 			}
-			
+
 			// Make the column objects and build the table.
 			int totCol = numInputs+numOutputs;
 			Column [] cols = new Column [totCol];
@@ -150,12 +150,12 @@ public class CreateExample extends ComputeModule {
 				cols[colIdx].setLabel(outputNames[i]);
 				colIdx++;
 			}
-			
+
 			// Create the example table.
 			ExampleTableImpl et = new ExampleTableImpl(cols);
 			et.setInputFeatures(inputs);
 			et.setOutputFeatures(outputs);
-			
+
 			// construct an example, first create a table.
 			Example example = new ParameterPointImpl(et);
 			example.setIndex (0);

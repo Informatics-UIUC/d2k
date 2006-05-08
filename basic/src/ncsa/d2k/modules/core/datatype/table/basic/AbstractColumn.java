@@ -1,4 +1,5 @@
 package  ncsa.d2k.modules.core.datatype.table.basic;
+import ncsa.d2k.modules.core.datatype.table.Column;
 
 import  java.util.*;
 

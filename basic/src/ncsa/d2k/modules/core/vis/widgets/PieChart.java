@@ -8,7 +8,7 @@ import java.awt.RenderingHints;
 import java.awt.geom.Arc2D;
 
 import ncsa.d2k.modules.core.datatype.table.Table;
-import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.Column;
 import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
 import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
 import ncsa.d2k.modules.core.datatype.table.basic.ObjectColumn;

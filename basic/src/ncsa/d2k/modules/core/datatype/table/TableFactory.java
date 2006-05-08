@@ -4,7 +4,7 @@ package ncsa.d2k.modules.core.datatype.table;
 // Other Imports
 //===============
 
-import ncsa.d2k.modules.core.datatype.table.basic.Column;
+//import ncsa.d2k.modules.core.datatype.table.basic.Column;
 
 /**
  * Defines methods used to create Tables.

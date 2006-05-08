@@ -1,6 +1,8 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 
-import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.MutableTable;
+import ncsa.d2k.modules.core.datatype.table.Column;
+import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 
 import java.io.*;
 import java.util.*;
@@ -659,7 +661,7 @@ public class BooleanColumn extends MissingValuesColumn {
                 (pos + 1));
 
 		// If the row is missing reduce our count.
-		if (missing[pos]) 
+		if (missing[pos])
 			this.numMissingValues--;
         System.arraycopy(missing, pos + 1, missing, pos, internal.length -
                 (pos + 1));
@@ -809,7 +811,7 @@ public class BooleanColumn extends MissingValuesColumn {
 				newMissing[newIntIdx] = missing[i];
 				newEmpty[newIntIdx] = empty[i];
                 newIntIdx++;
-         } else 				
+         } else
          	if (missing[i])
 		 		this.numMissingValues--;
         }
@@ -859,7 +861,7 @@ public class BooleanColumn extends MissingValuesColumn {
     /**
      * Compare the values of <code>element</code> and the value at
      * <code>row</code>. Return 0 if they are the same or greater than 0 if
-     * <code>element </code> is true  and row element is false and 
+     * <code>element </code> is true  and row element is false and
      * less than 0 if <code> element </code> is false and row element is true.
      *
      * @param element        the object to be passed in should be a subclass of
@@ -879,13 +881,13 @@ public class BooleanColumn extends MissingValuesColumn {
             return  1;*/
 				int b1 = ((Boolean)element).booleanValue() ? 1:0;
 				int b2 = getInt(row);
-				return b1-b2; 
-            
+				return b1-b2;
+
     }
 
     /**
      * Compare the values of the elements at <code>r1</code> and
-     * <code>r2</code>. Return 0 if they are the same, less than 0 if 
+     * <code>r2</code>. Return 0 if they are the same, less than 0 if
      * r1 element is false and r2 element is true, and greater than 0 if r1 element
      * is true and r2 element is false.
      *
@@ -904,8 +906,8 @@ public class BooleanColumn extends MissingValuesColumn {
             return  1; */
            int b1 = getInt(r1);
            int b2 = getInt(r2);
-           return b1-b2; 
-            
+           return b1-b2;
+
     }
 
     //////////////////////////////////////

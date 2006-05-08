@@ -5,7 +5,7 @@ package ncsa.d2k.modules.core.datatype.table.sparse.primitivehash;
 //==============
 
 import java.util.Arrays;
-import gnu.trove.*;
+import gnu.trove.TIntHashSet;
 
 /**
  * Title:        Sparse Table
@@ -38,6 +38,71 @@ public class VHashService {
     int[] validIndices = map.keys();
     Arrays.sort(validIndices);
     return validIndices;
+  }
+
+
+  /**
+   * returns an array of ints with keys from <code>map</codE> that are not part
+   * of <codE>invalid</code> set and also are int he range [begin, end]
+   *
+   * @param begin int beginning of range to include keys from map in the returned value
+   * @param end int end of range to include keys from map in the returned value
+   * @param map VHashMap keys from this map are to be included in the returned value
+   * @param invalid_1 TIntHashSet items from this set should be discluded from the returned value
+   * @param invalid_2 TIntHashSet items from this set should be discluded from the returned value
+   * @return int[] has keys from <code>map</codE> that are not part
+   * of <codE>invalid</code> set and also are int he range [begin, end]
+   */
+  public static int[] getIndicesInRange(int begin, int end, VHashMap map,
+                                        TIntHashSet invalid_1, TIntHashSet invalid_2) {
+    int[] validIndices = new int[0]; //the returned value
+
+    if (end < begin)
+      return validIndices;
+
+
+
+//retrieving all keys
+    int[] allKeys = map.keys();
+
+    //idx will hold the valid keys.
+    TIntHashSet idx = new TIntHashSet ();
+
+//for each key in the map
+    for (int i = 0; i < allKeys.length; i++) {
+      //if it is not in invalid
+      //and in the range [begin, end]
+      if (!invalid_1.contains(allKeys[i]) && !invalid_2.contains(allKeys[i]) &&
+          allKeys[i] >= begin && allKeys[i] <= end) {
+        //include in idx
+        idx.add(allKeys[i]);
+      }
+    }
+    //retrieve the set as an array
+    validIndices = idx.toArray();
+    //return it
+    return validIndices;
+/*    Arrays.sort(validIndices);
+
+// XIAOLEI
+    int beginIndex = findPlace(validIndices, begin);
+    int endIndex = findEndPlace(validIndices, end);
+
+//System.out.println(beginIndex + " ---> " + endIndex);
+
+//if begin is greater than any valid row number - return an empty array
+    if (beginIndex >= validIndices.length)
+      return keysInRange;
+
+    if (endIndex >= validIndices.length)
+      endIndex = validIndices.length - 1;
+
+    int numKeysInRange = endIndex - beginIndex + 1;
+    keysInRange = new int[numKeysInRange];
+    System.arraycopy(validIndices, beginIndex, keysInRange, 0, numKeysInRange);
+*/
+
+
   }
 
   /**

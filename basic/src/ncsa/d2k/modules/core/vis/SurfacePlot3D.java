@@ -19,6 +19,7 @@ import ncsa.d2k.core.gui.JD2KFrame;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.Column;
 import ncsa.d2k.modules.core.vis.widgets.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;

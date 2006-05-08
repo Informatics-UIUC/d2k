@@ -12,7 +12,7 @@ package  ncsa.d2k.modules.core.datatype.table.sparse.columns;
 import  ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import  ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
 import  ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
-import  ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.Column;
 import  ncsa.d2k.modules.core.datatype.table.sparse.*;
 
 

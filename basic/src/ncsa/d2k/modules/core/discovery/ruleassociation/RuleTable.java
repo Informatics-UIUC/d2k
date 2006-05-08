@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.discovery.ruleassociation;
 import java.util.*;
 import gnu.trove.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-
+import ncsa.d2k.modules.core.datatype.table.Column;
 /** This class contains the following components:
  * minimumSupport - minimum support specified by a user
  * minimumConfidence - minimum confidence specified by a user

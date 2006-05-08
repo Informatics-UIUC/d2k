@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.datatype.table.db;
 
 import ncsa.d2k.modules.core.datatype.table.PredictionExample;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.Column;
 import ncsa.d2k.modules.core.datatype.table.basic.SubsetTableImpl;
 import ncsa.d2k.modules.core.io.sql.*;
 

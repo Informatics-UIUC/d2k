@@ -1,6 +1,10 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 
-import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.Column;
+import ncsa.d2k.modules.core.datatype.table.AbstractTable;
+import ncsa.d2k.modules.core.datatype.table.ExampleTable;
+import ncsa.d2k.modules.core.datatype.table.TableFactory;
+import ncsa.d2k.modules.core.datatype.table.Table;
 
 /**
  * TableImpl is an implementation of Table where each Column is represented by a

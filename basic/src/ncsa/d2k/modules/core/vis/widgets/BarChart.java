@@ -15,7 +15,7 @@ import java.awt.geom.Rectangle2D;
 import java.text.NumberFormat;
 
 import ncsa.d2k.modules.core.datatype.table.Table;
-import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.Column;
 
 public class BarChart extends Chart
     implements MouseListener, MouseMotionListener {

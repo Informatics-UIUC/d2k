@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 import javax.swing.JOptionPane;
 
-import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.Column;
 import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
 import ncsa.d2k.modules.core.datatype.table.basic.ObjectColumn;
 import ncsa.d2k.modules.core.datatype.table.basic.TableImpl;

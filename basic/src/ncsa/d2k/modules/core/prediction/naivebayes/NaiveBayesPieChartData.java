@@ -3,7 +3,7 @@ package ncsa.d2k.modules.core.prediction.naivebayes;
 import java.util.HashMap;
 import java.io.Serializable;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-
+import ncsa.d2k.modules.core.datatype.table.Column;
 /**
    NaiveBayesPieChartData contains all the data contained in a pie
    chart in the NaiveBayesVis.  The ratios are sorted from least to

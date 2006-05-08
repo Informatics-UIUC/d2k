@@ -158,10 +158,14 @@ public String getOutputName(int index){
 
 
     int read = bufferSize;
-      while ( read == bufferSize) {
+     /* while ( read == bufferSize) {
         read = in.read(buffer, 0, bufferSize);
         retVal += new String(buffer, 0, read);
-      }//while
+      }//while*/
+     String line;
+     while((line = in.readLine())!= null){
+       retVal += line + "\n";
+     }
 
     }
     catch (Exception e) {

@@ -1,5 +1,5 @@
 package ncsa.d2k.modules.core.datatype.table;
-import ncsa.d2k.modules.core.datatype.table.basic.Column;
+
 
 /**
 	Table is a data structure of m rows where each row has n columns.  Therefore,

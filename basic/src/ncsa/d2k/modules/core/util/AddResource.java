@@ -78,8 +78,10 @@ public String getModuleName(){return "Add Resource Module";}
   protected void doit(){
 
     Object obj = prepObject();
-    this.setResource(rscID, obj);
-    pushOutput(obj, 0);
+    if(obj != null){
+      this.setResource(rscID, obj);
+      pushOutput(obj, 0);
+    }else System.out.println("Could not initialize the resource");
   }
 
   abstract protected Object prepObject();

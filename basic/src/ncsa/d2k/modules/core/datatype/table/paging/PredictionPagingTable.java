@@ -6,7 +6,7 @@ package ncsa.d2k.modules.core.datatype.table.paging;
 import java.io.IOException;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.Column;
 import ncsa.d2k.modules.core.datatype.table.basic.ColumnUtilities;
 import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
 
@@ -17,7 +17,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
  */
 public class PredictionPagingTable extends ExamplePagingTable implements PredictionTable {
 	SubsetPagingTable predictionTable;
-	
+
 	/**
 	 * Construct a paging prediction table from it's example table.
 	 * @param et the example table.
@@ -31,7 +31,7 @@ public class PredictionPagingTable extends ExamplePagingTable implements Predict
 		this.trainSet = et.trainSet;
 		this.testSet = et.testSet;
 		this.subset = et.subset;
-		
+
 		// Construct the prediction table.
 		int numPredictions = et.getNumOutputFeatures();
 		int numRows = et.getNumRows();
@@ -39,7 +39,7 @@ public class PredictionPagingTable extends ExamplePagingTable implements Predict
 		int numTables = numRows / pagesPerRow;
 		if (numTables != (numRows * pagesPerRow))
 			numTables++;
-			
+
 		// These pages comprise the prediction table.
 		Page[] pages = new Page[numTables];
 		int[] offset = new int[numTables];
@@ -57,8 +57,8 @@ public class PredictionPagingTable extends ExamplePagingTable implements Predict
 		// Create a paging table, check it's performance.
 		predictionTable = new SubsetPagingTable(new PageCache(pages, offset, pagesPerRow));
 	}
-	
-	
+
+
 	public int[] getPredictionSet() {
 		return null;
 	}

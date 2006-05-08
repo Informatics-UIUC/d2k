@@ -13,7 +13,7 @@ import java.io.*;
 
 import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.Column;
 import ncsa.d2k.core.gui.JD2KFrame;
 import ncsa.d2k.core.modules.*;
 import ncsa.gui.*;
@@ -31,13 +31,13 @@ public class PCView extends JUserPane implements ActionListener, Printable {
 	 * @param c the component.
 	 */
 	static final public Image generateRotatedTextImage (Font font, String text, Color fg, Color bg, Component c) {
-		
+
 		// get a buffered image, draw the text into it.
 		BufferedImage bi = new BufferedImage (1, 1, BufferedImage.TYPE_INT_ARGB);
 		Graphics g = bi.getGraphics ();
 		((Graphics2D) g).setRenderingHint (RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
-				
+
 		g.setFont (font);
 		FontMetrics fm = g.getFontMetrics (font);
 		Rectangle2D bounds = fm.getStringBounds (text, g);
@@ -48,7 +48,7 @@ public class PCView extends JUserPane implements ActionListener, Printable {
 		int height = fm.getHeight ();
 
 		// Get tthe tranformation and create the image to rotate.
-		Image origImg = new BufferedImage (width, height, BufferedImage.TYPE_INT_RGB);		
+		Image origImg = new BufferedImage (width, height, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = (Graphics2D) origImg.getGraphics ();
 		g2.setFont (font);
 
@@ -190,7 +190,7 @@ public class PCView extends JUserPane implements ActionListener, Printable {
 	private double[] maxes;
 	private ViewModule module;
 	private JLabel llabel;
-	
+
 	public PCView() {
 		menuBar = new JMenuBar();
 	}
@@ -468,7 +468,7 @@ public class PCView extends JUserPane implements ActionListener, Printable {
 		filter = new Filter(ma);
 		helpWindow = new HelpWindow();
 	}
-	
+
 	/**
 	 * Set the legend title to include the name of the key column.
 	 * @param table the table with the key column.
@@ -1069,7 +1069,7 @@ public class PCView extends JUserPane implements ActionListener, Printable {
 				RenderingHints.VALUE_ANTIALIAS_ON);
 
 			g2.setPaint(yellowish);
-			g2.fill(new Rectangle(leftoffset - sidebuffer, topoffset, 
+			g2.fill(new Rectangle(leftoffset - sidebuffer, topoffset,
 					imagewidth + 2 * sidebuffer, imageheight + 2 * topoffset));
 
 			g2.setPaint(Color.black);
@@ -1085,7 +1085,7 @@ public class PCView extends JUserPane implements ActionListener, Printable {
 			g2.setPaint(Color.black);
 			Font f = g2.getFont();
 			Paint oldPaint = g2.getPaint();
-			
+
 			for (int i = 0; i < columnlocations.length; i++) {
 				drawBar(
 					g2,

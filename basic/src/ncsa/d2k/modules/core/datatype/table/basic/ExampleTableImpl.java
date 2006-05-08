@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.datatype.table.basic;
 
 
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.Column;
 import java.util.*;
 
 /**
@@ -218,7 +218,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 	public PredictionTable toPredictionTable() {
 		return new PredictionTableImpl(this);
 	}
-	
+
 	/**
 	 * Returns this, which is an example table.
 	 * @return an example table for the data in this table.
@@ -704,7 +704,7 @@ public class ExampleTableImpl extends SubsetTableImpl implements ExampleTable {
 	 * Return a reference to a Table referencing only the training data. It would be
 	 * tempting to simply do a shallow copy, however, that would not be very efficient,
 	 * as it would make a copy of the input, output arrays, the test and train sets as
-	 * well. 
+	 * well.
 	 * @return a reference to a Table referencing only the training data.
 	 */
 	public Table getTrainTable() {

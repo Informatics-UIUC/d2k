@@ -19,6 +19,7 @@ import javax.swing.*;
 import java.beans.PropertyVetoException;
 import gnu.trove.*;
 import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.core.datatype.table.Column;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.modules.core.transform.attribute.*;

@@ -3,7 +3,7 @@ package  ncsa.d2k.modules.core.datatype.table.sparse;
 import  ncsa.d2k.modules.core.datatype.table.TableFactory;
 import  ncsa.d2k.modules.core.datatype.table.Table;
 import  ncsa.d2k.modules.core.datatype.table.ColumnTypes;
-import  ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.Column;
 import  ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import  ncsa.d2k.modules.core.datatype.table.PredictionTable;
 import  ncsa.d2k.modules.core.datatype.table.TestTable;

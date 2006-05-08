@@ -1,8 +1,13 @@
 package ncsa.d2k.modules.core.datatype.table.util;
 
 import java.util.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.Column;
+import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
+import ncsa.d2k.modules.core.datatype.table.Table;
+import ncsa.d2k.modules.core.datatype.table.MutableTable;
+import ncsa.d2k.modules.core.datatype.table.basic.TableImpl;
+import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
+import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
 import gnu.trove.*;
 
 /**
@@ -266,9 +271,9 @@ public class TableUtilities
 
     return set;
   }
-  
-  
-  
+
+
+
 
   public static int getNumOfValues(Table table, int colNum) {
   	String[] values = TableUtilities.uniqueValues(table,colNum);
@@ -277,7 +282,7 @@ public class TableUtilities
   	else
   		return 0;
   }
-  
+
   public static boolean isKeyColumn (Table table, int colNum)
   {
     int numRows = table.getNumRows ();

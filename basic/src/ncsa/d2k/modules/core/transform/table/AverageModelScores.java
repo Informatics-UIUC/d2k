@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.transform.table;
 
 import ncsa.d2k.modules.core.datatype.parameter.ParameterPoint;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
-import ncsa.d2k.modules.core.datatype.table.basic.Column;
+import ncsa.d2k.modules.core.datatype.table.Column;
 import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
 import ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl;
 import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
