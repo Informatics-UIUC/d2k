@@ -13,6 +13,7 @@ import  ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.Column;
 import  ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import  ncsa.d2k.modules.core.datatype.table.MutableTable;
+import ncsa.d2k.modules.core.datatype.table.NumericColumn;
 import  ncsa.d2k.modules.core.datatype.table.sparse.*;
 //==============
 // Java Imports
@@ -30,7 +31,8 @@ import  java.util.*;
  * @author vered goren
  * @version 1.0
  */
-public class SparseDoubleColumn extends AbstractSparseColumn {
+public class SparseDoubleColumn extends AbstractSparseColumn implements NumericColumn {
+    private static final long serialVersionUID = 1L;
     /**
      * SparseDoubleColumn is a column in a sparse table that holds data of type double.
      * internal representation: the column is an int to double hashmap.
@@ -40,6 +42,7 @@ public class SparseDoubleColumn extends AbstractSparseColumn {
     // Data Members
     //==============
     private VIntDoubleHashMap elements;
+    private double max, min;
 
     //a value to be returned if getDouble recieves a parameter for row number that
     //is not valid.
@@ -762,6 +765,42 @@ public class SparseDoubleColumn extends AbstractSparseColumn {
      *                   the returned column.
      * @return a SparseDoubleColumn ordered according to <code>newOrder</code>.
      */
+
+    /**
+     Get the minimum value contained in this Column
+     @return the minimum value of this Column
+     */
+    public double getMin () {
+        initRange();
+        return  min;
+    }
+
+    /**
+     Get the maximum value contained in this Column
+     @return the maximum value of this Column
+     */
+    public double getMax () {
+        initRange();
+        return  max;
+    }
+
+
+    //////////////////////////////////////
+    /**
+     Initializes the min and max of this DoubleColumn.
+     */
+    protected void initRange () {
+        max = Double.MIN_VALUE;
+        min = Double.MAX_VALUE;
+        for (int i = 1; i < getNumRows(); i++) {
+			if(!isValueMissing(i) && !isValueEmpty(i)) {
+            	if (getDouble(i) > max)
+                	max = getDouble(i);
+            	if (getDouble(i) < min)
+                	min = getDouble(i);
+			}
+        }
+    }
 }
 
 

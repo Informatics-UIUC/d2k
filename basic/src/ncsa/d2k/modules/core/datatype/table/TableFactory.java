@@ -45,6 +45,7 @@ public interface TableFactory {
    * will be the indices of the test set in et.
    * @param et the ExampleTable that this TestTable is derived from
    * @return a TestTable initialized with the data from et
+   * @deprecated
    */
   public TestTable createTestTable(ExampleTable et);
 
@@ -53,6 +54,7 @@ public interface TableFactory {
    * will be the indicies of the train set in et.
    * @param et the ExampleTable that the TrainTable is derived from
    * @return a TrainTable initialized with the data from et
+   * @deprecated
    */
   public TrainTable createTrainTable(ExampleTable et);
 

@@ -138,7 +138,8 @@ final public class ByteColumn extends MissingValuesColumn implements NumericColu
      * Initializes the min and max of this IntColumn.
      */
     private void initRange () {
-        max = min = internal[0];
+        max = Byte.MIN_VALUE;
+        min = Byte.MAX_VALUE;
         for (int i = 1; i < internal.length; i++) {
 			if(!isValueMissing(i) && !isValueEmpty(i)) {
             	if (internal[i] > max)

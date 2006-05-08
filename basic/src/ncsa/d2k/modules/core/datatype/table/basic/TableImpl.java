@@ -1,10 +1,6 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 
-import ncsa.d2k.modules.core.datatype.table.Column;
-import ncsa.d2k.modules.core.datatype.table.AbstractTable;
-import ncsa.d2k.modules.core.datatype.table.ExampleTable;
-import ncsa.d2k.modules.core.datatype.table.TableFactory;
-import ncsa.d2k.modules.core.datatype.table.Table;
+import ncsa.d2k.modules.core.datatype.table.*;
 
 /**
  * TableImpl is an implementation of Table where each Column is represented by a
@@ -19,7 +15,7 @@ abstract public class TableImpl extends AbstractTable {
 
     static final long serialVersionUID = -1379483165672439701L;
 
-	/** the columns of data. */
+    /** the columns of data. */
     protected Column[] columns = null;
 
    /**
@@ -35,7 +31,7 @@ abstract public class TableImpl extends AbstractTable {
      * @param numColumns the initial number of columns
      */
     public TableImpl (int numColumns) {
-		columns = new Column[numColumns];
+        columns = new Column[numColumns];
     }
 
     /**
@@ -57,32 +53,32 @@ abstract public class TableImpl extends AbstractTable {
         return  columns.length;
     }
 
-	/**
-	 * Get a Column from the table.
-	 * @param pos the position of the Column to get from table
-	 * @return the Column at in the table at pos
-	 */
-	Column [] getColumns () {
-		return columns;
-	}
+    /**
+     * Get a Column from the table.
+     * @param pos the position of the Column to get from table
+     * @return the Column at in the table at pos
+     */
+    Column [] getColumns () {
+        return columns;
+    }
 
-	/**
-	 * This returns the data columns unmodified, so it may not provide a view of the
-	 * data consistent with the view presented by the table.
-	 * @return
-	 */
-	final public Column [] getRawColumns() {
-		return columns;
-	}
+    /**
+     * This returns the data columns unmodified, so it may not provide a view of the
+     * data consistent with the view presented by the table.
+     * @return
+     */
+    final public Column [] getRawColumns() {
+        return columns;
+    }
 
-	/**
-	 * Get a Column from the table.
-	 * @param pos the position of the Column to get from table
-	 * @return the Column at in the table at pos
-	 */
-	public Column getColumn (int pos) {
-		return columns[pos];
-	}
+    /**
+     * Get a Column from the table.
+     * @param pos the position of the Column to get from table
+     * @return the Column at in the table at pos
+     */
+    public Column getColumn (int pos) {
+        return columns[pos];
+    }
 
     /**
      * Set a specified Column in the table.  If a Column exists at this
@@ -137,8 +133,8 @@ abstract public class TableImpl extends AbstractTable {
     }
 
     //////////////////////////////////////
-	// getters.
-	//
+    // getters.
+    //
     /**
      * Get an Object from the Table.
      * @param row the position of the row to find the element
@@ -277,7 +273,7 @@ abstract public class TableImpl extends AbstractTable {
      * Sets the reference to the internal representation of this Table.
      * @param newColumns a new internal representation for this Table
      */
-	public void setColumns (Column[] newColumns) {
+    public void setColumns (Column[] newColumns) {
        columns = newColumns;
     }
 
@@ -312,13 +308,13 @@ abstract public class TableImpl extends AbstractTable {
         setColumn(temp, pos2);
     }
 
-	/**
-	 * Returns the contents of this table in an instance of an example table.
-	 * @return an example table for the data in this table.
-	 */
-	public ExampleTable toExampleTable() {
-		return new ExampleTableImpl(this);
-	}
+    /**
+     * Returns the contents of this table in an instance of an example table.
+     * @return an example table for the data in this table.
+     */
+    public ExampleTable toExampleTable() {
+        return new ExampleTableImpl(this);
+    }
 
     //////////////////////////////////////
     /**
@@ -341,105 +337,105 @@ abstract public class TableImpl extends AbstractTable {
         }
     }
 
-	public boolean isColumnNominal(int index) {
-	  return columns[index].getIsNominal();
-	}
+    public boolean isColumnNominal(int index) {
+      return columns[index].getIsNominal();
+    }
 
-	public boolean isColumnScalar(int index) {
-	  return columns[index].getIsScalar();
-	}
+    public boolean isColumnScalar(int index) {
+      return columns[index].getIsScalar();
+    }
 
-	public void setColumnIsNominal(boolean value, int index) {
+    public void setColumnIsNominal(boolean value, int index) {
       columns[index].setIsNominal(value);
-	}
+    }
 
-	public void setColumnIsScalar(boolean value, int index) {
+    public void setColumnIsScalar(boolean value, int index) {
       columns[index].setIsScalar(value);
-	}
+    }
 
-	public boolean isColumnNumeric(int position) {
-	  if(columns[position] instanceof NumericColumn)
-		 return true;
+    public boolean isColumnNumeric(int position) {
+      if(columns[position] instanceof NumericColumn)
+         return true;
 
-	  Column col = columns[position];
-	  int numRows = col.getNumRows();
-		for(int row = 0; row < numRows; row++) {
-			try {
-				Double d = Double.valueOf(col.getString(row));
-			}
-			catch(Exception e) {
-				return false;
-			}
-		}
-		return true;
-	}
+      Column col = columns[position];
+      int numRows = col.getNumRows();
+        for(int row = 0; row < numRows; row++) {
+            try {
+                Double d = Double.valueOf(col.getString(row));
+            }
+            catch(Exception e) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	public int getColumnType(int position) {
-		return columns[position].getType();
-	}
+    public int getColumnType(int position) {
+        return columns[position].getType();
+    }
 
-	public boolean isValueMissing(int row, int col) {
-		return columns[col].isValueMissing(row);
-	}
-	public boolean isValueEmpty(int row, int col) {
-		return columns[col].isValueEmpty(row);
-	}
+    public boolean isValueMissing(int row, int col) {
+        return columns[col].isValueMissing(row);
+    }
+    public boolean isValueEmpty(int row, int col) {
+        return columns[col].isValueEmpty(row);
+    }
 
-	public void setValueToMissing(boolean b, int row, int col) {
+    public void setValueToMissing(boolean b, int row, int col) {
       columns[col].setValueToMissing(b, row);
-	}
+    }
 
-	public void setValueToEmpty(boolean b, int row, int col) {
+    public void setValueToEmpty(boolean b, int row, int col) {
       columns[col].setValueToEmpty(b, row);
-	}
+    }
 
 //		ANCA: method for comparing two Table objects.
-	// Could be more efficient but as is used only in Junit tests,
-	// less code is more important than speed of execution.
-	// should also compare missing and empty arrays for columns or use column.equals
-	public boolean equals(Object tbl) {
-		Table table;
-		try {
-			table = (Table) tbl;
-		} catch (Exception e) {
-			return false;
-		}
+    // Could be more efficient but as is used only in Junit tests,
+    // less code is more important than speed of execution.
+    // should also compare missing and empty arrays for columns or use column.equals
+    public boolean equals(Object tbl) {
+        Table table;
+        try {
+            table = (Table) tbl;
+        } catch (Exception e) {
+            return false;
+        }
 
-		if(getNumRows() != table.getNumRows()) return false;
-		if(getNumColumns() != table.getNumColumns()) return false;
-		for (int i =0; i < getNumRows(); i ++) {
-			for (int j =0; j < getNumColumns(); j ++)
-				if(!getObject(i,j).equals(table.getObject(i,j))) return false;
-		}
-		return true;
+        if(getNumRows() != table.getNumRows()) return false;
+        if(getNumColumns() != table.getNumColumns()) return false;
+        for (int i =0; i < getNumRows(); i ++) {
+            for (int j =0; j < getNumColumns(); j ++)
+                if(!getObject(i,j).equals(table.getObject(i,j))) return false;
+        }
+        return true;
 
-	}
+    }
 
 
 
-	/**
-	 * Return true if any value in this Table is missing.
-	 * @return true if there are any missing values, false if there are no missing values
-	 */
-	public boolean hasMissingValues() {
-		for(int i = 0; i < getNumColumns(); i++)
-			for(int j = 0; j < getNumRows(); j++)
-				if(isValueMissing(j, i))
-					return true;
-		return false;
-	}
+    /**
+     * Return true if any value in this Table is missing.
+     * @return true if there are any missing values, false if there are no missing values
+     */
+    public boolean hasMissingValues() {
+        for(int i = 0; i < getNumColumns(); i++)
+            for(int j = 0; j < getNumRows(); j++)
+                if(isValueMissing(j, i))
+                    return true;
+        return false;
+    }
 
-	/**
-	 * Return true if any value in this Table is missing.
-	 * @param columnIndex, the index of the column to search for missing values.
-	 * @return true if there are any missing values, false if there are no missing values
-	 */
-	public boolean hasMissingValues(int columnIndex) {
-		for(int j = 0; j < getNumRows(); j++)
-			if(isValueMissing(j, columnIndex))
-				return true;
-		return false;
-	}
+    /**
+     * Return true if any value in this Table is missing.
+     * @param columnIndex, the index of the column to search for missing values.
+     * @return true if there are any missing values, false if there are no missing values
+     */
+    public boolean hasMissingValues(int columnIndex) {
+        for(int j = 0; j < getNumRows(); j++)
+            if(isValueMissing(j, columnIndex))
+                return true;
+        return false;
+    }
 
 
         public TableFactory getTableFactory() {

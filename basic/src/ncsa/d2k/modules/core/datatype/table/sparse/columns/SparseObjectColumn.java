@@ -32,6 +32,7 @@ import  java.util.*;
  * @version 1.0
  */
 public class SparseObjectColumn extends AbstractSparseColumn {
+    private static final long serialVersionUID = 1L;     
     /**
      * SparseObjectColumn is a column in a sparse table that holds data of
      * non primitive type

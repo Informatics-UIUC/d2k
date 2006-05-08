@@ -13,6 +13,7 @@ import  ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import  ncsa.d2k.modules.core.datatype.table.MutableTable;
 import ncsa.d2k.modules.core.datatype.table.Column;
 import  ncsa.d2k.modules.core.datatype.table.ColumnTypes;
+import ncsa.d2k.modules.core.datatype.table.TextualColumn;
 //==============
 // Java Imports
 //==============
@@ -28,8 +29,10 @@ import  java.util.*;
  * Company:      ncsa
  * @author vered goren
  * @version 1.0
+ * @deprecated not used
  */
-public class SparseStringObjectColumn extends SparseObjectColumn {
+public class SparseStringObjectColumn extends SparseObjectColumn implements TextualColumn {
+    private short min, max;
 
     /**
      * SparseStringObjectColumn is a column in a SparseTable that holds data of Type String.

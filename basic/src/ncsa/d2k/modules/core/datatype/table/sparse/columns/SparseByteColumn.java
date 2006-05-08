@@ -14,6 +14,7 @@ import  ncsa.d2k.modules.core.datatype.table.sparse.*;
 import  ncsa.d2k.modules.core.datatype.table.MutableTable;
 import  ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import ncsa.d2k.modules.core.datatype.table.Column;
+import ncsa.d2k.modules.core.datatype.table.NumericColumn;
 //==============
 // Java Imports
 //==============
@@ -29,7 +30,7 @@ import  java.util.*;
  * @author vered goren
  * @version 1.0
  */
-public class SparseByteColumn extends AbstractSparseColumn {
+public class SparseByteColumn extends AbstractSparseColumn implements NumericColumn {
     /**
      * SparseByteColumn is a column in a sparse table that holds data of type byte.
      * internal representation: the data is held in an int to byte hashmap.
@@ -39,6 +40,8 @@ public class SparseByteColumn extends AbstractSparseColumn {
     // Data Members
     //==============
     protected VIntByteHashMap elements;         //the values of this column
+
+    private byte max, min;
 
     //public static byte NOT_EXIST = Byte.MIN_VALUE; //a value to be returned
     //when getByte recieves a
@@ -830,6 +833,46 @@ public class SparseByteColumn extends AbstractSparseColumn {
         }
         return  0;
     }
+
+
+    //////////////////////////////////////
+    //// Numeric Column support
+    /**
+       Get the minimum value contained in this list
+       @return the minimum value of this list
+    */
+    public double getMax() {
+        initRange();
+        return (double)max;
+    }
+
+    /**
+       Get the maximum value contained in this list
+       @return the maximum value of this list
+    */
+	public double getMin() {
+		initRange();
+		return (double)min;
+	}
+
+
+    /**
+     * Initializes the min and max of this IntColumn.
+     */
+    private void initRange () {
+        max = Byte.MIN_VALUE;
+        min = Byte.MAX_VALUE;
+        for (int i = 1; i < getNumRows(); i++) {
+			if(!isValueMissing(i) && !isValueEmpty(i)) {
+            	if (getByte(i) > max)
+                	max = getByte(i);
+            	if (getByte(i) < min)
+                	min = getByte(i);
+			}
+        }
+    }
+
+
 }
 
 

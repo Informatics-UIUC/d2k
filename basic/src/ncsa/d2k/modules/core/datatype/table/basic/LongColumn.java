@@ -473,7 +473,8 @@ final public class LongColumn extends MissingValuesColumn implements NumericColu
      Initializes the min and max of this LongColumn.
      */
     private void initRange () {
-        max = min = internal[0];
+        max = Long.MIN_VALUE;
+        min = Long.MAX_VALUE;
         for (int i = 1; i < internal.length; i++) {
 			if(!isValueMissing(i) && !isValueEmpty(i)) {
             	if (internal[i] > max)

@@ -13,6 +13,7 @@ import  ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import  ncsa.d2k.modules.core.datatype.table.MutableTable;
 import ncsa.d2k.modules.core.datatype.table.Column;
 import  ncsa.d2k.modules.core.datatype.table.ColumnTypes;
+import ncsa.d2k.modules.core.datatype.table.TextualColumn;
 import  ncsa.d2k.modules.core.datatype.table.sparse.*;
 //==============
 // Java Imports
@@ -45,7 +46,9 @@ import  java.util.*;
  * int set free -  holds isolated free indices in the array.
  *
  */
-public class SparseStringColumn extends AbstractSparseColumn {
+public class SparseStringColumn extends AbstractSparseColumn implements TextualColumn {
+    //private short min, max;
+
     //==============
     // Data Members
     //==============

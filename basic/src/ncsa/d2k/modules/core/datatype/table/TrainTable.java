@@ -4,6 +4,7 @@ package ncsa.d2k.modules.core.datatype.table;
  This class provides transparent access to the training data only. The testSet
  field of the TrainTest table is used to reference only the test data, yet
  the accessor methods look exactly the same as they do for any other table.
+ @deprecated
  */
 public interface TrainTable extends ExampleTable {
 

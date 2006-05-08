@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.datatype.table.basic;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
 import ncsa.d2k.modules.core.datatype.table.Column;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
+import ncsa.d2k.modules.core.datatype.table.NumericColumn;
 
 
 import java.io.*;
@@ -242,7 +243,8 @@ final public class FloatColumn extends MissingValuesColumn implements NumericCol
      * Initializes the min and max of this FloatColumn.
      */
     protected void initRange () {
-        max = min = internal[0];
+        max = Float.MIN_VALUE;
+        min = Float.MAX_VALUE;
         for (int i = 1; i < internal.length; i++) {
 			if(!isValueMissing(i) && !isValueEmpty(i)) {
             	if (internal[i] > max)

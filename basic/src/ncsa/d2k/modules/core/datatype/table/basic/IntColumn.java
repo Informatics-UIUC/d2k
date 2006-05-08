@@ -469,7 +469,8 @@ final public class IntColumn extends MissingValuesColumn implements NumericColum
 	 * Initializes the min and max of this IntColumn.
 	 */
 	private void initRange () {
-		max = min = internal[0];
+		max = Integer.MIN_VALUE;
+        min = Integer.MAX_VALUE;
 		for (int i = 1; i < internal.length; i++) {
 			if(!isValueMissing(i) && !isValueEmpty(i)) {
 				if (internal[i] > max)

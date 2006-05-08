@@ -13,6 +13,7 @@ import  ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import  ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import  ncsa.d2k.modules.core.datatype.table.sparse.*;
 import ncsa.d2k.modules.core.datatype.table.Column;
+import ncsa.d2k.modules.core.datatype.table.TextualColumn;
 
 
 /**
@@ -25,7 +26,9 @@ import ncsa.d2k.modules.core.datatype.table.Column;
  * @version 1.0
 *
  */
-public class SparseByteArrayColumn extends SparseObjectColumn {
+public class SparseByteArrayColumn extends SparseObjectColumn implements TextualColumn {
+
+    private static final long serialVersionUID = 1L;
 
     //================
     // Constructor(s)

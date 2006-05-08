@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.datatype.table.basic;
+package ncsa.d2k.modules.core.datatype.table;
 import ncsa.d2k.modules.core.datatype.table.Column;
 
 
@@ -13,6 +13,6 @@ public interface TextualColumn extends Column {
 	/**
 	 * Trim any excess storage from the internal buffer for this TextualColumn.
 	 */
-	public void trim();
+	//public void trim();
 }
 /*TextualColumn*/

@@ -13,6 +13,7 @@ import  ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import  ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import ncsa.d2k.modules.core.datatype.table.Column;
 import  ncsa.d2k.modules.core.datatype.table.MutableTable;
+import ncsa.d2k.modules.core.datatype.table.TextualColumn;
 import  ncsa.d2k.modules.core.datatype.table.sparse.*;
 //==============
 // Java Imports
@@ -30,7 +31,9 @@ import  java.io.*;
  * @author vered goren
  * @version 1.0
  */
-public class SparseCharColumn extends AbstractSparseColumn {
+public class SparseCharColumn extends AbstractSparseColumn implements TextualColumn {
+
+    private static final long serialVersionUID = 1L;
     /**
      * SparseCharColumn is a column in a sparse table that holds data of type char.
      * internal representation: the data is held in  an int to char hashmap.

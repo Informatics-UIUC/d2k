@@ -13,6 +13,7 @@ import  ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import  ncsa.d2k.modules.core.datatype.table.util.ByteUtils;
 import  ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.Column;
+import ncsa.d2k.modules.core.datatype.table.TextualColumn;
 import  ncsa.d2k.modules.core.datatype.table.sparse.*;
 
 
@@ -24,8 +25,9 @@ import  ncsa.d2k.modules.core.datatype.table.sparse.*;
  * @author vered goren
  * @version 1.0
  */
-public class SparseCharArrayColumn extends SparseObjectColumn {
+public class SparseCharArrayColumn extends SparseObjectColumn implements TextualColumn {
 
+    private static final long serialVersionUID = 1L;
     /**
      * SparseCharArrayColumn is a type of a SparseObjectColumn. The data (of type
      * char[]) is stored in an int to Object hash map. The differences between a char

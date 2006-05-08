@@ -466,7 +466,8 @@ final public class ShortColumn extends MissingValuesColumn implements NumericCol
      Initializes the min and max of this FloatColumn.
      */
     private void initRange () {
-        max = min = internal[0];
+        max = Short.MIN_VALUE;
+        min = Short.MAX_VALUE;
         for (int i = 1; i < internal.length; i++) {
 			if(!isValueMissing(i) && !isValueEmpty(i)) {
             	if (internal[i] > max)

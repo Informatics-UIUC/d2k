@@ -231,7 +231,8 @@ final public class DoubleColumn extends MissingValuesColumn implements NumericCo
      Initializes the min and max of this DoubleColumn.
      */
     protected void initRange () {
-        max = min = internal[0];
+        max = Double.MIN_VALUE;
+        min = Double.MAX_VALUE;
         for (int i = 1; i < internal.length; i++) {
 			if(!isValueMissing(i) && !isValueEmpty(i)) {
             	if (internal[i] > max)

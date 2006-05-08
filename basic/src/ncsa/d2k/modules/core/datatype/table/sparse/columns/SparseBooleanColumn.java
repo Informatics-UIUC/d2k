@@ -32,6 +32,9 @@ import  java.io.*;
  * @version 1.0
  */
 public class SparseBooleanColumn extends AbstractSparseColumn {
+
+    private static final long serialVersionUID = 1L;
+
     /**
      * SparseBooleanColumn is a column in a sparse table that holds data of type
      * boolean.

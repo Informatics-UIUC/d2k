@@ -13,6 +13,7 @@ import  ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.Column;
 import  ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import  ncsa.d2k.modules.core.datatype.table.MutableTable;
+import ncsa.d2k.modules.core.datatype.table.NumericColumn;
 import  ncsa.d2k.modules.core.datatype.table.sparse.*;
 //==============
 // Java Imports
@@ -30,7 +31,9 @@ import  java.util.*;
  * @author vered goren
  * @version 1.0
  */
-public class SparseLongColumn extends AbstractSparseColumn {
+public class SparseLongColumn extends AbstractSparseColumn implements NumericColumn {
+
+    private static final long serialVersionUID = 1L;
     /**
      * SparseLongColumn is a column in a sparse table that holds data of type long.
      * internal representation: the column is an int to long hashmap.
@@ -40,6 +43,8 @@ public class SparseLongColumn extends AbstractSparseColumn {
     // Data Members
     //==============
     private VIntLongHashMap elements;
+
+    private long min, max;
 
     //================
     // Constructor(s)
@@ -757,6 +762,41 @@ public class SparseLongColumn extends AbstractSparseColumn {
             return  -1;
         }
         return  0;
+    }
+
+    /**
+     Get the minimum value contained in this Column
+     @return the minimum value of this Column
+     */
+    public double getMin () {
+        initRange();
+        return  (double)min;
+    }
+
+    /**
+     Get the maximum value contained in this Column
+     @return the maximum value of this Column
+     */
+    public double getMax () {
+        initRange();
+        return  (double)max;
+    }
+
+
+    /**
+     Initializes the min and max of this LongColumn.
+     */
+    private void initRange () {
+        max = Long.MIN_VALUE;
+        min = Long.MAX_VALUE;
+        for (int i = 1; i < getNumRows(); i++) {
+			if(!isValueMissing(i) && !isValueEmpty(i)) {
+            	if (getLong(i) > max)
+                	max = getLong(i);
+            	if (getLong(i) < min)
+                	min = getLong(i);
+			}
+        }
     }
 }
 

@@ -32,6 +32,9 @@ import gnu.trove.*;
  * value.
  */
 abstract public class AbstractSparseColumn extends AbstractColumn {
+
+    private static final long serialVersionUID = 1L;
+
     //==============
     // Data Members
     //==============
