@@ -437,4 +437,8 @@ public interface Column extends java.io.Serializable {
      //VERED - this is for testing purposes
         public boolean equals (Object col) ;
 
+//VERED GOREN -moved declaration of these methods from MissingValuesColumn to here.
+  public boolean[] getMissingValues();
+  public void setMissingValues(boolean[] miss);
+
 }/*Column*/
