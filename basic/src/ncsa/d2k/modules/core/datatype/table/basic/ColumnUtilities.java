@@ -1,7 +1,9 @@
 package ncsa.d2k.modules.core.datatype.table.basic;
 
 import ncsa.d2k.modules.core.datatype.table.*;
-
+import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
+import gnu.trove.TIntIterator;
 /**
 	Useful methods that are used on Columns.
 */
@@ -166,6 +168,7 @@ final public class ColumnUtilities {
    */
    public static StringColumn toStringColumn(Column sc) {
       StringColumn dc = new StringColumn(sc.getNumRows());
+
       for (int i = 0; i < sc.getNumRows(); i++)
          if (!sc.isValueMissing(i))
             dc.setString(sc.getString(i), i);
@@ -253,10 +256,16 @@ final public class ColumnUtilities {
     * @param to column to copy the missing values to.
     */
    private static void copyMissingValues(Column from, Column to) {
-      boolean[] orig = ((MissingValuesColumn) from).getMissingValues();
-      boolean[] copy = new boolean[orig.length];
-      System.arraycopy(orig, 0, copy, 0, copy.length);
-      ((MissingValuesColumn) to).setMissingValues(copy);
+     if(from instanceof MissingValuesColumn){
+       boolean[] orig = ( (MissingValuesColumn) from).getMissingValues();
+       boolean[] copy = new boolean[orig.length];
+       System.arraycopy(orig, 0, copy, 0, copy.length);
+       ( (MissingValuesColumn) to).setMissingValues(copy);
+     }
+     if(from instanceof AbstractSparseColumn){
+       VIntHashSet missing = ((AbstractSparseColumn)from).getMissing();
+       ((AbstractSparseColumn)from).setMissing(missing.toArray());
+     }
    }
 
    /**
