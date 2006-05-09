@@ -9,8 +9,6 @@ package ncsa.d2k.modules.core.datatype.table;
  * @author searsmith
  * @version 1.0
  */
-
-
 public interface Sparse {
 
   /**

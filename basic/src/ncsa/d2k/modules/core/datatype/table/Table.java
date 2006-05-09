@@ -45,7 +45,7 @@ public interface Table extends java.io.Serializable {
 
 	//static final long serialVersionUID = 2508941379956505568L;
 
-	static final long serialVersionUID = -8081185634463160785L;
+	static final long serialVersionUID = 1L;
 
     /**
 	 * Get an Object from the table.
@@ -149,14 +149,14 @@ public interface Table extends java.io.Serializable {
 	/**
 		Returns the name associated with the column.
 		@param position the index of the Column name to get.
-		@returns the name associated with the column.
+		@return the name associated with the column.
 	*/
 	public String getColumnLabel(int position);
 
 	/**
 		Returns the comment associated with the column.
 		@param position the index of the Column name to get.
-		@returns the comment associated with the column.
+		@return the comment associated with the column.
 	*/
 	public String getColumnComment(int position);
 
@@ -209,7 +209,7 @@ public interface Table extends java.io.Serializable {
 	 * get a subset of the table consisting of the rows identified by the array
 	 * of indices passed in.
 	 * @param rows the rows to be in the subset.
-	 * @return
+	 * @return a Table that contains the specified subset
 	 */
 	public Table getSubset(int[] rows);
 
@@ -328,82 +328,82 @@ public interface Table extends java.io.Serializable {
 	public boolean hasMissingValues();
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @returns the integer for missing value.
+	 * @return the integer for missing value.
 	 */
 	public int getMissingInt ();
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingInt the integer for missing values.
 	 */
 	public void setMissingInt (int newMissingInt);
 
 	/** return the default missing value for doubles, floats and extendeds.
-	 * @returns the double for missing value.
+	 * @return the double for missing value.
 	 */
 	public double getMissingDouble ();
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingDouble the integer for missing values.
 	 */
 	public void setMissingDouble (double newMissingDouble);
 
 	/** return the default missing value for doubles, floats and extendeds.
-	 * @returns the double for missing value.
+	 * @return the double for missing value.
 	 */
 	public String getMissingString ();
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingString the integer for missing values.
 	 */
 	public void setMissingString (String newMissingString);
 
 	/** return the default missing value for doubles, floats and extendeds.
-	 * @returns the double for missing value.
+	 * @return the double for missing value.
 	 */
 	public boolean getMissingBoolean();
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingBoolean the integer for missing values.
 	 */
 	public void setMissingBoolean(boolean newMissingBoolean);
 
 	/** return the default missing value for doubles, floats and extendeds.
-	 * @returns the double for missing value.
+	 * @return the double for missing value.
 	 */
 	public char[] getMissingChars();
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingChars the integer for missing values.
 	 */
 	public void setMissingChars(char[] newMissingChars);
 
 	/** return the default missing value for doubles, floats and extendeds.
-	 * @returns the double for missing value.
+	 * @return the double for missing value.
 	 */
 	public byte[] getMissingBytes();
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingBytes the integer for missing values.
 	 */
 	public void setMissingBytes(byte[] newMissingBytes);
 
 	/** return the default missing value for doubles, floats and extendeds.
-	 * @returns the double for missing value.
+	 * @return the double for missing value.
 	 */
 	public char getMissingChar();
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingChar the integer for missing values.
 	 */
 	public void setMissingChar(char newMissingChar);
 
 	/** return the default missing value for doubles, floats and extendeds.
-	 * @returns the double for missing value.
+	 * @return the double for missing value.
 	 */
 	public byte getMissingByte();
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingByte the integer for missing values.
 	 */
 	public void setMissingByte(byte newMissingByte);
 
@@ -421,6 +421,10 @@ public interface Table extends java.io.Serializable {
 	 */
 	public Column getColumn(int n);
 
-        public TableFactory getTableFactory();
+    /**
+     * Return a TableFactory for this Table.
+     * @return A TableFactory
+     */
+    public TableFactory getTableFactory();
 
 }/*Table*/

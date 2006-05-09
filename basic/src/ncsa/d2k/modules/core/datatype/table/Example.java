@@ -1,5 +1,8 @@
 package ncsa.d2k.modules.core.datatype.table;
 
+/**
+ *
+ */
 public interface Example extends Row {
 
 	/**

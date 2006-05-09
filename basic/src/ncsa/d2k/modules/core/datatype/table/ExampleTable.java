@@ -35,19 +35,19 @@ public interface ExampleTable extends MutableTable {
 
     /**
      Returns the number of input features.
-     @returns the number of input features.
+     @return the number of input features.
      */
     public int getNumInputFeatures () ;
 
     /**
      Return the number of examples in the training set.
-     @returns the number of examples in the training set.
+     @return the number of examples in the training set.
      */
     public int getNumTrainExamples ();
 
     /**
      Return the number of examples in the testing set.
-     @returns the number of examples in the testing set.
+     @return the number of examples in the testing set.
      */
     public int getNumTestExamples ();
 
@@ -59,7 +59,7 @@ public interface ExampleTable extends MutableTable {
 
     /**
      Get the number of output features.
-     @returns the number of output features.
+     @return the number of output features.
      */
     public int getNumOutputFeatures ();
 

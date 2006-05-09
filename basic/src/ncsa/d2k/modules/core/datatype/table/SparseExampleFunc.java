@@ -5,12 +5,9 @@ package ncsa.d2k.modules.core.datatype.table;
  * <p>Description: Added functionality for Sparse Example
  * Tables. </p>
  * <p>Copyright: Copyright (c) 2005</p>
- * <p>Company: RiverGlass, Inc.</p>
  * @author searsmith
  * @version 1.0
  */
-
-
 public interface SparseExampleFunc {
 
   /**

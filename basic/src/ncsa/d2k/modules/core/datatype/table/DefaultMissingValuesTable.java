@@ -43,112 +43,112 @@ abstract public class DefaultMissingValuesTable implements Table {
 	protected byte defaultMissingByte = (byte)'\000';
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @returns the integer for missing value.
+	 * @return the integer for missing value.
 	 */
 	public int getMissingInt () {
 		return defaultMissingInt;
 	}
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingInt the integer for missing values.
 	 */
 	public void setMissingInt (int newMissingInt) {
 		this.defaultMissingInt = newMissingInt;
 	}
 
 	/** return the default missing value for doubles, floats and extendeds.
-	 * @returns the double for missing value.
+	 * @return the double for missing value.
 	 */
 	public double getMissingDouble () {
 		return this.defaultMissingDouble;
 	}
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingDouble the integer for missing values.
 	 */
 	public void setMissingDouble (double newMissingDouble) {
 		this.defaultMissingDouble = newMissingDouble;
 	}
 
 	/** return the default missing value for doubles, floats and extendeds.
-	 * @returns the double for missing value.
+	 * @return the double for missing value.
 	 */
 	public String getMissingString () {
 		return this.defaultMissingString;
 	}
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingString the integer for missing values.
 	 */
 	public void setMissingString (String newMissingString) {
 		this.defaultMissingString = newMissingString;
 	}
 
 	/** return the default missing value for doubles, floats and extendeds.
-	 * @returns the double for missing value.
+	 * @return the double for missing value.
 	 */
 	public boolean getMissingBoolean() {
 		return defaultMissingBoolean;
 	}
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingBoolean the integer for missing values.
 	 */
 	public void setMissingBoolean(boolean newMissingBoolean) {
 		this.defaultMissingBoolean = newMissingBoolean;
 	}
 
 	/** return the default missing value for doubles, floats and extendeds.
-	 * @returns the double for missing value.
+	 * @return the double for missing value.
 	 */
 	public char[] getMissingChars() {
 		return this.defaultMissingCharArray;
 	}
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingChars the integer for missing values.
 	 */
 	public void setMissingChars(char[] newMissingChars) {
 		this.defaultMissingCharArray = newMissingChars;
 	}
 
 	/** return the default missing value for doubles, floats and extendeds.
-	 * @returns the double for missing value.
+	 * @return the double for missing value.
 	 */
 	public byte[] getMissingBytes() {
 		return this.defaultMissingByteArray;
 	}
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingBytes the integer for missing values.
 	 */
 	public void setMissingBytes(byte[] newMissingBytes) {
 		this.defaultMissingByteArray = newMissingBytes;
 	}
 
 	/** return the default missing value for doubles, floats and extendeds.
-	 * @returns the double for missing value.
+	 * @return the double for missing value.
 	 */
 	public char getMissingChar() {
 		return this.defaultMissingChar;
 	}
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingChar the integer for missing values.
 	 */
 	public void setMissingChar(char newMissingChar) {
 		this.defaultMissingChar = newMissingChar;
 	}
 
 	/** return the default missing value for doubles, floats and extendeds.
-	 * @returns the double for missing value.
+	 * @return the double for missing value.
 	 */
 	public byte getMissingByte() {
 		return defaultMissingByte;
 	}
 
 	/** return the default missing value for integers, both short, int and long.
-	 * @param the integer for missing values.
+	 * @param newMissingByte the integer for missing values.
 	 */
 	public void setMissingByte(byte newMissingByte) {
 		this.defaultMissingByte = newMissingByte;

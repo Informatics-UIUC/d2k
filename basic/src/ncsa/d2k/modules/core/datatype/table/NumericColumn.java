@@ -10,7 +10,7 @@ import ncsa.d2k.modules.core.datatype.table.Column;
 public interface NumericColumn extends Column {
 
 	//static final long serialVersionUID = -8231597566891195839L;
-	static final long serialVersionUID = -4942612002109477988L;
+	static final long serialVersionUID = 1L;
 
     //////////////////////////////////////
     //// Accessing Metadata
