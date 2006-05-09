@@ -324,7 +324,7 @@ final public class ColumnUtilities {
      }
      if(from instanceof AbstractSparseColumn){
        VIntHashSet missing = ((AbstractSparseColumn)from).getMissing();
-       ((AbstractSparseColumn)from).setMissing(missing.toArray());
+       ((AbstractSparseColumn)to).setMissing(missing.toArray());
      }
    }
 
