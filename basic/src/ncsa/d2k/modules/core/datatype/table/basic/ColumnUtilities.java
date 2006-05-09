@@ -13,10 +13,15 @@ final public class ColumnUtilities {
    	Create a new DoubleColumn with a copy of the data from
    	sc.
    	@param sc the original column
-   	@return a DoubleColumn initialized with the data from sc
+   	@return a Column initialized with the data from sc
    */
-   public static DoubleColumn toDoubleColumn(Column sc) {
-      DoubleColumn dc = new DoubleColumn(sc.getNumRows());
+   public static Column toDoubleColumn(Column sc) {
+     Column dc = null;
+     if (sc instanceof AbstractSparseColumn)
+       dc = new SparseDoubleColumn(sc.getNumEntries());
+     else
+       dc = new DoubleColumn(sc.getNumRows());
+
       try {
          for (int i = 0; i < sc.getNumRows(); i++)
             if (!sc.isValueMissing(i))
@@ -37,10 +42,16 @@ final public class ColumnUtilities {
    	Create a new IntColumn with a copy of the data from
    	sc.
    	@param sc the original column
-   	@return an IntColumn initialized with the data from sc
+   	@return a Column initialized with the data from sc
    */
-   public static IntColumn toIntColumn(Column sc) {
-      IntColumn dc = new IntColumn(sc.getNumRows());
+   public static Column toIntColumn(Column sc) {
+     Column dc = null;
+     if (sc instanceof AbstractSparseColumn)
+       dc = new SparseIntColumn(sc.getNumEntries());
+     else
+       dc = new IntColumn(sc.getNumRows());
+
+
       for (int i = 0; i < sc.getNumRows(); i++)
          try {
             if (!sc.isValueMissing(i))
@@ -58,10 +69,15 @@ final public class ColumnUtilities {
    	Create a new LongColumn with a copy of the data from
    	sc.
    	@param sc the original column
-   	@return a LongColumn initialized with the data from sc
+   	@return a Column initialized with the data from sc
    */
-   public static LongColumn toLongColumn(Column sc) {
-      LongColumn dc = new LongColumn(sc.getNumRows());
+   public static Column toLongColumn(Column sc) {
+      Column dc = null;
+      if (sc instanceof AbstractSparseColumn)
+        dc = new SparseLongColumn(sc.getNumEntries());
+      else
+        dc = new LongColumn(sc.getNumRows());
+
       for (int i = 0; i < sc.getNumRows(); i++)
          try {
             if (!sc.isValueMissing(i))
@@ -81,10 +97,16 @@ final public class ColumnUtilities {
    	Create a new ShortColumn with a copy of the data from
    	sc.
    	@param sc the original column
-   	@return a ShortColumn initialized with the data from sc
+   	@return a Column initialized with the data from sc
    */
-   public static ShortColumn toShortColumn(Column sc) {
-      ShortColumn dc = new ShortColumn(sc.getNumRows());
+   public static Column toShortColumn(Column sc) {
+
+      Column dc = null;
+      if (sc instanceof AbstractSparseColumn)
+        dc = new SparseShortColumn (sc.getNumEntries());
+      else
+        dc = new ShortColumn (sc.getNumRows());
+
       for (int i = 0; i < sc.getNumRows(); i++)
          try {
             if (!sc.isValueMissing(i))
@@ -105,10 +127,15 @@ final public class ColumnUtilities {
    	Create a new FloatColumn with a copy of the data from
    	sc.
    	@param sc the original column
-   	@return a FloatColumn initialized with the data from sc
+   	@return a Column initialized with the data from sc
    */
-   public static FloatColumn toFloatColumn(Column sc) {
-      FloatColumn dc = new FloatColumn(sc.getNumRows());
+   public static Column toFloatColumn(Column sc) {
+      Column dc = null;
+      if (sc instanceof AbstractSparseColumn)
+        dc = new SparseFloatColumn(sc.getNumEntries());
+      else
+        dc = new FloatColumn(sc.getNumRows());
+
       for (int i = 0; i < sc.getNumRows(); i++)
          try {
                if (!sc.isValueMissing(i))
@@ -128,10 +155,15 @@ final public class ColumnUtilities {
    	Create a new BooleanColumn with a copy of the data from
    	sc.
    	@param sc the original column
-   	@return a BooleanColumn initialized with the data from sc
+   	@return a Column initialized with the data from sc
    */
-   public static BooleanColumn toBooleanColumn(Column sc) {
-      BooleanColumn dc = new BooleanColumn(sc.getNumRows());
+   public static Column toBooleanColumn(Column sc) {
+      Column dc = null;
+     if(sc instanceof AbstractSparseColumn)
+      dc = new SparseBooleanColumn(sc.getNumEntries() );
+     else
+      dc = new BooleanColumn(sc.getNumRows());
+
       for (int i = 0; i < sc.getNumRows(); i++)
          if (!sc.isValueMissing(i))
             dc.setBoolean(sc.getBoolean(i), i);
@@ -146,10 +178,16 @@ final public class ColumnUtilities {
    	Objects in the new column are references to the Objects in
    	the original column.
    	@param sc the original column
-   	@return an ObjectColumn initialized with the data from sc
+   	@return an Column initialized with the data from sc
    */
-   public static ObjectColumn toObjectColumn(Column sc) {
-      ObjectColumn dc = new ObjectColumn(sc.getNumRows());
+   public static Column toObjectColumn(Column sc) {
+
+     Column dc = null;
+     if (sc instanceof AbstractSparseColumn)
+       dc = new SparseObjectColumn(sc.getNumEntries());
+     else
+       dc = new ObjectColumn(sc.getNumRows());
+
       for (int i = 0; i < sc.getNumRows(); i++)
          if (!sc.isValueMissing(i))
             dc.setObject(sc.getObject(i), i);
@@ -164,10 +202,14 @@ final public class ColumnUtilities {
    	Objects in the new column are references to the Objects in
    	the original column.
    	@param sc the original column
-   	@return a StringColumn initialized with the data from sc
+   	@return a Column initialized with the data from sc
    */
-   public static StringColumn toStringColumn(Column sc) {
-      StringColumn dc = new StringColumn(sc.getNumRows());
+   public static Column toStringColumn(Column sc) {
+     Column dc = null;
+     if(sc instanceof AbstractSparseColumn)
+      dc = new SparseStringColumn(sc.getNumEntries() );
+     else
+      dc = new StringColumn(sc.getNumRows());
 
       for (int i = 0; i < sc.getNumRows(); i++)
          if (!sc.isValueMissing(i))
@@ -179,14 +221,19 @@ final public class ColumnUtilities {
    }
 
    /**
-   	Create a new StringColumn with the data from sc.  The
+   	Create a new ByteArrayColumn with the data from sc.  The
    	Objects in the new column are references to the Objects in
    	the original column.
    	@param sc the original column
-   	@return a StringColumn initialized with the data from sc
+   	@return a Column initialized with the data from sc
    */
-   public static ByteArrayColumn toByteArrayColumn(Column sc) {
-      ByteArrayColumn dc = new ByteArrayColumn(sc.getNumRows());
+   public static Column toByteArrayColumn(Column sc) {
+      Column dc = null;
+      if(sc instanceof AbstractSparseColumn)
+     dc = new SparseByteArrayColumn(sc.getNumEntries() );
+    else
+     dc = new ByteArrayColumn(sc.getNumRows());
+
       for (int i = 0; i < sc.getNumRows(); i++)
          if (!sc.isValueMissing(i))
             dc.setBytes(sc.getBytes(i), i);
@@ -197,14 +244,20 @@ final public class ColumnUtilities {
    }
 
    /**
-   	Create a new StringColumn with the data from sc.  The
+   	Create a new CharArrayColumn with the data from sc.  The
    	Objects in the new column are references to the Objects in
    	the original column.
    	@param sc the original column
-   	@return a StringColumn initialized with the data from sc
+   	@return a Column initialized with the data from sc
    */
-   public static CharArrayColumn toCharArrayColumn(Column sc) {
-      CharArrayColumn dc = new CharArrayColumn(sc.getNumRows());
+   public static Column toCharArrayColumn(Column sc) {
+
+     Column dc = null;
+     if (sc instanceof AbstractSparseColumn)
+       dc = new SparseCharArrayColumn(sc.getNumEntries());
+     else
+       dc = new CharArrayColumn(sc.getNumRows());
+
       for (int i = 0; i < sc.getNumRows(); i++)
          if (!sc.isValueMissing(i))
             dc.setChars(sc.getChars(i), i);
@@ -215,14 +268,17 @@ final public class ColumnUtilities {
    }
 
    /**
-   	Create a new StringColumn with the data from sc.  The
-   	Objects in the new column are references to the Objects in
-   	the original column.
+   	Create a new ByteColumn with the data from sc.
    	@param sc the original column
-   	@return a StringColumn initialized with the data from sc
+   	@return a Column initialized with the data from sc
    */
-   public static ByteColumn toByteColumn(Column sc) {
-      ByteColumn dc = new ByteColumn(sc.getNumRows());
+   public static Column toByteColumn(Column sc) {
+     Column dc = null;
+     if (sc instanceof AbstractSparseColumn)
+       dc = new SparseByteColumn(sc.getNumEntries());
+     else
+       dc = new ByteColumn(sc.getNumRows());
+
       for (int i = 0; i < sc.getNumRows(); i++)
          if (!sc.isValueMissing(i))
             dc.setByte(sc.getByte(i), i);
@@ -233,14 +289,18 @@ final public class ColumnUtilities {
    }
 
    /**
-   	Create a new StringColumn with the data from sc.  The
-   	Objects in the new column are references to the Objects in
-   	the original column.
+   	Create a new CharColumn with the data from sc.
    	@param sc the original column
-   	@return a StringColumn initialized with the data from sc
+   	@return a Column initialized with the data from sc
    */
-   public static CharColumn toCharColumn(Column sc) {
-      CharColumn dc = new CharColumn(sc.getNumRows());
+   public static Column toCharColumn(Column sc) {
+
+      Column dc = null;
+      if (sc instanceof AbstractSparseColumn)
+        dc = new SparseCharColumn (sc.getNumEntries());
+      else
+        dc = new CharColumn (sc.getNumRows());
+
       for (int i = 0; i < sc.getNumRows(); i++)
          if (!sc.isValueMissing(i))
             dc.setChar(sc.getChar(i), i);
