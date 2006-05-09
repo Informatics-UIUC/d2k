@@ -323,7 +323,8 @@ public class ScalarizeNominals extends DataPrepModule {
                                 newColumn[row] = false;
                         }
 
-                        BooleanColumn column = ColumnUtilities.toBooleanColumn(oldColumn);
+                        //BooleanColumn column = (BooleanColumn)ColumnUtilities.toBooleanColumn(oldColumn);
+                        Column column = ColumnUtilities.toBooleanColumn(oldColumn);
                         int where = index+k;
                         column.setLabel(columnLabel+"="+uniqueValues[k]);
                         table.insertColumn(column, where);
@@ -342,7 +343,9 @@ public class ScalarizeNominals extends DataPrepModule {
                                 newColumn[row] = 0;
                         }
 
-                        DoubleColumn column = ColumnUtilities.toDoubleColumn(oldColumn);
+//VEREd GOREN - column is now of type Column, so that it supports also sparse tables.
+                       // DoubleColumn column = ColumnUtilities.toDoubleColumn(oldColumn);
+                        Column column = ColumnUtilities.toDoubleColumn(oldColumn);
                         int where = index+k;
                         column.setLabel(columnLabel+"="+uniqueValues[k]);
                         table.insertColumn(column, where);
