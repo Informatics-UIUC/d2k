@@ -25,10 +25,10 @@ public class BinTransform implements Transformation, Cloneable {
 				bins = b;
 		else		//missing values info is contained in tbl and "unknown" bins are added for relevant atrbs
 		 bins = BinningUtils.addMissingValueBins(tbl,b);
-		
+
 		System.out.println("bins.length " + bins.length);
 		new_column = new_col;
-		
+
 	}
 
 	/**
@@ -99,19 +99,21 @@ public class BinTransform implements Transformation, Cloneable {
 		int numColumns = mt.getNumColumns();
 		for (int i = 0; i < numColumns; i++) {
 			if (binRelevant[i]) {
-				
+
 				// Create a new column of type string containing the string rep
 				// of the original data.
 				int ci = i;
-				StringColumn sc = ColumnUtilities.toStringColumn(mt.getColumn(i));
+//VERED GOREN - change sc to be just of column type, since toStringColumn returns a Column
+        //then it supports also sparse type of columns
+				Column sc = ColumnUtilities.toStringColumn(mt.getColumn(i));
                 sc.setLabel(mt.getColumn(i).getLabel()+"_bin");
 				if (new_column) {
 					mt.addColumn(sc);
 					ci = mt.getNumColumns()-1;
 				} else {
-					mt.setColumn(sc, i);					
+					mt.setColumn(sc, i);
 				}
-				
+
 				// Set the strings, use the method of the table, in case it is
 				// a subset table.
 				for (int row = 0 ; row < mt.getNumRows() ; row++)
@@ -126,7 +128,7 @@ public class BinTransform implements Transformation, Cloneable {
 
 	}
 
-	
+
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
