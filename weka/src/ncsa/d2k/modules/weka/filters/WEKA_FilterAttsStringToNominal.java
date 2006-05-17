@@ -125,7 +125,8 @@ public class WEKA_FilterAttsStringToNominal extends DataPrepModule {
           for (int i = 0; i < numatts; i++) {
             if (in.attribute(i).isString()){
               StringToNominal filter = new StringToNominal();
-              filter.setAttributeIndex(i); //must come before setInputFormat (this type of dependency is bad)
+              // 5/17/2006 DC changed this 
+              filter.setAttributeIndex(Integer.toString(i)); //must come before setInputFormat (this type of dependency is bad)
               filter.setInputFormat(in);
               int numinsts = in.numInstances();
               for (int j = 0; j < numinsts; j++) {
