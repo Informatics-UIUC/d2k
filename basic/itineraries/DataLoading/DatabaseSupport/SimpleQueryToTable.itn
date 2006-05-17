@@ -14,31 +14,31 @@ Y3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLkJ1aWxkUXVlcnl4" label="SimpleQueryToTable.
       <b>DatabaseToTable</b>
     </p>
     <p>
-      This itinerary retrieves a data set from a database and stores it in a 
-      table, so that it can be used in the same way other modules use tables. 
+      This itinerary retrieves a data set from a database and stores it in a
+      table, so that it can be used in the same way other modules use tables.
       This itinerary can be used as a nested module.
     </p>
     <p>
       <b>Modules with Properties</b>
     </p>
     <p>
-      The following modules have properties that may need to be adjusted. The 
+      The following modules have properties that may need to be adjusted. The
       properties can be changed by double clicking on the given module.
     </p>
     <p>
       <b><i>1 - ConnectToDB: </i></b>
     </p>
     <p>
-      This module establishes a connection to a database. See the Component 
+      This module establishes a connection to a database. See the Component
       Info for a description of the properties for this module.
     </p>
     <p>
       <b><i>2 - AvailableTablesInput:</i></b>
     </p>
     <p>
-      This module retrieves a list of tables from the database. The properties 
-      associated with this table narrow the number of tables displayed. If <i> 
-      List Data Tables</i> is true then only data tables will be shown. If <i> 
+      This module retrieves a list of tables from the database. The properties
+      associated with this table narrow the number of tables displayed. If <i>
+      List Data Tables</i> is true then only data tables will be shown. If <i>
       List Data Cubes</i> is true, then only data cubes will be shown.
     </p>
     <p>
@@ -54,7 +54,7 @@ Y3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLkJ1aWxkUXVlcnl4" label="SimpleQueryToTable.
       <b><i>2 - ReadQueryResults:</i></b>
     </p>
     <p>
-      This module executes the query condition and retrieves the specified 
+      This module executes the query condition and retrieves the specified
       data from the database.
     </p>
     <p>
@@ -70,28 +70,28 @@ Y3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLkJ1aWxkUXVlcnl4" label="SimpleQueryToTable.
       <b><i>2 - SelectTable:</i></b>
     </p>
     <p>
-      This module presents a user interface for users to select a database 
+      This module presents a user interface for users to select a database
       table.
     </p>
     <p>
       <b><i>3 - SelectFields:</i></b>
     </p>
     <p>
-      This module presents a user interface for users to select the attributes 
+      This module presents a user interface for users to select the attributes
       desired for the computations.
     </p>
     <p>
       <b><i>4 - SQLFilterConstruction:</i></b>
     </p>
     <p>
-      This module presents a user interface to construct a filter expression 
+      This module presents a user interface to construct a filter expression
       for specifying a query condition.
     </p>
     <p>
       <b><i>5 - TableViewer:</i></b>
     </p>
     <p>
-      This module presents a user interface that displays the contents of the 
+      This module presents a user interface that displays the contents of the
       table.
     </p>
     <p>
@@ -115,7 +115,7 @@ Y3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLkJ1aWxkUXVlcnl4" label="SimpleQueryToTable.
         <destination alias="FanOut" index="0"/>
       </output>
       <property name="dbVendor" value=""/>
-      <property name="password" value="testmining"/>
+      <property name="password" value=""/>
       <property name="dbInstance" value=""/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
       <property name="windowName" value="ConnectToDB"/>
