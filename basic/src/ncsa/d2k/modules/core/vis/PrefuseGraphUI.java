@@ -317,7 +317,10 @@ public class PrefuseGraphUI extends UIModule {
       int edgeIteratorCount = graph.getEdgeCount();
       while (edgeIteratorCount-- > 0) {
         Edge edge = (Edge)edgeIterator.next();
-        int weight = edge.getInt(GraphUtils.WEIGHT);
+        int weight = 1;
+        if(edge.canGet(GraphUtils.WEIGHT, int.class)) {
+            weight = edge.getInt(GraphUtils.WEIGHT);
+        }
         //int weight = Integer.parseInt(att);
         if (weight > maxEdgeWeight) {
           maxEdgeWeight = weight;
@@ -332,11 +335,15 @@ public class PrefuseGraphUI extends UIModule {
       int nodeIteratorCount = graph.getNodeCount();
       while (nodeIteratorCount-- > 0) {
         Node node = (Node)nodeIterator.next();
-        int weight = node.getInt(GraphUtils.WEIGHT);
+        int weight = 1;
+        if(node.canGet(GraphUtils.WEIGHT, int.class)) {
+           weight = node.getInt(GraphUtils.WEIGHT);
+        }
         ///int weight = Integer.parseInt(att);
         if (weight > maxNodeWeight) {
           maxNodeWeight = weight;
         }
+
       }
 
     }
