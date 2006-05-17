@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
-  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAAIdwgAAAALAAAABnQADFNlbGVjdCBUYWJsZXNyABtuY3NhLmQyay5jb3JlLlJlc291cmNlRW50
-cnnVLiwgQgMm0gIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0O0wAD29iamVj
+AAAIdwgAAAALAAAABXQADFNlbGVjdCBUYWJsZXNyABtuY3NhLmQyay5jb3JlLlJlc291cmNlRW50
+cnkAAAAAAAAAAQIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0O0wAD29iamVj
 dENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAKG5jc2EuZDJrLm1vZHVsZXMuY29y
 ZS5pby5zcWwuU2VsZWN0VGFibGV0AAxCYXIgQ2hhcnQgMkRzcQB+AARwdAAkbmNzYS5kMmsubW9k
 dWxlcy5jb3JlLnZpcy5CYXJDaGFydDJEdAAWQXZhaWxhYmxlIFRhYmxlcyBJbnB1dHNxAH4ABHB0
-ADFuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLkF2YWlsYWJsZVRhYmxlc0lucHV0dAAIVlRW
-aWV3ZXJzcQB+AARwdAAibmNzYS5kMmsubW9kdWxlcy5jb3JlLnZpcy5WVFZpZXdlcnQADUNvbm5l
-Y3QgVG8gREJzcQB+AARwdAAobmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLnNxbC5Db25uZWN0VG9E
-QnQAG1NRTCBHZXQgQmFyIENoYXJ0IEZyb20gQ3ViZXNxAH4ABHB0AERuY3NhLmQyay5tb2R1bGVz
-LmNvcmUudHJhbnNmb3JtLnN1bW1hcml6YXRpb24uU1FMR2V0QmFyQ2hhcnRGcm9tQ3ViZXg=" label="GetBarChart.itn">
+ADFuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLkF2YWlsYWJsZVRhYmxlc0lucHV0dAANQ29u
+bmVjdCBUbyBEQnNxAH4ABHB0AChuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLkNvbm5lY3RU
+b0RCdAAbU1FMIEdldCBCYXIgQ2hhcnQgRnJvbSBDdWJlc3EAfgAEcHQARG5jc2EuZDJrLm1vZHVs
+ZXMuY29yZS50cmFuc2Zvcm0uc3VtbWFyaXphdGlvbi5TUUxHZXRCYXJDaGFydEZyb21DdWJleA==" label="GetBarChart.itn">
     <annotation><![CDATA[<p>
       <b>GetBarChart</b>
     </p>
@@ -92,10 +91,6 @@ LmNvcmUudHJhbnNmb3JtLnN1bW1hcml6YXRpb24uU1FMR2V0QmFyQ2hhcnRGcm9tQ3ViZXg=" label=
         <destination alias="Select Table" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAACAAAAAAAAAAA="/>
       <property name="dataTableOnly" value="false"/>
       <property name="dataCubeOnly" value="true"/>
     </module>
@@ -103,10 +98,6 @@ AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAACAAAAAAAAAAA="/>
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
       <property name="characters" value="50"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAAA"/>
       <property name="labelsColumn" value="0"/>
       <property name="YIncrement" value="15"/>
       <property name="XIncrement" value="5"/>
@@ -118,11 +109,7 @@ AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAAA"/>
         <destination alias="SQL Get Bar Chart From Cube" index="1"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
-      <property name="supressGui" value="false"/>
+      <property name="suppressGui" value="false"/>
     </module>
     <module alias="Connect To DB" classname="ncsa.d2k.modules.core.io.sql.ConnectToDB" xloc="12" yloc="164">
       <output index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
@@ -132,16 +119,12 @@ AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
       <property name="dbVendor" value=""/>
       <property name="dbInstance" value=""/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAA"/>
+      <property name="suppressGui" value="false"/>
       <property name="username" value=""/>
       <property name="url" value="jdbc:oracle:thin:@sol.ncsa.uiuc.edu:1521:oracle2"/>
-      <property name="supressGui" value="false"/>
+      <property name="port" value=""/>
       <property name="driver" value=""/>
       <property name="machine" value=""/>
-      <property name="port" value=""/>
     </module>
     <module alias="SQL Get Bar Chart From Cube" classname="ncsa.d2k.modules.core.transform.summarization.SQLGetBarChartFromCube" xloc="348" yloc="76">
       <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
@@ -150,12 +133,8 @@ AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAA"/>
         <destination alias="Bar Chart 2D" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAQAAAAA="/>
       <property name="book" value="false"/>
-      <property name="supressGui" value="false"/>
+      <property name="suppressGui" value="false"/>
     </module>
   </itinerary>
 </toolkit>

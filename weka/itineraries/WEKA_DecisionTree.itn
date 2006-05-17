@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
-  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
 AAARdwgAAAAXAAAACXQAGldFS0FfQ1ZDbGFzc2lmaWVyRXZhbHVhdG9yc3IAG25jc2EuZDJrLmNv
-cmUuUmVzb3VyY2VFbnRyedUuLCBCAybSAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9P
+cmUuUmVzb3VyY2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9P
 YmplY3Q7TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdAA7bmNzYS5k
 MmsubW9kdWxlcy53ZWthLmV2YWx1YXRpb24uV0VLQV9DVkNsYXNzaWZpZXJFdmFsdWF0b3J0ABFX
 RUtBX01vZGVsQnVpbGRlcnNxAH4ABHB0ADJuY3NhLmQyay5tb2R1bGVzLndla2EuY2xhc3NpZmll
@@ -23,7 +23,7 @@ cy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV4" label="WEKA_DecisionTree.itn">
       <output index="0" classname="weka.core.Drawable">
         <destination alias="WEKA_TreeVisualizer" index="0"/>
       </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
     </module>
     <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="315" yloc="39">
       <input index="0" classname="weka.core.Instances"/>
@@ -33,22 +33,7 @@ cy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV4" label="WEKA_DecisionTree.itn">
       <output index="1" classname="weka.core.Instances">
         <destination alias="WEKA_CVClassifierEvaluator" index="1"/>
       </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
-    </module>
-    <module alias="WEKA_J48ModelProducer" classname="ncsa.d2k.modules.weka.classifier.WEKA_J48ModelProducer" xloc="118" yloc="157">
-      <output index="0" classname="ncsa.d2k.modules.PredictionModelModule">
-        <destination alias="WEKA_ModelBuilder" index="1"/>
-      </output>
-      <property name="numFolds" value="3"/>
-      <property name="minNumObj" value="2"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="subtreeRaising" value="true"/>
-      <property name="saveInstanceData" value="false"/>
-      <property name="unpruned" value="false"/>
-      <property name="confidenceFactor" value="0.25"/>
-      <property name="useLaplace" value="false"/>
-      <property name="reducedErrorPruning" value="false"/>
-      <property name="binarySplits" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAQAAAAE="/>
     </module>
     <module alias="WEKA_ModelBuilder" classname="ncsa.d2k.modules.weka.classifier.WEKA_ModelBuilder" xloc="360" yloc="109">
       <input index="0" classname="weka.core.Instances"/>
@@ -56,18 +41,35 @@ cy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV4" label="WEKA_DecisionTree.itn">
       <output index="0" classname="ncsa.d2k.modules.PredictionModelModule">
         <destination alias="FanOut1" index="0"/>
       </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
     </module>
-    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="29" yloc="40">
-      <output index="0" classname="java.lang.String">
-        <destination alias="WEKA_ReadARFF" index="0"/>
+    <module alias="WEKA_J48ModelProducer" classname="ncsa.d2k.modules.weka.classifier.WEKA_J48ModelProducer" xloc="118" yloc="157">
+      <output index="0" classname="ncsa.d2k.modules.PredictionModelModule">
+        <destination alias="WEKA_ModelBuilder" index="1"/>
       </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="numFolds" value="3"/>
+      <property name="minNumObj" value="2"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="subtreeRaising" value="true"/>
+      <property name="saveInstanceData" value="false"/>
+      <property name="unpruned" value="false"/>
+      <property name="confidenceFactor" value="0.25"/>
+      <property name="reducedErrorPruning" value="false"/>
+      <property name="useLaplace" value="false"/>
+      <property name="binarySplits" value="false"/>
     </module>
     <module alias="WEKA_TreeVisualizer" classname="ncsa.d2k.modules.weka.vis.WEKA_TreeVisualizer" xloc="751" yloc="182">
       <input index="0" classname="weka.core.Drawable"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
       <property name="windowName" value="WEKA_TreeVisualizer"/>
+    </module>
+    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="29" yloc="40">
+      <output index="0" classname="java.lang.String">
+        <destination alias="WEKA_ReadARFF" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="fileName" value="data/UCI-arff/iris.arff"/>
+      <property name="fileFilterExtension" value=""/>
     </module>
     <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="483" yloc="159">
       <input index="0" classname="ncsa.d2k.modules.PredictionModelModule"/>
@@ -77,7 +79,17 @@ cy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV4" label="WEKA_DecisionTree.itn">
       <output index="1" classname="ncsa.d2k.modules.PredictionModelModule">
         <destination alias="WEKA_CastModelToDrawable" index="0"/>
       </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAQAAAAE="/>
+    </module>
+    <module alias="WEKA_ReadARFF" classname="ncsa.d2k.modules.weka.input.WEKA_ReadARFF" xloc="145" yloc="43">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="weka.core.Instances">
+        <destination alias="FanOut" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="hasClass" value="true"/>
+      <property name="classIndex" value="-1"/>
+      <property name="verbose" value="false"/>
     </module>
     <module alias="WEKA_CVClassifierEvaluator" classname="ncsa.d2k.modules.weka.evaluation.WEKA_CVClassifierEvaluator" xloc="514" yloc="31">
       <input index="0" classname="ncsa.d2k.modules.PredictionModelModule"/>
@@ -85,16 +97,6 @@ cy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV4" label="WEKA_DecisionTree.itn">
       <output index="0" classname="ncsa.d2k.modules.PredictionModelModule"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
       <property name="crossValidationFolds" value="10"/>
-    </module>
-    <module alias="WEKA_ReadARFF" classname="ncsa.d2k.modules.weka.input.WEKA_ReadARFF" xloc="145" yloc="43">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="weka.core.Instances">
-        <destination alias="FanOut" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="hasClass" value="true"/>
-      <property name="classIndex" value="-1"/>
-      <property name="verbose" value="false"/>
     </module>
   </itinerary>
 </toolkit>

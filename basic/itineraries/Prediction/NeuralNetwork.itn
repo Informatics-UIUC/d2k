@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
-  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAARdwgAAAAMAAAADHQAD0lucHV0IEZpbGUgTmFtZXNyABtuY3NhLmQyay5jb3JlLlJlc291cmNl
-RW50cnnVLiwgQgMm0gIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0O0wAD29i
-amVjdENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAMm5jc2EuZDJrLm1vZHVsZXMu
-Y29yZS5pby5maWxlLmlucHV0LklucHV0MUZpbGVOYW1ldAAMVGFibGUgVmlld2Vyc3EAfgAEcHQA
-JW5jc2EuZDJrLm1vZHVsZXMuY29yZS52aXMuVGFibGVWaWV3ZXJ0ABFDaG9vc2UgQXR0cmlidXRl
-c3NxAH4ABHB0ADpuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmF0dHJpYnV0ZS5DaG9v
-c2VBdHRyaWJ1dGVzdAAcQ3JlYXRlIERlbGltaXRlZCBGaWxlIFBhcnNlcnNxAH4ABHB0ADluY3Nh
-LmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5DcmVhdGVEZWxpbWl0ZWRQYXJzZXJ0ABNQ
-YXJzZSBGaWxlIFRvIFRhYmxlc3EAfgAEcHQANG5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxl
-LmlucHV0LlBhcnNlRmlsZVRvVGFibGV0AA9TaW1wbGVUcmFpblRlc3RzcQB+AARwdAA1bmNzYS5k
-MmsubW9kdWxlcy5jb3JlLnRyYW5zZm9ybS50YWJsZS5TaW1wbGVUcmFpblRlc3R0AAZGYW5PdXRz
-cQB+AARwdAAibmNzYS5kMmsuY29yZS5tb2R1bGVzLkZhbk91dE1vZHVsZXQAElNjYWxhcml6ZSBO
-b21pbmFsc3NxAH4ABHB0ADtuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmF0dHJpYnV0
-ZS5TY2FsYXJpemVOb21pbmFsc3QAHkJhY2sgUHJvcCBOZXVyYWwgTmV0IEdlbmVyYXRvcnNxAH4A
-BHB0AEFuY3NhLmQyay5tb2R1bGVzLmNvcmUucHJlZGljdGlvbi5uZXVyYWxuZXQuQmFja1Byb3BN
-b2RlbEdlbmVyYXRvcnQAF0RlZmF1bHQgUGFyYW1ldGVyIFBvaW50c3EAfgAEcHQANW5jc2EuZDJr
-Lm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLkdldERlZmF1bHRQYXJhbVBvaW50dAANTW9kZWwgUHJl
-ZGljdHNxAH4ABHB0AC1uY3NhLmQyay5tb2R1bGVzLmNvcmUucHJlZGljdGlvbi5Nb2RlbFByZWRp
-Y3R0ABxOTiBQYXJhbWV0ZXIgU3BhY2UgR2VuZXJhdG9yc3EAfgAEcHQARm5jc2EuZDJrLm1vZHVs
-ZXMuY29yZS5wcmVkaWN0aW9uLm5ldXJhbG5ldC5CYWNrUHJvcFBhcmFtU3BhY2VHZW5lcmF0b3J4
+AAARdwgAAAAXAAAADHQAHE5OIFBhcmFtZXRlciBTcGFjZSBHZW5lcmF0b3JzcgAbbmNzYS5kMmsu
+Y29yZS5SZXNvdXJjZUVudHJ5AAAAAAAAAAECAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5n
+L09iamVjdDtMAA9vYmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0AEZuY3Nh
+LmQyay5tb2R1bGVzLmNvcmUucHJlZGljdGlvbi5uZXVyYWxuZXQuQmFja1Byb3BQYXJhbVNwYWNl
+R2VuZXJhdG9ydAAPU2ltcGxlVHJhaW5UZXN0c3EAfgAEcHQANW5jc2EuZDJrLm1vZHVsZXMuY29y
+ZS50cmFuc2Zvcm0udGFibGUuU2ltcGxlVHJhaW5UZXN0dAAeQmFjayBQcm9wIE5ldXJhbCBOZXQg
+R2VuZXJhdG9yc3EAfgAEcHQAQW5jc2EuZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLm5ldXJh
+bG5ldC5CYWNrUHJvcE1vZGVsR2VuZXJhdG9ydAATUGFyc2UgRmlsZSBUbyBUYWJsZXNxAH4ABHB0
+ADRuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1RhYmxldAAS
+U2NhbGFyaXplIE5vbWluYWxzc3EAfgAEcHQAO25jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zv
+cm0uYXR0cmlidXRlLlNjYWxhcml6ZU5vbWluYWxzdAANTW9kZWwgUHJlZGljdHNxAH4ABHB0AC1u
+Y3NhLmQyay5tb2R1bGVzLmNvcmUucHJlZGljdGlvbi5Nb2RlbFByZWRpY3R0AAZGYW5PdXRzcQB+
+AARwdAAibmNzYS5kMmsuY29yZS5tb2R1bGVzLkZhbk91dE1vZHVsZXQAHENyZWF0ZSBEZWxpbWl0
+ZWQgRmlsZSBQYXJzZXJzcQB+AARwdAA5bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5w
+dXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2VydAAXRGVmYXVsdCBQYXJhbWV0ZXIgUG9pbnRzcQB+AARw
+dAA1bmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRpY3Rpb24uR2V0RGVmYXVsdFBhcmFtUG9pbnR0
+ABFDaG9vc2UgQXR0cmlidXRlc3NxAH4ABHB0ADpuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNm
+b3JtLmF0dHJpYnV0ZS5DaG9vc2VBdHRyaWJ1dGVzdAAMVGFibGUgVmlld2Vyc3EAfgAEcHQAJW5j
+c2EuZDJrLm1vZHVsZXMuY29yZS52aXMuVGFibGVWaWV3ZXJ0AA9JbnB1dCBGaWxlIE5hbWVzcQB+
+AARwdAAybmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV4
 " label="NeuralNetwork.itn">
     <annotation><![CDATA[<p>
       <b>Decision Tree Analysis with C4.5</b>
@@ -192,10 +192,6 @@ ZXMuY29yZS5wcmVkaWN0aW9uLm5ldXJhbG5ldC5CYWNrUHJvcFBhcmFtU3BhY2VHZW5lcmF0b3J4
         <destination alias="Default Parameter Point" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAA"/>
     </module>
     <module alias="Back Prop Neural Net Generator" classname="ncsa.d2k.modules.core.prediction.neuralnet.BackPropModelGenerator" xloc="272" yloc="136">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
@@ -205,22 +201,7 @@ AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAA"/>
       </output>
       <property name="debug" value="false"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAQAAAAA="/>
       <property name="makeModelAvailable" value="true"/>
-    </module>
-    <module alias="Default Parameter Point" classname="ncsa.d2k.modules.core.prediction.GetDefaultParamPoint" xloc="199" yloc="256">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterSpace"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint">
-        <destination alias="Back Prop Neural Net Generator" index="1"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
     </module>
     <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="147" yloc="207">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.TrainTable"/>
@@ -228,10 +209,21 @@ AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
         <destination alias="Back Prop Neural Net Generator" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
+    </module>
+    <module alias="Default Parameter Point" classname="ncsa.d2k.modules.core.prediction.GetDefaultParamPoint" xloc="199" yloc="256">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterSpace"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint">
+        <destination alias="Back Prop Neural Net Generator" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="331" yloc="16">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Choose Attributes" index="0"/>
+      </output>
+      <property name="useBlanks" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
     </module>
     <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="138" yloc="16">
       <input index="0" classname="java.lang.String"/>
@@ -242,35 +234,8 @@ AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
       <property name="hasSpecDelim" value="false"/>
       <property name="labelsRow" value="0"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
       <property name="hasTypes" value="true"/>
       <property name="hasLabels" value="true"/>
-    </module>
-    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="331" yloc="16">
-      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-        <destination alias="Choose Attributes" index="0"/>
-      </output>
-      <property name="useBlanks" value="true"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
-    </module>
-    <module alias="Table Viewer" classname="ncsa.d2k.modules.core.vis.TableViewer" xloc="524" yloc="215">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <property name="maxFractionDigits" value="-1"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
-      <property name="windowName" value="Table Viewer"/>
     </module>
     <module alias="Model Predict" classname="ncsa.d2k.modules.core.prediction.ModelPredict" xloc="420" yloc="215">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
@@ -279,21 +244,13 @@ AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
         <destination alias="Table Viewer" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAgAAAAAAAAAAdXEAfgADAAAAAQAAAAA="/>
     </module>
-    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="29" yloc="16">
-      <output index="0" classname="java.lang.String">
-        <destination alias="Create Delimited File Parser" index="0"/>
-      </output>
+    <module alias="Table Viewer" classname="ncsa.d2k.modules.core.vis.TableViewer" xloc="524" yloc="215">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <property name="maxFractionDigits" value="-1"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="fileName" value="data/UCI/iris.csv"/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAA"/>
+      <property name="windowName" value="Table Viewer"/>
     </module>
     <module alias="Choose Attributes" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="503" yloc="16">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
@@ -301,12 +258,16 @@ AAB1cgACW0lNumAmduqypQIAAHhwAAAAAHVxAH4AAwAAAAEAAAAA"/>
         <destination alias="Scalarize Nominals" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
       <property name="windowName" value="Choose Attributes"/>
-      <property name="supressGui" value="false"/>
+      <property name="suppressGui" value="false"/>
+    </module>
+    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="29" yloc="16">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Create Delimited File Parser" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="fileName" value="data/UCI/iris.csv"/>
+      <property name="fileFilterExtension" value=""/>
     </module>
     <module alias="Scalarize Nominals" classname="ncsa.d2k.modules.core.transform.attribute.ScalarizeNominals" xloc="43" yloc="112">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
@@ -315,10 +276,6 @@ AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
       </output>
       <property name="newTypeBoolean" value="false"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
     </module>
     <module alias="SimpleTrainTest" classname="ncsa.d2k.modules.core.transform.table.SimpleTrainTest" xloc="27" yloc="208">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
@@ -330,10 +287,6 @@ AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAABAAAAAA=="/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
       <property name="testPercent" value="33"/>
-      <property name="moduleStatistics" binaryValue="rO0ABXNyAB5uY3NhLmQyay5jb3JlLk1vZHVsZVN0YXRpc3RpY3MwYKp4I/Te/AIAB0kACml0ZXJh
-dGlvbnNKAAdydW50aW1lSgAJc3RhcnR0aW1lSQAFc3RhdGVJAAt0aW1lc0NhdWdodFsACmlucHV0
-RmxhZ3N0AAJbSVsAC291dHB1dENvdW50cQB+AAF4cAAAAAAAAAAAAAAAAP//////////AAAAAAAA
-AAB1cgACW0lNumAmduqypQIAAHhwAAAAAQAAAAB1cQB+AAMAAAACAAAAAAAAAAA="/>
       <property name="samplingMethod" value="0"/>
       <property name="seed" value="123"/>
       <property name="trainPercent" value="67"/>

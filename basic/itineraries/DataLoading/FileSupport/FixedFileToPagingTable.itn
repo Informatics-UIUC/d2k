@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
-  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
 AAAIdwgAAAALAAAABXQAE1BhcnNlIEZpbGUgVG8gVGFibGVzcgAbbmNzYS5kMmsuY29yZS5SZXNv
-dXJjZUVudHJ51S4sIEIDJtICAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtM
+dXJjZUVudHJ5AAAAAAAAAAECAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtM
 AA9vYmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ADRuY3NhLmQyay5tb2R1
-bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1RhYmxldAAaUGFyc2UgRmlsZSB0byBQ
-YWdpbmcgVGFibGVzcQB+AARwdAA6bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQu
-UGFyc2VGaWxlVG9QYWdpbmdUYWJsZXQAGkNyZWF0ZSBGaXhlZC1Gb3JtYXQgUGFyc2Vyc3EAfgAE
-cHQANW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LkNyZWF0ZUZpeGVkUGFyc2Vy
+bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1RhYmxldAAaQ3JlYXRlIEZpeGVkLUZv
+cm1hdCBQYXJzZXJzcQB+AARwdAA1bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQu
+Q3JlYXRlRml4ZWRQYXJzZXJ0ABpQYXJzZSBGaWxlIHRvIFBhZ2luZyBUYWJsZXNxAH4ABHB0ADpu
+Y3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1BhZ2luZ1RhYmxl
 dAAcQ3JlYXRlIERlbGltaXRlZCBGaWxlIFBhcnNlcnNxAH4ABHB0ADluY3NhLmQyay5tb2R1bGVz
 LmNvcmUuaW8uZmlsZS5pbnB1dC5DcmVhdGVEZWxpbWl0ZWRQYXJzZXJ0ABJJbnB1dCAyIEZpbGUg
 TmFtZXNzcQB+AARwdAAzbmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQy
@@ -112,28 +112,32 @@ RmlsZU5hbWVzeA==" label="FixedFileToPagingTable.itn">
       module to the output of the Parse File To Paging Table module prior to 
       execution.
     </p>]]></annotation>
-    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="258" yloc="117">
-      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-        <destination alias="Create Fixed-Format Parser" index="1"/>
-      </output>
-      <property name="useBlanks" value="true"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-    </module>
-    <module alias="Parse File to Paging Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToPagingTable" xloc="537" yloc="27">
-      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
-      <property name="pageSubsets" value="true"/>
-      <property name="useBlanks" value="true"/>
-      <property name="numRowsPerPage" value="5000"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-    </module>
     <module alias="Create Fixed-Format Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateFixedParser" xloc="357" yloc="27">
       <input index="0" classname="java.lang.String"/>
       <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
       <output index="0" classname="ncsa.d2k.modules.core.io.file.input.FixedFileParser">
         <destination alias="Parse File to Paging Table" index="0"/>
       </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="83" yloc="117">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="labelsRow" value="0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
+    </module>
+    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="258" yloc="117">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Create Fixed-Format Parser" index="1"/>
+      </output>
+      <property name="useBlanks" value="true"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
     </module>
     <module alias="Input 2 File Names" classname="ncsa.d2k.modules.core.io.file.input.Input2FileNames" xloc="18" yloc="27">
@@ -143,19 +147,17 @@ RmlsZU5hbWVzeA==" label="FixedFileToPagingTable.itn">
       <output index="1" classname="java.lang.String">
         <destination alias="Create Delimited File Parser" index="0"/>
       </output>
+      <property name="fileName1" value=""/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+      <property name="fileName0" value=""/>
     </module>
-    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="83" yloc="117">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
-        <destination alias="Parse File To Table" index="0"/>
-      </output>
-      <property name="hasTypes" value="true"/>
-      <property name="labelsRow" value="0"/>
-      <property name="hasSpecDelim" value="false"/>
-      <property name="typesRow" value="1"/>
-      <property name="hasLabels" value="true"/>
+    <module alias="Parse File to Paging Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToPagingTable" xloc="537" yloc="27">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <property name="useBlanks" value="true"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="pageSubsets" value="true"/>
+      <property name="numRowsPerPage" value="5000"/>
     </module>
   </itinerary>
 </toolkit>

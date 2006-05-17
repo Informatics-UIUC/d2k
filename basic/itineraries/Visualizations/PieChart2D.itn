@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
-  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAARdwgAAAAXAAAACnQAE1BhcnNlIEZpbGUgVG8gVGFibGVzcgAbbmNzYS5kMmsuY29yZS5SZXNv
-dXJjZUVudHJ51S4sIEIDJtICAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtM
-AA9vYmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ADRuY3NhLmQyay5tb2R1
-bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1RhYmxldAAQTWVyZ2UgVGFibGUgUm93
-c3NxAH4ABHB0ADRuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLnRhYmxlLk1lcmdlVGFi
-bGVSb3dzdAAbTGluZUdyYXBoMkRfSW5wdXQgRmlsZSBOYW1lc3EAfgAEcHQAMm5jc2EuZDJrLm1v
-ZHVsZXMuY29yZS5pby5maWxlLmlucHV0LklucHV0MUZpbGVOYW1ldAAMMkQgUGllIENoYXJ0c3EA
-fgAEcHQAJG5jc2EuZDJrLm1vZHVsZXMuY29yZS52aXMuUGllQ2hhcnQyRHQAH0xpbmVHcmFwaDJE
-X1BhcnNlIEZpbGUgVG8gVGFibGVzcQB+AARwdAA0bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZp
-bGUuaW5wdXQuUGFyc2VGaWxlVG9UYWJsZXQAGUxpbmVHcmFwaDJEXzJEIExpbmUgR3JhcGhzcQB+
-AARwdAAlbmNzYS5kMmsubW9kdWxlcy5jb3JlLnZpcy5MaW5lR3JhcGgyRHQAHENyZWF0ZSBEZWxp
-bWl0ZWQgRmlsZSBQYXJzZXJzcQB+AARwdAA5bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUu
-aW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2VydAAMVGFibGUgVmlld2Vyc3EAfgAEcHQAJW5jc2Eu
-ZDJrLm1vZHVsZXMuY29yZS52aXMuVGFibGVWaWV3ZXJ0AChMaW5lR3JhcGgyRF9DcmVhdGUgRGVs
-aW1pdGVkIEZpbGUgUGFyc2Vyc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxl
-LmlucHV0LkNyZWF0ZURlbGltaXRlZFBhcnNlcnQAD0lucHV0IEZpbGUgTmFtZXNxAH4ABHBxAH4A
-Dng=" label="PieChart2D.itn">
+AAAIdwgAAAALAAAABnQADDJEIFBpZSBDaGFydHNyABtuY3NhLmQyay5jb3JlLlJlc291cmNlRW50
+cnkAAAAAAAAAAQIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0O0wAD29iamVj
+dENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAJG5jc2EuZDJrLm1vZHVsZXMuY29y
+ZS52aXMuUGllQ2hhcnQyRHQAE1BhcnNlIEZpbGUgVG8gVGFibGVzcQB+AARwdAA0bmNzYS5kMmsu
+bW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuUGFyc2VGaWxlVG9UYWJsZXQAD0lucHV0IEZpbGUg
+TmFtZXNxAH4ABHB0ADJuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5JbnB1dDFG
+aWxlTmFtZXQAHENyZWF0ZSBEZWxpbWl0ZWQgRmlsZSBQYXJzZXJzcQB+AARwdAA5bmNzYS5kMmsu
+bW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2VydAAQTWVyZ2Ug
+VGFibGUgUm93c3NxAH4ABHB0ADRuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLnRhYmxl
+Lk1lcmdlVGFibGVSb3dzdAAMVGFibGUgVmlld2Vyc3EAfgAEcHQAJW5jc2EuZDJrLm1vZHVsZXMu
+Y29yZS52aXMuVGFibGVWaWV3ZXJ4" label="PieChart2D.itn">
     <annotation><![CDATA[<p>
       Overview: This module creates a pie chart visualization from Table data. 
       One column (by default, column 0) must contain the labels of components 
@@ -30,13 +24,40 @@ Dng=" label="PieChart2D.itn">
       Data Type Restrictions: Negative ratio values (which make no sense for a 
       pie chart) will lead to inconsistent results.
     </p>]]></annotation>
+    <module alias="Merge Table Rows" classname="ncsa.d2k.modules.core.transform.table.MergeTableRows" xloc="26" yloc="136">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table">
+        <destination alias="Table Viewer" index="0"/>
+      </output>
+      <property name="lastKeys" binaryValue="rO0ABXNyABFqYXZhLnV0aWwuSGFzaFNldLpEhZWWuLc0AwAAeHB3DAAAABA/QAAAAAAAAXQABWNs
+YXNzeA=="/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="lastMergeMethod" value="Average"/>
+      <property name="windowName" value="Merge Table Rows"/>
+      <property name="suppressGui" value="false"/>
+      <property name="lastToMerge" binaryValue="rO0ABXNyABFqYXZhLnV0aWwuSGFzaFNldLpEhZWWuLc0AwAAeHB3DAAAABA/QAAAAAAABHQAC3Bl
+dGFsbGVuZ3RodAAKc2VwYWx3aWR0aHQAC3NlcGFsbGVuZ3RodAAKcGV0YWx3aWR0aHg="/>
+      <property name="lastControl" value="petallength"/>
+    </module>
     <module alias="2D Pie Chart" classname="ncsa.d2k.modules.core.vis.PieChart2D" xloc="327" yloc="136">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="windowName" value="2D Pie Chart"/>
+      <property name="labelsColumn" value="4"/>
       <property name="maxLegendRows" value="5"/>
       <property name="ratiosColumn" value="2"/>
-      <property name="windowName" value="2D Pie Chart"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
-      <property name="labelsColumn" value="4"/>
+    </module>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="138" yloc="40">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="labelsRow" value="0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
     </module>
     <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="329" yloc="40">
       <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
@@ -46,48 +67,22 @@ Dng=" label="PieChart2D.itn">
       <property name="useBlanks" value="true"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
     </module>
+    <module alias="Table Viewer" classname="ncsa.d2k.modules.core.vis.TableViewer" xloc="196" yloc="136">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table">
+        <destination alias="2D Pie Chart" index="0"/>
+      </output>
+      <property name="maxFractionDigits" value="-1"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="windowName" value="Table Viewer"/>
+    </module>
     <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="11" yloc="40">
       <output index="0" classname="java.lang.String">
         <destination alias="Create Delimited File Parser" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
       <property name="fileName" value="data/UCI/iris.csv"/>
-    </module>
-    <module alias="Merge Table Rows" classname="ncsa.d2k.modules.core.transform.table.MergeTableRows" xloc="26" yloc="136">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.basic.TableImpl"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.basic.TableImpl">
-        <destination alias="Table Viewer" index="0"/>
-      </output>
-      <property name="lastMergeMethod" value="Average"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="lastControl" value="petallength"/>
-      <property name="lastToMerge" binaryValue="rO0ABXNyABFqYXZhLnV0aWwuSGFzaFNldLpEhZWWuLc0AwAAeHB3DAAAABA/QAAAAAAABHQAC3Nl
-cGFsbGVuZ3RodAAKc2VwYWx3aWR0aHQACnBldGFsd2lkdGh0AAtwZXRhbGxlbmd0aHg="/>
-      <property name="supressGui" value="false"/>
-      <property name="lastKeys" binaryValue="rO0ABXNyABFqYXZhLnV0aWwuSGFzaFNldLpEhZWWuLc0AwAAeHB3DAAAABA/QAAAAAAAAXQABWNs
-YXNzeA=="/>
-      <property name="windowName" value="Merge Table Rows"/>
-    </module>
-    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="138" yloc="40">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
-        <destination alias="Parse File To Table" index="0"/>
-      </output>
-      <property name="hasTypes" value="true"/>
-      <property name="labelsRow" value="0"/>
-      <property name="hasSpecDelim" value="false"/>
-      <property name="typesRow" value="1"/>
-      <property name="hasLabels" value="true"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-    </module>
-    <module alias="Table Viewer" classname="ncsa.d2k.modules.core.vis.TableViewer" xloc="196" yloc="136">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table">
-        <destination alias="2D Pie Chart" index="0"/>
-      </output>
-      <property name="windowName" value="Table Viewer"/>
-      <property name="maxFractionDigits" value="-1"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="fileFilterExtension" value=""/>
     </module>
   </itinerary>
 </toolkit>

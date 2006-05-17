@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
-  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
 AAAIdwgAAAALAAAABHQAE1BhcnNlIEZpbGUgVG8gVGFibGVzcgAbbmNzYS5kMmsuY29yZS5SZXNv
-dXJjZUVudHJ51S4sIEIDJtICAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtM
+dXJjZUVudHJ5AAAAAAAAAAECAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtM
 AA9vYmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ADRuY3NhLmQyay5tb2R1
 bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1RhYmxldAAPSW5wdXQgRmlsZSBOYW1l
 c3EAfgAEcHQAMm5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LklucHV0MUZpbGVO
-YW1ldAAXUGFyYWxsZWwgQ29vcmRpbmF0ZSBWaXNzcQB+AARwdAAvbmNzYS5kMmsubW9kdWxlcy5j
-b3JlLnZpcy5QYXJhbGxlbENvb3JkaW5hdGVWaXN0ABxDcmVhdGUgRGVsaW1pdGVkIEZpbGUgUGFy
-c2Vyc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LkNyZWF0ZURl
-bGltaXRlZFBhcnNlcng=" label="ParallelCoordinate.itn">
+YW1ldAAcQ3JlYXRlIERlbGltaXRlZCBGaWxlIFBhcnNlcnNxAH4ABHB0ADluY3NhLmQyay5tb2R1
+bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5DcmVhdGVEZWxpbWl0ZWRQYXJzZXJ0ABdQYXJhbGxlbCBD
+b29yZGluYXRlIFZpc3NxAH4ABHB0AC9uY3NhLmQyay5tb2R1bGVzLmNvcmUudmlzLlBhcmFsbGVs
+Q29vcmRpbmF0ZVZpc3g=" label="ParallelCoordinate.itn">
     <annotation><![CDATA[<p>
       Overview: Shows the data contained in a Table on parallel axes.
     </p>
@@ -33,6 +33,18 @@ bGltaXRlZFBhcnNlcng=" label="ParallelCoordinate.itn">
       The columns can be reordered by clicking on the boxes that contain their 
       names and dragging them to a new location.
     </p>]]></annotation>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="138" yloc="40">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="labelsRow" value="0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
+    </module>
     <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="307" yloc="40">
       <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
@@ -41,29 +53,18 @@ bGltaXRlZFBhcnNlcng=" label="ParallelCoordinate.itn">
       <property name="useBlanks" value="true"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
     </module>
+    <module alias="Parallel Coordinate Vis" classname="ncsa.d2k.modules.core.vis.ParallelCoordinateVis" xloc="465" yloc="40">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="windowName" value="Parallel Coordinate Vis"/>
+    </module>
     <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="29" yloc="40">
       <output index="0" classname="java.lang.String">
         <destination alias="Create Delimited File Parser" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
       <property name="fileName" value="data/UCI/iris.csv"/>
-    </module>
-    <module alias="Parallel Coordinate Vis" classname="ncsa.d2k.modules.core.vis.ParallelCoordinateVis" xloc="465" yloc="40">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <property name="windowName" value="Parallel Coordinate Vis"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
-    </module>
-    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="138" yloc="40">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
-        <destination alias="Parse File To Table" index="0"/>
-      </output>
-      <property name="hasTypes" value="true"/>
-      <property name="labelsRow" value="0"/>
-      <property name="hasSpecDelim" value="false"/>
-      <property name="typesRow" value="1"/>
-      <property name="hasLabels" value="true"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="fileFilterExtension" value=""/>
     </module>
   </itinerary>
 </toolkit>

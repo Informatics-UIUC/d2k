@@ -1,53 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
-  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAARdwgAAAAMAAAADXQAEkNsdXN0ZXIgQXNzaWdubWVudHNyABtuY3NhLmQyay5jb3JlLlJlc291
-cmNlRW50cnnVLiwgQgMm0gIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0O0wA
-D29iamVjdENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAQ25jc2EuZDJrLm1vZHVs
-ZXMuY29yZS5kaXNjb3ZlcnkuY2x1c3Rlci5zYW1wbGUuQ2x1c3RlckFzc2lnbm1lbnRPUFR0AA1E
-ZW5kb2dyYW0gVmlzc3EAfgAEcHQASW5jc2EuZDJrLm1vZHVsZXMuY29yZS5kaXNjb3ZlcnkuY2x1
-c3Rlci52aXMuZGVuZG9ncmFtLkRlbmRvZ3JhbUNsdXN0ZXJWaXN0ABFTYW1wbGUgVGFibGUgUm93
-c3NxAH4ABHB0AEFuY3NhLmQyay5tb2R1bGVzLmNvcmUuZGlzY292ZXJ5LmNsdXN0ZXIuc2FtcGxl
-LlNhbXBsZVRhYmxlUm93c09QVHQAE0J1Y2tzaG90IFBhcmFtZXRlcnNzcQB+AARwdAA9bmNzYS5k
-MmsubW9kdWxlcy5jb3JlLmRpc2NvdmVyeS5jbHVzdGVyLnNhbXBsZS5CdWNrc2hvdFBhcmFtc3QA
-D0lucHV0IEZpbGUgTmFtZXNxAH4ABHB0ADJuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5p
-bnB1dC5JbnB1dDFGaWxlTmFtZXQAE1BhcnNlIEZpbGUgVG8gVGFibGVzcQB+AARwdAA0bmNzYS5k
-MmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuUGFyc2VGaWxlVG9UYWJsZXQAHENyZWF0ZSBE
-ZWxpbWl0ZWQgRmlsZSBQYXJzZXJzcQB+AARwdAA5bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZp
-bGUuaW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2VydAARQ2hvb3NlIEF0dHJpYnV0ZXNzcQB+AARw
-dAA6bmNzYS5kMmsubW9kdWxlcy5jb3JlLnRyYW5zZm9ybS5hdHRyaWJ1dGUuQ2hvb3NlQXR0cmli
-dXRlc3QADFRhYmxlIFZpZXdlcnNxAH4ABHB0ACVuY3NhLmQyay5tb2R1bGVzLmNvcmUudmlzLlRh
-YmxlVmlld2VydAAGRmFuT3V0c3EAfgAEcHQAIm5jc2EuZDJrLmNvcmUubW9kdWxlcy5GYW5PdXRN
-b2R1bGV0ABdBZGQgQ2x1c3RlciBBc3NpZ25tZW50c3NxAH4ABHB0AEluY3NhLmQyay5tb2R1bGVz
-LmNvcmUuZGlzY292ZXJ5LmNsdXN0ZXIudXRpbC5BZGRDbHVzdGVyQXNzaWdubWVudHNUb1RhYmxl
-dAAHRmFuT3V0MXNxAH4ABHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFuT3V0TW9kdWxldAAX
-SGllci4gQWdnbG9tLiBDbHVzdGVyZXJzcQB+AARwdABCbmNzYS5kMmsubW9kdWxlcy5jb3JlLmRp
-c2NvdmVyeS5jbHVzdGVyLmhhYy5IaWVyQWdnbG9tQ2x1c3RlcmVyT1BUeA==" label="BuckshotClusterer.itn">
+AAARdwgAAAAXAAAADXQAF0FkZCBDbHVzdGVyIEFzc2lnbm1lbnRzc3IAG25jc2EuZDJrLmNvcmUu
+UmVzb3VyY2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9PYmpl
+Y3Q7TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdABJbmNzYS5kMmsu
+bW9kdWxlcy5jb3JlLmRpc2NvdmVyeS5jbHVzdGVyLnV0aWwuQWRkQ2x1c3RlckFzc2lnbm1lbnRz
+VG9UYWJsZXQAEkNsdXN0ZXIgQXNzaWdubWVudHNxAH4ABHB0AENuY3NhLmQyay5tb2R1bGVzLmNv
+cmUuZGlzY292ZXJ5LmNsdXN0ZXIuc2FtcGxlLkNsdXN0ZXJBc3NpZ25tZW50T1BUdAATUGFyc2Ug
+RmlsZSBUbyBUYWJsZXNxAH4ABHB0ADRuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1
+dC5QYXJzZUZpbGVUb1RhYmxldAARU2FtcGxlIFRhYmxlIFJvd3NzcQB+AARwdABBbmNzYS5kMmsu
+bW9kdWxlcy5jb3JlLmRpc2NvdmVyeS5jbHVzdGVyLnNhbXBsZS5TYW1wbGVUYWJsZVJvd3NPUFR0
+AA1EZW5kb2dyYW0gVmlzc3EAfgAEcHQASW5jc2EuZDJrLm1vZHVsZXMuY29yZS5kaXNjb3Zlcnku
+Y2x1c3Rlci52aXMuZGVuZG9ncmFtLkRlbmRvZ3JhbUNsdXN0ZXJWaXN0ABNCdWNrc2hvdCBQYXJh
+bWV0ZXJzc3EAfgAEcHQAPW5jc2EuZDJrLm1vZHVsZXMuY29yZS5kaXNjb3ZlcnkuY2x1c3Rlci5z
+YW1wbGUuQnVja3Nob3RQYXJhbXN0AAdGYW5PdXQxc3EAfgAEcHQAIm5jc2EuZDJrLmNvcmUubW9k
+dWxlcy5GYW5PdXRNb2R1bGV0AAZGYW5PdXRzcQB+AARwcQB+ABp0ABxDcmVhdGUgRGVsaW1pdGVk
+IEZpbGUgUGFyc2Vyc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0
+LkNyZWF0ZURlbGltaXRlZFBhcnNlcnQAEUNob29zZSBBdHRyaWJ1dGVzc3EAfgAEcHQAOm5jc2Eu
+ZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0uYXR0cmlidXRlLkNob29zZUF0dHJpYnV0ZXN0AAxU
+YWJsZSBWaWV3ZXJzcQB+AARwdAAlbmNzYS5kMmsubW9kdWxlcy5jb3JlLnZpcy5UYWJsZVZpZXdl
+cnQAF0hpZXIuIEFnZ2xvbS4gQ2x1c3RlcmVyc3EAfgAEcHQAQm5jc2EuZDJrLm1vZHVsZXMuY29y
+ZS5kaXNjb3ZlcnkuY2x1c3Rlci5oYWMuSGllckFnZ2xvbUNsdXN0ZXJlck9QVHQAD0lucHV0IEZp
+bGUgTmFtZXNxAH4ABHB0ADJuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5JbnB1
+dDFGaWxlTmFtZXg=" label="BuckshotClusterer.itn">
     <annotation><![CDATA[<html>
   
 </html>
 ]]></annotation>
+    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="138" yloc="242">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table">
+        <destination alias="Sample Table Rows" index="1"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.Table">
+        <destination alias="Cluster Assignment" index="2"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
     <module alias="Add Cluster Assignments" classname="ncsa.d2k.modules.core.discovery.cluster.util.AddClusterAssignmentsToTable" xloc="318" yloc="359">
       <input index="0" classname="ncsa.d2k.modules.core.discovery.cluster.ClusterModel"/>
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table">
         <destination alias="Table Viewer" index="0"/>
       </output>
-      <property name="verbose" value="false"/>
       <property name="tableOnly" value="true"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-    </module>
-    <module alias="Cluster Assignment" classname="ncsa.d2k.modules.core.discovery.cluster.sample.ClusterAssignmentOPT" xloc="465" yloc="102">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"/>
-      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <input index="2" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <output index="0" classname="ncsa.d2k.modules.core.discovery.cluster.ClusterModel">
-        <destination alias="FanOut1" index="0"/>
-      </output>
       <property name="verbose" value="false"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="checkMissingValues" value="true"/>
     </module>
     <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="307" yloc="16">
       <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
@@ -57,18 +56,17 @@ c2NvdmVyeS5jbHVzdGVyLmhhYy5IaWVyQWdnbG9tQ2x1c3RlcmVyT1BUeA==" label="BuckshotClu
       <property name="useBlanks" value="true"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
     </module>
-    <module alias="Sample Table Rows" classname="ncsa.d2k.modules.core.discovery.cluster.sample.SampleTableRowsOPT" xloc="200" yloc="181">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"/>
-      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table">
-        <destination alias="Hier. Agglom. Clusterer" index="1"/>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="114" yloc="16">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <destination alias="Parse File To Table" index="0"/>
       </output>
+      <property name="typesRow" value="1"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="labelsRow" value="0"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-    </module>
-    <module alias="Dendogram Vis" classname="ncsa.d2k.modules.core.discovery.cluster.vis.dendogram.DendogramClusterVis" xloc="494" yloc="285">
-      <input index="0" classname="ncsa.d2k.modules.core.discovery.cluster.ClusterModel"/>
-      <property name="windowName" value="Dendogram Vis"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
     </module>
     <module alias="Buckshot Parameters" classname="ncsa.d2k.modules.core.discovery.cluster.sample.BuckshotParams" xloc="4" yloc="174">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
@@ -84,14 +82,49 @@ c2NvdmVyeS5jbHVzdGVyLmhhYy5IaWVyQWdnbG9tQ2x1c3RlcmVyT1BUeA==" label="BuckshotClu
       <output index="3" classname="ncsa.d2k.modules.core.datatype.table.Table">
         <destination alias="FanOut" index="0"/>
       </output>
-      <property name="distanceMetric" value="2"/>
-      <property name="seed" value="0"/>
-      <property name="maxIterations" value="5"/>
-      <property name="distanceThreshold" value="12"/>
-      <property name="clusterMethod" value="0"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAEAAAAAQAAAAEAAAABAAAAAQ=="/>
+      <property name="maxIterations" value="5"/>
       <property name="numClusters" value="3"/>
       <property name="useFirst" value="false"/>
+      <property name="distanceMetric" value="2"/>
+      <property name="seed" value="0"/>
+      <property name="distanceThreshold" value="12"/>
+      <property name="clusterMethod" value="0"/>
+    </module>
+    <module alias="Table Viewer" classname="ncsa.d2k.modules.core.vis.TableViewer" xloc="506" yloc="359">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <property name="maxFractionDigits" value="-1"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="windowName" value="Table Viewer"/>
+    </module>
+    <module alias="Sample Table Rows" classname="ncsa.d2k.modules.core.discovery.cluster.sample.SampleTableRowsOPT" xloc="200" yloc="181">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table">
+        <destination alias="Hier. Agglom. Clusterer" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Choose Attributes" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="431" yloc="16">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Buckshot Parameters" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="windowName" value="Choose Attributes"/>
+      <property name="suppressGui" value="false"/>
+      <property name="selectedInputs" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAR0AAtzZXBhbGxlbmd0
+aHQACnNlcGFsd2lkdGh0AAtwZXRhbGxlbmd0aHQACnBldGFsd2lkdGg="/>
+      <property name="selectedOutputs" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAA="/>
+    </module>
+    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="5" yloc="16">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Create Delimited File Parser" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="fileName" value="data/UCI/iris.csv"/>
+      <property name="fileFilterExtension" value=""/>
     </module>
     <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="254" yloc="345">
       <input index="0" classname="ncsa.d2k.modules.core.discovery.cluster.ClusterModel"/>
@@ -103,46 +136,16 @@ c2NvdmVyeS5jbHVzdGVyLmhhYy5IaWVyQWdnbG9tQ2x1c3RlcmVyT1BUeA==" label="BuckshotClu
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
     </module>
-    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="138" yloc="242">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table">
-        <destination alias="Sample Table Rows" index="1"/>
+    <module alias="Cluster Assignment" classname="ncsa.d2k.modules.core.discovery.cluster.sample.ClusterAssignmentOPT" xloc="465" yloc="102">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <input index="2" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.discovery.cluster.ClusterModel">
+        <destination alias="FanOut1" index="0"/>
       </output>
-      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.Table">
-        <destination alias="Cluster Assignment" index="2"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
-    </module>
-    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="114" yloc="16">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
-        <destination alias="Parse File To Table" index="0"/>
-      </output>
-      <property name="hasTypes" value="true"/>
-      <property name="labelsRow" value="0"/>
-      <property name="hasSpecDelim" value="false"/>
-      <property name="typesRow" value="1"/>
-      <property name="hasLabels" value="true"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-    </module>
-    <module alias="Table Viewer" classname="ncsa.d2k.modules.core.vis.TableViewer" xloc="506" yloc="359">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <property name="windowName" value="Table Viewer"/>
-      <property name="maxFractionDigits" value="-1"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-    </module>
-    <module alias="Choose Attributes" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="431" yloc="16">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
-        <destination alias="Buckshot Parameters" index="0"/>
-      </output>
-      <property name="selectedInputs" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAR0AAtzZXBhbGxlbmd0
-aHQACnNlcGFsd2lkdGh0AAtwZXRhbGxlbmd0aHQACnBldGFsd2lkdGg="/>
-      <property name="windowName" value="Choose Attributes"/>
-      <property name="selectedOutputs" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAA="/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="supressGui" value="false"/>
+      <property name="checkMissingValues" value="true"/>
+      <property name="verbose" value="false"/>
     </module>
     <module alias="Hier. Agglom. Clusterer" classname="ncsa.d2k.modules.core.discovery.cluster.hac.HierAgglomClustererOPT" xloc="311" yloc="126">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"/>
@@ -150,18 +153,15 @@ aHQACnNlcGFsd2lkdGh0AAtwZXRhbGxlbmd0aHQACnBldGFsd2lkdGg="/>
       <output index="0" classname="ncsa.d2k.modules.core.discovery.cluster.ClusterModel">
         <destination alias="Cluster Assignment" index="1"/>
       </output>
-      <property name="verbose" value="false"/>
       <property name="ordered" value="true"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
       <property name="checkMissingValues" value="true"/>
+      <property name="verbose" value="false"/>
     </module>
-    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="5" yloc="16">
-      <output index="0" classname="java.lang.String">
-        <destination alias="Create Delimited File Parser" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="fileFilterExtension" value=""/>
-      <property name="fileName" value="data/UCI/iris.csv"/>
+    <module alias="Dendogram Vis" classname="ncsa.d2k.modules.core.discovery.cluster.vis.dendogram.DendogramClusterVis" xloc="494" yloc="285">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.cluster.ClusterModel"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="windowName" value="Dendogram Vis"/>
     </module>
   </itinerary>
 </toolkit>

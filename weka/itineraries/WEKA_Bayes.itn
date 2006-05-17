@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
-  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
 AAAIdwgAAAALAAAABHQAGldFS0FfQ1ZDbGFzc2lmaWVyRXZhbHVhdG9yc3IAG25jc2EuZDJrLmNv
-cmUuUmVzb3VyY2VFbnRyedUuLCBCAybSAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9P
+cmUuUmVzb3VyY2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9P
 YmplY3Q7TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdAA7bmNzYS5k
-MmsubW9kdWxlcy53ZWthLmV2YWx1YXRpb24uV0VLQV9DVkNsYXNzaWZpZXJFdmFsdWF0b3J0AA9J
-bnB1dCBGaWxlIE5hbWVzcQB+AARwdAAybmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5w
-dXQuSW5wdXQxRmlsZU5hbWV0AA1XRUtBX1JlYWRBUkZGc3EAfgAEcHQAKW5jc2EuZDJrLm1vZHVs
-ZXMud2VrYS5pbnB1dC5XRUtBX1JlYWRBUkZGdAAcV0VLQV9OYWl2ZUJheWVzTW9kZWxQcm9kdWNl
+MmsubW9kdWxlcy53ZWthLmV2YWx1YXRpb24uV0VLQV9DVkNsYXNzaWZpZXJFdmFsdWF0b3J0AA1X
+RUtBX1JlYWRBUkZGc3EAfgAEcHQAKW5jc2EuZDJrLm1vZHVsZXMud2VrYS5pbnB1dC5XRUtBX1Jl
+YWRBUkZGdAAPSW5wdXQgRmlsZSBOYW1lc3EAfgAEcHQAMm5jc2EuZDJrLm1vZHVsZXMuY29yZS5p
+by5maWxlLmlucHV0LklucHV0MUZpbGVOYW1ldAAcV0VLQV9OYWl2ZUJheWVzTW9kZWxQcm9kdWNl
 cnNxAH4ABHB0AD1uY3NhLmQyay5tb2R1bGVzLndla2EuY2xhc3NpZmllci5XRUtBX05haXZlQmF5
 ZXNNb2RlbFByb2R1Y2VyeA==" label="WEKA_Bayes.itn">
     <annotation><![CDATA[]]></annotation>
@@ -28,13 +28,6 @@ ZXNNb2RlbFByb2R1Y2VyeA==" label="WEKA_Bayes.itn">
       <property name="fileName" value="data/weka/UCI-arff/iris.arff"/>
       <property name="fileFilterExtension" value=""/>
     </module>
-    <module alias="WEKA_CVClassifierEvaluator" classname="ncsa.d2k.modules.weka.evaluation.WEKA_CVClassifierEvaluator" xloc="400" yloc="65">
-      <input index="0" classname="ncsa.d2k.modules.PredictionModelModule"/>
-      <input index="1" classname="weka.core.Instances"/>
-      <output index="0" classname="ncsa.d2k.modules.PredictionModelModule"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="crossValidationFolds" value="10"/>
-    </module>
     <module alias="WEKA_ReadARFF" classname="ncsa.d2k.modules.weka.input.WEKA_ReadARFF" xloc="214" yloc="17">
       <input index="0" classname="java.lang.String"/>
       <output index="0" classname="weka.core.Instances">
@@ -44,6 +37,13 @@ ZXNNb2RlbFByb2R1Y2VyeA==" label="WEKA_Bayes.itn">
       <property name="hasClass" value="true"/>
       <property name="classIndex" value="-1"/>
       <property name="verbose" value="false"/>
+    </module>
+    <module alias="WEKA_CVClassifierEvaluator" classname="ncsa.d2k.modules.weka.evaluation.WEKA_CVClassifierEvaluator" xloc="400" yloc="65">
+      <input index="0" classname="ncsa.d2k.modules.PredictionModelModule"/>
+      <input index="1" classname="weka.core.Instances"/>
+      <output index="0" classname="ncsa.d2k.modules.PredictionModelModule"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="crossValidationFolds" value="10"/>
     </module>
   </itinerary>
 </toolkit>

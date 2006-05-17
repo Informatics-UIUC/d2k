@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
-  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
 AAAIdwgAAAALAAAAAXQAE1NlbGVjdCBEU1RQIERhdGFzZXRzcgAbbmNzYS5kMmsuY29yZS5SZXNv
-dXJjZUVudHJ51S4sIEIDJtICAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtM
+dXJjZUVudHJ5AAAAAAAAAAECAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtM
 AA9vYmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ADBuY3NhLmQyay5tb2R1
 bGVzLmNvcmUuaW8uZHN0cC5QYXJzZURTVFBUb0RCVGFibGV4" label="DataSpaceToTable.itn">
     <annotation><![CDATA[<p>
@@ -46,10 +46,10 @@ bGVzLmNvcmUuaW8uZHN0cC5QYXJzZURTVFBUb0RCVGFibGV4" label="DataSpaceToTable.itn">
     </p>]]></annotation>
     <module alias="Select DSTP Dataset" classname="ncsa.d2k.modules.core.io.dstp.ParseDSTPToDBTable" xloc="11" yloc="18">
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <property name="windowName" value="Select DSTP Dataset"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="windowName" value="Select DSTP Dataset"/>
       <property name="serverName" value=""/>
-      <property name="supressGui" value="false"/>
+      <property name="suppressGui" value="false"/>
     </module>
   </itinerary>
 </toolkit>

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
-  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAARdwgAAAAFAAAABXQABkZhbk91dHNyABtuY3NhLmQyay5jb3JlLlJlc291cmNlRW50cnnVLiwg
-QgMm0gIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0O0wAD29iamVjdENsYXNz
-TmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAIm5jc2EuZDJrLmNvcmUubW9kdWxlcy5GYW5P
-dXRNb2R1bGV0AAtDb25uZWN0VG9EQnNxAH4ABHB0AChuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8u
-c3FsLkNvbm5lY3RUb0RCdAALQnVpbGQgUXVlcnlzcQB+AARwdAAnbmNzYS5kMmsubW9kdWxlcy5j
-b3JlLmlvLnNxbC5CdWlsZFF1ZXJ5dAAPSW5wdXQgRmlsZSBOYW1lc3EAfgAEcHQAMm5jc2EuZDJr
-Lm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LklucHV0MUZpbGVOYW1ldAAQV3JpdGUgREIgVG8g
-RmlsZXNxAH4ABHB0ACpuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLldyaXRlREJUb0ZpbGV4
+AAAIdwgAAAALAAAABXQAEFdyaXRlIERCIFRvIEZpbGVzcgAbbmNzYS5kMmsuY29yZS5SZXNvdXJj
+ZUVudHJ5AAAAAAAAAAECAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtMAA9v
+YmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ACpuY3NhLmQyay5tb2R1bGVz
+LmNvcmUuaW8uc3FsLldyaXRlREJUb0ZpbGV0AAtDb25uZWN0VG9EQnNxAH4ABHB0AChuY3NhLmQy
+ay5tb2R1bGVzLmNvcmUuaW8uc3FsLkNvbm5lY3RUb0RCdAALQnVpbGQgUXVlcnlzcQB+AARwdAAn
+bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLnNxbC5CdWlsZFF1ZXJ5dAAPSW5wdXQgRmlsZSBOYW1l
+c3EAfgAEcHQAMm5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LklucHV0MUZpbGVO
+YW1ldAAGRmFuT3V0c3EAfgAEcHQAIm5jc2EuZDJrLmNvcmUubW9kdWxlcy5GYW5PdXRNb2R1bGV4
 " label="SimpleQueryToFile.itn">
     <annotation><![CDATA[<p>
       <b>DatabaseToTable</b>
@@ -110,20 +110,20 @@ RmlsZXNxAH4ABHB0ACpuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLldyaXRlREJUb0ZpbGV4
       <output index="1" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
         <destination alias="Write DB To File" index="0"/>
       </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAQAAAAE="/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
     </module>
     <module alias="ConnectToDB" classname="ncsa.d2k.modules.core.io.sql.ConnectToDB" xloc="6" yloc="18">
       <output index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
         <destination alias="FanOut" index="0"/>
       </output>
-      <property name="dbVendor" value=""/>
       <property name="password" value=""/>
+      <property name="dbVendor" value=""/>
       <property name="dbInstance" value=""/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
       <property name="windowName" value="ConnectToDB"/>
+      <property name="suppressGui" value="false"/>
       <property name="username" value=""/>
       <property name="url" value="jdbc:oracle:thin:@sol.ncsa.uiuc.edu:1521:oracle2"/>
-      <property name="supressGui" value="false"/>
       <property name="port" value=""/>
       <property name="driver" value=""/>
       <property name="machine" value=""/>
@@ -153,8 +153,8 @@ RmlsZXNxAH4ABHB0ACpuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLldyaXRlREJUb0ZpbGV4
       <property name="lastExpression" value="ADULT.AGE &gt;  10"/>
       <property name="windowName" value="Build Query"/>
       <property name="queryCondition" value=""/>
+      <property name="suppressGui" value="false"/>
       <property name="dataTableOnly" value="true"/>
-      <property name="supressGui" value="false"/>
       <property name="dataCubeOnly" value="false"/>
     </module>
     <module alias="Write DB To File" classname="ncsa.d2k.modules.core.io.sql.WriteDBToFile" xloc="421" yloc="87">

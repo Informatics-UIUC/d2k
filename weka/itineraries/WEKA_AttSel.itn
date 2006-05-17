@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
-  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
 AAAIdwgAAAALAAAABXQAJ1dFS0FfQXR0cmlidXRlU2VsZWN0aW9uU2VhcmNoX0Jlc3RGaXJzdHNy
-ABtuY3NhLmQyay5jb3JlLlJlc291cmNlRW50cnnVLiwgQgMm0gIAAkwADGNhY2hlZE9iamVjdHQA
+ABtuY3NhLmQyay5jb3JlLlJlc291cmNlRW50cnkAAAAAAAAAAQIAAkwADGNhY2hlZE9iamVjdHQA
 EkxqYXZhL2xhbmcvT2JqZWN0O0wAD29iamVjdENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5n
 O3hwcHQAV25jc2EuZDJrLm1vZHVsZXMud2VrYS5hdHRyaWJ1dGVTZWxlY3Rpb24uc2VhcmNoLldF
 S0FfQXR0cmlidXRlU2VsZWN0aW9uU2VhcmNoX0Jlc3RGaXJzdHQAFldFS0FfQXR0cmlidXRlU2Vs
 ZWN0b3JzcQB+AARwdAA/bmNzYS5kMmsubW9kdWxlcy53ZWthLmF0dHJpYnV0ZVNlbGVjdGlvbi5X
-RUtBX0F0dHJpYnV0ZVNlbGVjdG9ydAAPSW5wdXQgRmlsZSBOYW1lc3EAfgAEcHQAMm5jc2EuZDJr
-Lm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LklucHV0MUZpbGVOYW1ldAANV0VLQV9SZWFkQVJG
-RnNxAH4ABHB0ACluY3NhLmQyay5tb2R1bGVzLndla2EuaW5wdXQuV0VLQV9SZWFkQVJGRnQAJVdF
+RUtBX0F0dHJpYnV0ZVNlbGVjdG9ydAANV0VLQV9SZWFkQVJGRnNxAH4ABHB0ACluY3NhLmQyay5t
+b2R1bGVzLndla2EuaW5wdXQuV0VLQV9SZWFkQVJGRnQAD0lucHV0IEZpbGUgTmFtZXNxAH4ABHB0
+ADJuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5JbnB1dDFGaWxlTmFtZXQAJVdF
 S0FfQXR0cmlidXRlU2VsZWN0aW9uRXZhbHVhdGlvbl9DRlNzcQB+AARwdABZbmNzYS5kMmsubW9k
 dWxlcy53ZWthLmF0dHJpYnV0ZVNlbGVjdGlvbi5ldmFsdWF0aW9uLldFS0FfQXR0cmlidXRlU2Vs
 ZWN0aW9uRXZhbHVhdGlvbl9DRlN4" label="WEKA_AttSel.itn">
@@ -41,14 +41,6 @@ ZWN0aW9uRXZhbHVhdGlvbl9DRlN4" label="WEKA_AttSel.itn">
       <property name="fileName" value="data/weka/UCI-arff/iris.arff"/>
       <property name="fileFilterExtension" value=""/>
     </module>
-    <module alias="WEKA_AttributeSelector" classname="ncsa.d2k.modules.weka.attributeSelection.WEKA_AttributeSelector" xloc="487" yloc="65">
-      <input index="0" classname="weka.core.Instances"/>
-      <input index="1" classname="weka.attributeSelection.ASSearch"/>
-      <input index="2" classname="weka.attributeSelection.ASEvaluation"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
-      <property name="seed" value="1"/>
-      <property name="folds" value="0"/>
-    </module>
     <module alias="WEKA_ReadARFF" classname="ncsa.d2k.modules.weka.input.WEKA_ReadARFF" xloc="214" yloc="17">
       <input index="0" classname="java.lang.String"/>
       <output index="0" classname="weka.core.Instances">
@@ -58,6 +50,14 @@ ZWN0aW9uRXZhbHVhdGlvbl9DRlN4" label="WEKA_AttSel.itn">
       <property name="hasClass" value="true"/>
       <property name="classIndex" value="-1"/>
       <property name="verbose" value="false"/>
+    </module>
+    <module alias="WEKA_AttributeSelector" classname="ncsa.d2k.modules.weka.attributeSelection.WEKA_AttributeSelector" xloc="487" yloc="65">
+      <input index="0" classname="weka.core.Instances"/>
+      <input index="1" classname="weka.attributeSelection.ASSearch"/>
+      <input index="2" classname="weka.attributeSelection.ASEvaluation"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="seed" value="1"/>
+      <property name="folds" value="0"/>
     </module>
   </itinerary>
 </toolkit>

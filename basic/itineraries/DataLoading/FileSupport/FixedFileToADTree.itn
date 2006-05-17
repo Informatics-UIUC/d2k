@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
-  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
 AAAIdwgAAAALAAAABXQAGkNyZWF0ZSBGaXhlZC1mb3JtYXQgUGFyc2Vyc3IAG25jc2EuZDJrLmNv
-cmUuUmVzb3VyY2VFbnRyedUuLCBCAybSAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9P
+cmUuUmVzb3VyY2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9P
 YmplY3Q7TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdAA1bmNzYS5k
 MmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuQ3JlYXRlRml4ZWRQYXJzZXJ0ABNQYXJzZSBG
 aWxlIFRvIFRhYmxlc3EAfgAEcHQANG5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0
@@ -54,13 +54,24 @@ bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQyRmlsZU5hbWVzeA==" label=
     <p>
       Data Handling: This module does not destroy or modify its input data.  
     </p>]]></annotation>
-    <module alias="Create Fixed-format Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateFixedParser" xloc="372" yloc="90">
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="106" yloc="18">
       <input index="0" classname="java.lang.String"/>
-      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.FixedFileParser">
-        <destination alias="Create an ADTree" index="0"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <destination alias="Parse File To Table" index="0"/>
       </output>
+      <property name="typesRow" value="1"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="labelsRow" value="0"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
+    </module>
+    <module alias="Create an ADTree" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToADTree" xloc="570" yloc="90">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.ADTree"/>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <property name="debug" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
     </module>
     <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="302" yloc="18">
       <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
@@ -70,12 +81,13 @@ bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQyRmlsZU5hbWVzeA==" label=
       <property name="useBlanks" value="true"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
     </module>
-    <module alias="Create an ADTree" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToADTree" xloc="570" yloc="90">
-      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.ADTree"/>
-      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
-      <property name="debug" value="false"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    <module alias="Create Fixed-format Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateFixedParser" xloc="372" yloc="90">
+      <input index="0" classname="java.lang.String"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.FixedFileParser">
+        <destination alias="Create an ADTree" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
     </module>
     <module alias="Input 2 File Names" classname="ncsa.d2k.modules.core.io.file.input.Input2FileNames" xloc="14" yloc="66">
       <output index="0" classname="java.lang.String">
@@ -84,19 +96,9 @@ bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQyRmlsZU5hbWVzeA==" label=
       <output index="1" classname="java.lang.String">
         <destination alias="Create Fixed-format Parser" index="0"/>
       </output>
+      <property name="fileName1" value=""/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
-    </module>
-    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="106" yloc="18">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
-        <destination alias="Parse File To Table" index="0"/>
-      </output>
-      <property name="hasTypes" value="true"/>
-      <property name="labelsRow" value="0"/>
-      <property name="hasSpecDelim" value="false"/>
-      <property name="typesRow" value="1"/>
-      <property name="hasLabels" value="true"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="fileName0" value=""/>
     </module>
   </itinerary>
 </toolkit>
