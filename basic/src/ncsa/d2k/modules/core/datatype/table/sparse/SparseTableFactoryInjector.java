@@ -75,7 +75,7 @@ public class SparseTableFactoryInjector extends InputModule {
      */
     protected void doit() throws java.lang.Exception {
       try {
-        this.pushOutput(new ncsa.d2k.modules.core.datatype.table.sparse2.SparseTableFactory(), 0);
+        this.pushOutput(new ncsa.d2k.modules.core.datatype.table.sparse.SparseTableFactory(), 0);
       }
       catch (Exception ex) {
         ex.printStackTrace();
