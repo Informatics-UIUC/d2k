@@ -1049,10 +1049,10 @@ public class AttributeSelection implements Serializable {
       optionsText.append("\nOptions specific to "
 			 + ASEvaluator.getClass().getName()
 			 + ":\n\n");
-      Enumeration enum = ((OptionHandler)ASEvaluator).listOptions();
+      Enumeration enum1 = ((OptionHandler)ASEvaluator).listOptions();
 
-      while (enum.hasMoreElements()) {
-	Option option = (Option)enum.nextElement();
+      while (enum1.hasMoreElements()) {
+	Option option = (Option)enum1.nextElement();
 	optionsText.append(option.synopsis() + '\n');
 	optionsText.append(option.description() + "\n");
       }
@@ -1063,10 +1063,10 @@ public class AttributeSelection implements Serializable {
 	optionsText.append("\nOptions specific to "
 			   + searchMethod.getClass().getName()
 			   + ":\n\n");
-	Enumeration enum = ((OptionHandler)searchMethod).listOptions();
+	Enumeration enum1 = ((OptionHandler)searchMethod).listOptions();
 
-	while (enum.hasMoreElements()) {
-	  Option option = (Option)enum.nextElement();
+	while (enum1.hasMoreElements()) {
+	  Option option = (Option)enum1.nextElement();
 	  optionsText.append(option.synopsis() + '\n');
 	  optionsText.append(option.description() + "\n");
 	}

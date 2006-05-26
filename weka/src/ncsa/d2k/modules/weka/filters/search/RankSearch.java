@@ -128,10 +128,10 @@ public class RankSearch extends ASSearch {//implements OptionHandler {
 				      + "evaluator "
 				      + m_ASEval.getClass().getName()
 				      + ":"));
-      Enumeration enum = ((OptionHandler)m_ASEval).listOptions();
+      Enumeration enum1 = ((OptionHandler)m_ASEval).listOptions();
 
-      while (enum.hasMoreElements()) {
-        newVector.addElement(enum.nextElement());
+      while (enum1.hasMoreElements()) {
+        newVector.addElement(enum1.nextElement());
       }
     }
 

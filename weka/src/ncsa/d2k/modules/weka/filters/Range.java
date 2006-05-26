@@ -121,12 +121,12 @@ public class Range implements Serializable {
   public String getRanges() {
 
     String result = null;
-    Enumeration enum = m_RangeStrings.elements();
-    while (enum.hasMoreElements()) {
+    Enumeration enum1 = m_RangeStrings.elements();
+    while (enum1.hasMoreElements()) {
       if (result == null) {
-	result = (String)enum.nextElement();
+	result = (String)enum1.nextElement();
       } else {
-	result += ',' + (String)enum.nextElement();
+	result += ',' + (String)enum1.nextElement();
       }
     }
     return (result == null) ? "" : result;
@@ -201,9 +201,9 @@ public class Range implements Serializable {
       return "Empty";
     }
     String result ="Strings: ";
-    Enumeration enum = m_RangeStrings.elements();
-    while (enum.hasMoreElements()) {
-      result += (String)enum.nextElement() + " ";
+    Enumeration enum1 = m_RangeStrings.elements();
+    while (enum1.hasMoreElements()) {
+      result += (String)enum1.nextElement() + " ";
     }
     result += "\n";
 
@@ -256,9 +256,9 @@ public class Range implements Serializable {
     }
     else
     {
-      Enumeration enum = m_RangeStrings.elements();
-      while (enum.hasMoreElements()) {
-	String currentRange = (String)enum.nextElement();
+      Enumeration enum1 = m_RangeStrings.elements();
+      while (enum1.hasMoreElements()) {
+	String currentRange = (String)enum1.nextElement();
 	int start = rangeLower(currentRange);
 	int end = rangeUpper(currentRange);
 	for (int i = start; (i <= m_Upper) && (i <= end); i++) {
@@ -309,9 +309,9 @@ public class Range implements Serializable {
   protected void setFlags() {
 
     m_SelectFlags = new boolean [m_Upper + 1];
-    Enumeration enum = m_RangeStrings.elements();
-    while (enum.hasMoreElements()) {
-      String currentRange = (String)enum.nextElement();
+    Enumeration enum1 = m_RangeStrings.elements();
+    while (enum1.hasMoreElements()) {
+      String currentRange = (String)enum1.nextElement();
       int start = rangeLower(currentRange);
       int end = rangeUpper(currentRange);
       for (int i = start; (i <= m_Upper) && (i <= end); i++) {
