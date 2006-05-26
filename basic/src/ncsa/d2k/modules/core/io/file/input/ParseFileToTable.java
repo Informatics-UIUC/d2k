@@ -1,4 +1,3 @@
-//package ncsa.d2k.modules.projects.clutter.rdr;
 package ncsa.d2k.modules.core.io.file.input;
 
 import ncsa.d2k.core.modules.*;
