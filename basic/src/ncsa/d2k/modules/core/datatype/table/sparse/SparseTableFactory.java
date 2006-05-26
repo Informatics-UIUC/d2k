@@ -1,13 +1,6 @@
-package  ncsa.d2k.modules.core.datatype.table.sparse;
-
-import  ncsa.d2k.modules.core.datatype.table.TableFactory;
-import  ncsa.d2k.modules.core.datatype.table.Table;
-import  ncsa.d2k.modules.core.datatype.table.ColumnTypes;
-import ncsa.d2k.modules.core.datatype.table.Column;
-import  ncsa.d2k.modules.core.datatype.table.ExampleTable;
-import  ncsa.d2k.modules.core.datatype.table.PredictionTable;
-import  ncsa.d2k.modules.core.datatype.table.TestTable;
-import  ncsa.d2k.modules.core.datatype.table.TrainTable;
+package ncsa.d2k.modules.core.datatype.table.sparse;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 
 
@@ -23,6 +16,8 @@ import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 public class SparseTableFactory
         implements TableFactory {
 
+      static final long serialVersionUID = 1L;
+
     /**
      * put your documentation comment here
      */
@@ -34,7 +29,8 @@ public class SparseTableFactory
      * @return
      */
     public Table createTable () {
-        return  new SparseExampleTable();
+        //return  new SparseExampleTable();
+        return new SparseMutableTable();
     }
 
     /**
@@ -43,7 +39,8 @@ public class SparseTableFactory
      * @return
      */
     public Table createTable (int numColumns) {
-        return  new SparseExampleTable(numColumns);
+        //return  new SparseExampleTable(numColumns);
+        return new SparseMutableTable(0, numColumns);
     }
 
     /**

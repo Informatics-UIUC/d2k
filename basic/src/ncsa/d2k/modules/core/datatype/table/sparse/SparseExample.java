@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.datatype.table.sparse2;
+package ncsa.d2k.modules.core.datatype.table.sparse;
 
 //===============
 // Other Imports
