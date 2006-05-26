@@ -77,13 +77,13 @@ public class CreateDelimitedParser extends InputModule {
 
     private class PropEdit extends JPanel implements CustomModuleEditor {
 
-        JRadioButton lblbtn;
+        JCheckBox lblbtn;
         JLabel lbllbl;
         JTextField lblrow;
-        JRadioButton typbtn;
+        JCheckBox typbtn;
         JTextField typrow;
         JLabel typlbl;
-        JRadioButton delim;
+        JCheckBox delim;
         JTextField delimfld;
         JLabel dellbl;
 
@@ -94,7 +94,7 @@ public class CreateDelimitedParser extends InputModule {
         private PropEdit() {
             int lr = getLabelsRow();
 
-            /*final JRadioButton*/ lblbtn = new JRadioButton("File Has Labels Row", getHasLabels());
+            /*final JRadioButton*/ lblbtn = new JCheckBox("File Has Labels Row", getHasLabels());
             lblbtn.setToolTipText("Select this option if the file has a row of column labels.");
             /*final JLabel*/ lbllbl = new JLabel("Labels Row:");
             lbllbl.setToolTipText("This is the index of the labels row in the file.");
@@ -128,7 +128,7 @@ public class CreateDelimitedParser extends InputModule {
                 }
             });
 
-            /*final JRadioButton*/ typbtn = new JRadioButton("File Has Types Row", getHasTypes());
+            /*final JRadioButton*/ typbtn = new JCheckBox("File Has Types Row", getHasTypes());
             typbtn.setToolTipText("Select this option if the file has a row of data types for columns.");
             /*final JTextField*/ typrow = new JTextField(5);
             /*final JLabel*/ typlbl = new JLabel("Types Row");
@@ -162,7 +162,7 @@ public class CreateDelimitedParser extends InputModule {
                 }
             });
 
-            /*final JRadioButton*/ delim = new JRadioButton("File Has User-specified Delimiter", getHasSpecDelim());
+            /*final JRadioButton*/ delim = new JCheckBox("File Has User-specified Delimiter", getHasSpecDelim());
             delim.setToolTipText("Select this option if the file has a special delimiter.");
             /*final JTextField*/ delimfld = new JTextField(5);
             /*final JLabel*/ dellbl = new JLabel("Delimiter:");
