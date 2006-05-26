@@ -506,7 +506,7 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 	 */
 	public void sortByColumn(int col) {
 		//ANCA removed comments from the line bellow
-		this.columns[col].sort((MutableTable) this);
+		((AbstractColumn)this.columns[col]).sort((MutableTable) this);
 	}
 
 	/**
@@ -517,7 +517,7 @@ public class MutableTableImpl extends TableImpl implements MutableTable {
 	*/
 	public void sortByColumn(int col, int begin, int end) {
 		//ANCA removed comments from the line bellow
-		this.columns[col].sort((MutableTable) this, begin, end);
+		((AbstractColumn)this.columns[col]).sort((MutableTable) this, begin, end);
 	}
 
 	//ANCA - added method below for testing purposes

@@ -1,5 +1,6 @@
 package  ncsa.d2k.modules.core.datatype.table.basic;
 import ncsa.d2k.modules.core.datatype.table.Column;
+import ncsa.d2k.modules.core.datatype.table.MutableTable;
 
 import  java.util.*;
 
@@ -149,6 +150,29 @@ abstract public class AbstractColumn
         // now call remove by index to remove the rows
         removeRowsByIndex(toRemove);
     }
+
+
+    /**
+    	Sort the elements in this column.
+     */
+	abstract public void sort();
+
+    /**
+    	Sort the elements in this column, and swap the rows in the table
+		it is a member of.
+    	@param t the Table to swap rows for
+     */
+	abstract public void sort(MutableTable t);
+
+    /**
+       Sort the elements in this column starting with row 'begin' up to row 'end',
+       and swap the rows in the table  we are a part of.
+       @param t the VerticalTable to swap rows for
+       @param begin the row no. which marks the beginnig of the  column segment to be sorted
+       @param end the row no. which marks the end of the column segment to be sorted
+    */
+    abstract public void sort(MutableTable t,int begin, int end);
+
 
     /*
      */

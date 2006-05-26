@@ -234,7 +234,7 @@ public interface Column extends java.io.Serializable {
 		it is a member of.
     	@param t the Table to swap rows for
      */
-	public void sort(MutableTable t);
+	//public void sort(MutableTable t);
 
     /**
        Sort the elements in this column starting with row 'begin' up to row 'end',
@@ -243,7 +243,7 @@ public interface Column extends java.io.Serializable {
        @param begin the row no. which marks the beginnig of the  column segment to be sorted
        @param end the row no. which marks the end of the column segment to be sorted
     */
-    public void sort(MutableTable t,int begin, int end);
+    //public void sort(MutableTable t,int begin, int end);
 
     /**
     	Compare the values of the object passed in and pos. Return 0 if they
