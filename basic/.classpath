@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="d2klib/antlr.jar"/>
+	<classpathentry kind="lib" path="d2klib/d2kinfrastructure-4.1.2.jar"/>
+	<classpathentry kind="lib" path="d2klib/d2ktoolkit-4.1.2.jar"/>
+	<classpathentry kind="lib" path="d2klib/dom4j-full.jar"/>
+	<classpathentry kind="lib" path="d2klib/log4j-1.2.9.jar"/>
+	<classpathentry kind="lib" path="lib/classes12_g.zip"/>
+	<classpathentry kind="lib" path="lib/colt.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/concurrent.jar"/>
+	<classpathentry kind="lib" path="lib/db2java.zip"/>
+	<classpathentry kind="lib" path="lib/dstpclient.jar"/>
+	<classpathentry kind="lib" path="lib/Jama-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/jdom.jar"/>
+	<classpathentry kind="lib" path="lib/jung-1.7.4.jar"/>
+	<classpathentry kind="lib" path="lib/libsvm.jar"/>
+	<classpathentry kind="lib" path="lib/mm.mysql-2.0.4-bin.jar"/>
+	<classpathentry kind="lib" path="lib/msbase.jar"/>
+	<classpathentry kind="lib" path="lib/mssqlserver.jar"/>
+	<classpathentry kind="lib" path="lib/msutil.jar"/>
+	<classpathentry kind="lib" path="lib/piccolo.jar"/>
+	<classpathentry kind="lib" path="lib/piccolox.jar"/>
+	<classpathentry kind="lib" path="lib/prefuse.jar"/>
+	<classpathentry kind="lib" path="lib/trove.jar"/>
+	<classpathentry kind="output" path="modules"/>
+</classpath>
