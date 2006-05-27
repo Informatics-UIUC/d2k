@@ -36,7 +36,7 @@
       <delete dir="${CLASSES}" />
    </target>   
    
-   <target name="compile" depends="copy-resources">
+   <target name="compile">
       <mkdir dir="${CLASSES}" />
       <javac srcdir="${SOURCE}" destdir="${CLASSES}" source="1.4" target="1.4" debug="off" optimize="on" fork="true" memoryMaximumSize="128M">
          <classpath refid="compile.classpath"/>
@@ -44,7 +44,7 @@
    </target>   
    
     <target name="rund2k" depends="compile">
-        <java classname="ncsa.d2k.gui.ToolKit" fork="yes" maxmemory="1024m">
+        <java classname="ncsa.d2k.gui.ToolKit" fork="yes" maxmemory="512m">
             <classpath refid="run.classpath"/>
         </java>
     </target>   
