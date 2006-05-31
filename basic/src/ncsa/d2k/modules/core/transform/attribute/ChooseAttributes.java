@@ -354,6 +354,7 @@ public class ChooseAttributes extends HeadlessUIModule {
             inputList = new JList();
             //inputList.setModel(null);
             DefaultListModel dlm = new DefaultListModel();
+            inputList.setModel(dlm);
             for (int i = 0; i < labels.length; i++)
                 dlm.addElement(labels[i]);
              if (table instanceof ExampleTable) {
@@ -382,11 +383,12 @@ public class ChooseAttributes extends HeadlessUIModule {
                 }
                 inputList.setSelectedIndices(ints);
             }
-            inputList.setModel(dlm);
+            //inputList.setModel(dlm);
             outputList = new JList(
             /*labels*/
             );
             dlm = new DefaultListModel();
+            outputList.setModel(dlm);
             for (int i = 0; i < labels.length; i++)
                 dlm.addElement(labels[i]);
             if (table instanceof ExampleTable) {
@@ -416,7 +418,7 @@ public class ChooseAttributes extends HeadlessUIModule {
                 }
                 outputList.setSelectedIndices(ints);
             }
-            outputList.setModel(dlm);
+            //outputList.setModel(dlm);
             //outputList.setModel(null);
             JScrollPane leftScrollPane = new JScrollPane(inputList);
             JScrollPane rightScrollPane = new JScrollPane(outputList);
