@@ -1,0 +1,12 @@
+person_1	person_2	relationship
+nominal	nominal	nominal
+Martin	Edward	friend
+Martin	Chen	friend
+Edward	Chen	roommate
+Martin	Mary	co-worker
+Carlos	Chen	friend
+Carlos	Jennifer	friend
+Carlos	Nancy	friend
+Jennifer	Nancy	roommate
+Jennifer	Chen	friend
+Martin	Aaron	friend
