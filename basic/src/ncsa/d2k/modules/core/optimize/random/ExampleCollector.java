@@ -2,8 +2,8 @@ package ncsa.d2k.modules.core.optimize.random;
 
 import ncsa.d2k.core.modules.*;
 import java.util.ArrayList;
-import ncsa.d2k.modules.core.datatype.table.Example;
-import ncsa.d2k.modules.core.datatype.table.ExampleTable;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.datatype.table.basic.BasicTableFactory;
 
 public class ExampleCollector
       extends ncsa.d2k.core.modules.ComputeModule {
@@ -93,6 +93,10 @@ public class ExampleCollector
             return "<p>" +
                   "      This is the best scored paramter point." +
                   "    </p>";
+         case 1:
+            return "<p>" +
+                  "      This is the table of all examples." +
+                  "    </p>";
          default:
             return "No such output";
       }
@@ -106,6 +110,8 @@ public class ExampleCollector
       switch (index) {
          case 0:
             return "Best Example";
+         case 1:
+            return "Example Table";
          default:
             return "NO SUCH OUTPUT!";
       }
@@ -117,7 +123,8 @@ public class ExampleCollector
     */
    public String[] getOutputTypes() {
       String[] types = {
-            "ncsa.d2k.modules.core.datatype.table.Example"};
+            "ncsa.d2k.modules.core.datatype.table.Example",
+            "ncsa.d2k.modules.core.datatype.table.ExampleTable"};
       return types;
    }
 
@@ -200,7 +207,7 @@ public class ExampleCollector
             throw new RuntimeException("The input on the first port must be an Integer greater than 0.");
       }
 
-		Object tmp = this.pullInput(1);
+    Object tmp = this.pullInput(1);
       examples.add(tmp);
       System.out.println ("EXAMPLE ("+tmp.getClass().getName()+"): "+n);
       n--;
@@ -222,6 +229,39 @@ public class ExampleCollector
             }
          }
          this.pushOutput(best, 0);
+
+        // now create and push an example table of all examples
+        ExampleTable bestET = (ExampleTable)best.getTable();
+        TableFactory factory = bestET.getTableFactory();
+        if (factory == null) {
+          factory = new BasicTableFactory();
+        }
+        int numColumns = bestET.getNumColumns();
+
+        Table t = factory.createTable();
+
+        for (int col = 0; col < numColumns; col++) {
+          ((MutableTable)t).addColumn(factory.createColumn(bestET.getColumnType(col)));
+          ((MutableTable)t).setColumnLabel(bestET.getColumnLabel(col), col);
+        }
+
+        ExampleTable exampleTable = t.toExampleTable();
+        // ExampleTable exampleTable = factory.createTable(numColumns).toExampleTable();
+        exampleTable.setInputFeatures(bestET.getInputFeatures());
+        exampleTable.setOutputFeatures(bestET.getOutputFeatures());
+
+        int numExamples = examples.size();
+        exampleTable.addRows(numExamples);
+
+        for (int i = 0; i < numExamples; i++) {
+          Example ex = (Example)examples.get(i);
+          for (int j = 0; j < numColumns; j++) {
+            exampleTable.setObject(ex.getObject(j), i, j);
+          }
+        }
+
+        pushOutput(exampleTable, 1);
+
       }
    }
 
