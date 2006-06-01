@@ -40,7 +40,7 @@ public class BuckshotParamSpaceGenerator extends AbstractParamSpaceGenerator {
   protected ParameterSpace getDefaultSpace() {
         ParameterSpace psi = new ParameterSpaceImpl();
         String[] names = { NUM_CLUSTERS, SEED, USE_FIRST, CLUSTER_METHOD, DISTANCE_METRIC, DISTANCE_THRESHOLD, MAX_ITERATIONS};
-        double[] min = { 0, 0, 0, 0, 0, 0, 1};
+        double[] min = { 1, 0, 0, 0, 0, 0, 1};
         double[] max = { Integer.MAX_VALUE, Integer.MAX_VALUE, 1, 6, 2, 100, Integer.MAX_VALUE};
         double[] def = { 5, 0, 0, 0, 0, 0, 5};
         int[] res = { 1, 1, 1, 1, 1, 1, 1};
