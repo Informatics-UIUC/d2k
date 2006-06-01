@@ -39,6 +39,23 @@ public class ConvertTable
     return "Copied Table";
   }
 
+  public String getInputName(int i) {
+    if (i == 0) {
+      return "Table";
+    }
+    else if (i == 1) {
+      return "Table Factory";
+    }
+    return null;
+  }
+
+  public String getOutputName(int i) {
+    if (i == 0) {
+      return "Table";
+    }
+    return null;
+  }
+
   public String getModuleInfo() {
     return "Convert a table from one format to another, using a TableFactory.";
   }

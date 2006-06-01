@@ -69,6 +69,16 @@ public class BasicTableFactoryInjector extends InputModule {
         return  out;
     }
 
+    public String getInputName(int i) {
+      return null;
+    }
+
+    public String getOutputName(int i) {
+      if (i == 0) {
+        return "Table Factory";
+      }
+      return null;
+    }
 
     /**
      *

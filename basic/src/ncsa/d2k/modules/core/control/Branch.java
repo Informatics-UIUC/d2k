@@ -53,6 +53,14 @@ public class Branch extends DataPrepModule {
         return "Object";
     }
 
+    public String getInputName(int i) {
+      return "Object";
+    }
+
+    public String getOutputName(int i) {
+      return "Object";
+    }
+
     public String getModuleInfo() {
         return "Simple branch.  Push data out the first output pipe if <i>useFirstOutput</i> is"+
                 " true; push data out the second output pipe if <i>useFirstOutput</i> is "+

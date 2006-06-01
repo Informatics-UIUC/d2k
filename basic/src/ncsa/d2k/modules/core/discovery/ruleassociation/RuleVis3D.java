@@ -26,6 +26,13 @@ public class RuleVis3D extends VisModule implements Serializable {
       return "Rule Table";
    }
 
+   public String getInputName(int index) {
+      if (index == 0) {
+         return "Rule Table";
+      }
+      return null;
+   }
+
    public String[] getInputTypes() {
       return new String[] {
          "ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"
@@ -33,6 +40,10 @@ public class RuleVis3D extends VisModule implements Serializable {
    }
 
    public String getOutputInfo(int index) {
+      return null;
+   }
+
+   public String getOutputName(int index) {
       return null;
    }
 
