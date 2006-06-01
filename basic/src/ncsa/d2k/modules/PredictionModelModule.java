@@ -2,18 +2,16 @@ package  ncsa.d2k.modules;
 
 import  ncsa.d2k.core.modules.*;
 import  ncsa.d2k.modules.core.datatype.table.*;
-import  ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.modules.core.datatype.table.sparse.*;
-import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
+//import  ncsa.d2k.modules.core.datatype.table.basic.*;
+//import ncsa.d2k.modules.core.datatype.table.sparse.*;
+//import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 import  java.util.*;
 
 
 /**
  * TO DO add useNameChecking
  */
-abstract public class PredictionModelModule extends
-/*Prediction*/
-ModelModule
+abstract public class PredictionModelModule extends ModelModule
         implements java.io.Serializable {
 
     /** the size of the training set for this model */
@@ -45,26 +43,26 @@ ModelModule
     protected boolean _checkFormat = true;
 
     /**
-     * put your documentation comment here
+     * Constructor.
      */
     protected PredictionModelModule () {
     }
 
     /**
-     * put your documentation comment here
-     * @param     ExampleTable train
+     * Constructor
+     * @param train the training data
      */
     protected PredictionModelModule (ExampleTable train) {
         setTrainingTable(train);
     }
 
     /**
-     * put your documentation comment here
-     * @param     int trainingSetSize
-     * @param     String[] inputColumnLabels
-     * @param     String[] outputColumnLabels
-     * @param     int[] inputFeatureTypes
-     * @param     int[] outputFeatureTypes
+     * Constructor
+     * @param trainingSetSize size of the training set
+     * @param inputColumnLabels labels of the input columns
+     * @param outputColumnLabels labels of the output columns
+     * @param inputFeatureTypes datatypes of the inputs
+     * @param outputFeatureTypes datatypes of the outputs
      */
     protected PredictionModelModule (int trainingSetSize, String[] inputColumnLabels,
             String[] outputColumnLabels, int[] inputFeatureTypes, int[] outputFeatureTypes    /*,
@@ -171,7 +169,7 @@ ModelModule
      * Predict the outcomes given a set of examples.  The return value
      * is a PredictionTable, which is the same as the input set with
      * extra column(s) of predictions added to the end.
-     * @param value a table with a set of examples to predict on
+     * @param table the set of examples to make predictions on
      * @return the input table, with extra columns for predictions
      */
     public PredictionTable predict (Table table) throws Exception {
@@ -305,7 +303,13 @@ ModelModule
                 // add the prediction columns
                 int type = outputFeatureTypes[i];
 
-                boolean isSparse = pt instanceof Sparse;
+                TableFactory factory = pt.getTableFactory();
+                Column c = factory.createColumn(type);
+                c.addRows(pt.getNumRows());
+                pt.addColumn(c);
+                predSet[i] = pt.getNumColumns() - 1;
+
+/*                boolean isSparse = pt instanceof Sparse;
 
                 switch (type) {
                   case ColumnTypes.DOUBLE:
@@ -315,6 +319,7 @@ ModelModule
                     else {
                       pt.addColumn(new DoubleColumn(pt.getNumRows()));
                     }
+
                     predSet[i] = pt.getNumColumns() - 1;
                     break;
                   case ColumnTypes.STRING:
@@ -423,7 +428,7 @@ ModelModule
                     //todo - check the following:
                     // is it ok to call pt.addColumn() ?  Will this work with
                     // different implementations of Table?
-                }
+                }*/
               }
               pt.setPredictionSet(predSet);
             }
@@ -602,23 +607,23 @@ ModelModule
 
     /**
      * put your documentation comment here
-     * @return
+     * @return a list of all the transformations that were performed
      */
     public List getTransformations () {
         return  transformations;
     }
 
     /**
-     * put your documentation comment here
-     * @param b
+     * Set the flag to indicate if transformations should be applied in the predict method.
+     * @param b true if transformations should be applied to the dataset in the predict() method, false otherwise
      */
     public void setApplyTransformationsInPredict (boolean b) {
         applyTransformationsInPredict = b;
     }
 
     /**
-     * put your documentation comment here
-     * @return
+     * Should transformations be applied in the predict method?
+     * @return true if transformations should be applied to the dataset in the predict() method, false otherwise
      */
     public boolean getApplyTransformationsInPredict () {
         return  applyTransformationsInPredict;
@@ -633,16 +638,16 @@ ModelModule
     }
 
     /**
-     * put your documentation comment here
-     * @return
+     * Should the format of the table be checked to see if it is the same format as the data we trained on?
+     * @return true if the format should be checked, false otherwise
      */
     public boolean getCheckTableFormat() {
         return _checkFormat;
     }
 
     /**
-     * put your documentation comment here
-     * @param b
+     * Should the format of the table be checked to see if it is the same format as the data we trained on?
+     * @param b true if the format should be checked, false otherwise
      */
     public void setCheckTableFormat (boolean b) {
         _checkFormat = b;
@@ -650,8 +655,8 @@ ModelModule
 
 
     /**
-     * put your documentation comment here
-     * @return
+     * Should transformations be reversed after predictions are made?
+     * @return true if transformations should be reversed after predictions are made, false otherwise
      */
     public boolean getApplyReverseTransformationsAfterPredict () {
         return  applyReverseTransformationsAfterPredict;
@@ -676,7 +681,7 @@ ModelModule
 
     /**
      * put your documentation comment here
-     * @return
+     * @return Information about the training dataset in html format
      */
     protected String getTrainingInfoHtml () {
         StringBuffer sb = new StringBuffer();
@@ -714,6 +719,3 @@ ModelModule
         return  sb.toString();
     }
 }
-
-
-
