@@ -204,6 +204,7 @@ public class Input2FileNames extends InputModule {
            b0.addActionListener(new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser chooser = new JFileChooser();
+                    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
                     String d = getFileName0();
                     if(d == null)
@@ -248,6 +249,7 @@ public class Input2FileNames extends InputModule {
             b1.addActionListener(new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser chooser = new JFileChooser();
+                    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);                    
 
                     String d = getFileName1();
                     if(d == null)

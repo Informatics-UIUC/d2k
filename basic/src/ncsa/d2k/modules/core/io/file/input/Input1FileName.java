@@ -170,6 +170,7 @@ public class Input1FileName extends InputModule {
                         b0.addActionListener(new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser chooser = new JFileChooser();
+                    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
                     String d = getFileName();
                     if(d == null)
