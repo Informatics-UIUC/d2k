@@ -67,7 +67,17 @@ public class JungToPrefuse extends ComputeModule {
   }
 
   public String getModuleInfo() {
-    return "Coverts a Jung graph (directed or not) to a Prefuse graph.";
+    String s =  "Overview: Coverts a Jung graph (directed or not) to a Prefuse graph.";
+
+    s += "<p>Acknowledgement: ";
+    s += "This module uses functionality from the JUNG project. See http://jung.sourceforge.net.";
+    s += "</p>";
+
+      s += "<p>Acknowledgement: ";
+      s += "This module uses functionality from the Prefuse project. See http://prefuse.org.";
+      s += "</p>";
+      
+      return s;
   }
 
   public void doit() throws Exception {

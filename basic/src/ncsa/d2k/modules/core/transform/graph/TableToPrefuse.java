@@ -207,7 +207,13 @@ public class TableToPrefuse extends DataPrepModule {
   }
 
   public String getModuleInfo() { // !:
-    return null;
+      String s = "Overview: Convert a Table into a prefuse graph structure..";
+
+      s += "<p>Acknowledgement: ";
+      s += "This module uses functionality from the Prefuse project. See http://prefuse.org.";
+      s += "</p>";
+
+      return s;
   }
 
   public String getOutputInfo(int index) {
