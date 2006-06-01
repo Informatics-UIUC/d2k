@@ -956,6 +956,15 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                     else if (e.getSource() == filterButton){
                       RuleFilter R = new RuleFilter(this);
                       R.setInput(ruleTable,0);
+                      JFrame F = new JFrame("Rule Filter");
+                      //F = new JFrame("Rule Filter");
+                      F.getContentPane().add(R);
+                      //F.getContentPane().add(new JLabel("Hello"));
+                      F.setSize(600,262);
+                      F.setVisible(true);
+                      F.toFront();
+                      
+                      R.F = F;                    
                     }
                     else if (e.getSource() == print || e.getSource() == printButton) {
                       PrinterJob pj = PrinterJob.getPrinterJob();
@@ -1654,7 +1663,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
              * This is the private class that runs the RuleFilter.  It is based on the
              * FilterConstruction module.
              */
-            public class RuleFilter extends JUserPane
+            public class RuleFilter extends JPanel
                     implements ActionListener, ExpressionListener {
                   private ExpressionGUI gui;
                   private RuleFilterExpression expression;
@@ -1680,16 +1689,19 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                    * @param view is the RuleVisView upon which the filter will operate
                    */
                   public RuleFilter(RuleVisView view){
-                    F = new JFrame("Rule Filter");
-                    F.getContentPane().add(this);
-                    F.setSize(600,262);
-                    F.setVisible(true);
+                    //F = new JFrame("Rule Filter");
+                    //F.getContentPane().add(this);
+                    //F.getContentPane().add(new JLabel("Hello"));
+                    //F.setSize(600,262);
+                    //F.setVisible(true);
+                    //F.toFront();
                     this.view = view;
+                    //System.out.println("new Rule Filter");
                   }
 
-                  public void initView(ViewModule m) {
-                    mod = m;
-                  }
+                  //public void initView(ViewModule m) {
+                  //  mod = m;
+                  //}
 
                   public void setInput(Object obj, int ind) {
                     if (ind != 0)
@@ -1837,7 +1849,7 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                     Constrain.setConstraints(topPanel, gui, 1, 0, 1, 1,
                                              GridBagConstraints.BOTH, GridBagConstraints.CENTER, 1, 1);
 
-                    abortButton = new JButton("Abort");
+                    abortButton = new JButton("Cancel");
                     abortButton.addActionListener(this);
                     helpButton = new JButton("Help");
                     helpButton.addActionListener(new AbstractAction() {
@@ -1902,8 +1914,10 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                                                gui.getTextArea().getCaretPosition());
                       gui.getTextArea().moveCaretPosition(gui.getTextArea().getCaretPosition() - 2);
                     }
-                    else if (src == abortButton)
+                    else if (src == abortButton) {
+                    	F.setVisible(false);
                       F.dispose();
+                    }
                   }
 
                   public void expressionChanged(Object evaluation) {
