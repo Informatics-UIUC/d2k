@@ -73,7 +73,7 @@ public class PGraphML {
          SAXParserFactory factory = SAXParserFactory.newInstance();
          SAXParser saxParser = factory.newSAXParser();
          saxParser.parse(file, mFileHandler);
-         new org.apache.crimson.parser.Parser2();
+         // new org.apache.crimson.parser.Parser2();
       }
       catch (ParserConfigurationException pce) { pce.printStackTrace(); }
       catch (SAXException saxe) { saxe.printStackTrace(); }
