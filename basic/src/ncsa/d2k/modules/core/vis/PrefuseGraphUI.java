@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.awt.event.*;
 import java.awt.geom.*;
 import javax.swing.*;
@@ -12,6 +13,7 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.graph.*;
 // import ncsa.d2k.modules.projects.maids.graph.io.*;
 import ncsa.d2k.userviews.swing.*;
+import ncsa.gui.Constrain;
 import prefuse.*;
 import prefuse.action.*;
 import prefuse.action.Action;
@@ -267,7 +269,7 @@ public class PrefuseGraphUI extends UIModule {
       	}
       }
 
-      // DC added node color field dialog 
+      // DC added node color field dialog
       else if(source == setNodeColorField) {
       	Table ntbl = graph.getNodeTable();
       	int numCols = ntbl.getColumnCount();
@@ -1073,6 +1075,106 @@ public class PrefuseGraphUI extends UIModule {
     }
 
   }
+
+	private class Legend extends JPanel {
+		Legend() {
+			setLayout(new GridBagLayout());
+			//setBackground(yellowish);
+		}
+
+		private void updateLegend(HashMap lk) {
+			removeAll();
+			/*JLabel leg = new JLabel("LEGEND");//new AALabel("LEGEND");
+			leg.setBackground(yellowish);
+			Constrain.setConstraints (this, leg, 1, 0, 1, 1,
+			   GridBagConstraints.HORIZONTAL,
+			   GridBagConstraints.NORTH, 1.0, 0.0,
+			   new Insets(2, 4, 2, 0));
+			*/
+			Iterator it = lk.keySet().iterator();
+
+			int i = 0;
+			while (it.hasNext()) {
+				String text = (String) it.next();
+				Color c = (Color) lk.get(text);
+
+				Insets ii = new Insets(4, 8, 4, 0);
+				Insets i2 = new Insets(4, 8, 4, 0);
+
+				JLabel ll = new JLabel(text);
+				ColorComponent cc = new ColorComponent(c);
+				Constrain.setConstraints(
+					this,
+					cc,
+					0,
+					i,
+					1,
+					1,
+					GridBagConstraints.NONE,
+					GridBagConstraints.NORTH,
+					0.0,
+					0.0,
+					ii);
+				Constrain.setConstraints(
+					this,
+					ll,
+					1,
+					i,
+					1,
+					1,
+					GridBagConstraints.HORIZONTAL,
+					GridBagConstraints.NORTH,
+					1.0,
+					0.0,
+					i2);
+				i++;
+			}
+			revalidate();
+			repaint();
+		}
+	}
+
+	/**
+	 * A small square with a black outline.  The color of the
+	 * square is given in the constructor.
+	 */
+	private final class ColorComponent extends JComponent {
+		private final int DIM = 12;
+		Color bkgrd;
+
+		ColorComponent(Color c) {
+			super();
+			setOpaque(true);
+			bkgrd = c;
+		}
+
+		public Dimension getPreferredSize() {
+			return new Dimension(DIM, DIM);
+		}
+
+		public Dimension getMinimumSize() {
+			return new Dimension(DIM, DIM);
+		}
+
+		public void paint(Graphics g) {
+			g.setColor(bkgrd);
+			g.fillRect(0, 0, DIM - 1, DIM - 1);
+			g.setColor(Color.black);
+			g.drawRect(0, 0, DIM - 1, DIM - 1);
+		}
+
+		void setBkgrd(Color c) {
+			bkgrd = c;
+		}
+
+		BufferedImage getImage() {
+			BufferedImage image =
+				new BufferedImage(DIM, DIM, BufferedImage.TYPE_INT_RGB);
+			Graphics g = image.getGraphics();
+			paint(g);
+			return image;
+		}
+	}
 
   //////////////////////////////////////////////////////////////////////////////
   // D2K module properties
