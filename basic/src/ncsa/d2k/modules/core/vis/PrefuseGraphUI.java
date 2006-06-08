@@ -50,9 +50,37 @@ public class PrefuseGraphUI extends UIModule {
   private static final String NLN = "\n";
   private static final String TAB = "\t";
 
+  private static final int VIS_TYPE_MIN = 0;
+  private static final int VIS_TYPE_MAX = 3;
+
   public static final int VIS_TYPE_UNWEIGHTED = 0;
   public static final int VIS_TYPE_WEIGHTED   = 1;
   public static final int VIS_TYPE_PARTITION  = 2;
+  public static final int VIS_TYPE_BY_ATT     = 3;
+
+  public static final Color[] distinctColors = new Color[] {
+    new Color( 29, 111, 117), // {  0,  83,   0},
+    new Color(  0, 255,   0),
+    new Color(255, 175, 185), // { 46, 155,  28},
+    new Color(152, 255, 152),
+    new Color(  0,  83,   0), // { 29, 111, 117},
+    new Color( 72, 209, 204),
+    new Color(178, 143,  86),
+    new Color(142, 107,  35),
+    new Color(255, 138,   0),
+    new Color(254, 197,  68),
+    new Color(255, 255,   0),
+    new Color(136,  18,  13),
+    new Color(103,   7,  72),
+    new Color(255,   0,   0),
+    new Color(218, 107, 212),
+    new Color(199,  21, 133),
+    new Color(114,  33, 188),
+    new Color( 55, 121, 153),
+    new Color( 12,  62,  99),
+    new Color(  0,   0, 255),
+    new Color(171, 197, 255)
+  };
 
   private class PrefuseView extends JUserPane implements ActionListener {
 
@@ -75,6 +103,7 @@ public class PrefuseGraphUI extends UIModule {
     private JMenuItem fileLoadPositionItem;
     private JMenuItem fileSavePositionItem;
     private JMenuItem viewResetItem;
+    private JCheckBoxMenuItem viewLegendItem;
     private JCheckBoxMenuItem viewAAItem;
     private JCheckBoxMenuItem viewEdgeLabelsItem;
     private JCheckBoxMenuItem viewPhysicsItem;
@@ -84,10 +113,18 @@ public class PrefuseGraphUI extends UIModule {
     private JRadioButtonMenuItem modeUnweightedItem;
     private JRadioButtonMenuItem modeWeightedItem;
     private JRadioButtonMenuItem modePartItem;
+    private JRadioButtonMenuItem modeByAttItem;
     private JMenuItem setNodeLabelField;
     private JMenuItem setEdgeLabelField;
     private JMenuItem saveDisplayAsImage;
     private JMenuItem setNodeColorField;
+
+    private JButton cancelButton, doneButton;
+
+    private String nodeColorAtt;
+    private HashMap nodeColorAttMap;
+    private Legend legend;
+    private JFrame legendFrame;
 
     private LabeledEdgeRenderer edgeRenderer;
 
@@ -149,6 +186,9 @@ public class PrefuseGraphUI extends UIModule {
       else if (source == viewResetItem) {
         resetView();
       }
+      else if (source == viewLegendItem) {
+        legendFrame.setVisible(viewLegendItem.isSelected());
+      }
       else if (source == viewAAItem) {
         display.setHighQuality(viewAAItem.isSelected());
       }
@@ -183,6 +223,9 @@ public class PrefuseGraphUI extends UIModule {
       else if (source == modePartItem) {
         setVisType(VIS_TYPE_PARTITION);
       }
+      else if (source == modeByAttItem) {
+        setVisType(VIS_TYPE_BY_ATT);
+      }
 
       else if (source == setNodeLabelField)
       {
@@ -197,7 +240,7 @@ public class PrefuseGraphUI extends UIModule {
 
       	String nodeLabel = (String) JOptionPane.showInputDialog(
       			this, "Choose a table field to use as labels for " +
-      				" the nodes.", "Node Label Chooser",
+      				"the nodes.", "Node Label Chooser",
 					JOptionPane.PLAIN_MESSAGE,
 					null,
 					choices,
@@ -241,7 +284,7 @@ public class PrefuseGraphUI extends UIModule {
 
       	String edgeLabel = (String) JOptionPane.showInputDialog(
       			this, "Choose a table field to use as labels for " +
-      				" the edges.", "Edge Label Chooser",
+      				"the edges.", "Edge Label Chooser",
 					JOptionPane.PLAIN_MESSAGE,
 					null,
 					labels,
@@ -279,14 +322,40 @@ public class PrefuseGraphUI extends UIModule {
       		choices[i] = ntbl.getColumnName(i);
       	}
 
-      	String nodeColor = (String) JOptionPane.showInputDialog(
-      			this, "Choose a table field to use as labels for " +
-      				" the nodes.", "Node Label Chooser",
+      	nodeColorAtt = (String) JOptionPane.showInputDialog(
+      			this, "Choose a table field to use as colors for " +
+      				"the nodes.", "Node Color Chooser",
 					JOptionPane.PLAIN_MESSAGE,
 					null,
 					choices,
 					choices[0]);
 
+        if (nodeColorAttMap == null) {
+          nodeColorAttMap = new HashMap();
+        }
+        else {
+          nodeColorAttMap.clear();
+        }
+
+        Iterator nIter = graph.nodes();
+        while (nIter.hasNext()) {
+
+          Node n = (Node)nIter.next();
+          String attVal = n.getString(nodeColorAtt);
+
+          if (!nodeColorAttMap.containsKey(attVal)) {
+            nodeColorAttMap.put(
+                attVal,
+                distinctColors[nodeColorAttMap.size() % distinctColors.length]
+            );
+          }
+
+        }
+
+        legend.updateLegend(nodeColorAttMap);
+
+        modeByAttItem.setEnabled(true);
+        viewLegendItem.setEnabled(true);
 
       }
 
@@ -325,6 +394,14 @@ public class PrefuseGraphUI extends UIModule {
 		{
                  e.printStackTrace();
 		}
+      }
+      else if (source == cancelButton) {
+        legendFrame.dispose();
+        viewCancel();
+      }
+      else if (source == doneButton) {
+        legendFrame.dispose();
+        viewDone("Done.");
       }
 
 
@@ -396,6 +473,12 @@ public class PrefuseGraphUI extends UIModule {
       viewResetItem = new JMenuItem("Reset");
       viewResetItem.addActionListener(this);
       viewMenu.add(viewResetItem);
+
+      viewLegendItem = new JCheckBoxMenuItem("Show Attribute Color Legend", false);
+      viewLegendItem.addActionListener(this);
+      viewLegendItem.setEnabled(false);
+      viewMenu.add(viewLegendItem);
+
       viewMenu.add(new JSeparator());
 
       /*
@@ -458,10 +541,17 @@ public class PrefuseGraphUI extends UIModule {
 
       }
 
+      modeByAttItem = new JRadioButtonMenuItem("By Attribute",
+          visType == VIS_TYPE_BY_ATT);
+      modeByAttItem.addActionListener(this);
+      modeByAttItem.setEnabled(false);
+      modeMenu.add(modeByAttItem);
+
       ButtonGroup modeGroup = new ButtonGroup();
       modeGroup.add(modeUnweightedItem);
       modeGroup.add(modeWeightedItem);
       modeGroup.add(modePartItem);
+      modeGroup.add(modeByAttItem);
 
       JMenu labelsMenu = new JMenu("Labels");
       menuBar.add(labelsMenu);
@@ -624,6 +714,9 @@ public class PrefuseGraphUI extends UIModule {
       if (getVisType() == VIS_TYPE_PARTITION && !nodeTable.canGet(GraphUtils.PARTITION, String.class)) {
         setVisType(VIS_TYPE_UNWEIGHTED);
       }
+      else if (getVisType() == VIS_TYPE_BY_ATT) {
+        setVisType(VIS_TYPE_UNWEIGHTED);
+      }
 
       removeAll();
       calculateMaxWeights();
@@ -705,124 +798,183 @@ public class PrefuseGraphUI extends UIModule {
       display.addControlListener(new ZoomControl());
       display.panToAbs(new Point2D.Double(0, 0));
       display.setItemSorter(new ItemSorter());
-      add(display);
+
       registry.run("draw");
       registry.run("layout");
       //actionList.runNow();
       //actionList.run();
 
+      legend = new Legend();
+
+      legendFrame = new JFrame();
+      legendFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+      legendFrame.getContentPane().add(new JScrollPane(legend) {
+        Dimension size = new Dimension(100, 100);
+        public Dimension getMinimumSize() { return size; }
+        public Dimension getPreferredSize() { return size; }
+      });
+      legendFrame.pack();
+      legendFrame.setVisible(false);
+
+      cancelButton = new JButton("Cancel");
+      cancelButton.addActionListener(this);
+
+      doneButton = new JButton("Done");
+      doneButton.addActionListener(this);
+
+      JPanel buttonPanel = new JPanel();
+      GridBagLayout buttonLayout = new GridBagLayout();
+      buttonPanel.setLayout(buttonLayout);
+      JLabel buttonFiller = new JLabel();
+      buttonLayout.addLayoutComponent(buttonFiller, new GridBagConstraints(
+          0, 0, 1, 1, 1.0, 0.0,
+          GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+          new Insets(0, 0, 0, 0), 0, 0));
+      buttonPanel.add(buttonFiller);
+      buttonLayout.addLayoutComponent(cancelButton, new GridBagConstraints(
+          1, 0, 1, 1, 0.0, 0.0,
+          GridBagConstraints.CENTER, GridBagConstraints.NONE,
+          new Insets(1, 1, 1, 1), 0, 0));
+      buttonPanel.add(cancelButton);
+      buttonLayout.addLayoutComponent(doneButton, new GridBagConstraints(
+          2, 0, 1, 1, 0.0, 0.0,
+          GridBagConstraints.CENTER, GridBagConstraints.NONE,
+          new Insets(1, 1, 1, 1), 0, 0));
+      buttonPanel.add(doneButton);
+
+      GridBagLayout layout = new GridBagLayout();
+      setLayout(layout);
+      layout.addLayoutComponent(display, new GridBagConstraints(
+          0, 0, 1, 1, 1.0, 1.0,
+          GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+          new Insets(0, 0, 0, 0), 0, 0));
+      add(display);
+      layout.addLayoutComponent(buttonPanel, new GridBagConstraints(
+          0, 1, 1, 1, 1.0, 0.0,
+          GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+          new Insets(0, 0, 0, 0), 0, 0));
+      add(buttonPanel);
+
     }
 
-  }
+    //////////////////////////////////////////////////////////////////////////////
+    // utility classes
+    //////////////////////////////////////////////////////////////////////////////
 
-  //////////////////////////////////////////////////////////////////////////////
-  // utility classes
-  //////////////////////////////////////////////////////////////////////////////
+    private class AdaptiveTextItemRenderer extends LabelRenderer {
 
-  private class AdaptiveTextItemRenderer extends LabelRenderer {
+      private int maxWeight;
 
-    private int maxWeight;
-
-    private AdaptiveTextItemRenderer(int maxWeight) {
-      super();
-      this.maxWeight = maxWeight;
-      //setTextAttributeName(TableToAdaptivePrefuseGraph.LABEL);
-      setTextField(displayedLabel);
-    }
-
-    protected void drawShape(Graphics2D g, VisualItem item, Shape shape) {
-
-      // set colors
-      Paint itemColor = new Color(item.getFillColor());
-      Paint fillColor;
-
-      // modified from superclass: paint applicable gradient(s)
-      if (item.get(DISTANCE) != null) {
-        int distance = ((Integer)item.get(DISTANCE)).intValue();
-        float f = (float)(distance - 1)/(float)(highlightDistanceMax - 1);
-        fillColor = gradient(distanceGradientLow, distanceGradientHigh, f);
+      private AdaptiveTextItemRenderer(int maxWeight) {
+        super();
+        this.maxWeight = maxWeight;
+        //setTextAttributeName(TableToAdaptivePrefuseGraph.LABEL);
+        setTextField(displayedLabel);
       }
-      else {
 
-        switch (visType) {
-          case VIS_TYPE_UNWEIGHTED:
-            fillColor = unweightedColor;
+      protected void drawShape(Graphics2D g, VisualItem item, Shape shape) {
+
+        // set colors
+        Paint itemColor = new Color(item.getFillColor());
+        Paint fillColor;
+
+        // modified from superclass: paint applicable gradient(s)
+        if (item.get(DISTANCE) != null) {
+          int distance = ((Integer)item.get(DISTANCE)).intValue();
+          float f = (float)(distance - 1)/(float)(highlightDistanceMax - 1);
+          fillColor = gradient(distanceGradientLow, distanceGradientHigh, f);
+        }
+        else {
+
+          switch (visType) {
+            case VIS_TYPE_UNWEIGHTED:
+              fillColor = unweightedColor;
+              break;
+            case VIS_TYPE_WEIGHTED:
+              NodeItem n = (NodeItem)item;
+              String weight = n.getString(GraphUtils.WEIGHT);
+              float f = (float)(Integer.parseInt(weight) - 1)/(float)maxWeight;
+              fillColor = gradient(weightGradientLow, weightGradientHigh, f);
+              break;
+            case VIS_TYPE_PARTITION:
+              n = (NodeItem)item;
+              String state = n.getString(GraphUtils.PARTITION);
+              if (Integer.parseInt(state) == 0) {
+                fillColor = partitionColor0;
+              }
+              else {
+                fillColor = partitionColor1;
+              }
+              break;
+            case VIS_TYPE_BY_ATT:
+              n = (NodeItem)item;
+              String attVal = n.getString(nodeColorAtt);
+              fillColor = (Color)nodeColorAttMap.get(attVal);
+              if (fillColor == null) {
+                fillColor = Color.WHITE;
+              }
+              break;
+            default:
+              fillColor = new Color(item.getFillColor(), true);
+          }
+
+        }
+
+        // render shape
+        Stroke s = g.getStroke();
+        Stroke is = getStroke(item);
+        if ( is != null ) g.setStroke(is);
+        switch (getRenderType(item)) {
+          case RENDER_TYPE_DRAW:
+            g.setPaint(itemColor);
+            g.draw(shape);
             break;
-          case VIS_TYPE_WEIGHTED:
-            NodeItem n = (NodeItem)item;
-            String weight = n.getString(GraphUtils.WEIGHT);
-            float f = (float)(Integer.parseInt(weight) - 1)/(float)maxWeight;
-            fillColor = gradient(weightGradientLow, weightGradientHigh, f);
+          case RENDER_TYPE_FILL:
+            g.setPaint(fillColor);
+            g.fill(shape);
             break;
-          case VIS_TYPE_PARTITION:
-            n = (NodeItem)item;
-            String state = n.getString(GraphUtils.PARTITION);
-            if (Integer.parseInt(state) == 0) {
-              fillColor = partitionColor0;
-            }
-            else {
-              fillColor = partitionColor1;
-            }
+          case RENDER_TYPE_DRAW_AND_FILL:
+            g.setPaint(fillColor);
+            g.fill(shape);
+            g.setPaint(itemColor);
+            g.draw(shape);
             break;
-          default:
-            fillColor = new Color(item.getFillColor(), true);
+        }
+
+        g.setStroke(s);
+
+      }
+
+      public void render(Graphics2D g, VisualItem item) {
+
+        // render shape
+        Shape shape = getShape(item);
+        if (shape != null) {
+          drawShape(g, item, shape); // modified from superclass: don't call super
+        }
+
+        // render text
+        String s = getText(item);
+        if (s != null) {
+          Rectangle2D r = shape.getBounds2D();
+          g.setPaint(new Color(item.getFillColor()));
+          g.setFont(m_font);
+          FontMetrics fm = g.getFontMetrics();
+          double size = item.getSize();
+          double x = r.getX() + size * m_horizBorder;
+          double y = r.getY() + size * m_vertBorder;
+          g.drawString(s, (float)x, (float)y + fm.getAscent());
+          // LAM --- what is this?
+  //        if (isHyperlink(item)) {
+  //          int lx = (int)Math.round(x), ly = (int)Math.round(y);
+  //          g.drawLine(lx, ly, lx + fm.stringWidth(s), ly + fm.getHeight() - 1);
+  //        }
         }
 
       }
 
-      // render shape
-      Stroke s = g.getStroke();
-      Stroke is = getStroke(item);
-      if ( is != null ) g.setStroke(is);
-      switch (getRenderType(item)) {
-        case RENDER_TYPE_DRAW:
-          g.setPaint(itemColor);
-          g.draw(shape);
-          break;
-        case RENDER_TYPE_FILL:
-          g.setPaint(fillColor);
-          g.fill(shape);
-          break;
-        case RENDER_TYPE_DRAW_AND_FILL:
-          g.setPaint(fillColor);
-          g.fill(shape);
-          g.setPaint(itemColor);
-          g.draw(shape);
-          break;
-      }
-
-      g.setStroke(s);
 
     }
-
-    public void render(Graphics2D g, VisualItem item) {
-
-      // render shape
-      Shape shape = getShape(item);
-      if (shape != null) {
-        drawShape(g, item, shape); // modified from superclass: don't call super
-      }
-
-      // render text
-      String s = getText(item);
-      if (s != null) {
-        Rectangle2D r = shape.getBounds2D();
-        g.setPaint(new Color(item.getFillColor()));
-        g.setFont(m_font);
-        FontMetrics fm = g.getFontMetrics();
-        double size = item.getSize();
-        double x = r.getX() + size * m_horizBorder;
-        double y = r.getY() + size * m_vertBorder;
-        g.drawString(s, (float)x, (float)y + fm.getAscent());
-        // LAM --- what is this?
-//        if (isHyperlink(item)) {
-//          int lx = (int)Math.round(x), ly = (int)Math.round(y);
-//          g.drawLine(lx, ly, lx + fm.stringWidth(s), ly + fm.getHeight() - 1);
-//        }
-      }
-
-    }
-
 
   }
 
@@ -1250,7 +1402,7 @@ public class PrefuseGraphUI extends UIModule {
   }
 
   public void setVisType(int value) {
-    if (value < VIS_TYPE_UNWEIGHTED || value > VIS_TYPE_PARTITION) {
+    if (value < VIS_TYPE_MIN || value > VIS_TYPE_MAX) {
       throw new IllegalArgumentException(Integer.toString(value));
     }
     visType = value;
