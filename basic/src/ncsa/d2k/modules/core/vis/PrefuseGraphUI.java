@@ -85,6 +85,7 @@ public class PrefuseGraphUI extends UIModule {
     private JMenuItem setNodeLabelField;
     private JMenuItem setEdgeLabelField;
     private JMenuItem saveDisplayAsImage;
+    private JMenuItem setNodeColorField;
 
     private LabeledEdgeRenderer edgeRenderer;
 
@@ -266,6 +267,26 @@ public class PrefuseGraphUI extends UIModule {
       	}
       }
 
+      // DC added node color field dialog 
+      else if(source == setNodeColorField) {
+      	Table ntbl = graph.getNodeTable();
+      	int numCols = ntbl.getColumnCount();
+      	String[] choices = new String[numCols];
+      	for (int i = 0; i < numCols; i++)
+      	{
+      		choices[i] = ntbl.getColumnName(i);
+      	}
+
+      	String nodeColor = (String) JOptionPane.showInputDialog(
+      			this, "Choose a table field to use as labels for " +
+      				" the nodes.", "Node Label Chooser",
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					choices,
+					choices[0]);
+
+
+      }
 
       else if(source == saveDisplayAsImage)
       {
@@ -450,6 +471,10 @@ public class PrefuseGraphUI extends UIModule {
       setEdgeLabelField = new JMenuItem("Set Edge Label Field...");
       setEdgeLabelField.addActionListener(this);
       labelsMenu.add(setEdgeLabelField);
+
+        setNodeColorField = new JMenuItem("Set Node Color Field...");
+        setNodeColorField.addActionListener(this);
+        labelsMenu.add(setNodeColorField);
     }
 
     public Object getMenu() {
@@ -603,6 +628,24 @@ public class PrefuseGraphUI extends UIModule {
       createMenuBar();
 
   	  displayedLabel = GraphUtils.LABEL;
+      // DC added this to force it to display the first attribute column if GraphUtils.LABEL is not present
+      if(!nodeTable.canGetString(GraphUtils.LABEL)) {
+            boolean done = false;
+            // use the first column that can be gotten as string
+            int ctr = 0;
+            while(!done) {
+                if(ctr < nodeTable.getColumnCount()) {
+                    if(nodeTable.canGetString(nodeTable.getColumnName(ctr))) {
+                        displayedLabel = nodeTable.getColumnName(ctr);
+                        done = true;
+                    }
+                }
+                else
+                    done = true;
+
+                ctr++;
+            }
+      }
 
       edgeRenderer = new LabeledEdgeRenderer(false);
 
