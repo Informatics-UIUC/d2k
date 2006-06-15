@@ -12,7 +12,7 @@ import ncsa.d2k.modules.core.datatype.parameter.*;
 public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpace {
 
 	/** the resolution of each property. */
-	int [] res = new int[0];
+	int [] numRegions = new int[0];
 
 	/** the number of spaces. */
 	int numSpaces = 0;
@@ -36,7 +36,7 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	 * @param minValues the minimum parameter values.
 	 * @param maxValues the maximum parameter values.
 	 * @param defaultValues the default parameter settings.
-	 * @param resolutions the parameter resolutions in terms of number of intervals.
+	 * @param numRegions between the min and max.
 	 * @param types the type as an integer as defined in ColumnTypes.
 	 * @return a ParameterSpace.
 	 */
@@ -44,7 +44,7 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 										 double [] minValues,
 										 double [] maxValues,
 										 double [] defaultValues,
-										 int    [] resolutions,
+										 int    [] numRegions,
 										 int    [] types){
 
 		// Given the data create a parameter space object and return it.
@@ -84,7 +84,7 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 			columns[i] = addMe;
 		}
 		spi.addColumns(columns);
-		this.res = resolutions;
+		this.numRegions = numRegions;
 		spi.addSubspace(numColumns);
 	}
 
@@ -185,18 +185,18 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	/**
 	 * Set the default value of a parameter.
 	 * @param parameterIndex the index of the parameter of interest.
-	 * @param value the value of the parameter of interest.
+	 * @param value is the type of the parameter of interest.
 	 */
-	public void setType(int parameterIndex, int type){
+	public void setType(int parameterIndex, int value){
 		throw new RuntimeException ("Why would you change the data type?");
 	}
 	/**
 	 * Set the resolution of a parameter.
 	 * @param parameterIndex the index of the parameter of interest.
-	 * @param value the resolution.
+	 * @param value the number of regions.
 	 */
-	public void setResolution(int parameterIndex, int resolution) {
-		this.res[parameterIndex] = resolution;
+	public void setNumRegions(int parameterIndex, int value) {
+		this.numRegions[parameterIndex] = value;
 	}
 
 	/**
@@ -248,12 +248,12 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 	}
 
 	/**
-	 * Get the resolution of a parameter.
+	 * Get the number of regions of a parameter.
 	 * @param parameterIndex the index of the parameter of interest.
-	 * @return a int value representing the number of intervals between the min and max parameter values.
+	 * @return a int value representing the number of regions between the min and max parameter values.
 	 */
-	public int getResolution(int parameterIndex){
-		return res[parameterIndex];
+	public int getNumRegions(int parameterIndex){
+		return numRegions[parameterIndex];
 	}
 
 	/**
@@ -334,7 +334,7 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 		double [] mins = new double[size];
 		double [] maxs = new double[size];
 		double [] defaults = new double[size];
-		int [] res = new int[size];
+		int [] numRegions = new int[size];
 		int [] types = new int[size];
 		String [] names = new String[size];
 
@@ -343,14 +343,14 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 			mins[i] = this.getMinValue(start);
 			maxs[i] = this.getMaxValue(start);
 			defaults[i] = this.getDefaultValue(start);
-			res[i] = this.getResolution(start);
+			numRegions[i] = this.getNumRegions(start);
 			types[i] = this.getType(start);
 			names[i] = this.getName(start);
 		}
 
 		// Now we have the data, make the parameter space.
 		ParameterSpaceImpl psi = new ParameterSpaceImpl();
-		psi.createFromData(names,mins,maxs,defaults,res,types);
+		psi.createFromData(names,mins,maxs,defaults,numRegions,types);
 		return psi;
 	}
 
@@ -368,7 +368,7 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 		double [] mins = new double[size];
 		double [] maxs = new double[size];
 		double [] defaults = new double[size];
-		int [] res = new int[size];
+		int [] numRegions = new int[size];
 		int [] types = new int[size];
 		String [] names = new String[size];
 
@@ -378,7 +378,7 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 			mins[counter] = firstSpace.getMinValue(i);
 			maxs[counter] = firstSpace.getMaxValue(i);
 			defaults[counter] = firstSpace.getDefaultValue(i);
-			res[counter] = firstSpace.getResolution(i);
+			numRegions[counter] = firstSpace.getNumRegions(i);
 			types[counter] = firstSpace.getType(i);
 			names[counter] = firstSpace.getName(i);
 		}
@@ -386,11 +386,11 @@ public class ParameterSpaceImpl extends ExampleTableImpl implements ParameterSpa
 			mins[counter] = secondSpace.getMinValue(i);
 			maxs[counter] = secondSpace.getMaxValue(i);
 			defaults[counter] = secondSpace.getDefaultValue(i);
-			res[counter] = secondSpace.getResolution(i);
+			numRegions[counter] = secondSpace.getNumRegions(i);
 			types[counter] = secondSpace.getType(i);
 			names[counter] = secondSpace.getName(i);
 		}
-		psi.createFromData(names,mins,maxs,defaults,res,types);
+		psi.createFromData(names,mins,maxs,defaults,numRegions,types);
 		psi.addSubspace(firstSpace.getNumParameters());
 		psi.addSubspace(secondSpace.getNumParameters());
 		return psi;

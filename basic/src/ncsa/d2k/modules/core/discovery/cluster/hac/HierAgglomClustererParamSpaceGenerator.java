@@ -41,9 +41,9 @@ public class HierAgglomClustererParamSpaceGenerator
         double[] min = { 0, 0, 1, 0};
         double[] max = { 6, 2, Integer.MAX_VALUE, 100};
         double[] def = { 0, 0, 5, 0};
-        int[] res = { 1, 1, 1, 1};
+        int[] numRegions = { 6, 2, 20, 100};
         int[] types = {ColumnTypes.INTEGER, ColumnTypes.INTEGER, ColumnTypes.INTEGER, ColumnTypes.INTEGER};
-        psi.createFromData(names, min, max, def, res, types);
+        psi.createFromData(names, min, max, def, numRegions, types);
         return psi;
   }
 

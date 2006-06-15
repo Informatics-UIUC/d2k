@@ -49,9 +49,9 @@ public class FractionationParamSpaceGenerator extends AbstractParamSpaceGenerato
         double[] min = { 0, 0, 0, 0, 2, 0, 1};
         double[] max = { Integer.MAX_VALUE, 6, 3, 100, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE};
         double[] def = { 5, 0, 0, 0, 250, 0, 5};
-        int[] res = { 1, 1, 1, 1, 1, 1, 1};
+        int[] numRegions = { 100, 6, 3, 100, 100, 100, 100};
         int[] types = {ColumnTypes.INTEGER, ColumnTypes.INTEGER, ColumnTypes.BOOLEAN, ColumnTypes.INTEGER, ColumnTypes.INTEGER, ColumnTypes.INTEGER, ColumnTypes.INTEGER};
-        psi.createFromData(names, min, max, def, res, types);
+        psi.createFromData(names, min, max, def, numRegions, types);
         return psi;
   }
 

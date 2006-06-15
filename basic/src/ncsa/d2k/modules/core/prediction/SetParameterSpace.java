@@ -19,6 +19,8 @@ public class SetParameterSpace extends JPanel implements CustomModuleEditor {
 	AbstractParamSpaceGenerator spaceGen = null;
 
 	SetParameterSpace (AbstractParamSpaceGenerator sg) {
+	
+		//this.setPreferredSize(new Dimension(600, 200));
 		this.spaceGen = sg;
 		ParameterSpace space = this.spaceGen.getCurrentSpace();
 		count = space.getNumParameters();
@@ -27,8 +29,8 @@ public class SetParameterSpace extends JPanel implements CustomModuleEditor {
 		editors = new ParameterEditor [count];
 		for (int i = 0 ; i < count ; i++) {
 			editors[i] = new ParameterEditor(space.getName(i), space.getMinValue(i),
-			space.getMaxValue(i), space.getDefaultValue(i), space.getResolution(i), defSpace.getMinValue(i),
-			defSpace.getMaxValue(i), defSpace.getDefaultValue(i), defSpace.getResolution(i));
+			space.getMaxValue(i), space.getDefaultValue(i), space.getNumRegions(i), defSpace.getMinValue(i),
+			defSpace.getMaxValue(i), defSpace.getDefaultValue(i), defSpace.getNumRegions(i));
 			this.add(editors[i]);
 		}
 	}
@@ -41,14 +43,14 @@ public class SetParameterSpace extends JPanel implements CustomModuleEditor {
 		double [] min = new double [count];
 		double [] max = new double [count];
 		double [] def = new double [count];
-		int [] res = new int [count];
+		int [] numRegions = new int [count];
 		ParameterSpace space = this.spaceGen.getCurrentSpace();
 		ParameterSpace mydef = this.spaceGen.getDefaultSpace();
 		for (int i = 0 ; i < count ; i++) {
 			min[i] = editors[i].getMin();
 			max[i] = editors[i].getMax();
 			def[i] = editors[i].getDefault();
-			res[i] = editors[i].getResolution();
+			numRegions[i] = editors[i].getNumRegions();
 		}
 
 		// check ot see if anything changed.
@@ -69,7 +71,7 @@ public class SetParameterSpace extends JPanel implements CustomModuleEditor {
 				//	throw new Exception ("Default must be between the min and max of the factory settings.");
 				changed = true;
 			}
-			if (res[i] != space.getResolution(i)) {
+			if (numRegions[i] != space.getNumRegions(i)) {
 				changed = true;
 			}
 			if (max[i] < min[i]) throw new Exception ("The max must be greater than or equal to the min.");
@@ -85,7 +87,7 @@ public class SetParameterSpace extends JPanel implements CustomModuleEditor {
 				types[i] = space.getType(i);
 			}
 			this.spaceGen.space = (ParameterSpace) space.getClass().newInstance();
-			this.spaceGen.space.createFromData(names, min, max, def, res, types);
+			this.spaceGen.space.createFromData(names, min, max, def, numRegions, types);
 			return true;
 		} else
 
@@ -141,9 +143,9 @@ class ParameterEditor extends JPanel implements java.io.Serializable{
 		Constrain.setConstraints(this, defaultText, 5, 0, 1, 1, GridBagConstraints.HORIZONTAL,
 								  GridBagConstraints.NORTH, 0.33, 0.0);
 
-		Constrain.setConstraints(this, new JLabel("Res"), 6, 0, 1, 1, GridBagConstraints.NONE,
+		Constrain.setConstraints(this, new JLabel("NumRegions"), 6, 0, 1, 1, GridBagConstraints.NONE,
 								  GridBagConstraints.NORTH, 0.0, 0.0);
-		incrementText.setToolTipText("Number of evenly spaced points in the space to search");
+		incrementText.setToolTipText("Number of regions between min and max values");
 		incrementText.setText(Integer.toString(inc));
 		Constrain.setConstraints(this, incrementText, 7, 0, 1, 1, GridBagConstraints.HORIZONTAL,
 								  GridBagConstraints.NORTH, 0.33, 0.0);
@@ -225,7 +227,7 @@ class ParameterEditor extends JPanel implements java.io.Serializable{
 	 * @return the value for the current max.
 	 * @throws java.lang.NumberFormatException
 	 */
-	int getResolution () throws java.lang.NumberFormatException {
+	int getNumRegions () throws java.lang.NumberFormatException {
 		return Integer.parseInt(incrementText.getText());
 	}
 }

@@ -1,13 +1,11 @@
-package ncsa.d2k.modules.core.optimize;
+package ncsa.d2k.modules.core.optimize.examples;
 
 import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.impl.ParameterPointImpl;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.Column;
 import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
 import ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl;
-import ncsa.d2k.modules.core.optimize.random.UniformSampling;
 
 import java.util.ArrayList;
 

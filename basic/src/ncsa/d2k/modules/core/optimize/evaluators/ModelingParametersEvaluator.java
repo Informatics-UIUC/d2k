@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.optimize;
+package ncsa.d2k.modules.core.optimize.evaluators;
 import ncsa.d2k.modules.core.datatype.parameter.*;
 import ncsa.d2k.modules.core.datatype.parameter.impl.*;
 import ncsa.d2k.modules.core.datatype.table.*;
@@ -8,7 +8,7 @@ import ncsa.d2k.core.modules.PropertyDescription;
 import java.beans.PropertyVetoException;
 
 
-public class MultiTrainTestBiasEvaluator
+public class ModelingParametersEvaluator
 	extends ComputeModule {
 
   int numProperties = 6;
@@ -129,7 +129,7 @@ public class MultiTrainTestBiasEvaluator
   }
 
   public String getModuleName() {
-	return "Multi Train Test Bias Evaluator";
+	return "Modeling Parameters Evaluator";
   }
 
   public String getModuleInfo() {

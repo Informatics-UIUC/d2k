@@ -43,9 +43,9 @@ public class BuckshotParamSpaceGenerator extends AbstractParamSpaceGenerator {
         double[] min = { 1, 0, 0, 0, 0, 0, 1};
         double[] max = { Integer.MAX_VALUE, Integer.MAX_VALUE, 1, 6, 2, 100, Integer.MAX_VALUE};
         double[] def = { 5, 0, 0, 0, 0, 0, 5};
-        int[] res = { 1, 1, 1, 1, 1, 1, 1};
+        int[] numRegions = { 10, 10, 1, 6, 2, 100, 100};
         int[] types = {ColumnTypes.INTEGER, ColumnTypes.INTEGER, ColumnTypes.BOOLEAN, ColumnTypes.INTEGER, ColumnTypes.INTEGER, ColumnTypes.INTEGER, ColumnTypes.INTEGER};
-        psi.createFromData(names, min, max, def, res, types);
+        psi.createFromData(names, min, max, def, numRegions, types);
         return psi;
   }
 

@@ -7,7 +7,7 @@ A parameter space is defines the search space for an optimizer.
 The space is simply defined as a hyper-rectangle defined by min and max values for each dimension.
 Each parameter has a minimum and maximum value which an optimizer should used to limit its operation.
 Each parameter has a default value which an optimizer can use as the intial starting point.
-Each parameter has a resolution which an optimizer should used to limit its operation.
+Each parameter has a number of regions which an optimizer should used to limit its operation.
 Each parameter has type that represented as an integer define in ColumnTypes.
 A parameter space is composed of one or more subspaces.
 Each D2K module in the itinerary which the user disires to optimize has its separate ParameterSpace.
@@ -29,7 +29,7 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
    * Row 1 is the minimum parameter value.
    * Row 2 is the maximum parameter value.
    * Row 3 is the default parameter setting.
-   * Row 4 is the parameter resolution in terms of number of intervals.
+   * Row 4 is the parameter number of regions is the number of regions between min and max.
    * Row 5 is the type as an integer as defined in ColumnTypes.
    * @param table the table representing the parameter space.
    * @return a ParameterSpace.
@@ -42,7 +42,7 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
    * @param minValues the minimum parameter values.
    * @param maxValues the maximum parameter values.
    * @param defaultValues the default parameter settings.
-   * @param resolutions the parameter resolutions in terms of number of intervals.
+   * @param numRegions the number of regions between min and max.
    * @param types the type as an integer as defined in ColumnTypes.
    * @return a ParameterSpace.
    */
@@ -50,7 +50,7 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
                              double [] minValues,
                              double [] maxValues,
                              double [] defaultValues,
-                             int    [] resolutions,
+                             int    [] numRegions,
                              int    [] types);
 
 
@@ -116,11 +116,11 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
   public ParameterPoint getDefaultParameterPoint();
 
   /**
-   * Get the resolution of a parameter.
+   * Get the number of regions for this parameter.
    * @param parameterIndex the index of the parameter of interest.
    * @return a int value representing the number of intervals between the min and max parameter values.
    */
-  public int getResolution(int parameterIndex);
+  public int getNumRegions(int parameterIndex);
 
   /**
    * Get the type of a parameter.
@@ -176,11 +176,11 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
   public void setDefaultValue(int parameterIndex, double value);
 
   /**
-   * Set the resolution of a parameter.
+   * Set the number of regions.
    * @param parameterIndex the index of the parameter of interest.
    * @param value the resolution.
    */
-  public void setResolution(int parameterIndex, int resolution);
+  public void setNumRegions(int parameterIndex, int value);
 
   /**
    * Set the type of a parameter.

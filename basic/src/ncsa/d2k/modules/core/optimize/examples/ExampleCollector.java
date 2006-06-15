@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.optimize.random;
+package ncsa.d2k.modules.core.optimize.examples;
 
 import ncsa.d2k.core.modules.*;
 import java.util.ArrayList;

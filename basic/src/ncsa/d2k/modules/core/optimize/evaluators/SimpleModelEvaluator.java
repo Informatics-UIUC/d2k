@@ -1,4 +1,4 @@
-package ncsa.d2k.modules.core.optimize;
+package ncsa.d2k.modules.core.optimize.evaluators;
 
 import ncsa.d2k.modules.*;
 import ncsa.d2k.modules.core.datatype.sort.*;
