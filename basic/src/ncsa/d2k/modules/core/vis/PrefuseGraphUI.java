@@ -1483,4 +1483,25 @@ public class PrefuseGraphUI extends UIModule {
     return null;
   }
 
+  public PropertyDescription[] getPropertiesDescriptions() {
+
+    return new PropertyDescription[] {
+
+      new PropertyDescription("highlightDistanceMax",
+          "Maximum Highlight Distance",
+          "In the UI, when a node is highlighted, its neighborhood is " +
+              "highlighted as well. This property controls how many " +
+              "\"hops\" away from that node should be included in that " +
+              "highlighted neighborhood."),
+
+      new PropertyDescription("visType", "Initial Visualization Mode",
+          "The UI has a number of different \"modes\" for coloring nodes. " +
+              "This property controls which is initially shown. Valid values " +
+              "include 0 (unweighted), 1 (weighted), and possibly 2 " +
+              "(partition).")
+
+    };
+
+  }
+
 }
