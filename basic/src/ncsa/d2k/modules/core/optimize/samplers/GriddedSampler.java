@@ -1,5 +1,6 @@
 package ncsa.d2k.modules.core.optimize.samplers;
 
+import java.beans.PropertyVetoException;
 import java.util.Random;
 
 import ncsa.d2k.core.modules.*;
@@ -7,6 +8,8 @@ import ncsa.d2k.modules.core.datatype.parameter.impl.ParameterPointImpl;
 
 public class GriddedSampler extends RandomSampler {
 
+	
+	
 	/** */
 	int[] indices = null;
 
@@ -25,11 +28,25 @@ public class GriddedSampler extends RandomSampler {
 	/** random number generator used to compute the delta from the offset. */
 	Random random = new Random();
 
+	
+
+	private int numSamples = 100;
+	public void setNumSamples(int value) throws PropertyVetoException {
+		if (value < 1) {
+			throw new PropertyVetoException(" < 1", null);
+		}
+		this.numSamples = value;
+	}
+	public int getNumSamples() {
+		return this.numSamples;
+	}
+	
+	
 	public PropertyDescription[] getPropertiesDescriptions() {
 		PropertyDescription[] descriptions = new PropertyDescription[2];
-		descriptions[0] = new PropertyDescription("maxIterations",
-				"Maximum Number of Iterations",
-				"Optimization halts when this limit on the number of iterations is exceeded.  ");
+		descriptions[0] = new PropertyDescription("numSamples",
+				"Number of Samples",
+				"The number of samples to generate.  ");
 		descriptions[1] = new PropertyDescription("trace", "Trace",
 				"Report each scored point in parameter space as it becomes available.");
 		return descriptions;
@@ -81,6 +98,7 @@ public class GriddedSampler extends RandomSampler {
 	 * better coverage than a regularly spaced grid.
 	 */
 	protected void pushParameterPoint() {
+		
 		int numParams = space.getNumParameters();
 
 		// This array will contain the indexes of the increments

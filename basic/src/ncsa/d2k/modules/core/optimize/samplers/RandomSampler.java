@@ -33,14 +33,12 @@ public class RandomSampler extends ComputeModule {
 	}
 
 	private int numSamples = 100;
-
 	public void setNumSamples(int value) throws PropertyVetoException {
 		if (value < 1) {
 			throw new PropertyVetoException(" < 1", null);
 		}
 		this.numSamples = value;
 	}
-
 	public int getNumSamples() {
 		return this.numSamples;
 	}
