@@ -66,8 +66,8 @@ public class Branch extends DataPrepModule {
     }
 
     public String getModuleInfo() {
-        return "<p>Overview: Simple branch. Push data out the first output pipe if <i>useFirstOutput</i> is"+
-                " true; push data out the second output pipe if <i>useFirstOutput</i> is "+
+        return "<p>Overview: Simple branch. Pushes data out the first output pipe if <i>useFirstOutput</i> is"+
+                " true. Pushes data out the second output pipe if <i>useFirstOutput</i> is "+
                 "false.</p>";
     }
 
