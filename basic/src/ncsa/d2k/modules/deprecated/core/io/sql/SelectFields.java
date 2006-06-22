@@ -13,8 +13,18 @@ import ncsa.d2k.userviews.swing.*;
 */
 public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 
-  JOptionPane msgBoard = new JOptionPane();
+    JOptionPane msgBoard = new JOptionPane();
 
+    /**
+     * Provides notification that this module is deprecated.
+     * 
+     * @author shirk
+     */
+    public void beginExecution() {
+    	System.out.println(getClass().getName() + " is deprecated.");
+    	super.beginExecution();
+    }
+    
 	/**
 	 * Return the human readable name of the module.
 	 * @return the human readable name of the module.
