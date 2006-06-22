@@ -8,7 +8,7 @@ package ncsa.d2k.modules.core.datatype.table.basic;
 //===============
 // Other Imports
 //===============
-import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.InputModule;
 
 /**
  * put your documentation comment here
@@ -27,6 +27,11 @@ public class BasicTableFactoryInjector extends InputModule {
     //================
     //========================
     // D2K Abstract Overrides
+    
+    public String getModuleName() {
+        return "Basic Table Factory Injector";
+     }
+    
     public String getInputInfo (int parm1) {
             return  "";
 
