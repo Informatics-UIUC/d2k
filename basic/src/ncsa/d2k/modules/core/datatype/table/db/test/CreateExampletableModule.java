@@ -1,11 +1,7 @@
 package ncsa.d2k.modules.core.datatype.table.db.test;
 
 import ncsa.d2k.core.modules.ComputeModule;
-import ncsa.d2k.core.modules.PropertyDescription;
-import ncsa.d2k.core.modules.CustomModuleEditor;
-import ncsa.d2k.core.pipes.Pipe;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.db.*;
+import ncsa.d2k.modules.core.datatype.table.Table;
 
 /**
  * <p>Title: </p>
@@ -19,9 +15,9 @@ import ncsa.d2k.modules.core.datatype.table.db.*;
 public class CreateExampletableModule extends ComputeModule {
 
   public String getModuleInfo() {
-    return "This module creates an example table from a table. " +
-        "the output port should be linked to a module that selects the output " +
-        "and input features";
+    return "<p>Overview: This module creates an example table from a table. " +
+        "The output port should be linked to a module that selects the output " +
+        "and input features.</p>";
 
   }
 
@@ -35,7 +31,7 @@ public class CreateExampletableModule extends ComputeModule {
     switch(parm1){
       case 0: return "Table";
 
-      default: return "no such input";
+      default: return "No such input";
     }
   }
 
@@ -44,7 +40,7 @@ public class CreateExampletableModule extends ComputeModule {
     switch(parm1){
       case 0: return "Table";
 
-      default: return "no such input";
+      default: return "No such input";
     }
 
   }
@@ -55,7 +51,7 @@ public class CreateExampletableModule extends ComputeModule {
     switch(parm1){
       case 0: return "Example Table";
 
-      default: return "no such output";
+      default: return "No such output";
     }
 
   }
@@ -65,7 +61,7 @@ public class CreateExampletableModule extends ComputeModule {
     switch(parm1){
        case 0: return "Example Table";
 
-       default: return "no such output";
+       default: return "No such output";
      }
 
   }

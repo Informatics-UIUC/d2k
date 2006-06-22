@@ -1,11 +1,7 @@
 package ncsa.d2k.modules.core.datatype.table.db.test;
 
 import ncsa.d2k.core.modules.ComputeModule;
-import ncsa.d2k.core.modules.PropertyDescription;
-import ncsa.d2k.core.modules.CustomModuleEditor;
-import ncsa.d2k.core.pipes.Pipe;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.db.*;
+import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 
 /**
  * <p>Title: </p>
@@ -19,7 +15,7 @@ import ncsa.d2k.modules.core.datatype.table.db.*;
 public class CreatePredictiontableModule extends ComputeModule {
 
   public String getModuleInfo() {
-    return "This module creates a prediction table from an example table. " ;
+    return "<p>Overview: This module creates a prediction table from an example table.</p>" ;
 
 
   }
@@ -34,16 +30,16 @@ public class CreatePredictiontableModule extends ComputeModule {
     switch(parm1){
       case 0: return "Example Table";
 
-      default: return "no such input";
+      default: return "No such input";
     }
   }
 
 
   public String getInputName(int parm1) {
     switch(parm1){
-      case 0: return " Example Table";
+      case 0: return "Example Table";
 
-      default: return "no such input";
+      default: return "No such input";
     }
 
   }
@@ -54,7 +50,7 @@ public class CreatePredictiontableModule extends ComputeModule {
     switch(parm1){
       case 0: return "Prediction Table";
 
-      default: return "no such output";
+      default: return "No such output";
     }
 
   }
@@ -64,7 +60,7 @@ public class CreatePredictiontableModule extends ComputeModule {
     switch(parm1){
        case 0: return "Prediction Table";
 
-       default: return "no such output";
+       default: return "No such output";
      }
 
   }
