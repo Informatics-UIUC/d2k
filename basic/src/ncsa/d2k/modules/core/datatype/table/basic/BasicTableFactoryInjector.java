@@ -51,9 +51,9 @@ public class BasicTableFactoryInjector extends InputModule {
      * @return
      */
     public String getModuleInfo () {
-        return "Outputs a <i>TableFactory</i> suitable for creating D2K Tables " +
+        return "<p>Overview: Outputs a <i>TableFactory</i> suitable for creating D2K Tables " +
             "from the ncsa.d2k.modules.core.datatype.table.basic package. This is " +
-            "a standard Table suitable for most applications.";
+            "a standard Table suitable for most applications.</p>";
     }
 
     /**
