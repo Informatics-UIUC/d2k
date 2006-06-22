@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.control;
 
 import ncsa.d2k.core.modules.DataPrepModule;
+import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.util.QuickQueue;
 
 /**
@@ -71,13 +72,13 @@ public class QueuedTriggerPush extends DataPrepModule{
 
 
    public String getModuleInfo(){
-      return "<p>      Overview: This module will collect the input received on it's" +
+      return "<p>Overview: This module will collect the input received on its" +
       		" first input. When an input is received on the second input, it will push" +
-      		" one of the items saved off the first input, if there are any. </p>";
+      		" one of the items saved off the first input, if there are any.</p>";
    }
 
    public String getModuleName() {
-      return "Queue Push";
+      return "Queued Trigger Push";
    }
 
    public String[] getInputTypes(){
@@ -109,7 +110,7 @@ public class QueuedTriggerPush extends DataPrepModule{
 
    public String getOutputInfo(int index){
       switch (index) {
-         case 0: return "The object received on the first input is pushed after it is received the     first time, and after any input on the second input.";
+         case 0: return "The object received on the first input is pushed after it is received the first time, and after any input on the second input.";
          default: return "No such output";
       }
    }
@@ -125,5 +126,19 @@ public class QueuedTriggerPush extends DataPrepModule{
    }
    public boolean getDebug(){
       return debug;
+   }
+   
+   /**
+    * Return a list of the property descriptions.
+    * 
+    * @return a list of the property descriptions.
+    */
+   public PropertyDescription[] getPropertiesDescriptions() {
+     PropertyDescription[] pds = new PropertyDescription[1];
+     pds[0] = new PropertyDescription(
+         "debug",
+         "Generate Debug Output",
+         "If this property is true, the module will write verbose debug information to the console.");
+     return pds;
    }
 }
