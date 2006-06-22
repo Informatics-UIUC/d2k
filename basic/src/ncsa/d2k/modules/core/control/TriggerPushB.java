@@ -11,8 +11,7 @@ import ncsa.d2k.core.modules.*;
 	@author pgroves
 	*/
 
-public class TriggerPushB extends DataPrepModule
-	{
+public class TriggerPushB extends DataPrepModule {
 
 	//////////////////////
 	//d2k Props
@@ -66,7 +65,7 @@ public class TriggerPushB extends DataPrepModule
 		if(this.getFlags()[1]>0){
 			pullInput(1);
 			if(debug)
-				System.out.println("TriggerPushB:"+totalFires);
+				System.out.println("TriggerPushB: "+totalFires);
 			pushOutput(theObject, 0);
 		}
 		if(this.getFlags()[0]>0){
@@ -85,7 +84,13 @@ public class TriggerPushB extends DataPrepModule
 
 
 	public String getModuleInfo(){
-		return "<html>  <head>      </head>  <body>    Takes in an object and saves it. Every time an object enters the <i>other</i> input pipe, the saved object will be pushed out the single output. This will     also assign a new object to the saved object field whenever a new one     arrives, and that new one will become the one to get pushed at each     triggering  </body></html>";
+		return "<p>Overview: Takes in an object and saves it. Every time " +
+				"an object enters the <i>other</i> input pipe, " +
+				"the saved object will be pushed out the single " +
+				"output. This will also assign a new object " +
+				"to the saved object field whenever a new one " +
+				"arrives, and that new one will become the one " +
+				"to get pushed at each triggering</p>";
 	}
 
    	public String getModuleName() {
@@ -132,6 +137,21 @@ public class TriggerPushB extends DataPrepModule
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
+	
+	/**
+	 * Return a list of the property descriptions.
+	 * 
+	 * @return a list of the property descriptions.
+	 */
+	public PropertyDescription[] getPropertiesDescriptions() {
+	  PropertyDescription[] pds = new PropertyDescription[1];
+	  pds[0] = new PropertyDescription(
+	      "debug",
+	      "Generate Debug Output",
+	      "If this property is true, the module will write verbose debug information to the console.");
+	  return pds;
+	}
+	   
 	////////////////////////////////
 	//D2K Property get/set methods
 	///////////////////////////////
