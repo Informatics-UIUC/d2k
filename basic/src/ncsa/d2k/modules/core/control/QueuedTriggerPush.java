@@ -100,7 +100,7 @@ public class QueuedTriggerPush extends DataPrepModule{
             return "Object";
          case 1:
             return "Trigger";
-         default: return "NO SUCH INPUT!";
+         default: return "No such input";
       }
    }
    public String[] getOutputTypes(){
@@ -118,7 +118,7 @@ public class QueuedTriggerPush extends DataPrepModule{
       switch(index) {
          case 0:
             return "Object";
-         default: return "NO SUCH OUTPUT!";
+         default: return "No such output";
       }
    }
    public void setDebug(boolean b){
