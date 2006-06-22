@@ -11,7 +11,6 @@ import ncsa.d2k.core.modules.DataPrepModule;
  */
 public class WaitPush extends DataPrepModule{
 
-   protected boolean debug;
    protected boolean firstTime = true;
 
    /**
@@ -109,10 +108,5 @@ public class WaitPush extends DataPrepModule{
          default: return "No such output";
       }
    }
-   public void setDebug(boolean b){
-      debug=b;
-   }
-   public boolean getDebug(){
-      return debug;
-   }
+
 }
