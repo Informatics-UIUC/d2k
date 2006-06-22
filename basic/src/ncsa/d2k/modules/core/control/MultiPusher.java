@@ -124,9 +124,9 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
 		@return the description of the module.
 	*/
 	public String getModuleInfo() {
-		return "Takes any object, pushes it out N times, where N is either set"+
+		return "<p>Overview: Takes any object, pushes it out N times, where N is either set"+
 		" as a property or passed in as an input. See property descriptions "+
-		" for details on controlling this behavior";
+		" for details on controlling this behavior.</p>";
 	}
 
 
@@ -223,7 +223,7 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
        	"The number of times to pass the input object");
 
       pds[2] = new PropertyDescription("debug",
-        "Generate Verbose Output",
+        "Generate Debug Output",
         "If true, will write to the console the number of times the module has fired, every "+
 		  "time it is fired.");
       return pds;

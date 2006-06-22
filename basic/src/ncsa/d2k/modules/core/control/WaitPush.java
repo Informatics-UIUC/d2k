@@ -57,13 +57,16 @@ public class WaitPush extends DataPrepModule{
 
 
    public String getModuleInfo(){
-      return "<p>      Overview: This module will collect the input received on it's first       input, save"+
-         " it and push it one the first invocation. Subsequent inputs       received on the second input"+
-         " will cause the input saved from the first       input to be pushed again.    </p>";
+      return "<p>Overview: This module will collect the " +
+      		 "input received on it's first input, save"+
+             " it and push it one the first invocation. " +
+             "Subsequent inputs received on the second input"+
+             " will cause the input saved from the first " +
+             "input to be pushed again.</p>";
    }
 
    public String getModuleName() {
-      return "Trigger Push";
+      return "Wait Push";
    }
 
    public String[] getInputTypes(){
@@ -85,7 +88,7 @@ public class WaitPush extends DataPrepModule{
             return "Object";
          case 1:
             return "Trigger";
-         default: return "NO SUCH INPUT!";
+         default: return "No such input";
       }
    }
    public String[] getOutputTypes(){
@@ -103,7 +106,7 @@ public class WaitPush extends DataPrepModule{
       switch(index) {
          case 0:
             return "Object";
-         default: return "NO SUCH OUTPUT!";
+         default: return "No such output";
       }
    }
    public void setDebug(boolean b){
