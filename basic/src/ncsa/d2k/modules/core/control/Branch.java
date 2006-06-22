@@ -19,6 +19,10 @@ public class Branch extends DataPrepModule {
         return useFirstOutput;
     }
 
+    public String getModuleName() {
+       return "Branch";
+    }
+    
     /**
      * put your documentation comment here
      * @return
@@ -27,7 +31,7 @@ public class Branch extends DataPrepModule {
         PropertyDescription[] desc = new PropertyDescription[1];
         desc[0] = new PropertyDescription("useFirstOutput",
                 "Use the first output",
-                "Set this to true to use the first output.  Set this to false "+
+                "Set this to true to use the first output. Set this to false "+
                 "to use the second output.");
         return  desc;
     }
@@ -62,9 +66,9 @@ public class Branch extends DataPrepModule {
     }
 
     public String getModuleInfo() {
-        return "Simple branch.  Push data out the first output pipe if <i>useFirstOutput</i> is"+
+        return "<p>Overview: Simple branch. Push data out the first output pipe if <i>useFirstOutput</i> is"+
                 " true; push data out the second output pipe if <i>useFirstOutput</i> is "+
-                "false.";
+                "false.</p>";
     }
 
     public void doit() throws Exception {
