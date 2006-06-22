@@ -1,11 +1,7 @@
 package ncsa.d2k.modules.core.datatype.table.db.test;
 
 import ncsa.d2k.core.modules.ComputeModule;
-import ncsa.d2k.core.modules.PropertyDescription;
-import ncsa.d2k.core.modules.CustomModuleEditor;
-import ncsa.d2k.core.pipes.Pipe;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.db.*;
+import ncsa.d2k.modules.core.datatype.table.Table;
 
 /**
  * <p>Title: </p>
@@ -19,8 +15,8 @@ import ncsa.d2k.modules.core.datatype.table.db.*;
 public class TestGetSubsetModule extends ComputeModule {
 
   public String getModuleInfo() {
-    return "This module tests the getSubset method of a Table.\n" +
-        "It retrieves a SubsetTable from a Table and pushes out the subsettable " ;
+    return "<p>Overview: This module tests the getSubset method of a Table.\n" +
+        "It retrieves a SubsetTable from a Table and pushes out the subsettable.</p>" ;
 
   }
 
@@ -34,7 +30,7 @@ public class TestGetSubsetModule extends ComputeModule {
     switch(parm1){
       case 0: return "Table to be tested";
 
-      default: return "no such input";
+      default: return "No such input";
     }
   }
 
@@ -43,7 +39,7 @@ public class TestGetSubsetModule extends ComputeModule {
     switch(parm1){
       case 0: return "Table";
 
-      default: return "no such input";
+      default: return "No such input";
     }
 
   }
@@ -54,7 +50,7 @@ public class TestGetSubsetModule extends ComputeModule {
     switch(parm1){
       case 0: return "Subset Table";
 
-      default: return "no such output";
+      default: return "No such output";
     }
 
   }
@@ -64,7 +60,7 @@ public class TestGetSubsetModule extends ComputeModule {
     switch(parm1){
        case 0: return "Subset Table";
 
-       default: return "no such output";
+       default: return "No such output";
      }
 
   }

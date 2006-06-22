@@ -1,11 +1,12 @@
 package ncsa.d2k.modules.core.datatype.table.db.test;
 
 import ncsa.d2k.core.modules.ComputeModule;
-import ncsa.d2k.core.modules.PropertyDescription;
-import ncsa.d2k.core.modules.CustomModuleEditor;
-import ncsa.d2k.core.pipes.Pipe;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.db.*;
+import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
+import ncsa.d2k.modules.core.datatype.table.Example;
+import ncsa.d2k.modules.core.datatype.table.ExampleTable;
+import ncsa.d2k.modules.core.datatype.table.PredictionExample;
+import ncsa.d2k.modules.core.datatype.table.Row;
+import ncsa.d2k.modules.core.datatype.table.Table;
 
 /**
  * <p>Title: </p>
@@ -20,9 +21,9 @@ public class TestGetRowModule extends ComputeModule {
   public TestGetRowModule() {
   }
   public String getModuleInfo() {
-    return "This module tests the getRow method of a Table.\n" +
+    return "<p>Overview: This module tests the getRow method of a Table.\n" +
         "It retrieves a Row object from the input Table and iterates"
-       + " over all the items in the table";
+       + " over all the items in the table.</p>";
   }
 
 
@@ -35,7 +36,7 @@ public class TestGetRowModule extends ComputeModule {
     switch(parm1){
       case 0: return "Table to be tested";
 
-      default: return "no such input";
+      default: return "No such input";
     }
   }
 
@@ -44,7 +45,7 @@ public class TestGetRowModule extends ComputeModule {
     switch(parm1){
       case 0: return "Table";
 
-      default: return "no such input";
+      default: return "No such input";
     }
 
   }
@@ -55,7 +56,7 @@ public class TestGetRowModule extends ComputeModule {
     switch(parm1){
       case 0: return "Table";
 
-      default: return "no such input";
+      default: return "No such input";
     }
 
   }
@@ -65,7 +66,7 @@ public class TestGetRowModule extends ComputeModule {
     switch(parm1){
        case 0: return "Table";
 
-       default: return "no such input";
+       default: return "No such input";
      }
 
   }
@@ -99,11 +100,11 @@ public class TestGetRowModule extends ComputeModule {
     int numRows = table.getNumRows();
 
     System.out.println("Table type: " + table.getClass().getName());
-    System.out.println("\nPrinting content of the table. accessing via row\n\n");
+    System.out.println("\nPrinting content of the table. Accessing via row\n\n");
 
     for (int i=0; i<numRows; i++){
       row.setIndex(i);
-      System.out.println("content of row no. " + i);
+      System.out.println("Content of row no. " + i);
       for (int j=0; j<numColumns; j++)
         System.out.print(row.getString(j) + "\t");
 
@@ -115,14 +116,14 @@ int inputs, outputs=0;
       Example ex = (Example) row;
       inputs = ((ExampleTable)table).getNumInputFeatures();
       outputs = ((ExampleTable)table).getNumOutputFeatures();
-      System.out.println("\nthis row is an Example. going over the input features andoutput features.");
+      System.out.println("\nThis row is an Example. Going over the input features andoutput features.");
       for (int i=0; i<numRows; i++){
         ex.setIndex(i);
-        System.out.println("\ncontent of input features of row no. " + i);
+        System.out.println("\nContent of input features of row no. " + i);
         for (int j=0; j<inputs; j++)
           System.out.print(ex.getInputString(j) + "\t");
         System.out.println();
-        System.out.println("content of output features of row no. " + i);
+        System.out.println("Content of output features of row no. " + i);
         for (int j=0; j<outputs; j++)
           System.out.print(ex.getOutputString(j) + "\t");
         System.out.println();
@@ -132,10 +133,10 @@ int inputs, outputs=0;
 
     if (row instanceof PredictionExample){
       PredictionExample pEx = (PredictionExample)row;
-      System.out.println("\nthis row is a PredictionExample. setting values in prediction columns");
+      System.out.println("\nThis row is a PredictionExample. Setting values in prediction columns");
       //assuming number of prediction features equals to number fo otput features.
       for (int i=0; i<numRows; i++){
-        System.out.println("\npopulating row # " + i + " of the prediction columns");
+        System.out.println("\nPopulating row # " + i + " of the prediction columns");
         pEx.setIndex(i);
         for (int j=0; j<outputs; j++){
           switch(table.getColumnType(((ExampleTable)table).getOutputFeatures()[j])){
