@@ -44,8 +44,10 @@ public class GraphEditor extends JPanel implements ActionListener {
    JLabel xminimumlabel, xmaximumlabel;
    JLabel yminimumlabel, ymaximumlabel;
    JLabel titlelabel, xaxislabel, yaxislabel;
+   JLabel gridsizelabel;
    JTextField xminimumfield, xmaximumfield;
    JTextField yminimumfield, ymaximumfield;
+   JTextField gridsizefield;
    JTextField titlefield, xaxisfield, yaxisfield;
    JCheckBox gridcheck, legendcheck;
 
@@ -146,15 +148,17 @@ public class GraphEditor extends JPanel implements ActionListener {
       yminimumlabel = new JLabel("Y Minimum: ");
       ymaximumlabel = new JLabel("Y Maximum: ");
 
-      titlelabel = new JLabel("Title: ");
-      xaxislabel = new JLabel("X Axis: ");
-      yaxislabel = new JLabel("Y Axis: ");
+      titlelabel    = new JLabel("Title: ");
+      xaxislabel    = new JLabel("X Axis: ");
+      yaxislabel    = new JLabel("Y Axis: ");
+      gridsizelabel = new JLabel("Grid size: ");
 
       xminimumfield = new JTextField();
       xmaximumfield = new JTextField();
       yminimumfield = new JTextField();
-      ymaximumfield  = new JTextField();
-
+      ymaximumfield = new JTextField();
+      gridsizefield = new JTextField();
+      
       titlefield = new JTextField();
       xaxisfield = new JTextField();
       yaxisfield = new JTextField();
@@ -183,21 +187,26 @@ public class GraphEditor extends JPanel implements ActionListener {
       Constrain.setConstraints(settingspanel, ymaximumfield, 3, 1, 1, 1, GridBagConstraints.HORIZONTAL,
          GridBagConstraints.WEST, 1, 0);
 
-      Constrain.setConstraints(settingspanel, titlelabel, 0, 2, 1, 1, GridBagConstraints.NONE,
+      Constrain.setConstraints(settingspanel, gridsizelabel, 0, 2, 1, 1, GridBagConstraints.NONE,
+ 	     GridBagConstraints.WEST, 0, 0);
+      Constrain.setConstraints(settingspanel, gridsizefield, 1, 2, 3, 1, GridBagConstraints.HORIZONTAL,
+ 	     GridBagConstraints.WEST, 1, 0);
+   
+      Constrain.setConstraints(settingspanel, titlelabel, 0, 3, 1, 1, GridBagConstraints.NONE,
          GridBagConstraints.WEST, 0, 0);
-      Constrain.setConstraints(settingspanel, titlefield, 1, 2, 3, 1, GridBagConstraints.HORIZONTAL,
+      Constrain.setConstraints(settingspanel, titlefield, 1, 3, 3, 1, GridBagConstraints.HORIZONTAL,
          GridBagConstraints.WEST, 0, 0);
-      Constrain.setConstraints(settingspanel, xaxislabel, 0, 3, 1, 1, GridBagConstraints.NONE,
+      Constrain.setConstraints(settingspanel, xaxislabel, 0, 4, 1, 1, GridBagConstraints.NONE,
          GridBagConstraints.WEST, 0, 0);
-      Constrain.setConstraints(settingspanel, xaxisfield, 1, 3, 3, 1, GridBagConstraints.HORIZONTAL,
+      Constrain.setConstraints(settingspanel, xaxisfield, 1, 4, 3, 1, GridBagConstraints.HORIZONTAL,
          GridBagConstraints.WEST, 0, 0);
-      Constrain.setConstraints(settingspanel, yaxislabel, 0, 4, 1, 1, GridBagConstraints.NONE,
+      Constrain.setConstraints(settingspanel, yaxislabel, 0, 5, 1, 1, GridBagConstraints.NONE,
          GridBagConstraints.WEST, 0, 0);
-      Constrain.setConstraints(settingspanel, yaxisfield, 1, 4, 3, 1, GridBagConstraints.HORIZONTAL,
+      Constrain.setConstraints(settingspanel, yaxisfield, 1, 5, 3, 1, GridBagConstraints.HORIZONTAL,
          GridBagConstraints.WEST, 0, 0);
-      Constrain.setConstraints(settingspanel, gridcheck, 0, 5, 1, 1, GridBagConstraints.NONE,
+      Constrain.setConstraints(settingspanel, gridcheck, 0, 6, 1, 1, GridBagConstraints.NONE,
          GridBagConstraints.NORTHWEST, 0, 0);
-      Constrain.setConstraints(settingspanel, legendcheck, 0, 6, 1, 1, GridBagConstraints.NONE,
+      Constrain.setConstraints(settingspanel, legendcheck, 0, 7, 1, 1, GridBagConstraints.NONE,
          GridBagConstraints.NORTHWEST, 0, 1);
 
       // Tabbed pane
@@ -408,7 +417,42 @@ public class GraphEditor extends JPanel implements ActionListener {
                }
             }
 
+            // Set the grid size and check the errors in the values
+            int gridsize = -1;
+            Double ygridsize = null;
+            value = gridsizefield.getText();
+
+            // detect error condition on y minimum
+            if (value.length() > 0) {
+               try {
+                  Double.parseDouble(value);
+               }
+               catch(NumberFormatException ex) {
+                  JOptionPane.showMessageDialog(this,
+                     "Invalid entry in gridsize field.", "Error",
+                     JOptionPane.ERROR_MESSAGE);
+                  return;
+               }
+            }
+
+            if (value.equals(""))
+               gridsize = 10;
+            else
+               try {
+                  /** if we get a number format error, it's not an int. */
+                  gridsize = Integer.parseInt(value);
+                  if ( gridsize<=0 )
+                	  throw new Exception ("Invalid size = "+gridsize);
+               } catch (Exception err) {
+            	   JOptionPane.showMessageDialog(this,
+                           "Invalid entry in gridsize field. It needs to be an integer bigger than 0", "Error",
+                           JOptionPane.ERROR_MESSAGE);
+                   return;
+               }
+               
+         // Grid check
          boolean displaygrid = gridcheck.isSelected();
+         // Legend check
          boolean displaylegend = legendcheck.isSelected();
 
          GraphSettings settings = new GraphSettings();
@@ -423,6 +467,7 @@ public class GraphEditor extends JPanel implements ActionListener {
          settings.ymaximum = ymaximum;
          settings.ydataminimum = ydataminimum;
          settings.ydatamaximum = ydatamaximum;
+         settings.gridsize = gridsize;
          settings.displaygrid = displaygrid;
          settings.displaylegend = displaylegend;
 

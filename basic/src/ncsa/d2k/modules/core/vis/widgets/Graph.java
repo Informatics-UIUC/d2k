@@ -417,7 +417,7 @@ public abstract class Graph extends JPanel {
       AffineTransform transform = g2.getTransform();
       g2.rotate(Math.toRadians(-90));
       int ascent = g2.getFontMetrics().getAscent();
-      for (int index=0; index < gridsize; index++) {
+      for (int index=0; index <= gridsize; index++) {
          String string = numberformat.format(xvalue);
          int stringwidth = metrics.stringWidth(string);
          if (stringwidth > longest_font_width_x) {
@@ -437,7 +437,7 @@ public abstract class Graph extends JPanel {
       // y axis
       double yvalue =  yminimum;
       double y = graphheight-bottomoffset/*+point_size*/;
-      for (int index=0; index < gridsize; index++) {
+      for (int index=0; index <= gridsize; index++) {
          String string = numberformat.format(yvalue);
          int stringwidth = metrics.stringWidth(string);
          if (stringwidth > longest_font_width_y) {
@@ -485,14 +485,14 @@ public abstract class Graph extends JPanel {
    public void drawTickMarks(Graphics2D g2) {
       // x axis
       double x = leftoffset/*-point_size*/;
-      for (int index=0; index < gridsize; index++) {
+      for (int index=0; index <= gridsize; index++) {
          g2.draw(new Line2D.Double(x, graphheight-bottomoffset/*-point_size*/-tickmarksize, x, graphheight-bottomoffset/*-point_size*/+tickmarksize));
          x += xoffsetincrement;
       }
 
       // y axis
-      double y = topoffset+yoffsetincrement/*+point_size*/;
-      for (int index=0; index < gridsize; index++) {
+      double y = topoffset/*+yoffsetincrement*//*+point_size*/;
+      for (int index=0; index <= gridsize; index++) {
          g2.draw(new Line2D.Double(leftoffset/*-point_size*/-tickmarksize, y, leftoffset/*-point_size*/+tickmarksize, y));
          y += yoffsetincrement;
       }
@@ -503,15 +503,15 @@ public abstract class Graph extends JPanel {
       g2.setColor(Color.gray);
 
       // x axis
-      double x = leftoffset+xoffsetincrement;
-      for (int index=0; index < gridsize-1; index++) {
+      double x = leftoffset/*+xoffsetincrement*/;
+      for (int index=0; index <= gridsize/*-1*/; index++) {
          g2.draw(new Line2D.Double(x, graphheight-bottomoffset, x, topoffset));
          x += xoffsetincrement;
       }
 
       // y axis
-      double y = topoffset+yoffsetincrement;
-      for (int index=0; index < gridsize-1; index++) {
+      double y = topoffset/*+yoffsetincrement*/;
+      for (int index=0; index < gridsize/*-1*/; index++) {
          g2.draw(new Line2D.Double(leftoffset, y, graphwidth-rightoffset, y));
          y += yoffsetincrement;
       }
