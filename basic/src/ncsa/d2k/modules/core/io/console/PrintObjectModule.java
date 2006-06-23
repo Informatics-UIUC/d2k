@@ -1,8 +1,9 @@
 /*&%^1 DO NOT MODIFY THE CODE TO THE NEXT COMMENT!!! */
 package ncsa.d2k.modules.core.io.console;
 
-import ncsa.d2k.core.modules.*;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+
 /*#end^1 CONTINUE EDITING FOLLOWING THIS LINE. ^#&*/
 /*&%^2 DO NOT MODIFY THE CODE TO THE NEXT COMMENT!!! */
 /**
@@ -55,7 +56,12 @@ public class PrintObjectModule extends ncsa.d2k.core.modules.OutputModule {
 		@returns the description of the module.
 	*/
 	public String getModuleInfo () {
-		return "<html>  <head>      </head>  <body>    This module will print the input object to the best of it's ability. It     will print a variety of arrays of primitive data types, and will otherwise     invoke the objects toString method and print that.  </body></html>";
+		return "<p>Overview: This module will print " +
+				"the input object to the best of its " +
+				"ability. It will print a variety of " +
+				"arrays of primitive data types, and " +
+				"will otherwise invoke the objects " +
+				"toString() method and print that.</p>";
 	}
 
 	/**
