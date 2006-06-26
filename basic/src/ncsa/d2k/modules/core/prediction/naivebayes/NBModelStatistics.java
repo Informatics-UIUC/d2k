@@ -10,6 +10,10 @@ import java.util.*;
  */
 public class NBModelStatistics extends ComputeModule {
 
+	public String getModuleName() {
+	  return "Naive Bayes Model Statistics";	
+	}
+	
     public String[] getInputTypes() {
         return new String[] {
             "ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel",
@@ -40,9 +44,9 @@ public class NBModelStatistics extends ComputeModule {
     }
 
     public String getModuleInfo() {
-        return "Generate statistics about a NaiveBayesModel.  This will output the probabilites of each "+
-                "possible combination of bins.  The results will be written to a file.  The file is "+
-                "pipe-delimited.";
+        return "<p>Overview: Generate statistics about a NaiveBayesModel. This will output the probabilites of each "+
+                "possible combination of bins. The results will be written to a file. The file is "+
+                "pipe-delimited.</p>";
     }
 
     public void endExecution() {
