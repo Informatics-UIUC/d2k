@@ -60,8 +60,8 @@ public class WriteTableToFile extends OutputModule {
     */
     public String getModuleInfo() {
        StringBuffer sb = new StringBuffer("<p>Overview: ");
-       sb.append("<p>This module writes the contents of a Table to a file. ");
-       sb.append("</p><p>Detailed Description: ");
+       sb.append("This module writes the contents of a Table to a file.</p>");
+       sb.append("<p>Detailed Description: ");
        sb.append("This module writes the contents of the input ");
        sb.append("<i>Table</i> to the file specified by the input <i>File Name</i> if that input is connected, otherwise it will write the table to a file whose name is constructed from the table label.");
        sb.append("The user can select a space, a common, or a tab as the ");
