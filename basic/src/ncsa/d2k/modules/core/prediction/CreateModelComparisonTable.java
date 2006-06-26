@@ -1,10 +1,18 @@
 package ncsa.d2k.modules.core.prediction;
 
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.modules.core.vis.widgets.ConfusionMatrix;
-import java.io.*;
+import ncsa.d2k.core.modules.ComputeModule;
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.modules.core.datatype.table.Column;
+import ncsa.d2k.modules.core.datatype.table.MutableTable;
+import ncsa.d2k.modules.core.datatype.table.PredictionTable;
+import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
+import ncsa.d2k.modules.core.datatype.table.basic.IntColumn;
+import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 /**
  * <p>Title: </p>
@@ -212,11 +220,11 @@ tbl = null;
   }
 
   public String getModuleInfo(){
-    return "<P>This module creates a Table in which each row holds"+
+    return "<P>Overview: This module creates a Table in which each row holds"+
         " data about the performance of a prediction model, computed acording " +
         "to the input <i>Prediction Table</I>. At the end of execution it writes the table to a file." +
         " This Table can then be loaded into a plotting vis module, to visualize percision/recall VS model number.</P>" +
-        "<P><U>Data Handling</U>: This module can only handle one output feature and this " +
+        "<P>Data Handling: This module can only handle one output feature and this " +
         "feature should be binary.</P>";
   }
 
