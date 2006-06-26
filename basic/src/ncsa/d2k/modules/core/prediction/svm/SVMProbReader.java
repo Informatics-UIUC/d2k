@@ -36,15 +36,15 @@ public class SVMProbReader extends InputModule
 
 	public String getModuleInfo()
 	{
-		return "This module will read a text file that is already in " +
+		return "<p>Overview: This module will read a text file that is already in " +
 			"the standard libsvm format and generate the corresponding "
-			+ "svm_problem class to be used by the libsvm library.<p> "
-			+ "The standard libsvm format is:<br>" +
-			"&nbsp;&nbsp;&nbsp;label index:value index:value ... " +
-			"index:value<p> The label is to be an integer and the " +
-			"values are to be reals.  The index should start at 1. " +
+			+ "svm_problem class to be used by the libsvm library.</p>"
+			+"<p>The standard libsvm format is: " +
+			" label index:value index:value ... " +
+			"index:value</p><p>The label is to be an integer and the " +
+			"values are to be reals. The index should start at 1. " +
 			"Indices that do not appear in the file are assumed to " +
-			"carry value 0.";
+			"carry value 0.</p>";
 	}
 
 	public String getInputInfo(int parm1)
