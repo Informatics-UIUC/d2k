@@ -1,9 +1,10 @@
 package ncsa.d2k.modules.core.prediction.svm;
 
-import ncsa.d2k.modules.PredictionModelModule;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.core.modules.*;
-import libsvm.*;
+import libsvm.svm;
+import libsvm.svm_model;
+
+import ncsa.d2k.core.modules.ModelProducerModule;
+import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 
 /**
   Produces a SVMModel Predictor Model from an existing libsvm model file.
@@ -54,7 +55,7 @@ public class SVMModelReader extends ModelProducerModule
 
 	public String getModuleInfo()
 	{
-		return "Given a native libSVM model file, produces a D2K SVM prediction model.";
+		return "<p>Overview: Given a native libSVM model file, produces a D2K SVM prediction model.</p>";
 	}
 
 	public String getOutputInfo(int index)

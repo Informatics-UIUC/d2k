@@ -1,6 +1,5 @@
 package ncsa.d2k.modules.core.prediction.svm;
 
-import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 /**
  *
@@ -52,7 +51,7 @@ public class PrepareClassAttributeModule extends ncsa.d2k.core.modules.DataPrepM
 		switch(index) {
 			case 0:
 				return "Input Table";
-			default: return "NO SUCH INPUT!";
+			default: return "No such input";
 		}
 	}
 
@@ -90,7 +89,7 @@ public class PrepareClassAttributeModule extends ncsa.d2k.core.modules.DataPrepM
 		switch(index) {
 			case 0:
 				return "Output Table";
-			default: return "NO SUCH OUTPUT!";
+			default: return "No such output";
 		}
 	}
 
@@ -108,16 +107,13 @@ public class PrepareClassAttributeModule extends ncsa.d2k.core.modules.DataPrepM
 	 * @return the information about the module.
 	 */
 	public String getModuleInfo() {
-		return "<p>"+
+		return "<p>Overview:"+
 "      This module prepares the output features of the <i>Input Table</i> "+
 "      for the use of SVM modules and the likes."+
 "    </p>"+
 "    <p>"+
-
-"      The output features should be scalar and binary (1 and 0)"+
-"    </p>"+
-"    <p>"+
-"      the 0 values are then replaces with -1."+
+"      The output features should be scalar and binary (1 and 0),"+
+"      the 0 values are then replaced with -1."+
 "    </p>"+
 "    <p>"+
 "      This module changes the content of the <i>Input Table</i>."+

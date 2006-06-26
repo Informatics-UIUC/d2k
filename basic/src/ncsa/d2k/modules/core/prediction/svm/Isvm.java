@@ -14,17 +14,15 @@ package ncsa.d2k.modules.core.prediction.svm;
  * make this more generic?
  */
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.zip.GZIPInputStream;
+import cern.colt.matrix.DoubleMatrix1D;
+import cern.colt.matrix.DoubleMatrix2D;
+import cern.colt.matrix.impl.SparseDoubleMatrix1D;
+import cern.colt.matrix.impl.SparseDoubleMatrix2D;
+import cern.colt.matrix.linalg.Algebra;
+import cern.jet.math.Functions;
 
-import cern.colt.matrix.impl.*;
-import cern.colt.matrix.*;
-import cern.colt.matrix.linalg.*;
-import cern.jet.math.*;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.Serializable;
 
 public class Isvm implements  Serializable{
 

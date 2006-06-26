@@ -57,9 +57,9 @@ public class SVMModelWriter extends OutputModule
 
 	public String getModuleInfo()
 	{
-		return "Given an svm_model class, this module will output the " +
+		return "<p>Overview: Given an svm_model class, this module will output the " +
 			"model into a plain text document that can be loaded later "
-			+ "by SVM Model Reader into an SVMMoel.";
+			+ "by SVM Model Reader into an SVMModel.</p>";
 	}
 
 	public String getOutputInfo(int index)

@@ -1,8 +1,9 @@
 package ncsa.d2k.modules.core.prediction.svm;
 
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import libsvm.*;
+import libsvm.svm;
+import libsvm.svm_model;
+import libsvm.svm_node;
+import libsvm.svm_problem;
 
 /**
  *
@@ -174,7 +175,7 @@ private boolean first = true;
 		switch(index) {
 			case 0:
 				return "Merged SVM Problem";
-			default: return "NO SUCH OUTPUT!";
+			default: return "No such output";
 		}
 	}
 
@@ -192,10 +193,10 @@ private boolean first = true;
 	 * @return the information about the module.
 	 */
 	public String getModuleInfo() {
-		return "<p>"+
-"      Merges <i>Input SVM Problem</i> with the Support of Vectors of <i>SVM "+
-"      Model</i> into one <i>Merged SVM Problem</i>."+
-"    </p>";
+		return "<p>Overview: "+
+        "Merges <i>Input SVM Problem</i> with the Support of Vectors of <i>SVM "+
+        "Model</i> into one <i>Merged SVM Problem</i>."+
+        "</p>";
 	}
 
 	/**

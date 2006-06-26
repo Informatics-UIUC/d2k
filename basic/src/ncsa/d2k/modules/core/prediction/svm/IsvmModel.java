@@ -1,14 +1,16 @@
 package ncsa.d2k.modules.core.prediction.svm;
 
 
-import ncsa.d2k.modules.core.prediction.UpdateableModelModule;
-import ncsa.d2k.modules.*;
 import ncsa.d2k.core.modules.PropertyDescription;
-import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.PredictionModelModule;
+import ncsa.d2k.modules.core.datatype.table.ExampleTable;
+import ncsa.d2k.modules.core.datatype.table.PredictionTable;
+import ncsa.d2k.modules.core.prediction.UpdateableModelModule;
 
-import cern.colt.matrix.impl.*;
-import cern.colt.matrix.*;
-import java.io.*;
+import cern.colt.matrix.impl.SparseDoubleMatrix1D;
+import cern.colt.matrix.impl.SparseDoubleMatrix2D;
+
+import java.io.Serializable;
 
 /**
  * <p>Title: </p>
