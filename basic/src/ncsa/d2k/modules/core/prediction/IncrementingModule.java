@@ -70,15 +70,15 @@ protected UpdateableModelModule model;
   }
 
   public String getModuleInfo() {
-  return "This module receives an updateable model " +
-      "and a data set and retrains the model. " +
-      "<P><B>Detailed Description:<B><BR>The module receives an <i>" +
+  return "<p>Overview: This module receives an updateable model " +
+      "and a data set and retrains the model.</p>" +
+      "<p>Detailed Description: The module receives an <i>" +
       "Updateable Model</i> and an <i>Example Table</i> as inputs. " +
       "The module creates a deep copy of the model and then updates the model " +
       "with the input table. Thus the older version of the model can be used " +
-      "by other modules in an itinerary without being affected by the retraining.</P>" +
+      "by other modules in an itinerary without being affected by the retraining." +
       "After the retraining the model " +
-      "is being output.";
+      "is being output.</p>";
 
   /*"If the input model is to be used by other modules in the itinerary then you should " +
    "set 'Create Deep Copy' property to true, in order to not distort the correctness " +

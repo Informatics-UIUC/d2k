@@ -11,7 +11,7 @@ public class GetDefaultParamPoint extends ncsa.d2k.core.modules.DataPrepModule {
 	 */
 	public String getInputInfo(int index) {
 		switch (index) {
-			case 0: return "<p>      This is the parameter space containing the default point.    </p>";
+			case 0: return "This is the parameter space containing the default point.";
 			default: return "No such input";
 		}
 	}
@@ -24,7 +24,7 @@ public class GetDefaultParamPoint extends ncsa.d2k.core.modules.DataPrepModule {
 		switch(index) {
 			case 0:
 				return "Parameter Space";
-			default: return "NO SUCH INPUT!";
+			default: return "No such input";
 		}
 	}
 
@@ -43,7 +43,7 @@ public class GetDefaultParamPoint extends ncsa.d2k.core.modules.DataPrepModule {
 	 */
 	public String getOutputInfo(int index) {
 		switch (index) {
-			case 0: return "<p>      This is the default point in parameter space.    </p>";
+			case 0: return "This is the default point in parameter space.";
 			default: return "No such output";
 		}
 	}
@@ -56,7 +56,7 @@ public class GetDefaultParamPoint extends ncsa.d2k.core.modules.DataPrepModule {
 		switch(index) {
 			case 0:
 				return "Point in Parameter Space";
-			default: return "NO SUCH OUTPUT!";
+			default: return "No such output";
 		}
 	}
 
@@ -74,8 +74,8 @@ public class GetDefaultParamPoint extends ncsa.d2k.core.modules.DataPrepModule {
 	 * @return the information about the module.
 	 */
 	public String getModuleInfo() {
-		return "<p>      Overview: Given a <i>ParameterSpace</i> that defines a default <i>      ParameterPoint</i>,"+
-			" this module will produce that default.    </p>";
+		return "<p>Overview: Given a <i>ParameterSpace</i> that defines a default <i> ParameterPoint</i>,"+
+			" this module will produce that default.</p>";
 	}
 
 	/**

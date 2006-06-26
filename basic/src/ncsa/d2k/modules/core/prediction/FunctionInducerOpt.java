@@ -19,10 +19,15 @@ public class FunctionInducerOpt extends OrderedReentrantModule implements Clonea
  public boolean get_Trace ()              {return this._Trace;}
 
   public String getModuleInfo() {
-    return "FunctionInducerOpt - Not a functional module in itself, but rather a base class for other inducers " +
-    "like InstanceBasedInducerOpt, MeanOutputInducerOpt, StepwiseLinearInducerOpt,DecisionTreeInducerOpt";
+    return "<p>Overview: Not a functional module in itself, but rather a base class for other inducers " +
+    "like InstanceBasedInducerOpt, MeanOutputInducerOpt, StepwiseLinearInducerOpt,DecisionTreeInducerOpt.</p>";
   }
 
+  public PropertyDescription[] getPropertiesDescriptions() {
+      // so that "ordered and _trace" property are invisible
+      return new PropertyDescription[0];
+  }
+  
   public String getModuleName()
   {
     return "FunctionInducerOpt";
@@ -57,7 +62,7 @@ public class FunctionInducerOpt extends OrderedReentrantModule implements Clonea
       case 0: return "Parameter Point";
       case 1: return "Example Table";
       case 2: return "Error Function";
-      default: return "NO SUCH INPUT!";
+      default: return "No such input";
     }
   }
 
@@ -71,7 +76,7 @@ public class FunctionInducerOpt extends OrderedReentrantModule implements Clonea
   public String getOutputName(int i) {
     switch(i) {
       case  0: return "Model";
-      default: return "NO SUCH OUTPUT!";
+      default: return "No such output";
     }
   }
 
