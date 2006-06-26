@@ -47,9 +47,13 @@ public class GraphMLToPrefuse extends InputModule {
   }
 
   public String getModuleInfo() {
-    return "Reads a GraphML file to a Prefuse graph.";
+    return "<p>Overview: Reads a GraphML file to a Prefuse graph.</p>";
   }
 
+  public String getModuleName() {
+	    return "GraphML to Prefuse";
+	  }
+  
   public void doit() throws Exception {
     String fn = (String)pullInput(0);
 
