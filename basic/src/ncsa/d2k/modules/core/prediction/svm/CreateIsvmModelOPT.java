@@ -39,7 +39,7 @@ public class CreateIsvmModelOPT extends CreateIsvmModel {
 
 	public String getModuleInfo() {
 		return "<p>Overview: Produces an initialized IsvmModel.</p>"
-				+ "<p>Detailed Description: This modules generates a new IsvmModel and initializes it "
+				+ "<p>Detailed Description: This module generates a new IsvmModel and initializes it "
 				+ "according to the properties, as they are set by the input parameter point."
 				+ "See CreateIsvmModel or IsvmParamSpaceGenerator for information about the "
 				+ "properties.</p>";
