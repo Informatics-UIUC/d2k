@@ -16,7 +16,7 @@ public class CreateExample extends ComputeModule {
 	}
 
 	public String getModuleInfo () {
-		return "This module creates an example for function induction given a point in control space paired with a point in objective space.  ";
+		return "<p>Overview: This module creates an example for function induction given a point in control space paired with a point in objective space.</p>";
 	}
 
 	public String getInputName (int i) {
