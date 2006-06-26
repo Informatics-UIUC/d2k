@@ -11,6 +11,10 @@ import ncsa.d2k.modules.core.vis.pgraph.*;
  */
 public class XMLToGraph extends InputModule {
 
+   public String getModuleName() {
+	   return "XML to Graph";
+   }
+   
    public void doit() throws IOException {
       pushOutput(PGraphML.load(new File((String)pullInput(0))), 0);
    }
