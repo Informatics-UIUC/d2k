@@ -1,10 +1,9 @@
 package ncsa.d2k.modules.core.prediction;
 
-import ncsa.d2k.modules.core.datatype.model.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-
-
-import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.OrderedReentrantModule;
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.modules.core.datatype.model.Model;
+import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 
 public class ApplyFunctionInducer
     extends OrderedReentrantModule {
@@ -14,7 +13,7 @@ public class ApplyFunctionInducer
   }
 
   public String getModuleInfo() {
-    return "This module applies a function inducer module to the given example table using the given error function to produce a model";
+    return "<p>Overview: This module applies a function inducer module to the given example table using the given error function to produce a model.</p>";
   }
 
   public String getInputName(int i) {
@@ -76,6 +75,11 @@ public class ApplyFunctionInducer
     return types;
   }
 
+  public PropertyDescription[] getPropertiesDescriptions() {
+	// hide properties that the user shouldn't udpate
+   	return new PropertyDescription[0];
+  }
+  
   public void doit() throws Exception {
 
     ExampleTable exampleSet = null;
