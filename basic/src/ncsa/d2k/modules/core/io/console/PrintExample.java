@@ -37,7 +37,7 @@ public class PrintExample
   }
 
   public String getModuleInfo() {
-    return "This module reports the values of the features of the given example.  ";
+    return "<p>Overview: This module reports the values of the features of the given example.</p>";
   }
 
   public String getInputName(int i) {

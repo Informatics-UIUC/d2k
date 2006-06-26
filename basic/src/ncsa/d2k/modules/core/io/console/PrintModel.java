@@ -105,7 +105,7 @@ public class PrintModel
   }
 
   public String getModuleInfo() {
-    return "This module report the contents of a model based on the printing options in the module properties";
+    return "<p>Overview: This module report the contents of a model based on the printing options in the module properties.</p>";
   }
 
   public String[] getInputTypes() {

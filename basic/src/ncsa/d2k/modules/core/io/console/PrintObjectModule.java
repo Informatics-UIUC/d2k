@@ -260,7 +260,7 @@ public class PrintObjectModule extends ncsa.d2k.core.modules.OutputModule {
 		switch(index) {
 			case 0:
 				return "Print Object";
-			default: return "NO SUCH INPUT!";
+			default: return "No such input";
 		}
 	}
 
@@ -271,7 +271,7 @@ public class PrintObjectModule extends ncsa.d2k.core.modules.OutputModule {
 	 */
 	public String getOutputName(int index) {
 		switch(index) {
-			default: return "NO SUCH OUTPUT!";
+			default: return "No such output";
 		}
 	}
 }

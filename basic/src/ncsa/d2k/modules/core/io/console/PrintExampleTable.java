@@ -80,7 +80,7 @@ public class PrintExampleTable
   }
 
   public String getModuleInfo() {
-    return "This module reports information the given example set.  ";
+    return "<p>Overview: This module reports information in the given example set.</p>";
   }
 
   public String getInputName(int i) {
