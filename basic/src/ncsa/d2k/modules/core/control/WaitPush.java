@@ -57,8 +57,8 @@ public class WaitPush extends DataPrepModule{
 
    public String getModuleInfo(){
       return "<p>Overview: This module will collect the " +
-      		 "input received on it's first input, save"+
-             " it and push it one the first invocation. " +
+      		 "input received on its first input, save"+
+             " it and push it on the first invocation. " +
              "Subsequent inputs received on the second input"+
              " will cause the input saved from the first " +
              "input to be pushed again.</p>";
@@ -97,7 +97,7 @@ public class WaitPush extends DataPrepModule{
 
    public String getOutputInfo(int index){
       switch (index) {
-         case 0: return "The object received on the first input is pushed after it is received the     first time, and after any input on the second input.";
+         case 0: return "The object received on the first input is pushed after it is received the first time, and after any input on the second input.";
          default: return "No such output";
       }
    }

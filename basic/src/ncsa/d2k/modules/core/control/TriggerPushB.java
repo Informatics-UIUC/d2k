@@ -90,7 +90,7 @@ public class TriggerPushB extends DataPrepModule {
 				"output. This will also assign a new object " +
 				"to the saved object field whenever a new one " +
 				"arrives, and that new one will become the one " +
-				"to get pushed at each triggering</p>";
+				"to get pushed at each triggering.</p>";
 	}
 
    	public String getModuleName() {
@@ -116,7 +116,7 @@ public class TriggerPushB extends DataPrepModule {
 				return "Object";
 			case 1:
 				return "Trigger";
-			default: return "NO SUCH INPUT!";
+			default: return "No such input";
 		}
 	}
 	public String[] getOutputTypes(){
@@ -134,7 +134,7 @@ public class TriggerPushB extends DataPrepModule {
 		switch(index) {
 			case 0:
 				return "Object";
-			default: return "NO SUCH OUTPUT!";
+			default: return "No such output";
 		}
 	}
 	
