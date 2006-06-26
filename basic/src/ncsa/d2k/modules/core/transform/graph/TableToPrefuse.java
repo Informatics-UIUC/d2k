@@ -182,6 +182,9 @@ public class TableToPrefuse extends DataPrepModule {
   // D2K module boilerplate
   //////////////////////////////////////////////////////////////////////////////
 
+  public String getModuleName() {
+	  return "Table to Prefuse";
+  }
   public String getInputInfo(int index) {
     if (index == 0) {
       return "A D2K <i>Table</i>.";
@@ -207,7 +210,7 @@ public class TableToPrefuse extends DataPrepModule {
   }
 
   public String getModuleInfo() { // !:
-      String s = "Overview: Convert a Table into a prefuse graph structure..";
+      String s = "<p>Overview: Convert a Table into a prefuse graph structure.</p>";
 
       s += "<p>Acknowledgement: ";
       s += "This module uses functionality from the Prefuse project. See http://prefuse.org.";

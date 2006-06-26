@@ -1,23 +1,23 @@
 package ncsa.d2k.modules.core.transform.graph;
 
-import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.ComputeModule;
 
-import edu.uci.ics.jung.graph.*;
-import edu.uci.ics.jung.graph.impl.*;
-import edu.uci.ics.jung.visualization.*;
-import edu.uci.ics.jung.graph.decorators.*;
-import edu.uci.ics.jung.utils.*;
-import edu.uci.ics.jung.algorithms.cluster.*;
+import edu.uci.ics.jung.graph.DirectedEdge;
+import edu.uci.ics.jung.graph.Vertex;
+import edu.uci.ics.jung.utils.Pair;
+import edu.uci.ics.jung.utils.PredicateUtils;
+import prefuse.data.Node;
 
-import ncsa.d2k.modules.core.vis.pgraph.*;
-import ncsa.d2k.modules.core.vis.pgraph.nodes.*;
-import ncsa.d2k.core.modules.*;
-
-import prefuse.data.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 public class JungToPrefuse extends ComputeModule {
 
+	public String getModuleName() {
+		return "JUNG to Prefuse";
+	}
+	
   public String[] getInputTypes() {
     return new String[] {
       "edu.uci.ics.jung.graph.Graph"
@@ -32,7 +32,7 @@ public class JungToPrefuse extends ComputeModule {
 
   public String getInputInfo(int i) {
     if (i == 0) {
-      return "A Jung graph.";
+      return "A JUNG graph.";
     }
     else {
       return null;
@@ -50,7 +50,7 @@ public class JungToPrefuse extends ComputeModule {
 
   public String getInputName(int i) {
     if (i == 0) {
-      return "Jung Graph";
+      return "JUNG Graph";
     }
     else {
       return null;
@@ -67,7 +67,7 @@ public class JungToPrefuse extends ComputeModule {
   }
 
   public String getModuleInfo() {
-    String s =  "Overview: Coverts a Jung graph (directed or not) to a Prefuse graph.";
+    String s =  "<p>Overview: Converts a JUNG graph (directed or not) to a Prefuse graph.</p>";
 
     s += "<p>Acknowledgement: ";
     s += "This module uses functionality from the JUNG project. See http://jung.sourceforge.net.";
