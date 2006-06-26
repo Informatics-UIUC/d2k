@@ -36,9 +36,6 @@ public class ApplyFunctionInducerWithBoosting
 "      the current output variable with the difference between the prediction "+
 "      and actual output values. In this way, each model tries to predict the "+
 "      different left over after applying the previous model in the series."+
-"    </p>"+
-"    <p>"+
-"      References:"+
 "    </p>";
 	}
 
