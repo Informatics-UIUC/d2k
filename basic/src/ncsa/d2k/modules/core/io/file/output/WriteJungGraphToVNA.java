@@ -1,11 +1,12 @@
 //package ncsa.d2k.modules.t2k.io.file;
 package ncsa.d2k.modules.core.io.file.output;
 
-import edu.uci.ics.jung.graph.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import java.io.*;
-import java.beans.PropertyVetoException;
+import ncsa.d2k.core.modules.OutputModule;
+import ncsa.d2k.core.modules.PropertyDescription;
+
+import edu.uci.ics.jung.graph.Graph;
+
+import java.io.FileWriter;
 //import ncsa.sonic.ciknow.io.JungGraphToVNA;
 
 /**
@@ -23,8 +24,9 @@ public class WriteJungGraphToVNA extends OutputModule {
        @return A description of this module.
     */
     public String getModuleInfo() {
-       StringBuffer sb = new StringBuffer("<p>Overview: ");
-       sb.append("<p>This modules writes a JUNG Graph object ot a file in the VNA graph description format.");
+       StringBuffer sb = new StringBuffer("<p>Overview: Writes a JUNG Graph object to a file in the VNA graph description format.</p>");
+       sb.append("<p>Detailed Description:");
+       sb.append("This modules writes a JUNG Graph object to a file in the VNA graph description format.");
        sb.append("Vertices in the network should have a UserDatum entry called \"id\" that contains the vertex ID.");
        sb.append("If this attribute is not found, a numeric ID will be assigned to the vertex.</p>");
        sb.append("<p>Edges within the graph may contain edge weights in a UserDatum named \"edgeWeight\", and an optional ");
