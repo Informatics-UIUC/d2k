@@ -1,23 +1,58 @@
 package ncsa.d2k.modules.core.discovery.ruleassociation;
 
-import com.sun.j3d.utils.behaviors.vp.*;
-import com.sun.j3d.utils.geometry.*;
-import com.sun.j3d.utils.picking.*;
-import com.sun.j3d.utils.picking.behaviors.*;
-import com.sun.j3d.utils.universe.*;
-import gnu.trove.*;
-import java.awt.*;
-import java.io.*;
-import java.util.*;
-import javax.media.j3d.*;
-import javax.swing.*;
-import javax.vecmath.*;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
-import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.core.modules.ViewModule;
+import ncsa.d2k.core.modules.VisModule;
+import ncsa.d2k.userviews.swing.JUserPane;
+
+import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
+import com.sun.j3d.utils.geometry.Text2D;
+import com.sun.j3d.utils.picking.PickResult;
+import com.sun.j3d.utils.picking.PickTool;
+import com.sun.j3d.utils.picking.behaviors.PickMouseBehavior;
+import com.sun.j3d.utils.universe.SimpleUniverse;
+
+import gnu.trove.TIntArrayList;
+import gnu.trove.TIntIntHashMap;
+import gnu.trove.TIntIntIterator;
+
+import javax.media.j3d.Appearance;
+import javax.media.j3d.Background;
+import javax.media.j3d.BoundingSphere;
+import javax.media.j3d.Bounds;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.Canvas3D;
+import javax.media.j3d.ColoringAttributes;
+import javax.media.j3d.LineArray;
+import javax.media.j3d.Shape3D;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
+import javax.media.j3d.TriangleArray;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+import javax.vecmath.Color3f;
+import javax.vecmath.Point3d;
+import javax.vecmath.Vector3f;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.GraphicsConfiguration;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.io.Serializable;
+import java.util.HashMap;
 
 public class RuleVis3D extends VisModule implements Serializable {
 
+   public String getModuleName() {
+	  return "Rule Visualization 3D";
+   }
+	   
    public String[] getFieldNameMapping() {
       return null;
    }
@@ -52,9 +87,14 @@ public class RuleVis3D extends VisModule implements Serializable {
    }
 
    public String getModuleInfo() {
-      return "A three-dimensional rule table visualization.";
+      return "<p>Overview: A three-dimensional rule table visualization.</p>";
    }
 
+   public PropertyDescription[] getPropertiesDescriptions() {
+		// hide properties that the user shouldn't udpate
+      		return new PropertyDescription[0];
+  	}
+   
    protected UserView createUserView() {
       return new Rules3DView();
    }
