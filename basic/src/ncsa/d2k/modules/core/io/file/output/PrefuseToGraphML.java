@@ -46,9 +46,12 @@ public class PrefuseToGraphML extends OutputModule {
   }
 
   public String getModuleInfo() {
-    return "Saves a Prefuse graph to a GraphML file.";
+    return "<p>Overview: Saves a Prefuse graph to a GraphML file.</p>";
   }
 
+  public String getModuleName() {
+	  return "Prefuse to GraphML";
+  }
   public void doit() throws Exception {
 
     Graph graph = (Graph)pullInput(0);
