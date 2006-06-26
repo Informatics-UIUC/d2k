@@ -178,6 +178,34 @@ public class TableToPrefuse extends DataPrepModule {
     targetAttribute = value;
   }
 
+  public PropertyDescription[] getPropertiesDescriptions() {
+
+    return new PropertyDescription[] {
+
+        new PropertyDescription("sourceAttribute", "Source Attribute Index",
+            "Attribute (column) index in the Table specifying the source " +
+                "vertex labels."),
+
+        new PropertyDescription("targetAttribute", "Target Attribute Index",
+            "Attribute (column) index in the Table specifying the target " +
+                "vertex labels."),
+
+        new PropertyDescription("edgeAttribute", "Edge Attribute Index",
+            "Attribute (column) index in the Table specifying the edge " +
+                "labels."),
+
+        new PropertyDescription("makeDirected", "Make Graph Directed",
+            "Whether to make the output Graph a directed graph."),
+
+        new PropertyDescription("makePartitions", "Make Partitions",
+            "Whether to populate the vertices of the output Graph with " +
+                "partition information (i.e., add the PARTITION column to " +
+                "its node table).")
+
+    };
+
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   // D2K module boilerplate
   //////////////////////////////////////////////////////////////////////////////
