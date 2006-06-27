@@ -13,8 +13,10 @@ import ncsa.d2k.modules.core.datatype.table.*;
  * @author not attributable
  * @version 1.0
  */
-public class ConvertTable
-    extends ComputeModule {
+public class ConvertTable extends ComputeModule {
+  public String getModuleName() {
+	  return "Convert Table";
+  }
   public String[] getInputTypes() {
     return new String[] {
         "ncsa.d2k.modules.core.datatype.table.Table",
@@ -57,7 +59,7 @@ public class ConvertTable
   }
 
   public String getModuleInfo() {
-    return "Convert a table from one format to another, using a TableFactory.";
+    return "<p>Overview: Converts a table from one format to another using a TableFactory.</p>";
   }
 
   public void doit() throws Exception {
