@@ -1465,6 +1465,9 @@ public class PrefuseGraphUI extends UIModule {
     };
   }
 
+  public String getModuleName() {
+	  return "Prefuse Graph UI";
+  }
   public String getModuleInfo() { // !:
       String s = "Overview: A simple interactive prefuse graph visualization.";
 
