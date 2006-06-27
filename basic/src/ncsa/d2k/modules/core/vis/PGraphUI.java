@@ -40,6 +40,9 @@ public class PGraphUI extends UIModule {
       return new String[] {"edu.uci.ics.jung.graph.Graph"};
    }
 
+   public String getModuleName() {
+	   return "PGraph UI";
+   }
    public String getModuleInfo() {
       StringBuffer sb = new StringBuffer("<p>Overview: ");
       sb.append("This module implements a zooming user interface of a JUNG ");
@@ -759,5 +762,17 @@ public class PGraphUI extends UIModule {
       }
 
    }
+   
+   public PropertyDescription[] getPropertiesDescriptions() {
+	    PropertyDescription[] pds = new PropertyDescription[2];
+
+	    pds[0] = new PropertyDescription("initWidth", "Initial width",
+	                                     "Specifies the initial width of the canvas.");
+
+	    pds[1] = new PropertyDescription("initHeight", "Initial height",
+	                                     "Specifies the initial height of the canvas.");
+
+	    return pds;
+	  }
 
 }
