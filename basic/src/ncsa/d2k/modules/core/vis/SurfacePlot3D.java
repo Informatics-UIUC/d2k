@@ -1,28 +1,60 @@
 package ncsa.d2k.modules.core.vis;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-import java.util.*;
-
-import javax.media.j3d.*;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.vecmath.*;
-
-import com.sun.j3d.utils.behaviors.keyboard.*;
-import com.sun.j3d.utils.behaviors.mouse.*;
-import com.sun.j3d.utils.geometry.*;
-import com.sun.j3d.utils.universe.*;
-
 import ncsa.d2k.core.gui.JD2KFrame;
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.Table;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.core.modules.ViewModule;
+import ncsa.d2k.core.modules.VisModule;
 import ncsa.d2k.modules.core.datatype.table.Column;
-import ncsa.d2k.modules.core.vis.widgets.*;
-import ncsa.d2k.userviews.swing.*;
-import ncsa.gui.*;
+import ncsa.d2k.modules.core.datatype.table.Table;
+import ncsa.d2k.modules.core.vis.widgets.ComputationalGeometry;
+import ncsa.d2k.userviews.swing.JUserPane;
+import ncsa.gui.Constrain;
+
+import com.sun.j3d.utils.behaviors.keyboard.KeyNavigatorBehavior;
+import com.sun.j3d.utils.behaviors.mouse.MouseRotate;
+import com.sun.j3d.utils.behaviors.mouse.MouseTranslate;
+import com.sun.j3d.utils.behaviors.mouse.MouseZoom;
+import com.sun.j3d.utils.geometry.Text2D;
+import com.sun.j3d.utils.universe.SimpleUniverse;
+
+import javax.media.j3d.Appearance;
+import javax.media.j3d.Background;
+import javax.media.j3d.BoundingSphere;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.Canvas3D;
+import javax.media.j3d.ColoringAttributes;
+import javax.media.j3d.LineArray;
+import javax.media.j3d.Shape3D;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
+import javax.media.j3d.TriangleArray;
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
+import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.border.TitledBorder;
+import javax.vecmath.Color3f;
+import javax.vecmath.Point3d;
+import javax.vecmath.Vector3d;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
+import java.util.HashMap;
+import java.util.Vector;
 
 /**
  * <code>SurfacePlot3D</code> is a three-dimensional visualization of
@@ -949,5 +981,10 @@ public class SurfacePlot3D extends VisModule {
       switch(index) {
          default: return "NO SUCH OUTPUT!";
       }
+   }
+   
+
+   public PropertyDescription[] getPropertiesDescriptions() {
+      return new PropertyDescription[0];
    }
 } // SurfacePlot3D
