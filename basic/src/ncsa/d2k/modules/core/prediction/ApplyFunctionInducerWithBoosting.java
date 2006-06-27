@@ -32,10 +32,10 @@ public class ApplyFunctionInducerWithBoosting
 "      Detailed Description: This module uses the given function inducer to "+
 "      build an ordered series of different models. Each round, a new set of "+
 "      examples is created by first forming a model with the current set of "+
-"      examples, then using the model to predict each output, and then re;acing "+
+"      examples, then using the model to predict each output, and then replacing "+
 "      the current output variable with the difference between the prediction "+
 "      and actual output values. In this way, each model tries to predict the "+
-"      different left over after applying the previous model in the series."+
+"      difference left over after applying the previous model in the series."+
 "    </p>";
 	}
 
@@ -185,5 +185,12 @@ public class ApplyFunctionInducerWithBoosting
     }
 
     this.pushOutput(BoostedModel, 0);
+  }
+  
+  public PropertyDescription [] getPropertiesDescriptions () {
+      PropertyDescription[] retVal = new PropertyDescription[1];
+      retVal[0] = new PropertyDescription("numberOfRounds", "Number of rounds",
+        "The number of models to generate.");
+      return retVal;
   }
 }
