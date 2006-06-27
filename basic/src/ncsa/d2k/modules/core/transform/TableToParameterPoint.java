@@ -13,8 +13,11 @@ import ncsa.d2k.modules.core.datatype.parameter.ParameterPoint;
  * To change this template use Options | File Templates.
  */
 public class TableToParameterPoint extends DataPrepModule{
+	public String getModuleName() {
+		return "Table to Parameter Point";
+	}
 	public String getModuleInfo () {
-		return "Convert a table to a parameter point. The inputs are assumed to be the coordinates in parameter space.";
+		return "<p>Overview: Converts a table to a parameter point. The inputs are assumed to be the coordinates in parameter space.</p>";
 	}
 
 	static final String [] ins = {"ncsa.d2k.modules.core.datatype.table.ExampleTable"};
