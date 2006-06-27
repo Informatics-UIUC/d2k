@@ -111,9 +111,9 @@ public class CopyTable extends DataPrepModule {
 	 * @return the information about the module.
 	 */
 	public String getModuleInfo() {
-		return "<p>    This module creates a copy of the input table.    </p>    " +
-                    "<p> If 'Create Deep Copy' is set to true <i>Copied Table</i> is "+
-			" a deep copy of <i>Original Table</i>.    </p>";
+		return "<p>Overview: This module creates a copy of the input table.</p>" +
+             "<p>Data Handling: If 'Create Deep Copy' is set to true <i>Copied Table</i> is "+
+			"a deep copy of <i>Original Table</i>.</p>";
 	}
 
 	/**
