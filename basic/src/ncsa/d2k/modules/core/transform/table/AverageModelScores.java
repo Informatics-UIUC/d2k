@@ -1,10 +1,10 @@
 package ncsa.d2k.modules.core.transform.table;
 
+import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.parameter.ParameterPoint;
-import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import ncsa.d2k.modules.core.datatype.table.Column;
+import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
-import ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl;
 import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
 
 import java.util.ArrayList;
@@ -295,4 +295,18 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
          this.pushOutput(objectivepp, 0);
       }
    }
+   
+	/**
+	 * Return a list of the property descriptions.
+	 * 
+	 * @return a list of the property descriptions.
+	 */
+	public PropertyDescription[] getPropertiesDescriptions() {
+	  PropertyDescription[] pds = new PropertyDescription[1];
+	  pds[0] = new PropertyDescription(
+	      "verbose",
+	      "Generate Verbose Output",
+	      "If this property is true, the module will write verbose information to the console.");
+	  return pds;
+	}
 }
