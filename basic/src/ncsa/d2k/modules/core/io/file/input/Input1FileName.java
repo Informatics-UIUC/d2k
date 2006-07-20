@@ -8,6 +8,7 @@ import java.beans.PropertyVetoException;
 import javax.swing.*;
 
 import ncsa.d2k.core.modules.*;
+import ncsa.d2k.preferences.UserPreferences;
 import ncsa.gui.*;
 
 /**
@@ -148,29 +149,97 @@ public class Input1FileName extends InputModule {
             fileFilter = new JTextField(10);
             jtf.setText(name);
             fileFilter.setText(getFileFilterExtension());
+
+            JOutlinePanel namePanel = new JOutlinePanel("File Name");
+            namePanel.setLayout(new GridBagLayout());
+            // set up the description of the property
+            StringBuffer tp = new StringBuffer("<html>");
+            tp.append(fontstyle);
+            tp.append("The name of a file, possibly including the path.");
+            tp.append(endfontstyle);
+            tp.append("</html>");
+
+            JEditorPane jta = new JEditorPane("text/html", tp.toString()
+                    ) {
+                /**  */
+                private static final long serialVersionUID = 1L;
+
+                // we can no longer have a horizontal scrollbar if we are always
+                // set to the same width as our parent....may need to be fixed.
+                public Dimension getPreferredSize() {
+                    Dimension d = this.getMinimumSize();
+                    return new Dimension(450, d.height);
+                }
+            };
+            jta.setEditable(false);
+            jta.setBackground(namePanel.getBackground());
+
                         JButton b0 = new JButton("Browse");
 
-                        Constrain.setConstraints(this, new JLabel ("File Name"), 0, 0, 1, 1,
-                                                                          GridBagConstraints.NONE,
+                        Constrain.setConstraints(namePanel, jta, 0, 0, 3, 1,
+                                                                          GridBagConstraints.HORIZONTAL,
                                                                           GridBagConstraints.CENTER, 0, 0);
-                        Constrain.setConstraints(this, jtf, 1, 0, 1, 1,
+                        //Constrain.setConstraints(namePanel, new JLabel ("File Name"), 0, 1, 1, 1,
+                        //                                                  GridBagConstraints.NONE,
+                        //                                                  GridBagConstraints.CENTER, 0, 0);
+                        Constrain.setConstraints(namePanel, jtf, 0, 1, 1, 1,
                                                                           GridBagConstraints.HORIZONTAL,
                                                                           GridBagConstraints.CENTER, 1, 0);
-                        Constrain.setConstraints(this, b0, 2, 0, 1, 1,
+                        Constrain.setConstraints(namePanel, b0, 1, 1, 1, 1,
                                                                           GridBagConstraints.NONE,
                                                                           GridBagConstraints.CENTER, 0, 0);
 
-                        Constrain.setConstraints(this, new JLabel("File Extension Filter"), 0, 1, 1, 1,
-                                                                          GridBagConstraints.NONE,
-                                                                          GridBagConstraints.CENTER, 0, 0);
-                        Constrain.setConstraints(this, fileFilter, 1, 1, 1, 1,
+/*            JOutlinePanel extPanel = new JOutlinePanel("Optional File Extension Filter");
+            extPanel.setLayout(new GridBagLayout());
+
+            // set up the description of the property
+            tp = new StringBuffer("<html>");
+            tp.append(fontstyle);
+            tp.append("Optional extension filter for use in file browser, such as .csv.");
+            tp.append(endfontstyle);
+            tp.append("</html>");
+
+            jta = new JEditorPane("text/html", tp.toString()
+                    ) {
+                /**  */
+/*                private static final long serialVersionUID = 1L;
+
+                // we can no longer have a horizontal scrollbar if we are always
+                // set to the same width as our parent....may need to be fixed.
+                public Dimension getPreferredSize() {
+                    Dimension d = this.getMinimumSize();
+                    return new Dimension(450, d.height);
+                }
+            };
+            jta.setEditable(false);
+            jta.setBackground(namePanel.getBackground());
+
+                        Constrain.setConstraints(extPanel, jta, 0, 0, 2, 1,
                                                                           GridBagConstraints.HORIZONTAL,
-                                                                          GridBagConstraints.CENTER, 1, 0);
+                                                                          GridBagConstraints.CENTER, 0, 0);
+                        //Constrain.setConstraints(extPanel, new JLabel("Filter"), 0, 1, 1, 1,
+                        //                                      GridBagConstraints.HORIZONTAL,
+                        //                                      GridBagConstraints.WEST, 1, 0);
+
+                        Constrain.setConstraints(extPanel, fileFilter, 0, 1, 1, 1,
+                                                                          GridBagConstraints.NONE,
+                                                                          GridBagConstraints.WEST, 1, 0); */
+
+             Constrain.setConstraints(this, namePanel, 0, 0, 3, 1,
+                                      GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
+//             Constrain.setConstraints(this, extPanel, 0, 1, 3, 1,
+//                                      GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 0);
 
                         b0.addActionListener(new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser chooser = new JFileChooser();
                     chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                    chooser.addChoosableFileFilter(new CSVFilter());
+                    chooser.addChoosableFileFilter(new TXTFilter());
+                    chooser.addChoosableFileFilter(new XMLFilter());
+                    chooser.addChoosableFileFilter(new JPGFilter());
+                    chooser.addChoosableFileFilter(new GIFFilter());
+                    chooser.setFileFilter(chooser.getAcceptAllFileFilter());
 
                     String d = getFileName();
                     if(d == null)
@@ -192,7 +261,7 @@ public class Input1FileName extends InputModule {
 
 
 // added 6.5.2004 by DC
-                    final String filter = fileFilter.getText();
+/*                    final String filter = fileFilter.getText();
                     if(filter.trim().length() > 0) {
                       javax.swing.filechooser.FileFilter ff =
                           new javax.swing.filechooser.FileFilter() {
@@ -204,8 +273,7 @@ public class Input1FileName extends InputModule {
                         }
                       };
                       chooser.setFileFilter(ff);
-                    }
-
+                    }*/
 
                     // set the title of the FileDialog
                     StringBuffer sb = new StringBuffer("Select File");
@@ -226,6 +294,65 @@ public class Input1FileName extends InputModule {
                 }
             });
         }
+
+        class CSVFilter extends javax.swing.filechooser.FileFilter {
+            public boolean accept(File f) {
+                return f.isDirectory() || f.getName().endsWith(".csv");
+            }
+
+            public String getDescription() {
+                return "Comma-Separated Values (.csv)";
+            }
+         };
+
+       class XMLFilter extends javax.swing.filechooser.FileFilter {
+            public boolean accept(File f) {
+                return f.isDirectory() || f.getName().endsWith(".xml");
+            }
+
+            public String getDescription() {
+                return "XML Files (.xml)";
+            }
+        }        
+
+        class TXTFilter extends javax.swing.filechooser.FileFilter {
+            public boolean accept(File f) {
+                return f.isDirectory() || f.getName().endsWith(".txt");
+            }
+
+            public String getDescription() {
+                return "Text Files (.txt)";
+            }
+        }
+
+        class JPGFilter extends javax.swing.filechooser.FileFilter {
+            public boolean accept(File f) {
+                return f.isDirectory() || f.getName().endsWith(".jpg");
+            }
+
+            public String getDescription() {
+                return "JPG Image (.jpg)";
+            }
+         };
+
+        class GIFFilter extends javax.swing.filechooser.FileFilter {
+            public boolean accept(File f) {
+                return f.isDirectory() || f.getName().endsWith(".gif");
+            }
+
+            public String getDescription() {
+                return "GIF Image (.gif)";
+            }
+         };
+
+        /** the fontstyle tags. */
+        final String fontstyle = "<font size=\""
+            + UserPreferences.thisPreference.getFontSize()
+            + "\" face=\"Arial,Helvetica,SansSerif \">";
+
+
+        /** the end of the font style. */
+        final String endfontstyle = "</font>";
 
         public boolean updateModule() throws Exception {
             String f0 = jtf.getText();
