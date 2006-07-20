@@ -330,20 +330,20 @@ public class CreateDelimitedParser extends InputModule {
                                      1, 0);
 
             Constrain.setConstraints(this, labelsPanel, 0, 0, 2, 1,
-                    GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                    1, 1);
+                    GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER,
+                    1, 0);
 
             Constrain.setConstraints(this, typesPanel, 0, 1, 2, 1,
-                    GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                    1, 1);
+                    GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER,
+                    1, 0);
 
             Constrain.setConstraints(this, delimPanel, 0, 2, 2, 1,
-                    GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                    1, 1);
+                    GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER,
+                    1, 0);
 
-            Constrain.setConstraints(this, new JPanel(), 0, 3, 2, 1,
-                    GridBagConstraints.BOTH, GridBagConstraints.WEST,
-                    1, 1);
+            //Constrain.setConstraints(this, new JPanel(), 0, 3, 2, 1,
+            //        GridBagConstraints.BOTH, GridBagConstraints.WEST,
+            //        1, 1);
         }
 
 
@@ -351,7 +351,6 @@ public class CreateDelimitedParser extends InputModule {
         final String fontstyle = "<font size=\""
             + UserPreferences.thisPreference.getFontSize()
             + "\" face=\"Arial,Helvetica,SansSerif \">";
-
 
         /** the end of the font style. */
         final String endfontstyle = "</font>";
