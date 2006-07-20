@@ -2,7 +2,7 @@ package ncsa.d2k.modules.core.io.file.input;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
+import ncsa.d2k.modules.core.datatype.table.basic.BasicTableFactory;
 
 /**
  * Given a FlatFileReader, create a TableImpl initialized with its contents.
@@ -28,7 +28,8 @@ public class ParseFileToTable extends InputModule {
     }
 
     public String[] getInputTypes() {
-        String[] in = {"ncsa.d2k.modules.core.io.file.input.FlatFileParser"};
+        String[] in = {"ncsa.d2k.modules.core.io.file.input.FlatFileParser",
+            "ncsa.d2k.modules.core.datatype.table.TableFactory"};
         return in;
     }
 
@@ -38,7 +39,9 @@ public class ParseFileToTable extends InputModule {
     }
 
     public String getInputInfo(int i) {
-        return "A FlatFileParser to read data from.";
+        if(i == 0)
+            return "A FlatFileParser to read data from.";
+        return "An optional TableFactory to control the type of table created.  If not used, a basic table will be created.";
     }
 
     public String getOutputInfo(int i) {
@@ -68,6 +71,9 @@ public class ParseFileToTable extends InputModule {
         StringBuffer sb = new StringBuffer("<p>Overview: ");
         sb.append("Given a FlatFileParser, this module creates a Table ");
         sb.append("initialized with the contents of a flat file from disk.");
+        sb.append("<p>");
+        sb.append("The type of Table created can be customized by passing a TableFactory to ");
+        sb.append("this module's second input.  If the input is not connected, a BasicTableFactory will be used.");
         sb.append("</p>");
         return sb.toString();
     }
@@ -76,39 +82,61 @@ public class ParseFileToTable extends InputModule {
         return "Parse File To Table";
     }
 
+    public boolean isReady() {
+        if(isInputPipeConnected(1))
+                return super.isReady();
+        else
+            return getInputPipeSize(0) > 0;
+    }
+
     public void doit() throws Exception {
         FlatFileParser fle = (FlatFileParser)pullInput(0);
-        Table t = createTable(fle);
+
+        TableFactory tf = null;
+        if(isInputPipeConnected(1))
+            tf = (TableFactory)pullInput(1);
+        else
+            tf = new BasicTableFactory();
+
+        Table t = createTable(fle, tf);
         pushOutput(t, 0);
     }
 
-    public Table createTable(FlatFileParser df) {
+    public Table createTable(FlatFileParser df, TableFactory tf) {
         int numRows = df.getNumRows();
         int numColumns = df.getNumColumns();
 
         boolean hasTypes = false;
 
-        Column[] columns = new Column[numColumns];
-        for(int i = 0; i < columns.length; i++) {
+        MutableTable ti = (MutableTable)tf.createTable();
+
+        //Column[] columns = new Column[numColumns];
+        for(int i = 0; i < numColumns; i++) {
             int type = df.getColumnType(i);
-            columns[i] = ColumnUtilities.createColumn(type, numRows);
+            //columns[i] = ColumnUtilities.createColumn(type, numRows);
+            Column c = tf.createColumn(type);
+            c.setNumRows(numRows);
+
             if(type != -1)
                 hasTypes = true;
 
             // set the label
             String label = df.getColumnLabel(i);
             if(label != null)
-                columns[i].setLabel(label);
+                c.setLabel(label);
+
+            ti.addColumn(c);
         }
 
-        MutableTableImpl ti = new MutableTableImpl(columns);
+        //MutableTableImpl ti = new MutableTableImpl(columns);
+
         
          for(int i = 0; i < numRows; i++) {
             ParsedLine pl = df.getRowElements(i);
             char[][] row = pl.elements;
             boolean[] blanks = pl.blanks;
             if(row != null) {
-                for(int j = 0; j < columns.length; j++) {
+                for(int j = 0; j < numColumns; j++) {
                     boolean isMissing = true;
                     char[] elem = row[j];//(char[])row.get(j);
  					// test to see if this is '?'
@@ -200,7 +228,8 @@ public class ParseFileToTable extends InputModule {
                 }
 
                 if(isNumeric) {
-                    DoubleColumn dc = new DoubleColumn(newCol);
+                    //DoubleColumn dc = new DoubleColumn(newCol);
+                    Column dc = tf.createColumn(ColumnTypes.DOUBLE);
                     dc.setLabel(ti.getColumnLabel(i));
 
                     for (int k = 0; k < ti.getNumRows(); k++) {
