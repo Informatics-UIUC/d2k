@@ -94,7 +94,7 @@ public class CreateDelimitedParser extends InputModule {
         private PropEdit() {
             int lr = getLabelsRow();
 
-            /*final JRadioButton*/ lblbtn = new JCheckBox("File Has Labels Row", getHasLabels());
+            /*final JRadioButton*/ lblbtn = new JCheckBox("Use Labels Row", getHasLabels());
             lblbtn.setToolTipText("Select this option if the file has a row of column labels.");
             /*final JLabel*/ lbllbl = new JLabel("Labels Row:");
             lbllbl.setToolTipText("This is the index of the labels row in the file.");
@@ -128,7 +128,7 @@ public class CreateDelimitedParser extends InputModule {
                 }
             });
 
-            /*final JRadioButton*/ typbtn = new JCheckBox("File Has Types Row", getHasTypes());
+            /*final JRadioButton*/ typbtn = new JCheckBox("Use Types Row", getHasTypes());
             typbtn.setToolTipText("Select this option if the file has a row of data types for columns.");
             /*final JTextField*/ typrow = new JTextField(5);
             /*final JLabel*/ typlbl = new JLabel("Types Row");
@@ -162,7 +162,7 @@ public class CreateDelimitedParser extends InputModule {
                 }
             });
 
-            /*final JRadioButton*/ delim = new JCheckBox("File Has User-specified Delimiter", getHasSpecDelim());
+            /*final JRadioButton*/ delim = new JCheckBox("Use Specified Delimiter", getHasSpecDelim());
             delim.setToolTipText("Select this option if the file has a special delimiter.");
             /*final JTextField*/ delimfld = new JTextField(5);
             /*final JLabel*/ dellbl = new JLabel("Delimiter:");
@@ -215,34 +215,146 @@ public class CreateDelimitedParser extends InputModule {
                                  GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
                                  1,1, new Insets(2, 2, 15, 2));
         */
-            Constrain.setConstraints(this, lblbtn, 0, 0, 1, 1,
+            JOutlinePanel labelsPanel = new JOutlinePanel("Labels Row");
+            labelsPanel.setLayout(new GridBagLayout());
+
+            // set up the description of the property
+            StringBuffer tp = new StringBuffer("<html>");
+            tp.append(fontstyle);
+            tp.append("This is the index of the labels row in the file, or -1 if there is no labels row.");
+            tp.append(endfontstyle);
+            tp.append("</html>");
+
+            JEditorPane jta = new JEditorPane("text/html", tp.toString()
+                    ) {
+                /**  */
+                private static final long serialVersionUID = 1L;
+
+                // we can no longer have a horizontal scrollbar if we are always
+                // set to the same width as our parent....may need to be fixed.
+                public Dimension getPreferredSize() {
+                    Dimension d = this.getMinimumSize();
+                    return new Dimension(450, d.height);
+                }
+            };
+            jta.setEditable(false);
+            jta.setBackground(labelsPanel.getBackground());
+
+            Constrain.setConstraints(labelsPanel, jta, 0, 0, 2, 1,
                                      GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                     1,1);
-            Constrain.setConstraints(this, lbllbl, 1, 1, 1, 1,
+                                     1, 0);
+            Constrain.setConstraints(labelsPanel, lblbtn, 0, 1, 1, 1,
                                      GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                     1,1);
-            Constrain.setConstraints(this , lblrow, 2, 1, 1, 1,
+                                     1, 0);
+            //Constrain.setConstraints(this, lbllbl, 1, 1, 1, 1,
+            //                         GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+            //                         1,1);
+            Constrain.setConstraints(labelsPanel , lblrow, 1, 1, 1, 1,
+                                     GridBagConstraints.NONE, GridBagConstraints.EAST,
+                                     1, 0);
+
+            JOutlinePanel typesPanel = new JOutlinePanel("Types Row");
+            typesPanel.setLayout(new GridBagLayout());
+
+            // set up the description of the property
+            tp = new StringBuffer("<html>");
+            tp.append(fontstyle);
+            tp.append("This is the index of the types row in the file, or -1 if there is no types row.");
+            tp.append(endfontstyle);
+            tp.append("</html>");
+
+            jta = new JEditorPane("text/html", tp.toString()
+                    ) {
+                /**  */
+                private static final long serialVersionUID = 1L;
+
+                // we can no longer have a horizontal scrollbar if we are always
+                // set to the same width as our parent....may need to be fixed.
+                public Dimension getPreferredSize() {
+                    Dimension d = this.getMinimumSize();
+                    return new Dimension(450, d.height);
+                }
+            };
+            jta.setEditable(false);
+            jta.setBackground(labelsPanel.getBackground());
+
+            Constrain.setConstraints(typesPanel, jta, 0, 0, 2, 1,
                                      GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                     1,1);
-            Constrain.setConstraints(this, typbtn, 0, 2, 1, 1,
+                                     1, 0);
+            Constrain.setConstraints(typesPanel, typbtn, 0, 1, 1, 1,
                                      GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                     1,1);
-            Constrain.setConstraints(this, typlbl, 1, 3, 1, 1,
+                                     1, 0);
+            //Constrain.setConstraints(this, typlbl, 1, 3, 1, 1,
+            //                         GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+            //                         1,1);
+            Constrain.setConstraints(typesPanel, typrow, 1, 1, 1, 1,
+                                     GridBagConstraints.NONE, GridBagConstraints.EAST,
+                                     1, 0);
+
+            JOutlinePanel delimPanel = new JOutlinePanel("Delimiter");
+            delimPanel.setLayout(new GridBagLayout());
+
+            // set up the description of the property
+            tp = new StringBuffer("<html>");
+            tp.append(fontstyle);
+            tp.append("The delimiter of this file if it is different than space, tab '|' or '='");
+            tp.append(endfontstyle);
+            tp.append("</html>");
+
+            jta = new JEditorPane("text/html", tp.toString()
+                    ) {
+                /**  */
+                private static final long serialVersionUID = 1L;
+
+                // we can no longer have a horizontal scrollbar if we are always
+                // set to the same width as our parent....may need to be fixed.
+                public Dimension getPreferredSize() {
+                    Dimension d = this.getMinimumSize();
+                    return new Dimension(450, d.height);
+                }
+            };
+            jta.setEditable(false);
+            jta.setBackground(labelsPanel.getBackground());
+
+            Constrain.setConstraints(delimPanel, jta, 0, 0, 2, 1,
                                      GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                     1,1);
-            Constrain.setConstraints(this, typrow, 2, 3, 1, 1,
+                                     1, 0);
+            Constrain.setConstraints(delimPanel, delim, 0, 1, 1, 1,
                                      GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                     1,1);
-            Constrain.setConstraints(this, delim, 0, 4, 1, 1,
-                                     GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                     1,1);
-            Constrain.setConstraints(this, dellbl, 1, 5, 1, 1,
-                                     GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                     1, 1);
-            Constrain.setConstraints(this, delimfld, 2, 5, 1, 1,
-                                     GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
-                                     1, 1);
+                                     1, 0);
+            //Constrain.setConstraints(this, dellbl, 1, 5, 1, 1,
+            //                         GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+            //                         1, 1);
+            Constrain.setConstraints(delimPanel, delimfld, 1, 1, 1, 1,
+                                     GridBagConstraints.NONE, GridBagConstraints.EAST,
+                                     1, 0);
+
+            Constrain.setConstraints(this, labelsPanel, 0, 0, 2, 1,
+                    GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                    1, 1);
+
+            Constrain.setConstraints(this, typesPanel, 0, 1, 2, 1,
+                    GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                    1, 1);
+
+            Constrain.setConstraints(this, delimPanel, 0, 2, 2, 1,
+                    GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST,
+                    1, 1);
+
+            Constrain.setConstraints(this, new JPanel(), 0, 3, 2, 1,
+                    GridBagConstraints.BOTH, GridBagConstraints.WEST,
+                    1, 1);
         }
+
+
+        /** the fontstyle tags. */
+        final String fontstyle = "<font size=\""
+            + UserPreferences.thisPreference.getFontSize()
+            + "\" face=\"Arial,Helvetica,SansSerif \">";
+
+
+        /** the end of the font style. */
+        final String endfontstyle = "</font>";
 
         public boolean updateModule() throws Exception {
             boolean didChange = false;
