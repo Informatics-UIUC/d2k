@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>D2K Basic 4.1.2</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body>
+<h1>D2K Basic 4.1.2</h1>
+<p>This is D2K Basic 4.1.2. This version sees a number of changes from the
+previous 4.1.1 release.</p>
+
+	D2K Infrastructure:
+	<ul>
+		<li>Experimental support for SSL sockets with D2K server communications</li>
+		<li>Enhancements to ncsa.d2k.batch.BatchInterface
+		<ul>
+			<li>Documentation</li>
+			<li>New methods to make it easier to use</li>
+		</ul>
+		<li>Libraries that modules depend on can now be located in &lt;d2k home&gt;/lib/ext,
+		instead of in the modules directory. Moving libraries out of the modules directory
+		speeds up load time</li>
+		<li>Enhancements to class loader protocol
+		<ul>
+			<li>Remote resource loading</li>
+		</ul>
+		<li>Added removeResource() method to RootModule to remove an object from the
+		ResourceManager</li>
+		<li>Numerous documentation updates</li>
+		<li>HeadlessUIModule: changed supressGui property to suppressGui</li>
+		<li>machines.txt (for distributed computing) is now in the D2K install directory
+		rather than the user home directory</li>
+	</ul>
+
+	D2K Toolkit:
+	<ul>
+		<li>Expanded use of anti-aliasing for text</li>
+	</ul>
+
+	D2K Basic:
+	<ul>
+		<li>Moved Column, NumericColumn, TextualColumn interfaces from
+		ncsa.d2k.modules.core.datatype.table.basic package to
+		ncsa.d2k.modules.core.datatype.table</li>
+		<li>Added getTableFactory() to Table interface</li>
+		<li>New sparse table implementation in ncsa.d2k.modules.core.datatype.table.sparse2
+		package.</li>
+		<li>Fix to ChooseAttributes: when attribute names were saved so the module could
+		run headless, they were all capitalized. This could cause problems, so the
+		capitalization was removed</li>
+		<li>Updated the included JUNG and Prefuse libraries.</li>
+		<li>Added a number of modules related to Prefuse-based graph visualization.</li>
+		<li>Included a Java 3D rule visualization.</li>
+                <li>The module ncsa.d2k.modules.core.control.Sink was deprecated and replaced with
+                  ncsa.d2k.modules.core.control.DisposeObject                </li>
+
+                <li>ncsa.d2k.modules.core.optimize package was refactored:<BR>
+                  The following modules were deprecated and replaced:<BR>
+                  <ul>
+                	<li>MultiTrainTestBiasEvaluator is replaced with ncsa.d2k.modules.core.optimize.evaluators.ModelingParametersEvaluator                 </li>
+	                <li>RandomGriddedSampling is replaced with ncsa.d2k.modules.core.optimize.samplers.GriddedSampler  </li>
+			<li>ncsa.d2k.modules.core.optimize.random.RandomSampling is replaced with  ncsa.d2k.modules.core.optimize.samplers.RandomSampler.java</li>
+		  </ul>
+		  The following modules were moved to different packages:
+		  <ul>
+			<li>CreateExample was moved to ncsa.d2k.modules.core.optimize.example</li>
+			<li>SimpleModelEvaluator was moved to ncsa.d2k.modules.core.optimize.evaluators        </li><li>            ncsa.d2k.modules.core.optimize.random.ExampleCollector was moved to ncsa.d2k.modules.core.optimize.examples</li>
+    		  </ul>
+                </li>
+
+	</ul>
+
+	T2K:
+	<ul>
+		<li>Internal structural changes to ncsa.d2k.modules.t2k.corpora.Document,
+		Annotation, AnnotationSet</li>
+		<li>Set serialVersionUID of all Documents</li>
+		<li>GateDocumentViewer, GateDocumentsViewer: clear doc list at end of
+		execution</li>
+		<li>Updated Gate modules to work with distributed computing</li>
+		<li>Added reentrant versions of Gate modules</li>
+	</ul>
+
+<h2>Changes made in 4.1.1</h2>
+<p>D2K Basic 4.1.1 saw several new features introduced since the previous
+  4.0.2 release. There has been significant work improving batch mode so that
+  this version can run on the batch systems. There have also been significant
+  overall improvements in the way nested itineraries are used and edited.</p>
+<p>The dialog to update modules, data and itineraries no longer exits. Now the
+  modules, data files and itineraries are always installed if an update is available.</p>
+<p>The D2K properties file in no longer read from the users home directory at
+  all. It is always read from the directory where the application exists.</p>
+<p>There is a new Auto Checkpointing feature that will allow a user to set up
+  an automatic checkpoint. The user will specify a number of minutes between checkpoints,
+  and as nearly as possible, the itinerary execution will pause, checkpoint and
+  continue. This occurs automatically.</p>
+<p>Nested itinerarys have changed significantly. Now, nested itineraries can behave
+  like ReentrantComputeModules. They can clone themselves and execute in parallel
+  on different parcels of data. There is a property of the nested itinerary module
+  that will enable this feature. The user specifies the number of copies of the
+  itinerary to create, and the system does the rest.</p>
+<p>Also, nested itinerary editing has changed. Now nested itineraries appear in
+  the same window as the outter itinerary. Many bugs in working with deeply nested
+  itineraries has also been fixed.</p>
+<p>Logging is now fully supported in D2K. If you change the logging level in the
+  preferences, the changes take effect immediately, there is no need to restart
+  D2K.</p>
+<p>There is an editor included for the &quot;machines.txt&quot; file. Recall,
+  this file defines what machines are available for distributed computing if the
+  Jini URL is set to test.</p>
+<p>There is a new feature (as of B3) where a module enables as the result of some
+  external event. In order for this to work, the appropriate logic must be implemented
+  in the <code>isReady</code> method of the module. Also, the module must implement
+  the <code>AlwaysReady</code> interface. Beyond this, simply develop code that,
+  when the external event occures, call the <code>checkMe</code> method of the
+  modules execution manager. This functionality is only available for <code>ExecModules</code>.</p>
+<p>There are now two jar files instead of one. The infrastructure.jar file contains
+  the d2k execution engine and infrastructure. The toolkit.jar contains the D2K
+  Toolkit code. There are also now two entry points the differing D2K applications
+  distributed. To run D2K in batch mode, run the class &quot;ncsa.d2k.batch.CommandLineD2K&quot;.
+  To run the Toolkit, run &quot;ncsa.d2k.gui.ToolKit&quot;.</p>
+<h2>Pending Bugs</h2>
+<h2>Bugs fixed in FC 11</h2>
+<ol>
+  <li>Many fixes with distributed computing and nested itineraries.</li>
+  <li>The Proximity Editor has been fixed up.</li>
+  <li>The Machine Usage display has been fixed up.</li>
+  <li>The distribution is cleaned up.</li>
+</ol>
+<h2>Bugs fixed in FC 8</h2>
+<ol>
+  <li>Improved Proximity editor and Machine Usage displays</li>
+  <li>Many fixes to NestedItineraries and distributed computing.</li>
+  <li>Some fixes to the way abort and shutdown are handled.</li>
+</ol>
+<h2>Bugs fixed in FC4:</h2>
+<ol>
+  <li>Nested itineraries still had some problems.</li>
+  <li>Eliminated some bottlenecks in distributed computing.</li>
+  <li> Some general fixes to the installer.</li>
+  <li>Added some features required by the D2K Web Service.</li>
+</ol>
+<h2></h2>
+<h2>Bugs fixed in FC2:</h2>
+<ol>
+  <li>Lots of distributed computing bugs with nested itineraries.</li>
+  <li>Some bugs with the proximity editor.</li>
+  <li> Scrolling of the machine usage works better now.</li>
+  <li>Lots of other little bugs.</li>
+  <li>The size of the window and the last itinerary loaded are now saved, and
+    the desktop appears as it did before you last quit.</li>
+</ol>
+<h2>Bugs fixed in FC1:</h2>
+<ol>
+  <li>Several bugs with nested itinerarys, in particular connecting them to the
+    outter itinerary, have been fixed.</li>
+  <li>A bug that caused the pop-up menu in the itinerary pane to be offset from
+    the location of the cursor when the right mouse button was clicked has been
+    fixed.</li>
+  <li> A bug in the distributed computing machinery that would cause hangs under
+    some conditions has been fixed.</li>
+  <li>A bug with having ReentrantComputeModules inside nested itineraries is fixed.</li>
+</ol>
+<h2>Bugs fixed in B1:</h2>
+<ol>
+  <li>The setWindowName method of modules does not work appropriately.</li>
+  <li>State is not cleared correctly for modules in nested itineraries.</li>
+  <li>Rename from the pop up in the itinerary menu will not ask if you want to
+    overwrite a file.</li>
+  <li>The pop up context menu in the itineraries pane doesn't seem to always pop
+    up next to the cursor.</li>
+  <li>Rename itn does not add the suffix.</li>
+  <li>There are occasionally problems rendering the itn annotation to the info
+    pane.</li>
+  <li>Jar files in the modules directory are not always recognized when first
+    installed. Sometimes they require a restart. This is particularly noticable
+    after first installing the application.</li>
+</ol>
+</body>
+</html>
