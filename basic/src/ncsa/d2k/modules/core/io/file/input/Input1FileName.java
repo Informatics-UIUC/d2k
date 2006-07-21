@@ -120,13 +120,13 @@ public class Input1FileName extends InputModule {
         return fileName;
     }
 
-    private String fileFilterExtension;
+    /*private String fileFilterExtension;
     public void setFileFilterExtension(String s) {
       fileFilterExtension = s;
     }
     public String getFileFilterExtension() {
       return fileFilterExtension;
-    }
+    } */
 
     /**
      * Return a custom property editor.
@@ -138,7 +138,7 @@ public class Input1FileName extends InputModule {
 
     private class PropEdit extends JPanel implements CustomModuleEditor {
         private JTextField jtf;
-        private JTextField fileFilter;
+        //private JTextField fileFilter;
 
         private PropEdit() {
             setLayout(new GridBagLayout());
@@ -146,9 +146,9 @@ public class Input1FileName extends InputModule {
 
             String name = getFileName();
             jtf = new JTextField(10);
-            fileFilter = new JTextField(10);
+            //fileFilter = new JTextField(10);
             jtf.setText(name);
-            fileFilter.setText(getFileFilterExtension());
+            //fileFilter.setText(getFileFilterExtension());
 
             JOutlinePanel namePanel = new JOutlinePanel("File Name");
             namePanel.setLayout(new GridBagLayout());
@@ -313,7 +313,7 @@ public class Input1FileName extends InputModule {
             public String getDescription() {
                 return "XML Files (.xml)";
             }
-        }        
+        }
 
         class TXTFilter extends javax.swing.filechooser.FileFilter {
             public boolean accept(File f) {
@@ -361,11 +361,11 @@ public class Input1FileName extends InputModule {
                 setFileName(f0);
                 didChange = true;
             }
-            f0 = fileFilter.getText();
+            /*f0 = fileFilter.getText();
             if(f0 != getFileFilterExtension()) {
               setFileFilterExtension(f0);
               didChange = true;
-            }
+            } */
             return didChange;
         }
     }
