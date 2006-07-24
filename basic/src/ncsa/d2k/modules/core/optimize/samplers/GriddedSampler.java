@@ -5,11 +5,19 @@ import java.util.Random;
 
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.parameter.impl.ParameterPointImpl;
-
+/**
+ *
+ * <p>Title: </p>
+ * <p>Description: used to be ncsa.d2k.modules.core.optimize.random.RandomGriddedSampling</p>
+ * <p>Copyright: Copyright (c) 2006</p>
+ * <p>Company: </p>
+ * @author David Tcheng
+ * @version 1.0
+ */
 public class GriddedSampler extends RandomSampler {
 
-	
-	
+
+
 	/** */
 	int[] indices = null;
 
@@ -28,7 +36,7 @@ public class GriddedSampler extends RandomSampler {
 	/** random number generator used to compute the delta from the offset. */
 	Random random = new Random();
 
-	
+
 
 	private int numSamples = 100;
 	public void setNumSamples(int value) throws PropertyVetoException {
@@ -40,8 +48,8 @@ public class GriddedSampler extends RandomSampler {
 	public int getNumSamples() {
 		return this.numSamples;
 	}
-	
-	
+
+
 	public PropertyDescription[] getPropertiesDescriptions() {
 		PropertyDescription[] descriptions = new PropertyDescription[2];
 		descriptions[0] = new PropertyDescription("numSamples",
@@ -54,7 +62,7 @@ public class GriddedSampler extends RandomSampler {
 
 	/**
 	 * returns the information about the module.
-	 * 
+	 *
 	 * @return the information about the module.
 	 */
 	public String getModuleInfo() {
@@ -98,7 +106,7 @@ public class GriddedSampler extends RandomSampler {
 	 * better coverage than a regularly spaced grid.
 	 */
 	protected void pushParameterPoint() {
-		
+
 		int numParams = space.getNumParameters();
 
 		// This array will contain the indexes of the increments
@@ -160,7 +168,7 @@ public class GriddedSampler extends RandomSampler {
 
 	/**
 	 * Return the human readable name of the module.
-	 * 
+	 *
 	 * @return the human readable name of the module.
 	 */
 	public String getModuleName() {

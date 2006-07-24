@@ -5,6 +5,16 @@ import java.util.ArrayList;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.BasicTableFactory;
 
+
+/**
+ *
+ * <p>Title: </p>
+ * <p>Description: used to be ncsa.d2k.modules.core.optimize.random.ExampleCollector </p>
+ * <p>Copyright: Copyright (c) 2006</p>
+ * <p>Company: </p>
+ * @author David Tcheng
+ * @version 1.0
+ */
 public class ExampleCollector
       extends ncsa.d2k.core.modules.ComputeModule {
    public PropertyDescription[] getPropertiesDescriptions() {

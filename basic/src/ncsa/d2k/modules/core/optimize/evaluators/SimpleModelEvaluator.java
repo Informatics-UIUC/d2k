@@ -11,7 +11,15 @@ import ncsa.d2k.core.modules.PropertyDescription;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 
-
+/**
+ *
+ * <p>Title: </p>
+ * <p>Description: used to be ncsa.d2k.modules.core.optimize.SimpleModelEvaluator</p>
+ * <p>Copyright: Copyright (c) 2006</p>
+ * <p>Company: </p>
+ * @author David Tcheng
+ * @version 1.0
+ */
 public class SimpleModelEvaluator extends DataPrepModule {
 
 

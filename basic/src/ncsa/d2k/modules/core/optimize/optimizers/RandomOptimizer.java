@@ -11,6 +11,16 @@ import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.core.modules.PropertyDescription;
 import java.beans.PropertyVetoException;
 
+
+/**
+ *
+ * <p>Title: </p>
+ * <p>Description: used to be ncsa.d2k.modules.core.optimize.random.UniformSampling</p>
+ * <p>Copyright: Copyright (c) 2006</p>
+ * <p>Company: </p>
+ * @author DavidTcheng
+ * @version 1.0
+ */
 public class RandomOptimizer extends ComputeModule implements java.io.Serializable {
 
 	public PropertyDescription[] getPropertiesDescriptions() {
@@ -353,7 +363,7 @@ public class RandomOptimizer extends ComputeModule implements java.io.Serializab
 
 		// use uniform random sampling to constuct point
 		for (int d = 0; d < BiasSpace.getNumParameters(); d++) {
-			
+
 			double range = BiasSpace.getMaxValue(d) - BiasSpace.getMinValue(d);
 
 			switch (BiasSpace.getType(d)) {
@@ -379,7 +389,7 @@ public class RandomOptimizer extends ComputeModule implements java.io.Serializab
 				break;
 
 			}
-			
+
 		}
 		String[] names = new String[BiasSpace.getNumParameters()];
 		for (int i = 0; i < BiasSpace.getNumParameters(); i++) {
@@ -392,7 +402,7 @@ public class RandomOptimizer extends ComputeModule implements java.io.Serializab
 
 	/**
 	 * Given a two d array of doubles, create a table.
-	 * 
+	 *
 	 * @param data
 	 * @return
 	 */

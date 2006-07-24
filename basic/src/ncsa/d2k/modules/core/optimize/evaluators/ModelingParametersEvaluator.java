@@ -7,7 +7,15 @@ import java.util.Random;
 import ncsa.d2k.core.modules.PropertyDescription;
 import java.beans.PropertyVetoException;
 
-
+/**
+ *
+ * <p>Title: </p>
+ * <p>Description: this used to be ncsa.d2k.modules.core.optimize.MultiTrainTestBiasEvaluator</p>
+ * <p>Copyright: Copyright (c) 2006</p>
+ * <p>Company: </p>
+ * @author David Tcheng
+ * @version 1.0
+ */
 public class ModelingParametersEvaluator
 	extends ComputeModule {
 

@@ -8,7 +8,15 @@ import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
 import ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl;
 
 import java.util.ArrayList;
-
+/**
+ *
+ * <p>Title: </p>
+ * <p>Description: used to be ncsa.d2k.modules.core.optimize.CreateExample</p>
+ * <p>Copyright: Copyright (c) 2006</p>
+ * <p>Company: </p>
+ * @author David Tcheng
+ * @version 1.0
+ */
 public class CreateExample extends ComputeModule {
 
 	public String getModuleName () {
