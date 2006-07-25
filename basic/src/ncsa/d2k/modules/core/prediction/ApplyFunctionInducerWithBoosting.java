@@ -329,9 +329,9 @@ public class ApplyFunctionInducerWithBoosting extends OrderedReentrantModule {
    }
 
    /**
-    * The types of inputs to this module
+    * The types of outputs of this module
     *
-    * @return a String[] containing the classes of the inputs
+    * @return a String[] containing the classes of the outputs
     */
    public String[] getOutputTypes() {
       String[] types = { "ncsa.d2k.modules.core.datatype.model.Model" };
