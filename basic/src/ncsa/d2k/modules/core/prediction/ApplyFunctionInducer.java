@@ -51,7 +51,8 @@ import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 
 
 /**
- * Applies a FunctionInducer to an ExampleTable.
+ * This module applies a function inducer module to the given example table using the given error function
+ * to produce a model.
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -61,7 +62,7 @@ public class ApplyFunctionInducer extends OrderedReentrantModule {
    //~ Methods *****************************************************************
 
    /**
-    * Description of method doit.
+    * Apply a function inducer to an example table.
     *
     * @throws Exception when something goes wrong
     */

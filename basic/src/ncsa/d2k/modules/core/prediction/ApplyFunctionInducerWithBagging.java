@@ -55,7 +55,8 @@ import java.util.Random;
 
 
 /**
- * Apply a function inducer to an example table using bagging.
+ * This module applies a function inducer module to the given example table using the given
+ * error function and with boosting to produce a ensemble of models
  *
  * @author  $Author$
  * @version $Revision$, $Date$
