@@ -54,7 +54,8 @@ import ncsa.d2k.modules.core.datatype.table.TrainTable;
 
 
 /**
- * Basic implementation of the <code>TableFactory</code> interface.
+ * <code>TableFactory</code> implementation suitable for creating tables from
+ * the ncsa.d2k.modules.core.datatype.table.basic package.
  *
  * @author  clutter
  * @author  $Author$
@@ -143,7 +144,7 @@ public class BasicTableFactory implements TableFactory {
     * @param  et <code>ExampleTable</code> that the <code>TrainTable</code> is
     *            derived from
     *
-    * @return a <code>TrainTable</code> initialized with the data from et
+    * @return <code>TrainTable</code> initialized with the data from et
     */
    public TrainTable createTrainTable(ExampleTable et) {
       return (TrainTable) et.getTrainTable();
