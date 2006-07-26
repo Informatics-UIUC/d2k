@@ -1,4 +1,4 @@
-/* 
+/*
  * $Header$
  *
  * ===================================================================
@@ -6,17 +6,17 @@
  * D2K-Workflow
  * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
  * ILLINOIS. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License v2.0
  * as published by the Free Software Foundation and with the required
  * interpretation regarding derivative works as described below.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License v2.0 for more details.
- * 
+ *
  * This program and the accompanying materials are made available
  * under the terms of the GNU General Public License v2.0 (GPL v2.0)
  * which accompanies this distribution and is available at
@@ -34,7 +34,7 @@
  * make those components a derivative work of D2K-Workflow.
  * (Examples of such independently developed components include for
  * example, external databases or metadata and provenance stores).
- * 
+ *
  * Note: A non-GPL commercially licensed version of contributions
  * from the UNIVERSITY OF ILLINOIS may be available from the
  * designated commercial licensee RiverGlass, Inc. located at
@@ -50,27 +50,28 @@ import ncsa.util.QuickQueue;
 
 
 /**
- * Push the first input it receives on input 0, but will not push 
- * subsequent inputs on 0 until it receives an input on one.
+ * Push the first input it receives on input 0, but will not push subsequent
+ * inputs on 0 until it receives an input on one.
  *
  * @author  $Author$
  * @version $Revision$, $Date$
  */
 public class QueuedTriggerPush extends DataPrepModule {
 
-   //~ Instance fields ***********************************************
+   //~ Instance fields *********************************************************
 
    /**
-    * Inputs from 0 are queued until an input from 1. 
-    * <p>
-    * Inputs to 0 accumulate, and are output one at a time as
-    * inputs to 1 occur.
+    * Inputs from 0 are queued until an input from 1.
+    *
+    * <p>Inputs to 0 accumulate, and are output one at a time as inputs to 1
+    * occur.</p>
     */
    QuickQueue queue;
 
+   /** Controls debug messages. */
    protected boolean debug;
 
-   //~ Methods *******************************************************
+   //~ Methods *****************************************************************
 
    /**
     * Initialize the queue.
@@ -78,11 +79,10 @@ public class QueuedTriggerPush extends DataPrepModule {
    public void beginExecution() { queue = new QuickQueue(); }
 
    /**
-    * If first time, just pull input 0 and push it, subsequent 
-    * runs, pull input 1, push it and pull an input off the 
-    * second input port, discard it.
+    * If first time, just pull input 0 and push it, subsequent runs, pull input
+    * 1, push it and pull an input off the second input port, discard it.
     *
-    * @throws Exception
+    * @throws Exception if exception occurs, exception is thrown.
     */
    public void doit() throws Exception {
 
@@ -93,8 +93,8 @@ public class QueuedTriggerPush extends DataPrepModule {
          queue.push(obj);
       } else {
 
-         // Here we know we have something in the queue, and there is 
-    	 // something
+         // Here we know we have something in the queue, and there is
+         // something
          // in the trigger pipe, or we would not have enabled.
          Object obj = this.pullInput(1);
 
@@ -112,14 +112,28 @@ public class QueuedTriggerPush extends DataPrepModule {
       if (queue.getSize() > 0) {
          System.out.println(this.getAlias() + ": There were " +
                             queue.getSize() + " items still in the " +
-                            		"queue.");
+                            "queue.");
       }
 
       queue = new QuickQueue();
    }
 
+   /**
+    * Does what it says.
+    *
+    * @return The value.
+    */
    public boolean getDebug() { return debug; }
 
+   /**
+    * Returns a description of the input at the specified index.
+    *
+    * @param inputIndex Index of the input for which a description 
+    * should be returned.
+    *
+    * @return <code>String</code> describing the input at the specified 
+    * index.
+    */
    public String getInputInfo(int index) {
 
       switch (index) {
@@ -135,6 +149,15 @@ public class QueuedTriggerPush extends DataPrepModule {
       }
    }
 
+   /**
+    * Returns the name of the input at the specified index.
+    *
+    * @param inputIndex Index of the input for which a name should be 
+    * returned.
+    *
+    * @return <code>String</code> containing the name of the input at 
+    * the specified index.
+    */
    public String getInputName(int index) {
 
       switch (index) {
@@ -150,37 +173,75 @@ public class QueuedTriggerPush extends DataPrepModule {
       }
    }
 
+   /**
+    * Returns an array of <code>String</code> objects each containing 
+    * the fully qualified Java data type of the input at the 
+    * corresponding index.
+    *
+    * @return An array of <code>String</code> objects each containing 
+    * the fully qualified Java data type of the input at the 
+    * corresponding index.
+    */
    public String[] getInputTypes() {
       String[] types = { "java.lang.Object", "java.lang.Object" };
 
       return types;
    }
 
+   /**
+    * Describes the purpose of the module.
+    *
+    * @return <code>String</code> describing the purpose of the module.
+    */
    public String getModuleInfo() {
       return "<p>Overview: This module will collect the input " +
-      		"received on its" +
+             "received on its" +
              " first input. When an input is received on the second " +
              "input, it will push" +
              " one of the items saved off the first input, if there " +
              "are any.</p>";
    }
 
+   /**
+    * Returns the name of the module that is appropriate for end user 
+    * consumption.
+    *
+    * @return The name of the module.
+    */
    public String getModuleName() { return "Queued Trigger Push"; }
 
+   /**
+    * Returns a description of the output at the specified index.
+    *
+    * @param outputIndex Index of the output for which a description 
+    * should be returned.
+    *
+    * @return <code>String</code> describing the output at the specified 
+    * index.
+    */
    public String getOutputInfo(int index) {
 
       switch (index) {
 
          case 0:
             return "The object received on the first input is pushed " +
-            		"after it is received the first time, and after " +
-            		"any input on the second input.";
+                   "after it is received the first time, and after " +
+                   "any input on the second input.";
 
          default:
             return "No such output";
       }
    }
 
+   /**
+    * Returns the name of the output at the specified index.
+    *
+    * @param outputIndex Index of the output for which a description 
+    * should be returned.
+    *
+    * @return <code>String</code> containing the name of the output at 
+    *  the specified index.
+    */
    public String getOutputName(int index) {
 
       switch (index) {
@@ -193,12 +254,26 @@ public class QueuedTriggerPush extends DataPrepModule {
       }
    }
 
+   /**
+    * Returns an array of <code>String</code> objects each containing
+    *  the fully qualified Java data type of the output at the corresponding index.
+    *
+    * @return An array of <code>String</code> objects each containing 
+    * the fully qualified Java data type of the output at the corresponding index.
+    */
    public String[] getOutputTypes() {
       String[] types = { "java.lang.Object" };
 
       return types;
    }
 
+   /**
+    * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> 
+    * objects for each property of the module.
+    *
+    * @return An array of 
+    * <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+    */
    public PropertyDescription[] getPropertiesDescriptions() {
       PropertyDescription[] pds = new PropertyDescription[1];
       pds[0] =
@@ -214,9 +289,9 @@ public class QueuedTriggerPush extends DataPrepModule {
    }
 
    /**
-    * Ready to run if we have any data on any input.
+    * Ready to run if any data on any input.
     *
-    * @return true if we are ready to fire.
+    * @return true if are ready to fire.
     */
    public boolean isReady() {
 
@@ -229,5 +304,10 @@ public class QueuedTriggerPush extends DataPrepModule {
       }
    }
 
+   /**
+    * As the name suggests.
+    *
+    * @param b The value to set.
+    */
    public void setDebug(boolean b) { debug = b; }
 } // end class QueuedTriggerPush
