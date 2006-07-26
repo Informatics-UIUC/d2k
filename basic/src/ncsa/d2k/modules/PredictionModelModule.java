@@ -1,721 +1,787 @@
-package  ncsa.d2k.modules;
+/* 
+ * $Header$
+ *
+ * ===================================================================
+ *
+ * D2K-Workflow
+ * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
+ * ILLINOIS. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License v2.0
+ * as published by the Free Software Foundation and with the required
+ * interpretation regarding derivative works as described below.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License v2.0 for more details.
+ * 
+ * This program and the accompanying materials are made available
+ * under the terms of the GNU General Public License v2.0 (GPL v2.0)
+ * which accompanies this distribution and is available at
+ * http://www.gnu.org/copyleft/gpl.html (or via mail from the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.), with the special and mandatory
+ * interpretation that software only using the documented public
+ * Application Program Interfaces (APIs) of D2K-Workflow are not
+ * considered derivative works under the terms of the GPL v2.0.
+ * Specifically, software only calling the D2K-Workflow Itinerary
+ * execution and workflow module APIs are not derivative works.
+ * Further, the incorporation of published APIs of other
+ * independently developed components into D2K Workflow code
+ * allowing it to use those separately developed components does not
+ * make those components a derivative work of D2K-Workflow.
+ * (Examples of such independently developed components include for
+ * example, external databases or metadata and provenance stores).
+ * 
+ * Note: A non-GPL commercially licensed version of contributions
+ * from the UNIVERSITY OF ILLINOIS may be available from the
+ * designated commercial licensee RiverGlass, Inc. located at
+ * (www.riverglassinc.com)
+ * ===================================================================
+ *
+ */
+package ncsa.d2k.modules;
 
-import  ncsa.d2k.core.modules.*;
-import  ncsa.d2k.modules.core.datatype.table.*;
-//import  ncsa.d2k.modules.core.datatype.table.basic.*;
-//import ncsa.d2k.modules.core.datatype.table.sparse.*;
-//import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
-import  java.util.*;
+import ncsa.d2k.core.modules.ModelModule;
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.modules.core.datatype.table.Column;
+import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
+import ncsa.d2k.modules.core.datatype.table.ExampleTable;
+import ncsa.d2k.modules.core.datatype.table.PredictionTable;
+import ncsa.d2k.modules.core.datatype.table.ReversibleTransformation;
+import ncsa.d2k.modules.core.datatype.table.Table;
+import ncsa.d2k.modules.core.datatype.table.TableFactory;
+import ncsa.d2k.modules.core.datatype.table.Transformation;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 
 /**
- * TO DO add useNameChecking
+ * Abstract class to manage a prediction model.
+ *
+ * @author  $Author$
+ * @version $Revision$, $Date$
  */
-abstract public class PredictionModelModule extends ModelModule
-        implements java.io.Serializable {
+public abstract class PredictionModelModule extends ModelModule
+   implements java.io.Serializable {
 
-    /** the size of the training set for this model */
-    private int trainingSetSize;
+   //~ Instance fields *********************************************************
 
-    /** the labels for the input columns */
-    private String[] inputColumnLabels;
+   /** the labels for the input columns. */
+   private String[] inputColumnLabels;
 
-    /** the labels for the outputs columns */
-    private String[] outputColumnLabels;
+   /** the datatypes for the input features. */
+   private int[] inputFeatureTypes;
 
-    /** the datatypes for the input features */
-    private int[] inputFeatureTypes;
+   /** the labels for the outputs columns. */
+   private String[] outputColumnLabels;
 
-    /** the datatypes for the output features */
-    private int[] outputFeatureTypes;
+   /** the datatypes for the output features. */
+   private int[] outputFeatureTypes;
 
-    /** the scalar inputs are marked true */
-    private boolean[] scalarInputs;
+   /** the scalar inputs are marked true. */
+   private boolean[] scalarInputs;
 
-    /** the scalar outputs are marked true */
-    private boolean[] scalarOutputs;
-    private List transformations;
-    /** A flag used to determine whether transformations should be
-     * applied in the predict method or not
-     */
-    protected boolean applyTransformationsInPredict = false;
-    protected boolean applyReverseTransformationsAfterPredict = false;
-    protected boolean _checkFormat = true;
+   /** the scalar outputs are marked true. */
+   private boolean[] scalarOutputs;
 
-    /**
-     * Constructor.
-     */
-    protected PredictionModelModule () {
-    }
+   /** the size of the training set for this model. */
+   private int trainingSetSize;
 
-    /**
-     * Constructor
-     * @param train the training data
-     */
-    protected PredictionModelModule (ExampleTable train) {
-        setTrainingTable(train);
-    }
+   private List transformations;
 
-    /**
-     * Constructor
-     * @param trainingSetSize size of the training set
-     * @param inputColumnLabels labels of the input columns
-     * @param outputColumnLabels labels of the output columns
-     * @param inputFeatureTypes datatypes of the inputs
-     * @param outputFeatureTypes datatypes of the outputs
-     */
-    protected PredictionModelModule (int trainingSetSize, String[] inputColumnLabels,
-            String[] outputColumnLabels, int[] inputFeatureTypes, int[] outputFeatureTypes    /*,
-     boolean[] scalarInputs,
-     boolean[] scalarOutputs*/
-    ) {
-        this.trainingSetSize = trainingSetSize;
-        this.inputColumnLabels = inputColumnLabels;
-        this.outputColumnLabels = outputColumnLabels;
-        this.inputFeatureTypes = inputFeatureTypes;
-        this.outputFeatureTypes = outputFeatureTypes;
-        //this.scalarInputs = scalarInputs;
-        //this.scalarOutputs = scalarOutputs;
-    }
+   protected boolean _checkFormat = true;
+   
+   protected boolean applyReverseTransformationsAfterPredict = false;
 
-    /*    private void writeObject(java.io.ObjectOutputStream out)
-     throws Exception {
-     out.defaultWriteObject();
-     }
-     private void readObject(java.io.ObjectInputStream in)
-     throws Exception {
-     System.out.println("1IC: "+inputColumnLabels);
-     in.defaultReadObject();
-     System.out.println("2IC: "+inputColumnLabels);
-     }*/
-    /**
-     *	Describe the function of this module.
-     *	@return the description of this module.
-     */
-    public String getModuleInfo () {
-        return  "Makes predictions on a set of examples.";
-    }
+   /**
+    * A flag used to determine whether transformations should be applied in the
+    * predict method or not.
+    */
+   protected boolean applyTransformationsInPredict = false;
 
-    /**
-     *	The input is a Table.
-     *	@return the input types
-     */
-    public String[] getInputTypes () {
-        String[] in =  {
-            "ncsa.d2k.modules.core.datatype.table.Table"
-        };
-        return  in;
-    }
+   //~ Constructors ************************************************************
 
-    /**
-     *	The input is an ExampleTable.
-     *	@param i the index of the input
-     *	@return the description of the input
-     */
-    public String getInputInfo (int i) {
-        return  "A set of examples to make predicitons on.";
-    }
+   /**
+    * Constructor.
+    */
+   protected PredictionModelModule() { }
 
-    /**
-     *	Get the name of the input.
-     *	@param i the index of the input
-     *	@return the name of the input
-     */
-    public String getInputName (int i) {
-        return  "Examples";
-    }
+   /**
+    * Constructor.
+    *
+    * @param train the training data
+    */
+   protected PredictionModelModule(ExampleTable train) {
+      setTrainingTable(train);
+   }
 
-    /**
-     *	The output is a PredictionTable.
-     *	@return the output types
-     */
-    public String[] getOutputTypes () {
-        String[] out =  {
-            "ncsa.d2k.modules.core.datatype.table.PredictionTable"
-        };
-        return  out;
-    }
+   /**
+    * Constructor.
+    *
+    * @param trainingSetSize    size of the training set
+    * @param inputColumnLabels  labels of the input columns
+    * @param outputColumnLabels labels of the output columns
+    * @param inputFeatureTypes  datatypes of the inputs
+    * @param outputFeatureTypes datatypes of the outputs
+    */
+   protected PredictionModelModule(int trainingSetSize,
+                                   String[] inputColumnLabels,
+                                   String[] outputColumnLabels,
+                                   int[] inputFeatureTypes,
+                                   int[] outputFeatureTypes ) {
+      this.trainingSetSize = trainingSetSize;
+      this.inputColumnLabels = inputColumnLabels;
+      this.outputColumnLabels = outputColumnLabels;
+      this.inputFeatureTypes = inputFeatureTypes;
+      this.outputFeatureTypes = outputFeatureTypes;
+   }
 
-    /**
-     *	Describe the output.
-     *	@param i the index of the output
-     *	@return the description of the output
-     */
-    public String getOutputInfo (int i) {
-        String out = "The input set of examples, with extra columns of " +
-                "predicitions added to the end.";
-        return  out;
-    }
+   //~ Methods *****************************************************************
 
-    /**
-     *	Get the name of the output.
-     *	@param i the index of the output
-     *	@return the name of the output
-     */
-    public String getOutputName (int i) {
-        return  "Predictions";
-    }
+   /**
+    * put your documentation comment here.
+    *
+    * @param     pt Description of parameter $param.name$.
+    *
+    * @exception Exception
+    */
+   protected abstract void makePredictions(PredictionTable pt) throws Exception;
 
-    /**
-     *	Pull in the ExampleTable, pass it to the predict() method,
-     *	and push out the PredictionTable returned by predict();
-     */
-    public void doit () throws Exception {
-        Table et = (Table)pullInput(0);
-        pushOutput(predict(et), 0);
-    }
+   /**
+    * put your documentation comment here.
+    *
+    * @param et Description of parameter $param.name$.
+    */
+   protected void applyReverseTransformations(ExampleTable et) {
 
-    /**
-     * Predict the outcomes given a set of examples.  The return value
-     * is a PredictionTable, which is the same as the input set with
-     * extra column(s) of predictions added to the end.
-     * @param table the set of examples to make predictions on
-     * @return the input table, with extra columns for predictions
-     */
-    public PredictionTable predict (Table table) throws Exception {
-        PredictionTable pt = null;
-        if (getCheckTableFormat()){
-          if (table instanceof PredictionTable) {
+      if (transformations != null) {
+
+         for (int i = 0; i < transformations.size(); i++) {
+            Transformation trans = (Transformation) transformations.get(i);
+
+            if (trans instanceof ReversibleTransformation) {
+
+               ((ReversibleTransformation) trans).untransform(et);
+            }
+         }
+      }
+   }
+
+   /**
+    * Apply all the transformations in the Transformations list to the given
+    * ExampleTable.
+    *
+    * @param et the ExampleTable to transform
+    */
+   protected void applyTransformations(ExampleTable et) {
+
+      if (transformations != null) {
+
+         for (int i = 0; i < transformations.size(); i++) {
+            Transformation trans = (Transformation) transformations.get(i);
+            trans.transform(et);
+         }
+      }
+   }
+
+   /**
+    * put your documentation comment here.
+    *
+    * @return Information about the training dataset in html format
+    */
+   protected String getTrainingInfoHtml() {
+      StringBuffer sb = new StringBuffer();
+      sb.append("<b>Number Training Examples</b>:" + trainingSetSize +
+                "<br><br>");
+      sb.append("<b>Input Features:</b>: <br>");
+      sb.append("<table><tr><td><u>Name</u><td><u>Type</u>");
+      sb.append("<td><u>S/N</u></tr>");
+
+      for (int i = 0; i < inputColumnLabels.length; i++) {
+         sb.append("<tr><td>" + inputColumnLabels[i]);
+         sb.append("<td>" + ColumnTypes.getTypeName(inputFeatureTypes[i]));
+
+         if (scalarInputs[i]) {
+            sb.append("<td>sclr");
+         } else {
+            sb.append("<td>nom");
+         }
+
+         sb.append("</tr>");
+      }
+
+      sb.append("</table><br>");
+      sb.append("<b>Output (Predicted) Features</b>: <br><br>");
+      sb.append("<table><tr><td><u>Name</u><td><u>Type</u>");
+      sb.append("<td><u>S/N</u></tr>");
+
+      for (int i = 0; i < outputColumnLabels.length; i++) {
+         sb.append("<tr><td>" + outputColumnLabels[i]);
+         sb.append("<td>" + ColumnTypes.getTypeName(outputFeatureTypes[i]));
+
+         if (scalarOutputs[i]) {
+            sb.append("<td>sclr");
+         } else {
+            sb.append("<td>nom");
+         }
+
+         sb.append("</tr>");
+      }
+
+      sb.append("</table>");
+
+      return sb.toString();
+   } // end method getTrainingInfoHtml
+
+   /**
+    * Set up all the meta-data related to the training set for this model.
+    *
+    * @param et Description of parameter $param.name$.
+    */
+   protected void setTrainingTable(ExampleTable et) {
+      trainingSetSize = et.getNumRows();
+
+      int[] inputs = et.getInputFeatures();
+      inputColumnLabels = new String[inputs.length];
+
+      for (int i = 0; i < inputColumnLabels.length; i++) {
+         inputColumnLabels[i] = et.getColumnLabel(inputs[i]);
+      }
+
+      int[] outputs = et.getOutputFeatures();
+      outputColumnLabels = new String[outputs.length];
+
+      for (int i = 0; i < outputColumnLabels.length; i++) {
+         outputColumnLabels[i] = et.getColumnLabel(outputs[i]);
+      }
+
+      inputFeatureTypes = new int[inputs.length];
+
+      for (int i = 0; i < inputs.length; i++) {
+         inputFeatureTypes[i] = et.getColumnType(inputs[i]);
+      }
+
+      outputFeatureTypes = new int[outputs.length];
+
+      for (int i = 0; i < outputs.length; i++) {
+         outputFeatureTypes[i] = et.getColumnType(outputs[i]);
+      }
+
+      scalarInputs = new boolean[inputs.length];
+
+      for (int i = 0; i < inputs.length; i++) {
+         scalarInputs[i] = et.isInputScalar(i);
+      }
+
+      scalarOutputs = new boolean[outputs.length];
+
+      for (int i = 0; i < outputs.length; i++) {
+         scalarOutputs[i] = et.isOutputScalar(i);
+      }
+
+      // copy the transformations
+      try {
+         List trans = et.getTransformations();
+
+         if (trans instanceof ArrayList) {
+            transformations =
+               (ArrayList) ((ArrayList) (et).getTransformations()).clone();
+         } else if (trans instanceof LinkedList) {
+            transformations =
+               (LinkedList) ((LinkedList) (et).getTransformations()).clone();
+         } else if (trans instanceof Vector) {
+            transformations =
+               (Vector) ((Vector) (et).getTransformations()).clone();
+         } else {
+            transformations = null;
+         }
+      } catch (Exception e) {
+         e.printStackTrace();
+         transformations = null;
+      }
+   } // end method setTrainingTable
+
+   /**
+    * Pull in the ExampleTable, pass it to the predict() method, and push out
+    * the PredictionTable returned by predict();
+    *
+    */
+   public void doit() throws Exception {
+      Table et = (Table) pullInput(0);
+      pushOutput(predict(et), 0);
+   }
+
+   /**
+    * Should transformations be reversed after predictions are made?
+    *
+    * @return true if transformations should be reversed after predictions are
+    *         made, false otherwise
+    */
+   public boolean getApplyReverseTransformationsAfterPredict() {
+      return applyReverseTransformationsAfterPredict;
+   }
+
+   /**
+    * Should transformations be applied in the predict method?
+    *
+    * @return true if transformations should be applied to the dataset in the
+    *         predict() method, false otherwise
+    */
+   public boolean getApplyTransformationsInPredict() {
+      return applyTransformationsInPredict;
+   }
+
+   /**
+    * Should the format of the table be checked to see if it is the same format
+    * as the data we trained on?
+    *
+    * @return true if the format should be checked, false otherwise
+    */
+   public boolean getCheckTableFormat() { return _checkFormat; }
+
+   /**
+    * Get the labels of the input columns.
+    *
+    * @return the labels of the input columns
+    */
+   public String[] getInputColumnLabels() { return inputColumnLabels; }
+
+   /**
+    * Get the data types of the input columns in the training table.
+    *
+    * @return the datatypes of the input columns in the training table
+    *
+    * @see    ncsa.d2k.modules.core.datatype.table.ColumnTypes
+    */
+   public int[] getInputFeatureTypes() { return inputFeatureTypes; }
+
+   /**
+    * The input is an ExampleTable.
+    *
+    * @param  i the index of the input
+    *
+    * @return the description of the input
+    */
+   public String getInputInfo(int i) {
+      return "A set of examples to make predicitons on.";
+   }
+
+   /**
+    * Get the name of the input.
+    *
+    * @param  i the index of the input
+    *
+    * @return the name of the input
+    */
+   public String getInputName(int i) { return "Examples"; }
+
+   /**
+    * The input is a Table.
+    *
+    * @return the input types
+    */
+   public String[] getInputTypes() {
+      String[] in = {
+         "ncsa.d2k.modules.core.datatype.table.Table"
+      };
+
+      return in;
+   }
+
+   /**
+    * Describe the function of this module.
+    *
+    * @return the description of this module.
+    */
+   public String getModuleInfo() {
+      return "Makes predictions on a set of examples.";
+   }
+
+   /**
+    * Get the labels of the output columns.
+    *
+    * @return the labels of the output columns
+    */
+   public String[] getOutputColumnLabels() { return outputColumnLabels; }
+
+   /**
+    * Get the data types of the output columns in the training table.
+    *
+    * @return the data types of the output columns in the training table
+    *
+    * @see    ncsa.d2k.modules.core.datatype.table.ColumnTypes
+    */
+   public int[] getOutputFeatureTypes() { return outputFeatureTypes; }
+
+   /**
+    * Describe the output.
+    *
+    * @param  i the index of the output
+    *
+    * @return the description of the output
+    */
+   public String getOutputInfo(int i) {
+      String out =
+         "The input set of examples, with extra columns of " +
+         "predicitions added to the end.";
+
+      return out;
+   }
+
+   /**
+    * Get the name of the output.
+    *
+    * @param  i the index of the output
+    *
+    * @return the name of the output
+    */
+   public String getOutputName(int i) { return "Predictions"; }
+
+   /**
+    * The output is a PredictionTable.
+    *
+    * @return the output types
+    */
+   public String[] getOutputTypes() {
+      String[] out = {
+         "ncsa.d2k.modules.core.datatype.table.PredictionTable"
+      };
+
+      return out;
+   }
+
+   /**
+    * Return a list of the property descriptions.
+    *
+    * @return a list of the property descriptions.
+    */
+   public PropertyDescription[] getPropertiesDescriptions() {
+      PropertyDescription[] pds = new PropertyDescription[3];
+      pds[0] =
+         new PropertyDescription("applyTransformationsInPredict",
+                                 "Apply all transformations before predicting",
+                                 "Set this value to true if the data should" +
+                                 "be transformed before attemping " +
+                                 "to make predictions.");
+      pds[1] =
+         new PropertyDescription("applyReverseTransformationsAfterPredict",
+                                 "Apply all reverse transformations after " +
+                                 "predicting",
+                                 "Set this value to true to reverse all " +
+                                 "transformations after making " +
+                                 "predictions.");
+      pds[2] =
+         new PropertyDescription("checkTableFormat",
+                                 "Check format of incoming table to model.",
+                                 "Check format of incoming table to model.");
+
+      return pds;
+   }
+
+   /**
+    * Determine which inputs were scalar.
+    *
+    * @return a boolean map with inputs that are scalar marked 'true'
+    */
+   public boolean[] getScalarInputs() { return scalarInputs; }
+
+   /**
+    * Determine which outputs were scalar.
+    *
+    * @return a boolean map with outputs that are scalar marked 'true'
+    */
+   public boolean[] getScalarOutputs() { return scalarOutputs; }
+
+   /**
+    * Get the size of the training set that built this model.
+    *
+    * @return the size of the training set used to build this model
+    */
+   public int getTrainingSetSize() { return trainingSetSize; }
+
+   /**
+    * @return a list of all the transformations that were performed
+    */
+   public List getTransformations() { return transformations; }
+
+   /**
+    * Predict the outcomes given a set of examples. The return value is a
+    * PredictionTable, which is the same as the input set with extra column(s)
+    * of predictions added to the end.
+    *
+    * @param  table the set of examples to make predictions on
+    *
+    * @return the input table, with extra columns for predictions
+    *
+    * @throws Exception Description of exception Exception.
+    */
+   public PredictionTable predict(Table table) throws Exception {
+      PredictionTable pt = null;
+
+      if (getCheckTableFormat()) {
+
+         if (table instanceof PredictionTable) {
+
             // ensure that the inputFeatures and predictionSet are correct..
             pt = (PredictionTable) table;
+
             if (transformations != null && getApplyTransformationsInPredict()) {
-              applyTransformations(pt);
+               applyTransformations(pt);
             }
+
             Map columnToIndexMap = new HashMap(pt.getNumColumns());
-            for (int i = 0; i < pt.getNumColumns(); i++)
-              columnToIndexMap.put(pt.getColumnLabel(i), new Integer(i));
-              // ensure that the input features of pt are set correctly.
+
+            for (int i = 0; i < pt.getNumColumns(); i++) {
+               columnToIndexMap.put(pt.getColumnLabel(i), new Integer(i));
+               // ensure that the input features of pt are set correctly.
+            }
+
             int[] curInputFeat = pt.getInputFeatures();
             boolean inok = true;
-            if (curInputFeat != null) {
-              if (curInputFeat.length != inputColumnLabels.length)
-                inok = false;
-              else {
-                // for each input feature
-                for (int i = 0; i < curInputFeat.length; i++) {
-                  String lbl = pt.getColumnLabel(curInputFeat[i]);
-                  if (!lbl.equals(inputColumnLabels[i]))
-                    inok = false;
-                  if (!inok)
-                    break;
-                }
-              }
-            } else
-              inok = false;
-            if (!inok) {
-              // if the inputs are not ok, redo them
-              int[] newInputFeat = new int[inputColumnLabels.length];
-              for (int i = 0; i < inputColumnLabels.length; i++) {
-                Integer idx = (Integer) columnToIndexMap.get(inputColumnLabels[i]);
-                if (idx == null)
 
-                  // the input column did not exist!!
-                  //throw new Exception();
-                  throw new Exception("input column missing:index=" +
-                                      i + ":label=" + inputColumnLabels[i]);
-                else
-                  newInputFeat[i] = idx.intValue();
-              }
-              pt.setInputFeatures(newInputFeat);
+            if (curInputFeat != null) {
+
+               if (curInputFeat.length != inputColumnLabels.length) {
+                  inok = false;
+               } else {
+
+                  // for each input feature
+                  for (int i = 0; i < curInputFeat.length; i++) {
+                     String lbl = pt.getColumnLabel(curInputFeat[i]);
+
+                     if (!lbl.equals(inputColumnLabels[i])) {
+                        inok = false;
+                     }
+
+                     if (!inok) {
+                        break;
+                     }
+                  }
+               }
+            } else {
+               inok = false;
             }
+
+            if (!inok) {
+
+               // if the inputs are not ok, redo them
+               int[] newInputFeat = new int[inputColumnLabels.length];
+
+               for (int i = 0; i < inputColumnLabels.length; i++) {
+                  Integer idx =
+                     (Integer) columnToIndexMap.get(inputColumnLabels[i]);
+
+                  if (idx == null) {
+
+                     // the input column did not exist!!
+                     throw new Exception("input column missing:index=" +
+                                         i + ":label=" + inputColumnLabels[i]);
+                  } else {
+                     newInputFeat[i] = idx.intValue();
+                  }
+               }
+
+               pt.setInputFeatures(newInputFeat);
+            }
+
             // ensure that the prediction columns are set correctly.
             int[] curPredFeat = pt.getPredictionSet();
             boolean predok = true;
+
             if (curPredFeat != null) {
-              if (curPredFeat.length != outputColumnLabels.length)
-                predok = false;
-              else {
-                // for each input feature
-                for (int i = 0; i < curPredFeat.length; i++) {
-                  String lbl = pt.getColumnLabel(curPredFeat[i]);
-                  if (!lbl.equals(outputColumnLabels[i] +
-                                  PredictionTable.PREDICTION_COLUMN_APPEND_TEXT))
-                    predok = false;
-                  if (!predok)
-                    break;
-                }
-              }
-            } else
-              predok = false;
-          }
-          // it was not a prediction table.  make it one and set the input features
-          // and prediction set accordingly
-          else {
-            ExampleTable et = table.toExampleTable();
-            if (transformations != null && getApplyTransformationsInPredict()) {
-              applyTransformations(et);
+
+               if (curPredFeat.length != outputColumnLabels.length) {
+                  predok = false;
+               } else {
+
+                  // for each input feature
+                  for (int i = 0; i < curPredFeat.length; i++) {
+                     String lbl = pt.getColumnLabel(curPredFeat[i]);
+
+                     if (
+                         !lbl.equals(outputColumnLabels[i] +
+                            PredictionTable.PREDICTION_COLUMN_APPEND_TEXT)) {
+                        predok = false;
+                     }
+
+                     if (!predok) {
+                        break;
+                     }
+                  }
+               }
+            } else {
+               predok = false;
             }
+         }
+         // it was not a prediction table.  make it one and set the input
+         // features and prediction set accordingly
+         else {
+            ExampleTable et = table.toExampleTable();
+
+            if (transformations != null && getApplyTransformationsInPredict()) {
+               applyTransformations(et);
+            }
+
             // turn it into a prediction table
             pt = et.toPredictionTable();
-            Map columnToIndexMap = new HashMap(pt.getNumColumns());
-            for (int i = 0; i < pt.getNumColumns(); i++)
-              columnToIndexMap.put(pt.getColumnLabel(i), new Integer(i));
-            int[] inputFeat = new int[inputColumnLabels.length];
-            for (int i = 0; i < inputColumnLabels.length; i++) {
-              Integer idx = (Integer) columnToIndexMap.get(inputColumnLabels[i]);
-              if (idx == null)
 
-                // the input column was missing, throw exception
-                throw new Exception("input column missing:index=" + i +
-                                    ":label=" + inputColumnLabels[i]);
-              else
-                inputFeat[i] = idx.intValue();
+            Map columnToIndexMap = new HashMap(pt.getNumColumns());
+
+            for (int i = 0; i < pt.getNumColumns(); i++) {
+               columnToIndexMap.put(pt.getColumnLabel(i), new Integer(i));
             }
+
+            int[] inputFeat = new int[inputColumnLabels.length];
+
+            for (int i = 0; i < inputColumnLabels.length; i++) {
+               Integer idx =
+                  (Integer) columnToIndexMap.get(inputColumnLabels[i]);
+
+               if (idx == null) {
+
+                  // the input column was missing, throw exception
+                  throw new Exception("input column missing:index=" + i +
+                                      ":label=" + inputColumnLabels[i]);
+               } else {
+                  inputFeat[i] = idx.intValue();
+               }
+            }
+
             pt.setInputFeatures(inputFeat);
+
             boolean outOk = true;
             int[] outputFeat = new int[outputColumnLabels.length];
-            for (int i = 0; i < outputColumnLabels.length; i++) {
-              Integer idx = (Integer) columnToIndexMap.get(outputColumnLabels[i]);
-              if (idx == null)
 
-                // the input column was missing, throw exception
-                outOk = false;
-                //    throw new Exception();
-              else
-                outputFeat[i] = idx.intValue();
+            for (int i = 0; i < outputColumnLabels.length; i++) {
+               Integer idx =
+                  (Integer) columnToIndexMap.get(outputColumnLabels[i]);
+
+               if (idx == null) {
+
+                  // the input column was missing, throw exception
+                  outOk = false;
+               } else {
+                  outputFeat[i] = idx.intValue();
+               }
             }
+
             if (outOk) {
-              pt.setOutputFeatures(outputFeat);
+               pt.setOutputFeatures(outputFeat);
             }
+
             // ensure that the prediction columns are set correctly.
             int[] curPredFeat = pt.getPredictionSet();
             boolean predok = true;
+
             if (curPredFeat != null) {
-              if (curPredFeat.length != outputColumnLabels.length)
-                predok = false;
-              else {
-                // for each input feature
-                for (int i = 0; i < curPredFeat.length; i++) {
-                  String lbl = pt.getColumnLabel(curPredFeat[i]);
-                  if (!lbl.equals(outputColumnLabels[i] +
-                                  PredictionTable.PREDICTION_COLUMN_APPEND_TEXT))
-                    predok = false;
-                  if (!predok)
-                    break;
-                }
-              }
-            } else
-              predok = false;
+
+               if (curPredFeat.length != outputColumnLabels.length) {
+                  predok = false;
+               } else {
+
+                  // for each input feature
+                  for (int i = 0; i < curPredFeat.length; i++) {
+                     String lbl = pt.getColumnLabel(curPredFeat[i]);
+
+                     if (
+                         !lbl.equals(outputColumnLabels[i] +
+                              PredictionTable.PREDICTION_COLUMN_APPEND_TEXT)) {
+                        predok = false;
+                     }
+
+                     if (!predok) {
+                        break;
+                     }
+                  }
+               }
+            } else {
+               predok = false;
+            }
+
             if (!predok) {
-              int[] predSet = new int[outputFeatureTypes.length];
-              // add as many prediction columns as there are outputs
-              for (int i = 0; i < outputFeatureTypes.length; i++) {
-                // add the prediction columns
-                int type = outputFeatureTypes[i];
+               int[] predSet = new int[outputFeatureTypes.length];
 
-                TableFactory factory = pt.getTableFactory();
-                Column c = factory.createColumn(type);
-                c.addRows(pt.getNumRows());
-                pt.addColumn(c);
-                predSet[i] = pt.getNumColumns() - 1;
+               // add as many prediction columns as there are outputs
+               for (int i = 0; i < outputFeatureTypes.length; i++) {
 
-/*                boolean isSparse = pt instanceof Sparse;
+                  // add the prediction columns
+                  int type = outputFeatureTypes[i];
 
-                switch (type) {
-                  case ColumnTypes.DOUBLE:
-                    if(isSparse) {
-                      pt.addColumn(new SparseDoubleColumn(pt.getNumRows()));
-                    }
-                    else {
-                      pt.addColumn(new DoubleColumn(pt.getNumRows()));
-                    }
+                  TableFactory factory = pt.getTableFactory();
+                  Column c = factory.createColumn(type);
+                  c.addRows(pt.getNumRows());
+                  pt.addColumn(c);
+                  predSet[i] = pt.getNumColumns() - 1;
+               } // end for
 
-                    predSet[i] = pt.getNumColumns() - 1;
-                    break;
-                  case ColumnTypes.STRING:
-                    if(isSparse) {
-                      pt.addColumn(new SparseStringColumn(pt.getNumRows()));
-                    }
-                    else {
-                      pt.addColumn(new StringColumn(pt.getNumRows()));
-                    }
-                    predSet[i] = pt.getNumColumns() - 1;
-                    break;
-                    //VERED: added cases for all column types
-                  case ColumnTypes.INTEGER:
-                    if(isSparse) {
-                      pt.addColumn(new SparseIntColumn(pt.getNumRows()));
-                    }
-                    else {
-                      pt.addColumn(new IntColumn(pt.getNumRows()));
-                    }
-                    predSet[i] = pt.getNumColumns() - 1;
-                    break;
-                  case ColumnTypes.FLOAT:
-                    if(isSparse) {
-                      pt.addColumn(new SparseFloatColumn(pt.getNumRows()));
-                    }
-                    else {
-                      pt.addColumn(new FloatColumn(pt.getNumRows()));
-                    }
-                    predSet[i] = pt.getNumColumns() - 1;
-                    break;
-                  case ColumnTypes.LONG:
-                    if(isSparse) {
-                      pt.addColumn(new SparseLongColumn(pt.getNumRows()));
-                    }
-                    else {
-                      pt.addColumn(new LongColumn(pt.getNumRows()));
-                    }
-                    predSet[i] = pt.getNumColumns() - 1;
-                    break;
-                  case ColumnTypes.SHORT:
-                    if(isSparse) {
-                      pt.addColumn(new SparseShortColumn(pt.getNumRows()));
-                    }
-                    else {
-                      pt.addColumn(new ShortColumn(pt.getNumRows()));
-                    }
-                    predSet[i] = pt.getNumColumns() - 1;
-                    break;
-                  case ColumnTypes.BYTE:
-                    if(isSparse) {
-                      pt.addColumn(new SparseByteColumn(pt.getNumRows()));
-                    }
-                    else {
-                      pt.addColumn(new ByteColumn(pt.getNumRows()));
-                    }
-                    predSet[i] = pt.getNumColumns() - 1;
-                    break;
-                  case ColumnTypes.CHAR:
-                    if(isSparse) {
-                      pt.addColumn(new SparseCharColumn(pt.getNumRows()));
-                    }
-                    else {
-                      pt.addColumn(new CharColumn(pt.getNumRows()));
-                    }
-                    predSet[i] = pt.getNumColumns() - 1;
-                    break;
-                  case ColumnTypes.BYTE_ARRAY:
-                    if(isSparse) {
-                      pt.addColumn(new SparseByteArrayColumn(pt.getNumRows()));
-                    }
-                    else {
-                      pt.addColumn(new ByteArrayColumn(pt.getNumRows()));
-                    }
-                    predSet[i] = pt.getNumColumns() - 1;
-                    break;
-                  case ColumnTypes.CHAR_ARRAY:
-                    if(isSparse) {
-                      pt.addColumn(new SparseCharArrayColumn(pt.getNumRows()));
-                    }
-                    else {
-                      pt.addColumn(new CharArrayColumn(pt.getNumRows()));
-                    }
-                    predSet[i] = pt.getNumColumns() - 1;
-                    break;
-                  case ColumnTypes.OBJECT:
-                    if(isSparse) {
-                      pt.addColumn(new SparseObjectColumn(pt.getNumRows()));
-                    }
-                    else {
-                      pt.addColumn(new ObjectColumn(pt.getNumRows()));
-                    }
-                    predSet[i] = pt.getNumColumns() - 1;
-                    break;
-                  case ColumnTypes.BOOLEAN:
-                    if(isSparse) {
-                      pt.addColumn(new SparseBooleanColumn(pt.getNumRows()));
-                    }
-                    else {
-                      pt.addColumn(new BooleanColumn(pt.getNumRows()));
-                    }
-                    predSet[i] = pt.getNumColumns() - 1;
-                    break;
-                  default:
-                    throw new RuntimeException("no such column type "
-                                               + type);
-                    //todo - check the following:
-                    // is it ok to call pt.addColumn() ?  Will this work with
-                    // different implementations of Table?
-                }*/
-              }
-              pt.setPredictionSet(predSet);
-            }
-          }
-        } else {
-          /**
-           * If we don't check the format.
-           */
-          if (pt instanceof PredictionTable) {
+               pt.setPredictionSet(predSet);
+            } // end if
+         } // end if
+      } else {
+
+         /*
+          * If we don't check the format.
+          */
+         if (pt instanceof PredictionTable) {
             pt = (PredictionTable) table;
+
             if (transformations != null && getApplyTransformationsInPredict()) {
-              applyTransformations(pt);
+               applyTransformations(pt);
             }
-          } else {
+         } else {
             ExampleTable et = table.toExampleTable();
+
             if (transformations != null && getApplyTransformationsInPredict()) {
-              applyTransformations(et);
+               applyTransformations(et);
             }
+
             // turn it into a prediction table
             pt = et.toPredictionTable();
-          }
-        }
-        makePredictions(pt);
-        if (transformations != null && this.getApplyReverseTransformationsAfterPredict())
-            applyReverseTransformations(pt);
-        return  pt;
-    }
+         }
+      }
 
-    /**
-     * put your documentation comment here
-     * @param pt
-     * @exception Exception
-     */
-    abstract protected void makePredictions (PredictionTable pt) throws Exception;
+      makePredictions(pt);
 
-    /**
-     * Set up all the meta-data related to the training set for this model.
-     * @param et
-     */
-    protected void setTrainingTable (ExampleTable et) {
-        trainingSetSize = et.getNumRows();
-        int[] inputs = et.getInputFeatures();
-        inputColumnLabels = new String[inputs.length];
-        for (int i = 0; i < inputColumnLabels.length; i++)
-            inputColumnLabels[i] = et.getColumnLabel(inputs[i]);
-        int[] outputs = et.getOutputFeatures();
-        outputColumnLabels = new String[outputs.length];
-        for (int i = 0; i < outputColumnLabels.length; i++)
-            outputColumnLabels[i] = et.getColumnLabel(outputs[i]);
-        inputFeatureTypes = new int[inputs.length];
-        for (int i = 0; i < inputs.length; i++)
-            inputFeatureTypes[i] = et.getColumnType(inputs[i]);
-        outputFeatureTypes = new int[outputs.length];
-        for (int i = 0; i < outputs.length; i++)
-            outputFeatureTypes[i] = et.getColumnType(outputs[i]);
-        scalarInputs = new boolean[inputs.length];
-        for (int i = 0; i < inputs.length; i++)
-            scalarInputs[i] = et.isInputScalar(i);
-        scalarOutputs = new boolean[outputs.length];
-        for (int i = 0; i < outputs.length; i++)
-            scalarOutputs[i] = et.isOutputScalar(i);
-        //copy the transformations
-        try {
-            List trans = et.getTransformations();
-            if (trans instanceof ArrayList) {
-                transformations = (ArrayList)((ArrayList)(et).getTransformations()).clone();
-            }
-            else if (trans instanceof LinkedList) {
-                transformations = (LinkedList)((LinkedList)(et).getTransformations()).clone();
-            }
-            else if (trans instanceof Vector) {
-                transformations = (Vector)((Vector)(et).getTransformations()).clone();
-            }
-            else
-                transformations = null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            transformations = null;
-        }
-    }
+      if (
+          transformations != null &&
+             this.getApplyReverseTransformationsAfterPredict()) {
+         applyReverseTransformations(pt);
+      }
 
-    /**
-     * Get the size of the training set that built this model.
-     * @return the size of the training set used to build this model
-     */
-    public int getTrainingSetSize () {
-        return  trainingSetSize;
-    }
+      return pt;
+   } // end method predict
 
-    /**
-     * Get the labels of the input columns.
-     * @return the labels of the input columns
-     */
-    public String[] getInputColumnLabels () {
-        return  inputColumnLabels;
-    }
+   public void setApplyReverseTransformationsAfterPredict(boolean b) {
+      applyReverseTransformationsAfterPredict = b;
+   }
 
-    /**
-     * Get the labels of the output columns.
-     * @return the labels of the output columns
-     */
-    public String[] getOutputColumnLabels () {
-        return  outputColumnLabels;
-    }
+   /**
+    * Set the flag to indicate if transformations should be applied in the
+    * predict method.
+    *
+    * @param b true if transformations should be applied to the dataset in the
+    *          predict() method, false otherwise
+    */
+   public void setApplyTransformationsInPredict(boolean b) {
+      applyTransformationsInPredict = b;
+   }
 
-    /**
-     * Get the data types of the input columns in the training table.
-     * @return the datatypes of the input columns in the training table
-     * @see ncsa.d2k.modules.core.datatype.table.ColumnTypes
-     */
-    public int[] getInputFeatureTypes () {
-        return  inputFeatureTypes;
-    }
+   /**
+    * Should the format of the table be checked to see if it is the same format
+    * as the data we trained on?
+    *
+    * @param b true if the format should be checked, false otherwise
+    */
+   public void setCheckTableFormat(boolean b) { _checkFormat = b; }
 
-    /**
-     * Get the data types of the output columns in the training table.
-     * @return the data types of the output columns in the training table
-     * @see ncsa.d2k.modules.core.datatype.table.ColumnTypes
-     */
-    public int[] getOutputFeatureTypes () {
-        return  outputFeatureTypes;
-    }
-
-    /**
-     * Determine which inputs were scalar.
-     * @return a boolean map with inputs that are scalar marked 'true'
-     */
-    public boolean[] getScalarInputs () {
-        return  scalarInputs;
-    }
-
-    /**
-     * Determine which outputs were scalar.
-     * @return a boolean map with outputs that are scalar marked 'true'
-     */
-    public boolean[] getScalarOutputs () {
-        return  scalarOutputs;
-    }
-
-    /**
-     * Apply all the transformations in the Transformations list to
-     * the given ExampleTable
-     * @param et the ExampleTable to transform
-     */
-    protected void applyTransformations (ExampleTable et) {
-        if (transformations != null) {
-            for (int i = 0; i < transformations.size(); i++) {
-                Transformation trans = (Transformation)transformations.get(i);
-                trans.transform(et);
-            }
-        }
-    }
-
-    /**
-     * put your documentation comment here
-     * @param et
-     */
-    protected void applyReverseTransformations (ExampleTable et) {
-        if (transformations != null) {
-            for (int i = 0; i < transformations.size(); i++) {
-                Transformation trans = (Transformation)transformations.get(i);
-                if (trans instanceof ReversibleTransformation)
-                    //trans.transform(et);
-                    ((ReversibleTransformation)trans).untransform(et);
-            }
-        }
-    }
-
-    /**
-     * put your documentation comment here
-     * @param trans
-     */
-    public void setTransformations (List trans) {
-        transformations = trans;
-    }
-
-    /**
-     * put your documentation comment here
-     * @return a list of all the transformations that were performed
-     */
-    public List getTransformations () {
-        return  transformations;
-    }
-
-    /**
-     * Set the flag to indicate if transformations should be applied in the predict method.
-     * @param b true if transformations should be applied to the dataset in the predict() method, false otherwise
-     */
-    public void setApplyTransformationsInPredict (boolean b) {
-        applyTransformationsInPredict = b;
-    }
-
-    /**
-     * Should transformations be applied in the predict method?
-     * @return true if transformations should be applied to the dataset in the predict() method, false otherwise
-     */
-    public boolean getApplyTransformationsInPredict () {
-        return  applyTransformationsInPredict;
-    }
-
-    /**
-     * put your documentation comment here
-     * @param b
-     */
-    public void setApplyReverseTransformationsAfterPredict (boolean b) {
-        applyReverseTransformationsAfterPredict = b;
-    }
-
-    /**
-     * Should the format of the table be checked to see if it is the same format as the data we trained on?
-     * @return true if the format should be checked, false otherwise
-     */
-    public boolean getCheckTableFormat() {
-        return _checkFormat;
-    }
-
-    /**
-     * Should the format of the table be checked to see if it is the same format as the data we trained on?
-     * @param b true if the format should be checked, false otherwise
-     */
-    public void setCheckTableFormat (boolean b) {
-        _checkFormat = b;
-    }
-
-
-    /**
-     * Should transformations be reversed after predictions are made?
-     * @return true if transformations should be reversed after predictions are made, false otherwise
-     */
-    public boolean getApplyReverseTransformationsAfterPredict () {
-        return  applyReverseTransformationsAfterPredict;
-    }
-
-    /**
-     * Return a list of the property descriptions.
-     * @return a list of the property descriptions.
-     */
-    public PropertyDescription[] getPropertiesDescriptions () {
-        PropertyDescription[] pds = new PropertyDescription[3];
-        pds[0] = new PropertyDescription("applyTransformationsInPredict", "Apply all transformations before predicting",
-                "Set this value to true if the data should be transformed before attemping "
-                + "to make predictions.");
-        pds[1] = new PropertyDescription("applyReverseTransformationsAfterPredict",
-                "Apply all reverse transformations after predicting", "Set this value to true to reverse all transformations after making "
-                + "predictions.");
-    pds[2] = new PropertyDescription("checkTableFormat",
-            "Check format of incoming table to model.", "Check format of incoming table to model.");
-        return  pds;
-    }
-
-    /**
-     * put your documentation comment here
-     * @return Information about the training dataset in html format
-     */
-    protected String getTrainingInfoHtml () {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<b>Number Training Examples</b>:" + trainingSetSize + "<br><br>");
-        sb.append("<b>Input Features:</b>: <br>");
-        sb.append("<table><tr><td><u>Name</u><td><u>Type</u>");
-        sb.append("<td><u>S/N</u></tr>");
-        for (int i = 0; i < inputColumnLabels.length; i++) {
-            sb.append("<tr><td>" + inputColumnLabels[i]);
-            sb.append("<td>" + ColumnTypes.getTypeName(inputFeatureTypes[i]));
-            if (scalarInputs[i]) {
-                sb.append("<td>sclr");
-            }
-            else {
-                sb.append("<td>nom");
-            }
-            sb.append("</tr>");
-        }
-        sb.append("</table><br>");
-        sb.append("<b>Output (Predicted) Features</b>: <br><br>");
-        sb.append("<table><tr><td><u>Name</u><td><u>Type</u>");
-        sb.append("<td><u>S/N</u></tr>");
-        for (int i = 0; i < outputColumnLabels.length; i++) {
-            sb.append("<tr><td>" + outputColumnLabels[i]);
-            sb.append("<td>" + ColumnTypes.getTypeName(outputFeatureTypes[i]));
-            if (scalarOutputs[i]) {
-                sb.append("<td>sclr");
-            }
-            else {
-                sb.append("<td>nom");
-            }
-            sb.append("</tr>");
-        }
-        sb.append("</table>");
-        return  sb.toString();
-    }
-}
+  
+   public void setTransformations(List trans) { transformations = trans; }
+} // end class PredictionModelModule
