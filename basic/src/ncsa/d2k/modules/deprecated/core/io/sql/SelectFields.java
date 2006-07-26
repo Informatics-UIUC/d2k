@@ -65,16 +65,13 @@ import java.util.Vector;
 
 
 /**
- * Old select fields.
+ * Old module to select attributes. <b>This module is deprecated.</b>
  *
- * @author  $Author$
- * @version $Revision$, $Date$
  */
 public class SelectFields extends ncsa.d2k.core.modules.UIModule {
 
    //~ Instance fields *********************************************************
 
-   /** Description of field msgBoard. */
    JOptionPane msgBoard = new JOptionPane();
 
    //~ Methods *****************************************************************
@@ -89,7 +86,6 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
    /**
     * Provides notification that this module is deprecated.
     *
-    * @author shirk
     */
    public void beginExecution() {
       System.out.println(getClass().getName() + " is deprecated.");
@@ -108,8 +104,6 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
     */
    public String[] getFieldNameMapping() {
 
-      // String[] fieldMap2 = {"fields"};
-      // return fieldMap2;
       return null;
    }
 
@@ -171,17 +165,20 @@ public class SelectFields extends ncsa.d2k.core.modules.UIModule {
    public String getModuleInfo() {
       String s = "<p>Overview: ";
       s +=
-         "This module allows the user to select one or more attributes (fields) from a list of attributes. </p>";
+         "This module allows the user to select one or more attributes (fields) " +
+         "from a list of attributes. </p>";
       s += "<p>Detailed Description: ";
       s +=
-         "This module provides a user-interface that allows one or more attributes to be chosen ";
+         "This module provides a user-interface that allows one or more " +
+         "attributes to be chosen ";
       s += "from a list of attributes. The list of attributes is ";
       s += "retrieved from the <i>Attributes List</i> input port. ";
       s +=
          "The selected attributes will be used to construct SQL queries.  </p>";
       s += "<p>Restrictions: ";
       s +=
-         "Currently only Oracle, SQLServer, DB2 and MySql databases are supported. ";
+         "Currently only Oracle, SQLServer, DB2 and MySql databases are " +
+         "supported. ";
 
       return s;
 

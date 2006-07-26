@@ -107,7 +107,7 @@ public class Sink extends OutputModule {
    }
 
    public String getModuleInfo() {
-      return "<html><head></head>  <body>Trash any inputs received</body></html>";
+      return "<html><head></head><body>Trash any inputs received</body></html>";
    }
 
    public String getModuleName() { return "Trash Object"; }
