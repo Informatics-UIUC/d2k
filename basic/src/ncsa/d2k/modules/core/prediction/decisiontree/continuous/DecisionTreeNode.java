@@ -1,167 +1,282 @@
+/*
+ * $Header$
+ *
+ * ===================================================================
+ *
+ * D2K-Workflow
+ * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
+ * ILLINOIS. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License v2.0
+ * as published by the Free Software Foundation and with the required
+ * interpretation regarding derivative works as described below.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License v2.0 for more details.
+ *
+ * This program and the accompanying materials are made available
+ * under the terms of the GNU General Public License v2.0 (GPL v2.0)
+ * which accompanies this distribution and is available at
+ * http://www.gnu.org/copyleft/gpl.html (or via mail from the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.), with the special and mandatory
+ * interpretation that software only using the documented public
+ * Application Program Interfaces (APIs) of D2K-Workflow are not
+ * considered derivative works under the terms of the GPL v2.0.
+ * Specifically, software only calling the D2K-Workflow Itinerary
+ * execution and workflow module APIs are not derivative works.
+ * Further, the incorporation of published APIs of other
+ * independently developed components into D2K Workflow code
+ * allowing it to use those separately developed components does not
+ * make those components a derivative work of D2K-Workflow.
+ * (Examples of such independently developed components include for
+ * example, external databases or metadata and provenance stores).
+ *
+ * Note: A non-GPL commercially licensed version of contributions
+ * from the UNIVERSITY OF ILLINOIS may be available from the
+ * designated commercial licensee RiverGlass, Inc. located at
+ * (www.riverglassinc.com)
+ * ===================================================================
+ *
+ */
 package ncsa.d2k.modules.core.prediction.decisiontree.continuous;
 
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.model.*;
-import ncsa.d2k.modules.core.prediction.decisiontree.*;
+import ncsa.d2k.modules.core.datatype.model.Model;
+import ncsa.d2k.modules.core.datatype.table.ExampleTable;
+import ncsa.d2k.modules.core.prediction.decisiontree.ScalarViewableDTNode;
+import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTNode;
 
-public class DecisionTreeNode implements java.io.Serializable, ScalarViewableDTNode {
 
-  int index;
-  int depth;
-  int numExamples;
-  ExampleTable examples;
-  Model model;
-  Decomposition decomposition;
-  DecisionTreeNode root = null;
-  DecisionTreeNode parent = null;
-  DecisionTreeNode childNode1 = null;
-  DecisionTreeNode childNode2 = null;
-  double error;
-  double bestErrorReduction;
+/**
+ * A node of a decision tree.
+ *
+ * @author  $Author$
+ * @version $Revision$, $Date$
+ */
+public class DecisionTreeNode implements java.io.Serializable,
+                                         ScalarViewableDTNode {
 
-  double[] outputMins;
-  double[] outputMaxs;
-  double[] outputMeans;
+   //~ Static fields/initializers **********************************************
 
-  DecisionTreeNode() {
-  }
+   /** Use serialVersionUID for interoperability. */
+   static private final long serialVersionUID = 3986627339577665068L;
 
-  DecisionTreeNode(int index, int depth) {
-    this.index = index;
-    this.depth = depth;
-  }
+   //~ Instance fields *********************************************************
 
-  /**
-   * Get the total number of examples that passed through this node.
-   * @return the total number of examples that passes through this node
-   */
-  public int getTotal() {
-    return this.numExamples;
-  }
+   /** Description of field bestErrorReduction. */
+   double bestErrorReduction;
 
-  /**
-          Get the label of this node.
-          @return the label of this node
-   */
-  public String getLabel() {
-    return "Node " + index;
-  }
+   /** child 1 */
+   DecisionTreeNode childNode1 = null;
 
-  /**
-          Get the depth of this node. (Root is 0)
-          @return the depth of this node.
-   */
-  public int getDepth() {
-    return depth;
-  }
+   /** child 2 */
+   DecisionTreeNode childNode2 = null;
 
-  /**
-          Get the parent of this node.
-   */
-  public ViewableDTNode getViewableParent() {
-    return this.parent;
-  }
+   /** decomposition. */
+   Decomposition decomposition;
 
-  /**
-          Get a child of this node.
-          @param i the index of the child to get
-          @return the ith child of this node
-   */
-  public ViewableDTNode getViewableChild(int i) {
-    if (i == 0)
-      return this.childNode2;
-    else
-    if (i == 1)
-      return this.childNode1;
-    else
-      return null;
+   /** depth of node. */
+   int depth;
 
-  }
+   /** error of node. */
+   double error;
 
-  /**
-          Get the number of children of this node.
-          @return the number of children of this node
-   */
-  public int getNumChildren() {
-    if (decomposition == null)
-      return 0;
-    else
-      return 2;
-  }
+   /** examples. */
+   ExampleTable examples;
 
-  /**
-          Get the label of a branch.
-          @param i the branch to get the label of
-          @return the label of branch i
-   */
-  public String getBranchLabel(int i) {
-    int inputIndex = decomposition.inputIndex;
-    String inputName = model.getInputFeatureName(inputIndex);
+   /** index. */
+   int index;
 
-    double value = decomposition.value;
-    int intValue = (int) (value * 100);
-    value = intValue / 100.0;
-    if (i == 0) {
-      return inputName + " < " + value;
-    }
-    else
-    if (i == 1) {
-      return inputName + " >= " + value;
-    }
-    else
-      return "";
-  }
+   /** model */
+   Model model;
 
-  // Following methods were added so that "internals" could
-  // be accessed by a class not in the package.
+   /** the number of examples. */
+   int numExamples;
 
-  /**
-    Get a child of this node.
-    @param i The index of the child.
-        @return The ith child of this node, where i=0 returns first child.
-   */
-  public DecisionTreeNode getChildNode(int i) {
-    if (i == 0) {
-      return this.childNode1;
-    }
-    else if (i == 1) {
-      return this.childNode2;
-    }
-    else {
-      return null;
-    }
-  }
+   /** outputMaxs. */
+   double[] outputMaxs;
 
-  /**
-    Get the Decomposition object associated with the node.
-        @return The Decomposition object associated with this node,
-        or null if this is a leaf node.
-   */
-  public Decomposition getDecomposition() {
-    return decomposition;
-  }
+   /** outputMeans. */
+   double[] outputMeans;
 
-  /**
-    Get the Model object associated with the node.
-        @return The Model object associated with this node.
-   */
-  public Model getModel() {
-    return model;
-  }
+   /** outputMins. */
+   double[] outputMins;
 
-  public double[] getMinimumValues() {
-    return root.outputMins;
-  }
+   /** parent. */
+   DecisionTreeNode parent = null;
 
-  public double[] getMaximumValues() {
-    return root.outputMaxs;
-  }
+   /** root. */
+   DecisionTreeNode root = null;
 
-  public double getError() {
-    return error;
-  }
+   //~ Constructors ************************************************************
 
-  public double getErrorReduction() {
-    return bestErrorReduction;
-  }
-}
+   /**
+    * Creates a new DecisionTreeNode object.
+    */
+   DecisionTreeNode() { }
+
+   /**
+    * Creates a new DecisionTreeNode object.
+    *
+    * @param index Description of parameter index.
+    * @param depth depth of node
+    */
+   DecisionTreeNode(int index, int depth) {
+      this.index = index;
+      this.depth = depth;
+   }
+
+   //~ Methods *****************************************************************
+
+   /**
+    * Get the label of a branch.
+    *
+    * @param  i the branch to get the label of
+    *
+    * @return the label of branch i
+    */
+   public String getBranchLabel(int i) {
+      int inputIndex = decomposition.inputIndex;
+      String inputName = model.getInputFeatureName(inputIndex);
+
+      double value = decomposition.value;
+      int intValue = (int) (value * 100);
+      value = intValue / 100.0;
+
+      if (i == 0) {
+         return inputName + " < " + value;
+      } else if (i == 1) {
+         return inputName + " >= " + value;
+      } else {
+         return "";
+      }
+   }
+
+   // Following methods were added so that "internals" could
+   // be accessed by a class not in the package.
+
+   /**
+    * Get a child of this node.
+    *
+    * @param  i The index of the child.
+    *
+    * @return The ith child of this node, where i=0 returns first child.
+    */
+   public DecisionTreeNode getChildNode(int i) {
+
+      if (i == 0) {
+         return this.childNode1;
+      } else if (i == 1) {
+         return this.childNode2;
+      } else {
+         return null;
+      }
+   }
+
+   /**
+    * Get the Decomposition object associated with the node.
+    *
+    * @return The Decomposition object associated with this node, or null if
+    *         this is a leaf node.
+    */
+   public Decomposition getDecomposition() { return decomposition; }
+
+   /**
+    * Get the depth of this node. (Root is 0)
+    *
+    * @return the depth of this node.
+    */
+   public int getDepth() { return depth; }
+
+   /**
+    * get the error
+    *
+    * @return the error
+    */
+   public double getError() { return error; }
+
+   /**
+    * Get the error reduction
+    *
+    * @return error reduction
+    */
+   public double getErrorReduction() { return bestErrorReduction; }
+
+   /**
+    * Get the label of this node.
+    *
+    * @return the label of this node
+    */
+   public String getLabel() { return "Node " + index; }
+
+   /**
+    * Description of method getMaximumValues.
+    *
+    * @return Description of return value.
+    */
+   public double[] getMaximumValues() { return root.outputMaxs; }
+
+   /**
+    * Get the minimum output values
+    *
+    * @return minimum output values
+    */
+   public double[] getMinimumValues() { return root.outputMins; }
+
+   /**
+    * Get the Model object associated with the node.
+    *
+    * @return The Model object associated with this node.
+    */
+   public Model getModel() { return model; }
+
+   /**
+    * Get the number of children of this node.
+    *
+    * @return the number of children of this node
+    */
+   public int getNumChildren() {
+
+      if (decomposition == null) {
+         return 0;
+      } else {
+         return 2;
+      }
+   }
+
+   /**
+    * Get the total number of examples that passed through this node.
+    *
+    * @return the total number of examples that passes through this node
+    */
+   public int getTotal() { return this.numExamples; }
+
+   /**
+    * Get a child of this node.
+    *
+    * @param  i the index of the child to get
+    *
+    * @return the ith child of this node
+    */
+   public ViewableDTNode getViewableChild(int i) {
+
+      if (i == 0) {
+         return this.childNode2;
+      } else if (i == 1) {
+         return this.childNode1;
+      } else {
+         return null;
+      }
+
+   }
+
+   /**
+    * Get the parent of this node.
+    *
+    * @return get the parent of this node.
+    */
+   public ViewableDTNode getViewableParent() { return this.parent; }
+} // end class DecisionTreeNode
