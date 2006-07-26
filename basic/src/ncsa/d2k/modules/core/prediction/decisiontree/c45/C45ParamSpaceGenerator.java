@@ -1,4 +1,4 @@
-/* 
+/*
  * $Header$
  *
  * ===================================================================
@@ -6,17 +6,17 @@
  * D2K-Workflow
  * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
  * ILLINOIS. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License v2.0
  * as published by the Free Software Foundation and with the required
  * interpretation regarding derivative works as described below.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License v2.0 for more details.
- * 
+ *
  * This program and the accompanying materials are made available
  * under the terms of the GNU General Public License v2.0 (GPL v2.0)
  * which accompanies this distribution and is available at
@@ -34,7 +34,7 @@
  * make those components a derivative work of D2K-Workflow.
  * (Examples of such independently developed components include for
  * example, external databases or metadata and provenance stores).
- * 
+ *
  * Note: A non-GPL commercially licensed version of contributions
  * from the UNIVERSITY OF ILLINOIS may be available from the
  * designated commercial licensee RiverGlass, Inc. located at
@@ -52,8 +52,8 @@ import ncsa.d2k.modules.core.prediction.AbstractParamSpaceGenerator;
 
 
 /**
- *  Generate a parameter space for c4.5 decision tree module.  The minimum leaf ratio is the
- * only parameter.
+ * Generate a parameter space for c4.5 decision tree module. The minimum leaf
+ * ratio is the only parameter.
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -86,19 +86,23 @@ public class C45ParamSpaceGenerator extends AbstractParamSpaceGenerator {
       return psi;
    }
 
+
    /**
-    * the name of this module
+    * Returns the name of the module that is appropriate for end-user
+    * consumption.
     *
-    * @return the name of this module
+    * @return The name of the module.
     */
    public String getModuleName() {
       return "C4.5 Decision Tree Param Space Generator";
    }
 
    /**
-    * Return a list of the property descriptions.
+    * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    * objects for each property of the module.
     *
-    * @return a list of the property descriptions.
+    * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    *         objects.
     */
    public PropertyDescription[] getPropertiesDescriptions() {
       PropertyDescription[] pds = new PropertyDescription[1];

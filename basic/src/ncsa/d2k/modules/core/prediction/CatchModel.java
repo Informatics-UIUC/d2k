@@ -60,21 +60,24 @@ public class CatchModel extends ModelSelectorModule {
 
    //~ Instance fields *********************************************************
 
-   /** the model module */
+   /** the model module. */
    private ModelModule theModel;
 
    //~ Methods *****************************************************************
 
-
    /**
-    * Pre-execution initializations and cleanup.
+    * Called by the D2K Infrastructure before the itinerary begins to execute.
     */
    public void beginExecution() { theModel = null; }
 
+
    /**
-    * Pull in a model and keep a reference to it
+    * Performs the main work of the module.
+    *
+    * @throws Exception if a problem occurs while performing the work of the
+    *                   module
     */
-   public void doit() {
+   public void doit() throws Exception {
       ModelModule mm = (ModelModule) pullInput(0);
 
       if (mm.getAlias() == null) {
@@ -85,12 +88,13 @@ public class CatchModel extends ModelSelectorModule {
       theModel = mm;
    }
 
+
    /**
-    * Get a description of an input
+    * Returns a description of the input at the specified index.
     *
-    * @param  i input index
+    * @param  i Index of the input for which a description should be returned.
     *
-    * @return Description of the input
+    * @return <code>String</code> describing the input at the specified index.
     */
    public String getInputInfo(int i) {
 
@@ -104,12 +108,14 @@ public class CatchModel extends ModelSelectorModule {
       }
    }
 
+
    /**
-    * Get the name of an input
+    * Returns the name of the input at the specified index.
     *
-    * @param  i the input index
+    * @param  i Index of the input for which a name should be returned.
     *
-    * @return Name of the input
+    * @return <code>String</code> containing the name of the input at the
+    *         specified index.
     */
    public String getInputName(int i) {
 
@@ -123,10 +129,13 @@ public class CatchModel extends ModelSelectorModule {
       }
    }
 
+
    /**
-    * The types of inputs to this module
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the input at the corresponding index.
     *
-    * @return a String[] containing the classes of the inputs
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the input at the corresponding index.
     */
    public String[] getInputTypes() {
       String[] types = { "ncsa.d2k.modules.PredictionModelModule" };
@@ -146,10 +155,11 @@ public class CatchModel extends ModelSelectorModule {
       return mod;
    }
 
+
    /**
-    * Description of the module's function
+    * Describes the purpose of the module.
     *
-    * @return Description of the module's function
+    * @return <code>String</code> describing the purpose of the module.
     */
    public String getModuleInfo() {
       StringBuffer sb = new StringBuffer("<p>Overview: ");
@@ -172,18 +182,20 @@ public class CatchModel extends ModelSelectorModule {
    }
 
    /**
-    * the name of this module
+    * Returns the name of the module that is appropriate for end-user
+    * consumption.
     *
-    * @return the name of this module
+    * @return The name of the module.
     */
    public String getModuleName() { return "Catch Model"; }
 
+
    /**
-    * Description of the outputs
+    * Returns a description of the output at the specified index.
     *
-    * @param  i output index
+    * @param  i Index of the output for which a description should be returned.
     *
-    * @return the description of the output
+    * @return <code>String</code> describing the output at the specified index.
     */
    public String getOutputInfo(int i) {
 
@@ -194,12 +206,14 @@ public class CatchModel extends ModelSelectorModule {
       }
    }
 
+
    /**
-    * the name of the output
+    * Returns the name of the output at the specified index.
     *
-    * @param  i the output index
+    * @param  i Index of the output for which a description should be returned.
     *
-    * @return name of the output
+    * @return <code>String</code> containing the name of the output at the
+    *         specified index.
     */
    public String getOutputName(int i) {
 
@@ -210,10 +224,13 @@ public class CatchModel extends ModelSelectorModule {
       }
    }
 
+
    /**
-    * The types of inputs to this module
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the output at the corresponding index.
     *
-    * @return a String[] containing the classes of the inputs
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the output at the corresponding index.
     */
    public String[] getOutputTypes() { return null; }
 } // end class CatchModel
