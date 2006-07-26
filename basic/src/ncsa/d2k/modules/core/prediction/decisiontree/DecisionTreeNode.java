@@ -1,407 +1,574 @@
+/* 
+ * $Header$
+ *
+ * ===================================================================
+ *
+ * D2K-Workflow
+ * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
+ * ILLINOIS. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License v2.0
+ * as published by the Free Software Foundation and with the required
+ * interpretation regarding derivative works as described below.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License v2.0 for more details.
+ * 
+ * This program and the accompanying materials are made available
+ * under the terms of the GNU General Public License v2.0 (GPL v2.0)
+ * which accompanies this distribution and is available at
+ * http://www.gnu.org/copyleft/gpl.html (or via mail from the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.), with the special and mandatory
+ * interpretation that software only using the documented public
+ * Application Program Interfaces (APIs) of D2K-Workflow are not
+ * considered derivative works under the terms of the GPL v2.0.
+ * Specifically, software only calling the D2K-Workflow Itinerary
+ * execution and workflow module APIs are not derivative works.
+ * Further, the incorporation of published APIs of other
+ * independently developed components into D2K Workflow code
+ * allowing it to use those separately developed components does not
+ * make those components a derivative work of D2K-Workflow.
+ * (Examples of such independently developed components include for
+ * example, external databases or metadata and provenance stores).
+ * 
+ * Note: A non-GPL commercially licensed version of contributions
+ * from the UNIVERSITY OF ILLINOIS may be available from the
+ * designated commercial licensee RiverGlass, Inc. located at
+ * (www.riverglassinc.com)
+ * ===================================================================
+ *
+ */
 package ncsa.d2k.modules.core.prediction.decisiontree;
 
-import java.io.*;
-import java.util.*;
+import ncsa.d2k.modules.core.datatype.table.Table;
 
-import ncsa.d2k.modules.core.datatype.table.*;
+import java.io.Serializable;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 
 /**
- A DecisionTree is made up of DecisionTreeNodes.
+ * A DecisionTree is made up of DecisionTreeNodes.
+ *
+ * @author  $Author$
+ * @version $Revision$, $Date$
  */
 public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
 
-  protected DecisionTreeNode parent = null;
+   //~ Static fields/initializers **********************************************
 
-  protected static final String UNKNOWN = "Unknown";
+   /** Use serialVersionUID for interoperability. */
+   static private final long serialVersionUID = -298541104562979279L;
 
-  /** The list of children of this node */
-  protected ArrayList children;
-  /** The labels for the branches for the children */
-  protected ArrayList branchLabels;
+   /** constant for unknown. */
+   static protected final String UNKNOWN = "Unknown";
 
-  /** The label of this node.  If this is a leaf, this is the
-  value of the class that this leaf represents.  Otherwise
-  this is the name of the attribute that this node splits on */
-  protected String label;
+   //~ Instance fields *********************************************************
 
-  /** The tallies for the records that pass through this node */
-  //protected HashMap outputValueTallies;
+   /** The labels for the branches for the children. */
+   protected ArrayList branchLabels;
 
-  protected HashMap outputIndexLookup;
-  protected String[] outputValues;
-  protected int[] outputTallies;
+   /** The list of children of this node. */
+   protected ArrayList children;
 
-  protected boolean training;
+   /**
+    * The label of this node. If this is a leaf, this is the value of the class
+    * that this leaf represents. Otherwise this is the name of the attribute
+    * that this node splits on
+    */
+   protected String label;
 
-  protected int numCorrect;
-  protected int numIncorrect;
-  protected int numTrainingExamples;
+   /** number of correct predictions. */
+   protected int numCorrect;
 
-  /**
-  Create a new DecisionTreeNode.
-  */
-  DecisionTreeNode() {
-    children = new ArrayList();
-    branchLabels = new ArrayList();
-    //outputValueTallies = new HashMap();
+   /** number of incorrect predictions. */
+   protected int numIncorrect;
 
-    //childIndexLookup = new HashMap();
-    //childNumTrainingExamples = new int[0];
+   /** number of training examples to pass through this node. */
+   protected int numTrainingExamples;
 
-    outputIndexLookup = new HashMap();
-    outputValues = new String[0];
-    outputTallies = new int[0];
-    training = true;
-    numCorrect = 0;
-    numIncorrect = 0;
-  }
+   /** The tallies for the records that pass through this node. */
+   // protected HashMap outputValueTallies;
 
-  /**
-  Create a new DecisionTreeNode with the given label.
-  @param lbl the label to use for this node.
-  */
-  DecisionTreeNode(String lbl) {
-    this();
-    label = lbl;
-  }
+   /** output index map. */
+   protected HashMap outputIndexLookup;
 
-  /**
-  Create a new DecisionTreeNode with the given label.
-  @param lbl the label to use for this node.
-  @param prnt the parent node
-  */
-  DecisionTreeNode(String lbl, DecisionTreeNode prnt) {
-    this(lbl);
-    parent = prnt;
-  }
+   /** counts of the outputs. */
+   protected int[] outputTallies;
 
-  public void setTraining(boolean b) {
-    training = b;
-    for(int i = 0; i < getNumChildren(); i++)
-      getChild(i).setTraining(b);
-  }
+   /** unique output values. */
+   protected String[] outputValues;
 
-  public boolean getTraining() {
-    return training;
-  }
+   /** parent. */
+   protected DecisionTreeNode parent = null;
 
-  public int getNumCorrect() {
-    return numCorrect;
-  }
+   /** true when in training phase. */
+   protected boolean training;
 
-  public int getNumIncorrect() {
-    return numIncorrect;
-  }
+   //~ Constructors ************************************************************
 
-  protected final static String[] expandStringArray(String[] oldArray) {
-    String[] retVal = new String[oldArray.length+1];
-    System.arraycopy(oldArray, 0, retVal, 0, oldArray.length);
-    return retVal;
-  }
+   /**
+    * Create a new DecisionTreeNode.
+    */
+   DecisionTreeNode() {
+      children = new ArrayList();
+      branchLabels = new ArrayList();
+      // outputValueTallies = new HashMap();
 
-  protected final static int[] expandIntArray(int[] oldArray) {
-    int[] retVal = new int[oldArray.length+1];
-    System.arraycopy(oldArray, 0, retVal, 0, oldArray.length);
-    return retVal;
-  }
+      // childIndexLookup = new HashMap();
+      // childNumTrainingExamples = new int[0];
 
-  public String[] getOutputValues() {
-    return outputValues;
-  }
+      outputIndexLookup = new HashMap();
+      outputValues = new String[0];
+      outputTallies = new int[0];
+      training = true;
+      numCorrect = 0;
+      numIncorrect = 0;
+   }
 
-  /**
-  Get the count of the number of records with the given
-  output value that passed through this node.
-  @param outputVal the unique output value to get the tally of
-  @return the count of the number of records with the
-   given output value that passed through this node
-   */
-  public int getOutputTally(String outputVal) throws Exception {
-  /*Integer i = (Integer)outputValueTallies.get(outputVal);
-  if(i == null)
-   return 0;
-  return i.intValue();
-  */
-    Integer index = (Integer) outputIndexLookup.get(outputVal);
-    if(index == null)
-      return 0;
-    return outputTallies[index.intValue()];
-  }
+   /**
+    * Create a new DecisionTreeNode with the given label.
+    *
+    * @param lbl the label to use for this node.
+    */
+   DecisionTreeNode(String lbl) {
+      this();
+      label = lbl;
+   }
 
-  /**
-   * Get the total number of examples that passed through this node.
-   * @return the total number of examples that passes through this node
-   */
-  public int getTotal() {
-    int tot = 0;
-  /*Iterator iter = outputValueTallies.values().iterator();
-  while(iter.hasNext()) {
-   Integer tal = (Integer)iter.next();
-   tot += tal.intValue();
-  }
-  return tot;
-  */
-    for(int i = 0; i < outputTallies.length; i++) {
-      tot += outputTallies[i];
-    }
-    return tot;
-  }
+   /**
+    * Create a new DecisionTreeNode with the given label.
+    *
+    * @param lbl  the label to use for this node.
+    * @param prnt the parent node
+    */
+   DecisionTreeNode(String lbl, DecisionTreeNode prnt) {
+      this(lbl);
+      parent = prnt;
+   }
 
-  public DecisionTreeNode getChildWithMostTrainingExamples() {
-    int numTE = Integer.MIN_VALUE;
-    DecisionTreeNode node = null;
+   //~ Methods *****************************************************************
 
-    for(int i = 0; i < getNumChildren(); i++) {
-      if(getChild(i).getNumTrainingExamples() >= numTE) {
-        node = getChild(i);
-        numTE = node.getNumTrainingExamples();
+   /**
+    * Create a int[] with one extra slot. copy original contents
+    *
+    * @param  oldArray original
+    *
+    * @return new copy of size+1 with original contents
+    */
+   static protected final int[] expandIntArray(int[] oldArray) {
+      int[] retVal = new int[oldArray.length + 1];
+      System.arraycopy(oldArray, 0, retVal, 0, oldArray.length);
+
+      return retVal;
+   }
+
+   /**
+    * Create a string[] with one extra slot. copy original contents
+    *
+    * @param  oldArray original
+    *
+    * @return new copy of size+1 with original contents
+    */
+   static protected final String[] expandStringArray(String[] oldArray) {
+      String[] retVal = new String[oldArray.length + 1];
+      System.arraycopy(oldArray, 0, retVal, 0, oldArray.length);
+
+      return retVal;
+   }
+
+   /**
+    * get the number of training examples.
+    *
+    * @return the number of training examples
+    */
+   int getNumTrainingExamples() { return numTrainingExamples; }
+
+   /**
+    * Increment the output tally for the given output value.
+    *
+    * @param outputVal the output value to increment
+    * @param correct   Description of parameter correct.
+    */
+   protected void incrementOutputTally(String outputVal, boolean correct) {
+      /*Integer i = (Integer)outputValueTallies.get(outputVal);
+       * if(i == null) { outputValueTallies.put(outputVal, new Integer(1)); }
+       * else { int tal = i.intValue(); tal++; outputValueTallies.put(outputVal,
+       * new Integer(tal)); } if(parent != null)
+       * parent.incrementOutputTally(outputVal);
+       */
+
+      if (training) {
+         numTrainingExamples++;
+
+         if (correct) {
+            numCorrect++;
+         } else {
+            numIncorrect++;
+         }
       }
-    }
-    return node;
-  }
 
-  /**
-  Increment the output tally for the given output value
-  @param outputVal the output value to increment
-  */
-  protected void incrementOutputTally(String outputVal, boolean correct) {
-  /*Integer i = (Integer)outputValueTallies.get(outputVal);
-  if(i == null) {
-   outputValueTallies.put(outputVal, new Integer(1));
-  }
-  else {
-   int tal = i.intValue();
-   tal++;
-   outputValueTallies.put(outputVal, new Integer(tal));
-  }
-  if(parent != null)
-   parent.incrementOutputTally(outputVal);
-  */
+      Integer index = (Integer) outputIndexLookup.get(outputVal);
 
-    if(training) {
-      numTrainingExamples++;
-      if(correct)
-        numCorrect++;
-      else
-        numIncorrect++;
-    }
+      // create a new one
+      if (index == null) {
+         outputIndexLookup.put(outputVal, new Integer(outputValues.length));
+         outputValues = expandStringArray(outputValues);
+         outputValues[outputValues.length - 1] = outputVal;
+         outputTallies = expandIntArray(outputTallies);
+         outputTallies[outputTallies.length - 1] = 1;
+      } else {
+         outputTallies[index.intValue()]++;
+      }
 
-    Integer index = (Integer)outputIndexLookup.get(outputVal);
-    // create a new one
-    if(index == null) {
-      outputIndexLookup.put(outputVal, new Integer(outputValues.length));
-      outputValues = expandStringArray(outputValues);
-      outputValues[outputValues.length-1] = outputVal;
-      outputTallies = expandIntArray(outputTallies);
-      outputTallies[outputTallies.length-1] = 1;
-    }
-    else {
-      outputTallies[index.intValue()]++;
-    }
-    if(parent != null)
-      parent.incrementOutputTally(outputVal, correct);
-  }
+      if (parent != null) {
+         parent.incrementOutputTally(outputVal, correct);
+      }
+   } // end method incrementOutputTally
 
-  /**
-   * Explicitly set the output tally for this node.  Does not increment
-   * the output tally of the parent node.
-   * @param outputVal the output value
-   * @param tally the tally
-   */
-  public void setOutputTally(String outputVal, int tally) {
-    Integer index = (Integer) outputIndexLookup.get(outputVal);
-    // create a new one
-    if (index == null) {
-      outputIndexLookup.put(outputVal, new Integer(outputValues.length));
-      outputValues = expandStringArray(outputValues);
-      outputValues[outputValues.length-1] = outputVal;
-      outputTallies = expandIntArray(outputTallies);
-      outputTallies[outputTallies.length-1] = tally;
-    }
-    else {
-      outputTallies[index.intValue()] = tally;
-    }
-  }
+   /**
+    * Add a branch to this node, given the label of the branch and the child
+    * node. For a CategoricalDecisionTreeNode, the label of the branch is the
+    * same as the value used to determine the split at this node.
+    *
+    * @param val   the label of the branch
+    * @param child the child node
+    */
+   public abstract void addBranch(String val, DecisionTreeNode child);
 
-  public ViewableDTNode getViewableParent() {
-    return (ViewableDTNode) parent;
-  }
+   /**
+    * Add left and right children to this node.
+    *
+    * @param split      the split value for this node
+    * @param leftlabel  the label for the left branch
+    * @param left       the left child
+    * @param rightlabel the label for the right branch
+    * @param right      the right child
+    */
+   public abstract void addBranches(double split, String leftlabel,
+                                    DecisionTreeNode left, String rightlabel,
+                                    DecisionTreeNode right);
 
-  /**
-        Get the parent of this node.
-        */
-  public DecisionTreeNode getParent() {
-    return parent;
-  }
+   /**
+    * Evaluate a record from the data set. If this is a leaf, return the label
+    * of this node. Otherwise find the column of the table that represents the
+    * attribute that this node evaluates. Call evaluate() on the appropriate
+    * child.
+    *
+    * @param  vt  the Table with the data
+    * @param  row the row of the table to evaluate
+    *
+    * @return the result of evaluating the record
+    */
+   public abstract Object evaluate(Table vt, int row);
 
-  /**
-  Set the parent of this node.
-  */
-  public void setParent(DecisionTreeNode p) {
-    parent = p;
-  }
+   /**
+    * setBranch.
+    *
+    * @param branchNum Description of parameter branchNum.
+    * @param val       Description of parameter val.
+    * @param child     Description of parameter child.
+    */
+   public abstract void setBranch(int branchNum, String val,
+                                  DecisionTreeNode child);
 
-  /**
-  Set the label of this node.
-  @param s the new label
-  */
-  public void setLabel(String s) {
-    label = s;
-  }
+   /**
+    * Clear the values from this node and its children.
+    */
+   public void clear() {
 
-  /**
-  Get the label of this node.
-  @return the label of this node
-  */
-  public String getLabel() {
-    return label;
-  }
+      // outputValueTallies.clear();
+      outputIndexLookup.clear();
+      outputValues = new String[0];
+      outputTallies = new int[0];
 
-  /**
-  Get the label of a branch.
-  @param i the branch to get the label of
-  @return the label of branch i
-  */
-  public String getBranchLabel(int i) {
-    return (String)branchLabels.get(i);
-  }
+      numCorrect = 0;
+      numIncorrect = 0;
+      numTrainingExamples = 0;
 
-  /**
-  Get the number of children of this node.
-  @return the number of children of this node
-  */
-  public int getNumChildren() {
-    return children.size();
-  }
+      for (int i = 0; i < children.size(); i++) {
+         ((DecisionTreeNode) children.get(i)).clear();
+      }
+   }
 
-  /**
-  Get a child of this node.
-  @param i the index of the child to get
-  @return the ith child of this node
-  */
-  public DecisionTreeNode getChild(int i) {
-    return (DecisionTreeNode)children.get(i);
-  }
+   /**
+    * Get the label of a branch.
+    *
+    * @param  i the branch to get the label of
+    *
+    * @return the label of branch i
+    */
+   public String getBranchLabel(int i) { return (String) branchLabels.get(i); }
 
-  /**
-  Get a child of this node as a ViewableDTNode.
-  @param i the index of the child to get
-  @return the ith child of this node
-  */
-  public ViewableDTNode getViewableChild(int i){
-    return (ViewableDTNode)children.get(i);
-  }
+   /**
+    * Get a child of this node.
+    *
+    * @param  i the index of the child to get
+    *
+    * @return the ith child of this node
+    */
+   public DecisionTreeNode getChild(int i) {
+      return (DecisionTreeNode) children.get(i);
+   }
 
-  /**
-  Evaluate a record from the data set.  If this is a leaf, return the
-  label of this node.  Otherwise find the column of the table that
-  represents the attribute that this node evaluates.  Call evaluate()
-  on the appropriate child.
+   /**
+    * Get the child with the most training examples.
+    *
+    * @return the child with the most training examples
+    */
+   public DecisionTreeNode getChildWithMostTrainingExamples() {
+      int numTE = Integer.MIN_VALUE;
+      DecisionTreeNode node = null;
 
-  @param vt the Table with the data
-  @param row the row of the table to evaluate
-  @return the result of evaluating the record
-  */
-  abstract public Object evaluate(Table vt, int row);
+      for (int i = 0; i < getNumChildren(); i++) {
 
-  /**
-  Add a branch to this node, given the label of the branch and
-  the child node.  For a CategoricalDecisionTreeNode, the label
-  of the branch is the same as the value used to determine the split
-  at this node.
-  @param val the label of the branch
-  @param child the child node
-  */
-  abstract public void addBranch(String val, DecisionTreeNode child);
+         if (getChild(i).getNumTrainingExamples() >= numTE) {
+            node = getChild(i);
+            numTE = node.getNumTrainingExamples();
+         }
+      }
 
-  abstract public void setBranch(int branchNum, String val, DecisionTreeNode child);
+      return node;
+   }
 
-  /**
-  Add left and right children to this node.
-  @param split the split value for this node
-  @param leftLabel the label for the left branch
-  @param left the left child
-  @param rightLabel the label for the right branch
-  @param right the right child
-  */
-  abstract public void addBranches(double split, String leftlabel,
-                                   DecisionTreeNode left, String rightlabel, DecisionTreeNode right);
+   /**
+    * Get the depth of this node.
+    *
+    * @return the depth of this node.
+    */
+   public int getDepth() {
 
-  /**
-  Return true if this is a leaf, false otherwise.
-  @return true if this is a leaf, false otherwise
-  */
-  public boolean isLeaf() {
-    return (children.size() == 0);
-  }
+      if (parent == null) {
+         return 0;
+      }
 
-  /**
-  Get the depth of this node.
-  @return the depth of this node.
-  */
-  public int getDepth() {
-    if(parent == null)
-      return 0;
-    return parent.getDepth() + 1;
-  }
+      return parent.getDepth() + 1;
+   }
 
-  int getNumTrainingExamples() {
-    return numTrainingExamples;
-  }
+   /**
+    * Get the label of this node.
+    *
+    * @return the label of this node
+    */
+   public String getLabel() { return label; }
 
-  /**
-  FIX ME
- /
- public static void delete(DecisionTreeNode nde) {
- // for each child
- // delete child
- // remove pointer from children list
- }*/
+   /**
+    * Get the number of children of this node.
+    *
+    * @return the number of children of this node
+    */
+   public int getNumChildren() { return children.size(); }
 
-  public void print() {
-    System.out.println("Depth: "+getDepth());
-    System.out.print("\tLabel: "+getLabel());
-    if(parent != null)
-      System.out.println("\t\tParent: "+parent.getLabel());
-    else
-      System.out.println("");
-    for(int i = 0; i < getNumChildren(); i++) {
-      System.out.print("\t\tBranch: "+branchLabels.get(i));
-      System.out.println("\t\t\tNode: "+getChild(i).getLabel());
-    }
-    for(int i = 0; i < getNumChildren(); i++)
-      getChild(i).print();
-  }
+   /**
+    * Get the number of correct.
+    *
+    * @return the number correct
+    */
+   public int getNumCorrect() { return numCorrect; }
 
-  public void print(Writer out) throws Exception {
-    out.write("Depth: "+getDepth()+"\n");
-    out.write("\tLabel: "+getLabel()+"\n");
-    if(parent != null)
-      out.write("\t\tParent: "+parent.getLabel()+"\n");
-    else
-      out.write("");
-    for(int i = 0; i < getNumChildren(); i++) {
-      out.write("\t\tBranch: "+branchLabels.get(i)+"\n");
-      out.write("\t\t\tNode: "+getChild(i).getLabel()+"\n");
-    }
-    for(int i = 0; i < getNumChildren(); i++)
-      getChild(i).print(out);
-  }
+   /**
+    * Get the number incorrect.
+    *
+    * @return the number incorrect
+    */
+   public int getNumIncorrect() { return numIncorrect; }
 
-  /**
-   * Clear the values from this node and its children.
-   */
-  public void clear() {
-    //outputValueTallies.clear();
-    outputIndexLookup.clear();
-    outputValues = new String[0];
-    outputTallies = new int[0];
+   /**
+    * Get the count of the number of records with the given output value that
+    * passed through this node.
+    *
+    * @param  outputVal the unique output value to get the tally of
+    *
+    * @return the count of the number of records with the given output value
+    *         that passed through this node
+    *
+    * @throws Exception Description of exception Exception.
+    */
+   public int getOutputTally(String outputVal) throws Exception {
 
-    numCorrect = 0;
-    numIncorrect = 0;
-    numTrainingExamples = 0;
+      /*Integer i = (Integer)outputValueTallies.get(outputVal);
+       * if(i == null) return 0; return i.intValue();
+       */
+      Integer index = (Integer) outputIndexLookup.get(outputVal);
 
-    for(int i = 0; i < children.size(); i++)
-      ((DecisionTreeNode)children.get(i)).clear();
-  }
-}
+      if (index == null) {
+         return 0;
+      }
+
+      return outputTallies[index.intValue()];
+   }
+
+   /**
+    * Get the unqiue output classes.
+    *
+    * @return the unique output classes
+    */
+   public String[] getOutputValues() { return outputValues; }
+
+   /**
+    * Get the parent of this node.
+    *
+    * @return get the parent of this node.
+    */
+   public DecisionTreeNode getParent() { return parent; }
+
+   /**
+    * Get the total number of examples that passed through this node.
+    *
+    * @return the total number of examples that passes through this node
+    */
+   public int getTotal() {
+      int tot = 0;
+
+      /*Iterator iter = outputValueTallies.values().iterator();
+       * while(iter.hasNext()) { Integer tal = (Integer)iter.next(); tot +=
+       * tal.intValue(); } return tot;
+       */
+      for (int i = 0; i < outputTallies.length; i++) {
+         tot += outputTallies[i];
+      }
+
+      return tot;
+   }
+
+   /**
+    * Return value of training.
+    *
+    * @return true if in training, false otherwise
+    */
+   public boolean getTraining() { return training; }
+
+   /**
+    * Get a child of this node as a ViewableDTNode.
+    *
+    * @param  i the index of the child to get
+    *
+    * @return the ith child of this node
+    */
+   public ViewableDTNode getViewableChild(int i) {
+      return (ViewableDTNode) children.get(i);
+   }
+
+   /**
+    * Description of return value.
+    *
+    * @return Description of return value.
+    */
+   public ViewableDTNode getViewableParent() { return (ViewableDTNode) parent; }
+
+   /**
+    * Return true if this is a leaf, false otherwise.
+    *
+    * @return true if this is a leaf, false otherwise
+    */
+   public boolean isLeaf() { return (children.size() == 0); }
+
+   /**
+    * FIX ME / public static void delete(DecisionTreeNode nde) { // for each
+    * child // delete child // remove pointer from children list }.
+    */
+
+   /**
+    * print tree to System.out.
+    */
+   public void print() {
+      System.out.println("Depth: " + getDepth());
+      System.out.print("\tLabel: " + getLabel());
+
+      if (parent != null) {
+         System.out.println("\t\tParent: " + parent.getLabel());
+      } else {
+         System.out.println("");
+      }
+
+      for (int i = 0; i < getNumChildren(); i++) {
+         System.out.print("\t\tBranch: " + branchLabels.get(i));
+         System.out.println("\t\t\tNode: " + getChild(i).getLabel());
+      }
+
+      for (int i = 0; i < getNumChildren(); i++) {
+         getChild(i).print();
+      }
+   }
+
+   /**
+    * print tree specified writer.
+    *
+    * @param  out writer
+    *
+    * @throws Exception when something goes wrong
+    */
+   public void print(Writer out) throws Exception {
+      out.write("Depth: " + getDepth() + "\n");
+      out.write("\tLabel: " + getLabel() + "\n");
+
+      if (parent != null) {
+         out.write("\t\tParent: " + parent.getLabel() + "\n");
+      } else {
+         out.write("");
+      }
+
+      for (int i = 0; i < getNumChildren(); i++) {
+         out.write("\t\tBranch: " + branchLabels.get(i) + "\n");
+         out.write("\t\t\tNode: " + getChild(i).getLabel() + "\n");
+      }
+
+      for (int i = 0; i < getNumChildren(); i++) {
+         getChild(i).print(out);
+      }
+   }
+
+   /**
+    * Set the label of this node.
+    *
+    * @param s the new label
+    */
+   public void setLabel(String s) { label = s; }
+
+   /**
+    * Explicitly set the output tally for this node. Does not increment the
+    * output tally of the parent node.
+    *
+    * @param outputVal the output value
+    * @param tally     the tally
+    */
+   public void setOutputTally(String outputVal, int tally) {
+      Integer index = (Integer) outputIndexLookup.get(outputVal);
+
+      // create a new one
+      if (index == null) {
+         outputIndexLookup.put(outputVal, new Integer(outputValues.length));
+         outputValues = expandStringArray(outputValues);
+         outputValues[outputValues.length - 1] = outputVal;
+         outputTallies = expandIntArray(outputTallies);
+         outputTallies[outputTallies.length - 1] = tally;
+      } else {
+         outputTallies[index.intValue()] = tally;
+      }
+   }
+
+   /**
+    * Set the parent of this node.
+    *
+    * @param p Description of parameter p.
+    */
+   public void setParent(DecisionTreeNode p) { parent = p; }
+
+   /**
+    * Set the training flag.
+    *
+    * @param b training value
+    */
+   public void setTraining(boolean b) {
+      training = b;
+
+      for (int i = 0; i < getNumChildren(); i++) {
+         getChild(i).setTraining(b);
+      }
+   }
+} // end class DecisionTreeNode
