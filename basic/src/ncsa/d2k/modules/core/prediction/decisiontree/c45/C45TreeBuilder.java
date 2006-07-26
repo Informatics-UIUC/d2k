@@ -64,18 +64,15 @@ import java.beans.PropertyVetoException;
  * @author  David Clutter
  * @version $Revision$, $Date$
  */
-
-/**
- *
- */
 public class C45TreeBuilder extends C45TreeBuilderOPT {
 
    //~ Methods *****************************************************************
 
    /**
-    * Build the decision tree.
+    * Performs the main work of the module.
     *
-    * @throws Exception when something goes wrong
+    * @throws Exception if a problem occurs while performing the work of the
+    *                   module
     */
    public void doit() throws Exception {
       table = (ExampleTable) pullInput(0);
@@ -141,10 +138,13 @@ public class C45TreeBuilder extends C45TreeBuilderOPT {
       // pushOutput(table, 1);
    } // end method doit
 
+
    /**
-    * The types of inputs to this module
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the input at the corresponding index.
     *
-    * @return a String[] containing the classes of the inputs
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the input at the corresponding index.
     */
    public String[] getInputTypes() {
       String[] in = {
@@ -160,7 +160,7 @@ public class C45TreeBuilder extends C45TreeBuilderOPT {
     * "ncsa.d2k.modules.core.datatype.table.ExampleTable"}; return out;}*/
 
    /**
-    * Get the minimum ratio per leaf
+    * Get the minimum ratio per leaf.
     *
     * @return the minimum ratio per leaf
     */
