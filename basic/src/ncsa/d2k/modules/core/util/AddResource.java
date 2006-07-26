@@ -1,91 +1,180 @@
+/* 
+ * $Header$
+ *
+ * ===================================================================
+ *
+ * D2K-Workflow
+ * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
+ * ILLINOIS. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License v2.0
+ * as published by the Free Software Foundation and with the required
+ * interpretation regarding derivative works as described below.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License v2.0 for more details.
+ * 
+ * This program and the accompanying materials are made available
+ * under the terms of the GNU General Public License v2.0 (GPL v2.0)
+ * which accompanies this distribution and is available at
+ * http://www.gnu.org/copyleft/gpl.html (or via mail from the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.), with the special and mandatory
+ * interpretation that software only using the documented public
+ * Application Program Interfaces (APIs) of D2K-Workflow are not
+ * considered derivative works under the terms of the GPL v2.0.
+ * Specifically, software only calling the D2K-Workflow Itinerary
+ * execution and workflow module APIs are not derivative works.
+ * Further, the incorporation of published APIs of other
+ * independently developed components into D2K Workflow code
+ * allowing it to use those separately developed components does not
+ * make those components a derivative work of D2K-Workflow.
+ * (Examples of such independently developed components include for
+ * example, external databases or metadata and provenance stores).
+ * 
+ * Note: A non-GPL commercially licensed version of contributions
+ * from the UNIVERSITY OF ILLINOIS may be available from the
+ * designated commercial licensee RiverGlass, Inc. located at
+ * (www.riverglassinc.com)
+ * ===================================================================
+ *
+ */
 package ncsa.d2k.modules.core.util;
 
-import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.DataPrepModule;
+import ncsa.d2k.core.modules.PropertyDescription;
+
 
 /**
- * a base class for modules that generate an object and then register it with
-* the resource manager.
-* the prepObj method must be overriden. the other methods are optional for overriding.
- * <p>Title: </p>
- * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2006</p>
- * <p>Company: </p>
- * @author vered
+ * A base class for modules that generate an object and then register it with
+ * the resource manager. the prepObj method must be overriden. The other methods
+ * are optional for overriding.
+ *
+ * @author  vered
  * @version 1.0
  */
-public abstract class AddResource  extends DataPrepModule{
-  public AddResource() {
-  }
+public abstract class AddResource extends DataPrepModule {
 
-  public String[] getInputTypes(){
-    String[] types = {};
-    return types;
-  }
+   //~ Instance fields *********************************************************
 
-  public String getInputName(int index){
-    switch(index){
-        default: return "no such input";
-    }
-  }
+   /** The rscID of the resoure manager. */
+   private String rscID;
 
+   //~ Constructors ************************************************************
 
-  public String getInputInfo(int index){
-    switch(index){
-        default: return "no such input";
-    }
-  }
+   /**
+    * Creates a new AddResource object.
+    */
+   public AddResource() { }
 
+   //~ Methods *****************************************************************
 
-  public String[] getOutputTypes(){
-    String[] types = {"java.lang.Object"};
-    return types;
-  }
-
-  public String getOutputName(int index){
-    switch(index){
-      case 0: return "Resource";
-        default: return "no such output";
-    }
-  }
+   /**
+    * Get the prepObject. Must be overridden.
+    *
+    * @return the prepObject.
+    */
+   protected abstract Object prepObject();
 
 
-  public String getOutputInfo(int index){
-    switch(index){
-      case 0: return "The resource prepared/loaded by this module.";
-        default: return "no such output";
-    }
-  }
+   /**
+    * Register the object and then push it out.
+    */
+   protected void doit() {
 
-public String getModuleName(){return "Add Resource Module";}
-  public String getModuleInfo(){return "This module adds an object as a resource, " +
-        "it registers the object as a resource with the Resource Manager identified " +
-  "by the String <i>Resource ID</i>.";
-}
+      Object obj = prepObject();
 
-  private String rscID;
-  public void setRscID(String id){rscID = id;}
-  public String getRscID(){return rscID;}
-
-  public PropertyDescription[] getPropertiesDescriptions()
-{
-       PropertyDescription[] pds = new PropertyDescription[1];
-       pds[0] = new PropertyDescription("rscID", "Resource ID",
-                                        "The resource ID for the object prepared/loaded by this module.");
-       return pds;
-}
+      if (obj != null) {
+         this.setResource(rscID, obj);
+         pushOutput(obj, 0);
+      } else {
+         System.out.println("Could not initialize the resource");
+      }
+   }
 
 
-  protected void doit(){
+   public String getInputInfo(int index) {
 
-    Object obj = prepObject();
-    if(obj != null){
-      this.setResource(rscID, obj);
-      pushOutput(obj, 0);
-    }else System.out.println("Could not initialize the resource");
-  }
+      switch (index) {
 
-  abstract protected Object prepObject();
+         default:
+            return "no such input";
+      }
+   }
 
+   public String getInputName(int index) {
 
+      switch (index) {
 
-}
+         default:
+            return "no such input";
+      }
+   }
+
+   public String[] getInputTypes() {
+      String[] types = {};
+
+      return types;
+   }
+
+   public String getModuleInfo() {
+      return "This module adds an object as a resource, " +
+             "it registers the object as a resource with the Resource " +
+             "Manager identified " +
+             "by the String <i>Resource ID</i>.";
+   }
+
+   public String getModuleName() { return "Add Resource Module"; }
+
+   public String getOutputInfo(int index) {
+
+      switch (index) {
+
+         case 0:
+            return "The resource prepared/loaded by this module.";
+
+         default:
+            return "no such output";
+      }
+   }
+
+   public String getOutputName(int index) {
+
+      switch (index) {
+
+         case 0:
+            return "Resource";
+
+         default:
+            return "no such output";
+      }
+   }
+
+   public String[] getOutputTypes() {
+      String[] types = { "java.lang.Object" };
+
+      return types;
+   }
+
+   public PropertyDescription[] getPropertiesDescriptions() {
+      PropertyDescription[] pds = new PropertyDescription[1];
+      pds[0] =
+         new PropertyDescription("rscID", "Resource ID",
+            "The resource ID for the object prepared/loaded by this module.");
+
+      return pds;
+   }
+
+   public String getRscID() { return rscID; }
+   
+   /**
+    * Set the resource ID for the resource manager to use.
+    * 
+    * @param id the resource id.
+    */
+   public void setRscID(String id) { rscID = id; }
+
+} // end class AddResource
