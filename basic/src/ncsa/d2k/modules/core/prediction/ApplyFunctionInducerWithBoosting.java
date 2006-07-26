@@ -53,8 +53,8 @@ import ncsa.d2k.modules.core.datatype.table.PredictionTable;
 
 
 /**
- * This module applies a function inducer module to the given example table using the given error function
- * and with boosting to produce a model.
+ * This module applies a function inducer module to the given example table
+ * using the given error function and with boosting to produce a model.
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -63,15 +63,16 @@ public class ApplyFunctionInducerWithBoosting extends OrderedReentrantModule {
 
    //~ Instance fields *********************************************************
 
-   /** the number of rounds */
+   /** the number of rounds. */
    private int NumberOfRounds = 100;
 
    //~ Methods *****************************************************************
 
    /**
-    * Apply a function inducer to an example table with boosting.
+    * Performs the main work of the module.
     *
-    * @throws Exception when something goes wrong
+    * @throws Exception if a problem occurs while performing the work of the
+    *                   module
     */
    public void doit() throws Exception {
 
@@ -186,12 +187,13 @@ public class ApplyFunctionInducerWithBoosting extends OrderedReentrantModule {
       this.pushOutput(BoostedModel, 0);
    } // end method doit
 
+
    /**
-    * Get a description of an input
+    * Returns a description of the input at the specified index.
     *
-    * @param  i input index
+    * @param  i Index of the input for which a description should be returned.
     *
-    * @return Description of the input
+    * @return <code>String</code> describing the input at the specified index.
     */
    public String getInputInfo(int i) {
 
@@ -211,12 +213,14 @@ public class ApplyFunctionInducerWithBoosting extends OrderedReentrantModule {
       }
    }
 
+
    /**
-    * Get the name of an input
+    * Returns the name of the input at the specified index.
     *
-    * @param  i the input index
+    * @param  i Index of the input for which a name should be returned.
     *
-    * @return Name of the input
+    * @return <code>String</code> containing the name of the input at the
+    *         specified index.
     */
    public String getInputName(int i) {
 
@@ -236,10 +240,13 @@ public class ApplyFunctionInducerWithBoosting extends OrderedReentrantModule {
       }
    }
 
+
    /**
-    * The types of inputs to this module
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the input at the corresponding index.
     *
-    * @return a String[] containing the classes of the inputs
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the input at the corresponding index.
     */
    public String[] getInputTypes() {
       String[] types =
@@ -252,50 +259,54 @@ public class ApplyFunctionInducerWithBoosting extends OrderedReentrantModule {
       return types;
    }
 
+
    /**
-    * Description of the module's function
+    * Describes the purpose of the module.
     *
-    * @return Description of the module's function
+    * @return <code>String</code> describing the purpose of the module.
     */
    public String getModuleInfo() {
       return "<p>" +
-             "      Overview: This module applies a function inducer module to the given " +
-             "      example table using the given error function and with boosting to " +
-             "      produce a model." +
-             "    </p>" +
-             "    <p>" +
-             "      Detailed Description: This module uses the given function inducer to " +
-             "      build an ordered series of different models. Each round, a new set of " +
-             "      examples is created by first forming a model with the current set of " +
-             "      examples, then using the model to predict each output, and then replacing " +
-             "      the current output variable with the difference between the prediction " +
-             "      and actual output values. In this way, each model tries to predict the " +
-             "      difference left over after applying the previous model in the series." +
-             "    </p>";
+             "Overview: This module applies a function inducer module to the given " +
+             "example table using the given error function and with boosting to " +
+             "produce a model." +
+             "</p>" +
+             "<p>" +
+             "Detailed Description: This module uses the given function inducer to " +
+             "build an ordered series of different models. Each round, a new set of " +
+             "examples is created by first forming a model with the current set of " +
+             "examples, then using the model to predict each output, and then replacing " +
+             "the current output variable with the difference between the prediction " +
+             "and actual output values. In this way, each model tries to predict the " +
+             "difference left over after applying the previous model in the series." +
+             "</p>";
    }
 
+
    /**
-    * the name of this module
+    * Returns the name of the module that is appropriate for end-user
+    * consumption.
     *
-    * @return the name of this module
+    * @return The name of the module.
     */
    public String getModuleName() {
       return "Apply Function Inducer With Boosting";
    }
 
    /**
-    * Get the number of rounds
+    * Get the number of rounds.
     *
     * @return the number of rounds
     */
    public int getNumberOfRounds() { return this.NumberOfRounds; }
 
+
    /**
-    * Description of the outputs
+    * Returns a description of the output at the specified index.
     *
-    * @param  i output index
+    * @param  i Index of the output for which a description should be returned.
     *
-    * @return the description of the output
+    * @return <code>String</code> describing the output at the specified index.
     */
    public String getOutputInfo(int i) {
 
@@ -309,12 +320,14 @@ public class ApplyFunctionInducerWithBoosting extends OrderedReentrantModule {
       }
    }
 
+
    /**
-    * the name of the output
+    * Returns the name of the output at the specified index.
     *
-    * @param  i the output index
+    * @param  i Index of the output for which a description should be returned.
     *
-    * @return name of the output
+    * @return <code>String</code> containing the name of the output at the
+    *         specified index.
     */
    public String getOutputName(int i) {
 
@@ -328,10 +341,13 @@ public class ApplyFunctionInducerWithBoosting extends OrderedReentrantModule {
       }
    }
 
+
    /**
-    * The types of outputs of this module
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the output at the corresponding index.
     *
-    * @return a String[] containing the classes of the outputs
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the output at the corresponding index.
     */
    public String[] getOutputTypes() {
       String[] types = { "ncsa.d2k.modules.core.datatype.model.Model" };
@@ -339,10 +355,13 @@ public class ApplyFunctionInducerWithBoosting extends OrderedReentrantModule {
       return types;
    }
 
+
    /**
-    * Get the properties descriptions
+    * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    * objects for each property of the module.
     *
-    * @return the properties descriptions
+    * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    *         objects.
     */
    public PropertyDescription[] getPropertiesDescriptions() {
       PropertyDescription[] retVal = new PropertyDescription[1];
@@ -354,7 +373,7 @@ public class ApplyFunctionInducerWithBoosting extends OrderedReentrantModule {
    }
 
    /**
-    * Set the number of rounds
+    * Set the number of rounds.
     *
     * @param value the number of rounds
     */
