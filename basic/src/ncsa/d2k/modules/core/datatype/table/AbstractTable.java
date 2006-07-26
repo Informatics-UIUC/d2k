@@ -49,6 +49,8 @@ package ncsa.d2k.modules.core.datatype.table;
  * Implements several methods common to all 
  * <code>ncsa.d2k.modules.core.datatype.table.Table</code> implementations.
  *
+ * @author  suvalala
+ * @author  redman
  * @author  $Author$
  * @version $Revision$, $Date$
  * @see     ncsa.d2k.modules.core.datatype.table.Table
