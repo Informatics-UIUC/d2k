@@ -1,111 +1,193 @@
+/*
+ * $Header$
+ *
+ * ===================================================================
+ *
+ * D2K-Workflow
+ * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
+ * ILLINOIS. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License v2.0
+ * as published by the Free Software Foundation and with the required
+ * interpretation regarding derivative works as described below.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License v2.0 for more details.
+ *
+ * This program and the accompanying materials are made available
+ * under the terms of the GNU General Public License v2.0 (GPL v2.0)
+ * which accompanies this distribution and is available at
+ * http://www.gnu.org/copyleft/gpl.html (or via mail from the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.), with the special and mandatory
+ * interpretation that software only using the documented public
+ * Application Program Interfaces (APIs) of D2K-Workflow are not
+ * considered derivative works under the terms of the GPL v2.0.
+ * Specifically, software only calling the D2K-Workflow Itinerary
+ * execution and workflow module APIs are not derivative works.
+ * Further, the incorporation of published APIs of other
+ * independently developed components into D2K Workflow code
+ * allowing it to use those separately developed components does not
+ * make those components a derivative work of D2K-Workflow.
+ * (Examples of such independently developed components include for
+ * example, external databases or metadata and provenance stores).
+ *
+ * Note: A non-GPL commercially licensed version of contributions
+ * from the UNIVERSITY OF ILLINOIS may be available from the
+ * designated commercial licensee RiverGlass, Inc. located at
+ * (www.riverglassinc.com)
+ * ===================================================================
+ *
+ */
 package ncsa.d2k.modules.core.prediction.decisiontree.rainforest;
 
-/**
-	A DecisionForestNode for numerical data.  These are binary nodes that
-	split on a value of an attribute.
-*/
 
+import ncsa.d2k.modules.core.datatype.table.Table;
+import ncsa.d2k.modules.core.prediction.decisiontree.NominalViewableDTNode;
 
-import ncsa.d2k.modules.core.prediction.decisiontree.*;
 import java.io.Serializable;
-import java.util.*;
 
-import ncsa.d2k.modules.core.datatype.table.*;
 
+/**
+ * A DecisionForestNode for numerical data. These are binary nodes that split on
+ * a value of an attribute.
+ *
+ * @author  $Author$
+ * @version $Revision$, $Date$
+ */
 public final class NumericDecisionForestNode extends DecisionForestNode
-	implements Serializable, NominalViewableDTNode {
+   implements Serializable, NominalViewableDTNode {
 
-	/** everything less than the split value goes left */
-	private static final int LEFT = 0;
-	/** everything greater than the split value goes right */
-	private static final int RIGHT = 1;
+   //~ Static fields/initializers **********************************************
 
-	/** the value used to compare whether to go left or right */
-	private double splitValue;
+   /** Use serialVersionUID for interoperability. */
+   static private final long serialVersionUID = -5794968185284562372L;
 
-	/**
-		Create a new NumericDecisionForestNode
-		@param lbl the label
-	*/
-	public NumericDecisionForestNode(String lbl, int outputSize) {
-		super(lbl, outputSize);
-	}
+   /** everything less than the split value goes left. */
+   static private final int LEFT = 0;
 
-	public final void addBranch(String val, DecisionForestNode child) {
-	}
+   /** everything greater than the split value goes right. */
+   static private final int RIGHT = 1;
 
-	/**
-		If the node has only the left or right branch, use this method
-	*/
-	public final void addBranch(double split, String branchLabel, DecisionForestNode child) {
-		splitValue = split;
-                branchLabels.add(branchLabel);
-                children.add(child);
-                child.setParent(this);
-	}
+   //~ Instance fields *********************************************************
 
-	public void setBranch(int branchNum, String val, DecisionForestNode child) {
-		DecisionForestNode oldChild = getChild(branchNum);
+   /** the value used to compare whether to go left or right. */
+   private double splitValue;
 
-		children.set(branchNum, child);
-		branchLabels.set(branchNum, val);
-		child.setParent(this);
-	}
+   //~ Constructors ************************************************************
 
-	/**
-		Add left and right children to this node.
-		@param split the split value for this node
-		@param leftLabel the label for the left branch
-		@param left the left child
-		@param rightLabel the label for the right branch
-		@param right the right child
-	*/
-	public final void addBranches(double split, String leftLabel,
-		DecisionForestNode left, String rightLabel, DecisionForestNode right) {
+   /**
+    * Create a new NumericDecisionForestNode.
+    *
+    * @param lbl        the label
+    * @param outputSize output size
+    */
+   public NumericDecisionForestNode(String lbl, int outputSize) {
+      super(lbl, outputSize);
+   }
 
-		splitValue = split;
-                branchLabels.add(leftLabel);
-                children.add(left);
-                left.setParent(this);
-                branchLabels.add(rightLabel);
-                children.add(right);
-                right.setParent(this);
-	}
+   //~ Methods *****************************************************************
 
-	/**
-		Evaluate a record from the data set.  If this is a leaf, return the
-		label of this node.  Otherwise find the column of the table that
-		represents the attribute that this node evaluates.  Get the value
-		of the attribute for the row to test and call evaluate() on the left
-		child if the value is less than our split value, or call evaluate() on
-		the right child if the split value is greater than or equal to the
-		split value.
 
-		@param vt the Table with the data
-		@param row the row of the table to evaluate
-		@return the result of evaluating the record
-	*/
-	public final Object evaluate(Table vt, int row) {
-                 return null;
-	}
+    /**
+     * Add a branch to this node, given the label of the branch and the child
+     * node. For a CategoricalDecisionTreeNode, the label of the branch is the
+     * same as the value used to determine the split at this node.
+     *
+     * @param val   the label of the branch
+     * @param child the child node
+     */
+    public final void addBranch(String val, DecisionForestNode child) {
+    }
 
-	/**
-	 * Get the values for each branch of the node.
-	 * @return the values for each branch of the node
-	 */
-	public double getSplitValue() {
-		return splitValue;
-	}
+   /**
+    * If the node has only the left or right branch, use this method.
+    *
+    * @param split       Description of parameter split.
+    * @param branchLabel Description of parameter branchLabel.
+    * @param child       Description of parameter child.
+    */
+   public final void addBranch(double split, String branchLabel,
+                               DecisionForestNode child) {
+      splitValue = split;
+      branchLabels.add(branchLabel);
+      children.add(child);
+      child.setParent(this);
+   }
 
-	/**
-	 * Get the split attribute.
-	 * @return the split attribute.
-	 */
-	public String getSplitAttribute() {
-		return getLabel();
-	}
+   /**
+    * Add left and right children to this node.
+    *
+    * @param split      the split value for this node
+    * @param leftLabel  the label for the left branch
+    * @param left       the left child
+    * @param rightLabel the label for the right branch
+    * @param right      the right child
+    */
+   public final void addBranches(double split, String leftLabel,
+                                 DecisionForestNode left, String rightLabel,
+                                 DecisionForestNode right) {
 
-	public String[] getSplitValues() {
-		return null;
-	}
-}
+      splitValue = split;
+      branchLabels.add(leftLabel);
+      children.add(left);
+      left.setParent(this);
+      branchLabels.add(rightLabel);
+      children.add(right);
+      right.setParent(this);
+   }
+
+   /**
+    * Evaluate a record from the data set. If this is a leaf, return the label
+    * of this node. Otherwise find the column of the table that represents the
+    * attribute that this node evaluates. Get the value of the attribute for the
+    * row to test and call evaluate() on the left child if the value is less
+    * than our split value, or call evaluate() on the right child if the split
+    * value is greater than or equal to the split value.
+    *
+    * @param  vt  the Table with the data
+    * @param  row the row of the table to evaluate
+    *
+    * @return the result of evaluating the record
+    */
+   public final Object evaluate(Table vt, int row) { return null; }
+
+   /**
+    * Get the split attribute.
+    *
+    * @return the split attribute.
+    */
+   public String getSplitAttribute() { return getLabel(); }
+
+   /**
+    * Get the values for each branch of the node.
+    *
+    * @return the values for each branch of the node
+    */
+   public double getSplitValue() { return splitValue; }
+
+   /**
+    * Description of method getSplitValues.
+    *
+    * @return Description of return value.
+    */
+   public String[] getSplitValues() { return null; }
+
+   /**
+    * Description of method setBranch.
+    *
+    * @param branchNum Description of parameter branchNum.
+    * @param val       Description of parameter val.
+    * @param child     Description of parameter child.
+    */
+   public void setBranch(int branchNum, String val, DecisionForestNode child) {
+      DecisionForestNode oldChild = getChild(branchNum);
+
+      children.set(branchNum, child);
+      branchLabels.set(branchNum, val);
+      child.setParent(this);
+   }
+} // end class NumericDecisionForestNode
