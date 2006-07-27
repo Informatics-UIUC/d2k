@@ -52,7 +52,7 @@ import ncsa.d2k.modules.core.prediction.AbstractParamSpaceGenerator;
 
 
 /**
- * Description of class SQLRainForestParamSpaceGenerator.
+ * Generate a parameter space for SQL Rain Forest Decision Tree building
  *
  * @author  $Author$
  * @version $Revision$, $Date$
