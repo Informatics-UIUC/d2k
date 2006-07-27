@@ -1,4 +1,4 @@
-/* 
+/*
  * $Header$
  *
  * ===================================================================
@@ -6,17 +6,17 @@
  * D2K-Workflow
  * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
  * ILLINOIS. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License v2.0
  * as published by the Free Software Foundation and with the required
  * interpretation regarding derivative works as described below.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License v2.0 for more details.
- * 
+ *
  * This program and the accompanying materials are made available
  * under the terms of the GNU General Public License v2.0 (GPL v2.0)
  * which accompanies this distribution and is available at
@@ -34,7 +34,7 @@
  * make those components a derivative work of D2K-Workflow.
  * (Examples of such independently developed components include for
  * example, external databases or metadata and provenance stores).
- * 
+ *
  * Note: A non-GPL commercially licensed version of contributions
  * from the UNIVERSITY OF ILLINOIS may be available from the
  * designated commercial licensee RiverGlass, Inc. located at
@@ -95,10 +95,13 @@ public abstract class PredictionModelModule extends ModelModule
    /** the size of the training set for this model. */
    private int trainingSetSize;
 
+   /** Description of field transformations. */
    private List transformations;
 
+   /** Check Format? Default true. */
    protected boolean _checkFormat = true;
-   
+
+   /** Apply Reverse Transformations After Predict? Default false. */
    protected boolean applyReverseTransformationsAfterPredict = false;
 
    /**
@@ -136,7 +139,7 @@ public abstract class PredictionModelModule extends ModelModule
                                    String[] inputColumnLabels,
                                    String[] outputColumnLabels,
                                    int[] inputFeatureTypes,
-                                   int[] outputFeatureTypes ) {
+                                   int[] outputFeatureTypes) {
       this.trainingSetSize = trainingSetSize;
       this.inputColumnLabels = inputColumnLabels;
       this.outputColumnLabels = outputColumnLabels;
@@ -147,18 +150,18 @@ public abstract class PredictionModelModule extends ModelModule
    //~ Methods *****************************************************************
 
    /**
-    * put your documentation comment here.
+    * Make prediction.
     *
-    * @param     pt Description of parameter $param.name$.
+    * @param     pt PredictionTable
     *
-    * @exception Exception
+    * @exception Exception Exception occurred.
     */
    protected abstract void makePredictions(PredictionTable pt) throws Exception;
 
    /**
-    * put your documentation comment here.
+    * Apply reverse transformations.
     *
-    * @param et Description of parameter $param.name$.
+    * @param et Example table.
     */
    protected void applyReverseTransformations(ExampleTable et) {
 
@@ -193,7 +196,7 @@ public abstract class PredictionModelModule extends ModelModule
    }
 
    /**
-    * put your documentation comment here.
+    * Format training info into HTML.
     *
     * @return Information about the training dataset in html format
     */
@@ -244,7 +247,7 @@ public abstract class PredictionModelModule extends ModelModule
    /**
     * Set up all the meta-data related to the training set for this model.
     *
-    * @param et Description of parameter $param.name$.
+    * @param et The examples.
     */
    protected void setTrainingTable(ExampleTable et) {
       trainingSetSize = et.getNumRows();
@@ -313,6 +316,7 @@ public abstract class PredictionModelModule extends ModelModule
     * Pull in the ExampleTable, pass it to the predict() method, and push out
     * the PredictionTable returned by predict();
     *
+    * @throws Exception If exception occurs.
     */
    public void doit() throws Exception {
       Table et = (Table) pullInput(0);
@@ -364,29 +368,32 @@ public abstract class PredictionModelModule extends ModelModule
    public int[] getInputFeatureTypes() { return inputFeatureTypes; }
 
    /**
-    * The input is an ExampleTable.
+    * Returns a description of the input at the specified index.
     *
-    * @param  i the index of the input
+    * @param  i Index of the input for which a description should be returned.
     *
-    * @return the description of the input
+    * @return <code>String</code> describing the input at the specified index.
     */
    public String getInputInfo(int i) {
       return "A set of examples to make predicitons on.";
    }
 
    /**
-    * Get the name of the input.
+    * Returns the name of the input at the specified index.
     *
-    * @param  i the index of the input
+    * @param  i Index of the input for which a name should be returned.
     *
-    * @return the name of the input
+    * @return <code>String</code> containing the name of the input at the
+    *         specified index.
     */
    public String getInputName(int i) { return "Examples"; }
 
    /**
-    * The input is a Table.
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the input at the corresponding index.
     *
-    * @return the input types
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the input at the corresponding index.
     */
    public String[] getInputTypes() {
       String[] in = {
@@ -397,9 +404,9 @@ public abstract class PredictionModelModule extends ModelModule
    }
 
    /**
-    * Describe the function of this module.
+    * Describes the purpose of the module.
     *
-    * @return the description of this module.
+    * @return <code>String</code> describing the purpose of the module.
     */
    public String getModuleInfo() {
       return "Makes predictions on a set of examples.";
@@ -422,11 +429,11 @@ public abstract class PredictionModelModule extends ModelModule
    public int[] getOutputFeatureTypes() { return outputFeatureTypes; }
 
    /**
-    * Describe the output.
+    * Returns a description of the output at the specified index.
     *
-    * @param  i the index of the output
+    * @param  i Index of the output for which a description should be returned.
     *
-    * @return the description of the output
+    * @return <code>String</code> describing the output at the specified index.
     */
    public String getOutputInfo(int i) {
       String out =
@@ -437,18 +444,21 @@ public abstract class PredictionModelModule extends ModelModule
    }
 
    /**
-    * Get the name of the output.
+    * Returns the name of the output at the specified index.
     *
-    * @param  i the index of the output
+    * @param  i Index of the output for which a description should be returned.
     *
-    * @return the name of the output
+    * @return <code>String</code> containing the name of the output at the
+    *         specified index.
     */
    public String getOutputName(int i) { return "Predictions"; }
 
    /**
-    * The output is a PredictionTable.
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the output at the corresponding index.
     *
-    * @return the output types
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the output at the corresponding index.
     */
    public String[] getOutputTypes() {
       String[] out = {
@@ -459,9 +469,11 @@ public abstract class PredictionModelModule extends ModelModule
    }
 
    /**
-    * Return a list of the property descriptions.
+    * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    * objects for each property of the module.
     *
-    * @return a list of the property descriptions.
+    * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    *         objects.
     */
    public PropertyDescription[] getPropertiesDescriptions() {
       PropertyDescription[] pds = new PropertyDescription[3];
@@ -508,7 +520,9 @@ public abstract class PredictionModelModule extends ModelModule
    public int getTrainingSetSize() { return trainingSetSize; }
 
    /**
-    * @return a list of all the transformations that were performed
+    * A list of all the transformations that were performed.
+    *
+    * @return A list of all the transformations that were performed
     */
    public List getTransformations() { return transformations; }
 
@@ -521,7 +535,7 @@ public abstract class PredictionModelModule extends ModelModule
     *
     * @return the input table, with extra columns for predictions
     *
-    * @throws Exception Description of exception Exception.
+    * @throws Exception If there is an error in the table.
     */
    public PredictionTable predict(Table table) throws Exception {
       PredictionTable pt = null;
@@ -608,7 +622,7 @@ public abstract class PredictionModelModule extends ModelModule
 
                      if (
                          !lbl.equals(outputColumnLabels[i] +
-                            PredictionTable.PREDICTION_COLUMN_APPEND_TEXT)) {
+                                        PredictionTable.PREDICTION_COLUMN_APPEND_TEXT)) {
                         predok = false;
                      }
 
@@ -693,7 +707,7 @@ public abstract class PredictionModelModule extends ModelModule
 
                      if (
                          !lbl.equals(outputColumnLabels[i] +
-                              PredictionTable.PREDICTION_COLUMN_APPEND_TEXT)) {
+                                        PredictionTable.PREDICTION_COLUMN_APPEND_TEXT)) {
                         predok = false;
                      }
 
@@ -759,6 +773,11 @@ public abstract class PredictionModelModule extends ModelModule
       return pt;
    } // end method predict
 
+   /**
+    * Set ApplyReverseTransformationsAfterPredict.
+    *
+    * @param b Value.
+    */
    public void setApplyReverseTransformationsAfterPredict(boolean b) {
       applyReverseTransformationsAfterPredict = b;
    }
@@ -782,6 +801,11 @@ public abstract class PredictionModelModule extends ModelModule
     */
    public void setCheckTableFormat(boolean b) { _checkFormat = b; }
 
-  
+
+   /**
+    * Set Transformations.
+    *
+    * @param trans Value.
+    */
    public void setTransformations(List trans) { transformations = trans; }
 } // end class PredictionModelModule
