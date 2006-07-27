@@ -1,4 +1,4 @@
-/* 
+/*
  * $Header$
  *
  * ===================================================================
@@ -6,17 +6,17 @@
  * D2K-Workflow
  * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
  * ILLINOIS. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License v2.0
  * as published by the Free Software Foundation and with the required
  * interpretation regarding derivative works as described below.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License v2.0 for more details.
- * 
+ *
  * This program and the accompanying materials are made available
  * under the terms of the GNU General Public License v2.0 (GPL v2.0)
  * which accompanies this distribution and is available at
@@ -34,7 +34,7 @@
  * make those components a derivative work of D2K-Workflow.
  * (Examples of such independently developed components include for
  * example, external databases or metadata and provenance stores).
- * 
+ *
  * Note: A non-GPL commercially licensed version of contributions
  * from the UNIVERSITY OF ILLINOIS may be available from the
  * designated commercial licensee RiverGlass, Inc. located at
@@ -201,6 +201,7 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
     *
     * @return an integer representing the index of the parameters.
     *
+    * @throws Exception Description of exception Exception.
     */
    public int getParameterIndex(String name) throws Exception;
 
@@ -211,6 +212,7 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
     *
     * @return a ParameterSpace which defines the indicated subspace.
     *
+    * @throws Exception Description of exception Exception.
     */
    public ParameterSpace getSubspace(int subspaceIndex) throws Exception;
 
@@ -221,6 +223,7 @@ public interface ParameterSpace extends ExampleTable, java.io.Serializable {
     *
     * @return a int value representing the subpace index number of parameter.
     *
+    * @throws Exception Description of exception Exception.
     */
    public int getSubspaceIndex(int parameterIndex) throws Exception;
 

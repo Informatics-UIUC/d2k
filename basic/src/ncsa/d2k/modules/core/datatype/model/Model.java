@@ -1,4 +1,4 @@
-/* 
+/*
  * $Header$
  *
  * ===================================================================
@@ -6,17 +6,17 @@
  * D2K-Workflow
  * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
  * ILLINOIS. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License v2.0
  * as published by the Free Software Foundation and with the required
  * interpretation regarding derivative works as described below.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License v2.0 for more details.
- * 
+ *
  * This program and the accompanying materials are made available
  * under the terms of the GNU General Public License v2.0 (GPL v2.0)
  * which accompanies this distribution and is available at
@@ -34,7 +34,7 @@
  * make those components a derivative work of D2K-Workflow.
  * (Examples of such independently developed components include for
  * example, external databases or metadata and provenance stores).
- * 
+ *
  * Note: A non-GPL commercially licensed version of contributions
  * from the UNIVERSITY OF ILLINOIS may be available from the
  * designated commercial licensee RiverGlass, Inc. located at
@@ -51,7 +51,6 @@ import ncsa.d2k.modules.core.datatype.table.PredictionTable;
 
 /**
  * A abstract class for information about a Model.
- * 
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -60,7 +59,6 @@ public class Model extends PredictionModelModule
    implements java.io.Serializable {
 
    //~ Constructors ************************************************************
-
 
    /**
     * Creates a new Model object.
@@ -88,14 +86,14 @@ public class Model extends PredictionModelModule
    //~ Methods *****************************************************************
 
    /**
-    * Description of method evaluate.
+    * Evaluate the model. Overridden by implementer.
     *
     * @param  exampleSet Description of parameter exampleSet.
     * @param  e          Description of parameter e.
     *
-    * @return Description of return value.
+    * @return Results.
     *
-    * @throws Exception Description of exception Exception.
+    * @throws Exception If exception occurs, exception is thrown.
     */
    public double[] evaluate(ExampleTable exampleSet, int e) throws Exception {
       System.out.println("must override this method");
@@ -103,13 +101,13 @@ public class Model extends PredictionModelModule
    }
 
    /**
-    * Description of method evaluate.
+    * Evaluate the model.
     *
     * @param  exampleSet Description of parameter exampleSet.
     * @param  e          Description of parameter e.
     * @param  outputs    Description of parameter outputs.
     *
-    * @throws Exception Description of exception Exception.
+    * @throws Exception If exception occurs, exception is thrown.
     */
    public void evaluate(ExampleTable exampleSet, int e, double[] outputs)
       throws Exception {
@@ -122,60 +120,60 @@ public class Model extends PredictionModelModule
    }
 
    /**
-    * Description of method getInputFeatureName.
+    * Get name of input feature i.
     *
-    * @param  i Description of parameter i.
+    * @param  i The feature.
     *
-    * @return Description of return value.
+    * @return The name of the feature.
     */
    public String getInputFeatureName(int i) {
       return this.getInputColumnLabels()[i];
    }
 
    /**
-    * renaming.
+    * Get all the names.
     *
-    * @return Description of return value.
+    * @return The names.
     */
    public String[] getInputFeatureNames() { return getInputColumnLabels(); }
 
    /**
-    * Description of method getNumInputFeatures.
+    * Get the number of input features.
     *
-    * @return Description of return value.
+    * @return The count.
     */
    public int getNumInputFeatures() { return getInputColumnLabels().length; }
 
    /**
-    * Description of method getNumOutputFeatures.
+    * Get the number of output features.
     *
-    * @return Description of return value.
+    * @return The count.
     */
    public int getNumOutputFeatures() { return getOutputColumnLabels().length; }
 
    /**
-    * Description of method getOutputFeatureName.
+    * Get name of output feature i.
     *
-    * @param  i Description of parameter i.
+    * @param  i The feature.
     *
-    * @return Description of return value.
+    * @return The name.
     */
    public String getOutputFeatureName(int i) {
       return this.getOutputColumnLabels()[i];
    }
 
    /**
-    * Description of method getOutputFeatureNames.
+    * Get the all the output features.
     *
-    * @return Description of return value.
+    * @return The names.
     */
    public String[] getOutputFeatureNames() { return getOutputColumnLabels(); }
 
 
    /**
-    * Description of method makePredictions.
+    * Make predictions.
     *
-    * @param pt Description of parameter pt.
+    * @param pt The prediction table.
     */
    public void makePredictions(PredictionTable pt) {
       int numOutputs = pt.getNumOutputFeatures();
@@ -194,11 +192,11 @@ public class Model extends PredictionModelModule
    }
 
    /**
-    * Description of method print.
+    * Print model options. Must be overriden by implementation.
     *
-    * @param  options Description of parameter options.
+    * @param  options The options.
     *
-    * @throws Exception Description of exception Exception.
+    * @throws Exception If exception occurs, exception is thrown.
     */
    public void print(ModelPrintOptions options) throws Exception {
       System.out.println("must override this method");
