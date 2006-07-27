@@ -305,7 +305,7 @@ public class TriggerPushB extends DataPrepModule {
 
    /**
     * Called by the D2K Infrastructure to determine if the module is ready to
-    * run. <In this case, the code does these specific activities>.
+    * run.
     *
     * @return Whether or not the module is ready to run.
     */
