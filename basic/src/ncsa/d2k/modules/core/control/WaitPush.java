@@ -1,4 +1,4 @@
-/* 
+/*
  * $Header$
  *
  * ===================================================================
@@ -6,17 +6,17 @@
  * D2K-Workflow
  * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
  * ILLINOIS. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License v2.0
  * as published by the Free Software Foundation and with the required
  * interpretation regarding derivative works as described below.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License v2.0 for more details.
- * 
+ *
  * This program and the accompanying materials are made available
  * under the terms of the GNU General Public License v2.0 (GPL v2.0)
  * which accompanies this distribution and is available at
@@ -34,7 +34,7 @@
  * make those components a derivative work of D2K-Workflow.
  * (Examples of such independently developed components include for
  * example, external databases or metadata and provenance stores).
- * 
+ *
  * Note: A non-GPL commercially licensed version of contributions
  * from the UNIVERSITY OF ILLINOIS may be available from the
  * designated commercial licensee RiverGlass, Inc. located at
@@ -48,20 +48,20 @@ import ncsa.d2k.core.modules.DataPrepModule;
 
 
 /**
- *  Push the first input it receives on input 0, but will not push 
- *  subsequent inputs on 0 until it receives an input on one.
+ * Push the first input it receives on input 0, but will not push subsequent
+ * inputs on 0 until it receives an input on one.
  *
  * @author  $Author$
  * @version $Revision$, $Date$
  */
 public class WaitPush extends DataPrepModule {
 
-   //~ Instance fields ************************************************
+   //~ Instance fields *********************************************************
 
-   /** Description of field firstTime. */
+   /** Rirst time? */
    protected boolean firstTime = true;
 
-   //~ Methods ******************************************************
+   //~ Methods *****************************************************************
 
    /**
     * set the first execution flag.
@@ -69,10 +69,10 @@ public class WaitPush extends DataPrepModule {
    public void beginExecution() { firstTime = true; }
 
    /**
-    * If first time, just pull input 0 and push it, subsequent runs, 
-    * pull input 1, push it and pull an input off the second input 
-    * port, discard it.
+    * If first time, just pull input 0 and push it, subsequent runs, pull input
+    * 1, push it and pull an input off the second input port, discard it.
     *
+    * @throws Exception If an exception occurs, and exception is thrown.
     */
    public void doit() throws Exception {
       Object obj = this.pullInput(0);
@@ -85,6 +85,14 @@ public class WaitPush extends DataPrepModule {
       }
    }
 
+   /**
+    * Returns the name of the input at the specified index.
+    *
+    * @param  index Index of the input for which a name should be returned.
+    *
+    * @return <code>String</code> containing the name of the input at the
+    *         specified index.
+    */
    public String getInputInfo(int index) {
 
       switch (index) {
@@ -100,6 +108,13 @@ public class WaitPush extends DataPrepModule {
       }
    }
 
+   /**
+    * Description of method getInputName.
+    *
+    * @param  index Description of parameter index.
+    *
+    * @return Description of return value.
+    */
    public String getInputName(int index) {
 
       switch (index) {
@@ -115,12 +130,24 @@ public class WaitPush extends DataPrepModule {
       }
    }
 
+   /**
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the input at the corresponding index.
+    *
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the input at the corresponding index.
+    */
    public String[] getInputTypes() {
       String[] types = { "java.lang.Object", "java.lang.Object" };
 
       return types;
    }
 
+   /**
+    * Describes the purpose of the module.
+    *
+    * @return <code>String</code> describing the purpose of the module.
+    */
    public String getModuleInfo() {
       return "<p>Overview: This module will collect the " +
              "input received on its first input, save" +
@@ -130,22 +157,45 @@ public class WaitPush extends DataPrepModule {
              "input to be pushed again.</p>";
    }
 
+   /**
+    * Returns the name of the module that is appropriate for end user
+    * consumption.
+    *
+    * @return The name of the module.
+    */
    public String getModuleName() { return "Wait Push"; }
 
+   /**
+    * Returns a description of the input at the specified index.
+    *
+    * @param  index Index of the input for which a description should be
+    *               returned.
+    *
+    * @return <code>String</code> describing the input at the specified index.
+    */
    public String getOutputInfo(int index) {
 
       switch (index) {
 
          case 0:
             return "The object received on the first input is pushed " +
-            		"after it is received the first time, and after " +
-            		"any input on the second input.";
+                   "after it is received the first time, and after " +
+                   "any input on the second input.";
 
          default:
             return "No such output";
       }
    }
 
+   /**
+    * Returns the name of the output at the specified index.
+    *
+    * @param  index Index of the output for which a description should be
+    *               returned.
+    *
+    * @return <code>String</code> containing the name of the output at the
+    *         specified index.
+    */
    public String getOutputName(int index) {
 
       switch (index) {
@@ -158,6 +208,13 @@ public class WaitPush extends DataPrepModule {
       }
    }
 
+   /**
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the output at the corresponding index.
+    *
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the output at the corresponding index.
+    */
    public String[] getOutputTypes() {
       String[] types = { "java.lang.Object" };
 
@@ -165,9 +222,8 @@ public class WaitPush extends DataPrepModule {
    }
 
    /**
-    * Ready to run if we have received our first input on 
-    * port zero or we
-    * have inputs on zero and one.
+    * Ready to run if we have received our first input on port zero or we have
+    * inputs on zero and one.
     *
     * @return true if we are ready to fire.
     */
