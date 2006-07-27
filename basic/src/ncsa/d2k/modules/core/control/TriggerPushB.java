@@ -54,6 +54,7 @@ import ncsa.d2k.core.modules.PropertyDescription;
  * comes into the other input.
  *
  * @author  pgroves
+ * @author  $Author$
  * @version $Revision$, $Date$
  */
 public class TriggerPushB extends DataPrepModule {
@@ -75,7 +76,8 @@ public class TriggerPushB extends DataPrepModule {
    //~ Methods *****************************************************************
 
    /**
-    * Initialize the variables, call the superclass.
+    * Called by the D2K Infrastructure before the itinerary begins to execute.
+    * In this case, initialize the variables, and call the superclass.
     */
    public void beginExecution() {
       waitingForObject = true;
@@ -84,10 +86,12 @@ public class TriggerPushB extends DataPrepModule {
    }
 
    /**
-    * Input an object once, saves it, and then pushes it out every time an
-    * object comes into the other input.
+    * Performs the main work of the module. In this case, Input an object once,
+    * saves it, and then pushes it out every time an object comes into the other
+    * input.
     *
-    * @throws Exception If exception occurs, an exception is thrown.
+    * @throws Exception if a problem occurs while performing the work of the
+    *                   module.
     */
    public void doit() throws Exception {
 
@@ -123,6 +127,11 @@ public class TriggerPushB extends DataPrepModule {
    /**
     * Reset the storage.
     */
+
+   /**
+    * Called by the D2K Infrastructure after the itinerary completes execution.
+    * In this case, resets the storage.
+    */
    public void endExecution() {
       waitingForObject = true;
       theObject = null;
@@ -130,9 +139,9 @@ public class TriggerPushB extends DataPrepModule {
    }
 
    /**
-    * As the name implies.
+    * Tests if debug printing is enabled.
     *
-    * @return The value.
+    * @return Whether or not debug prints are enabled
     */
    public boolean getDebug() { return debug; }
 
@@ -295,8 +304,8 @@ public class TriggerPushB extends DataPrepModule {
    }
 
    /**
-    * If there is an object stored and a input has occured, the module is ready
-    * to fire.
+    * Called by the D2K Infrastructure to determine if the module is ready to
+    * run. <In this case, the code does these specific activities>.
     *
     * @return Whether or not the module is ready to run.
     */
@@ -313,9 +322,9 @@ public class TriggerPushB extends DataPrepModule {
    }
 
    /**
-    * As the name implies.
+    * Specifies whether or not to print debug statements.
     *
-    * @param b The value.
+    * @param b True or false if debug statements should be printed
     */
    public void setDebug(boolean b) { debug = b; }
 } // end class TriggerPushB
