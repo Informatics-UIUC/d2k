@@ -49,7 +49,7 @@ import ncsa.d2k.core.modules.OutputModule;
 
 /**
  * Input is read, no output is generated.
- * 
+ *
  * <p>In this module, the object is discarded.</p>
  *
  * @author  redman
