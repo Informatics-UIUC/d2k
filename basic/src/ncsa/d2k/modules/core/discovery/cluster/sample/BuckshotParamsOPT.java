@@ -3,6 +3,31 @@ package ncsa.d2k.modules.core.discovery.cluster.sample;
 /**
  * <p>Title: BuckshotParamsOPT</p>
  * <p>Description: Module to input parameters for Buckshot</p>
+ *
+ * <P>Overview:<BR>
+The Buckshot clustering algorithm is a type of kmeans approach where a sample
+of size Sqrt(<i>Number of Clusters</i> * <i>Number of Examples</i>) is chosen at random from the table
+of examples.  This sampling is sent through the hierarchical agglomerative clustering
+module to form <i>Number of Clusters</i> clusters.  These clusters' centroids are used as the initial
+"means" for the cluster assignment module.
+    The assignment module, once it has made refinements, outputs the final cluster model.
+ </p>
+
+<p>Detailed Description:
+This algorithm is comprised of four modules: this module (BuckshotParams), the sampler
+(SampleTableRowsOPT), the clusterer (HierAgglomClustererOPT) and the cluster refiner
+(ClusterAssignment).
+</p>
+
+<p>Data Handling:
+The input table is not modified by this algorithm, however it is include as part of
+the ClusterModel that is created.
+</p>
+
+    <p>Scalability:
+This algorithm runs in time O(<i>Number of Examples</i> * <i>Number of Clusters</i>).  See the component modules
+information to understand the memory requirements overall.
+
  * <p>Copyright: Copyright (c) 2003</p>
  * <p>Company: NCSA Automated Learning Group</p>
  * @author D. Searsmith
@@ -50,9 +75,16 @@ public class BuckshotParamsOPT
           should be random rows from the table */
   protected boolean useFirst = false;
 
-  protected int _clusterMethod = HAC.s_WardsMethod;
+  /**
+   * A clustering method ID, as defined in <code>ncsa.d2k.modules.core.discovery.cluster.hac.HAC<code>
+   */
+  protected int _clusterMethod = HAC.s_WardsMethod_CLUSTER;
 
-  protected int _distanceMetric = HAC.s_Euclidean;
+
+  /**
+   * A distanc emetric ID, as defined in <code>ncsa.d2k.modules.core.discovery.cluster.hac.HAC<code>
+   */
+  protected int _distanceMetric = HAC.s_Euclidean_DISTANCE;
 
   protected int _maxIterations = 5;
 
@@ -62,22 +94,28 @@ public class BuckshotParamsOPT
   // D2K Abstract Overrides
 
   /**
-     Return the name of this module.
-     @return The name of this module.
-   */
+          * Returns the name of the module that is appropriate for end user consumption.
+          *
+          * @return The name of the module.
+          */
+
   public String getModuleName() {
     return "Buckshot Parameters";
   }
 
+
   /**
-     Return a description of a specific input.
-     @param i The index of the input
-     @return The description of the input
+   * Returns a description of the input at the specified index.
+   *
+   * @param inputIndex Index of the input for which a description should be returned.
+   *
+   * @return <code>String</code> describing the input at the specified index.
    */
-  public String getInputInfo(int parm1) {
-    if (parm1 == 0) {
+  public String getInputInfo(int inputIndex) {
+
+    if (inputIndex == 0) {
       return "Control Parameters";
-    } else if (parm1 == 1) {
+    } else if (inputIndex == 1) {
       return "Table of examples to cluster";
     } else {
       return "";
@@ -85,14 +123,17 @@ public class BuckshotParamsOPT
   }
 
   /**
-     Return the name of a specific input.
-     @param i The index of the input.
-     @return The name of the input
-   */
-  public String getInputName(int parm1) {
-    if (parm1 == 0) {
+         * Returns the name of the input at the specified index.
+         *
+         * @param inputIndex Index of the input for which a name should be returned.
+         *
+         * @return <code>String</code> containing the name of the input at the specified index.
+         */
+        public String getInputName(int inputIndex) {
+
+    if (inputIndex == 0) {
       return "ParameterPoint";
-    } else if (parm1 == 1) {
+    } else if (inputIndex == 1) {
       return "Table";
     } else {
       return "";
@@ -100,11 +141,11 @@ public class BuckshotParamsOPT
   }
 
   /**
-     Return a String array containing the datatypes the inputs to this
-     module.
-     @return The datatypes of the inputs.
+   * Returns an array of <code>String</code> objects each containing the fully qualified Java data type of the input at the corresponding index.
+   *
+   * @return An array of <code>String</code> objects each containing the fully qualified Java data type of the input at the corresponding index.
    */
-  public String[] getInputTypes() {
+ public String[] getInputTypes() {
     String[] in = {
         "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
         "ncsa.d2k.modules.core.datatype.table.Table"};
@@ -112,9 +153,11 @@ public class BuckshotParamsOPT
   }
 
   /**
-    Return information about the module.
-    @return A detailed description of the module.
-   */
+         * Describes the purpose of the module.
+         *
+         * @return <code>String</code> describing the purpose of the module.
+         */
+
   public String getModuleInfo() {
     String s = "<p>Overview: ";
     s += "The Buckshot clustering algorithm is a type of kmeans approach where a sample ";
@@ -144,18 +187,22 @@ public class BuckshotParamsOPT
   }
 
   /**
-     Return the description of a specific output.
-     @param i The index of the output.
-     @return The description of the output.
-   */
-  public String getOutputInfo(int parm1) {
-    if (parm1 == 0) {
+         * Returns a description of the output at the specified index.
+         *
+         * @param outputIndex Index of the output for which a description should be returned.
+         *
+         * @return <code>String</code> describing the output at the specified index.
+         */
+        public String getOutputInfo(int outputIndex) {
+
+
+    if (outputIndex == 0) {
       return "Parameters for Cluster Assignment";
-    } else if (parm1 == 1) {
+    } else if (outputIndex == 1) {
       return "Parameters for Hier. Agglom. Clusterer";
-    } else if (parm1 == 2) {
+    } else if (outputIndex == 2) {
       return "Parameters for Sample Table Rows";
-    } else if (parm1 == 3) {
+    } else if (outputIndex == 3) {
       return "Table of examples to cluster";
     } else {
       return "";
@@ -163,18 +210,21 @@ public class BuckshotParamsOPT
   }
 
   /**
-     Return the name of a specific output.
-     @param i The index of the output.
-     @return The name of the output
-   */
-  public String getOutputName(int parm1) {
-    if (parm1 == 0) {
+          * Returns the name of the output at the specified index.
+          *
+          * @param outputIndex Index of the output for which a description should be returned.
+          *
+          * @return <code>String</code> containing the name of the output at the specified index.
+          */
+         public String getOutputName(int outputIndex) {
+
+    if (outputIndex == 0) {
       return "Parameters for Cluster Assignment";
-    } else if (parm1 == 1) {
+    } else if (outputIndex == 1) {
       return "Parameters for Hier. Agglom. Clusterer";
-    } else if (parm1 == 2) {
+    } else if (outputIndex == 2) {
       return "Parameters for Sample Table Rows";
-    } else if (parm1 == 3) {
+    } else if (outputIndex == 3) {
       return "Table";
     } else {
       return "";
@@ -182,11 +232,11 @@ public class BuckshotParamsOPT
   }
 
   /**
-     Return a String array containing the datatypes of the outputs of this
-     module.
-     @return The datatypes of the outputs.
+   * Returns an array of <code>String</code> objects each containing the fully qualified Java data type of the output at the corresponding index.
+   *
+   * @return An array of <code>String</code> objects each containing the fully qualified Java data type of the output at the corresponding index.
    */
-  public String[] getOutputTypes() {
+public String[] getOutputTypes() {
     String[] out = {
         "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
         "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
@@ -196,9 +246,12 @@ public class BuckshotParamsOPT
   }
 
   /**
-   Perform the work of the module.
-   @throws Exception
-   */
+         * Performs the main work of the module: Create <cdoe>
+         * ncsa.d2k.modules.core.datatype.parameter.ParameterPoint</code>
+         * objects based on the input ParameterPoint and the input Table.	 *
+         * @throws Exception if a problem occurs while performing the work of the module.
+         */
+
   protected void doit() throws Exception {
 
     ParameterPoint pp = (ParameterPoint)this.pullInput(0);
@@ -214,6 +267,13 @@ public class BuckshotParamsOPT
     doingit(tab);
   }
 
+
+  /**
+   * Creates <code>ncsa.d2k.modules.core.datatype.parameter.ParameterPoint
+   * </code> objects according to the values of the properties,
+   * and outputs these objects. Also outputs the <codE>tab</code>
+   * @param tab The input Table of this module.
+   */
   protected void doingit(Table tab) {
 
     String[] names1 = {

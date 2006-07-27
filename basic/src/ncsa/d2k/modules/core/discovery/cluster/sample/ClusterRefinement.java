@@ -69,7 +69,7 @@ public class ClusterRefinement {
   }
 
   //just need these for the clustering at the end
-  private int _clusterMethod = HAC.s_WardsMethod;
+  private int _clusterMethod = HAC.s_WardsMethod_CLUSTER;
   public int getClusterMethod() {
     return _clusterMethod;
   }

@@ -49,7 +49,7 @@ public class ClusterAssignmentOPT
 
   protected int _distanceMetric = s_Euclidean;
   protected int m_numAssignments = 5;
-  protected int _clusterMethod = HAC.s_WardsMethod;
+  protected int _clusterMethod = HAC.s_WardsMethod_CLUSTER;
 
   //============
   // Properties

@@ -27,11 +27,3 @@ public interface ClusterParameterDefns {
 
 }
 
-// Start QA Comments
-// 4/7/03 - Ruth created this file to make it easier to manage various
-//          modules that used these strings.  Many were hard-coded before
-//          and hard to keep consistent.
-// 4/8/03 - Ruth renames ClusterParameterDefns (was Kmeans only)
-// 4/12/03 - Ruth added distance Threshold values.
-//         - Ready for Basic
-// End QA Comments

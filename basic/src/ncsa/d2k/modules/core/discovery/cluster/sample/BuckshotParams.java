@@ -195,9 +195,9 @@ public class BuckshotParams
   }
 
   /**
-   Perform the work of the module.
-   @throws Exception
-   */
+         * Performs the main work of the module.	 *
+         * @throws Exception if a problem occurs while performing the work of the module.
+         */
   protected void doit() throws Exception {
 
     Table tab = (Table)this.pullInput(0);

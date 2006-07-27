@@ -49,9 +49,9 @@ public class KMeansParamsOPT
           should be random rows from the table */
   protected boolean useFirst = false;
 
-  protected int _clusterMethod = HAC.s_WardsMethod;
+  protected int _clusterMethod = HAC.s_WardsMethod_CLUSTER;
 
-  protected int _distanceMetric = HAC.s_Euclidean;
+  protected int _distanceMetric = HAC.s_Euclidean_DISTANCE;
 
   protected int _maxIterations = 5;
 
