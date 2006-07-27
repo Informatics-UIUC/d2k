@@ -104,7 +104,7 @@ public class BasicTableFactory implements TableFactory {
    }
 
    /**
-    * Creates a new, empty <code>Table<code>.</code></code>
+    * Creates a new, empty <code>Table</code>.
     *
     * @return New, empty Table
     */
@@ -112,10 +112,12 @@ public class BasicTableFactory implements TableFactory {
 
    /**
     * Creates a <code>Table<code>with the specified number of columns.
+    * </code></code>
     *
     * @param  numColumns The number of columns to include in the table.
     *
-    * @return A new, empty <code>Table<code>with the specified number of columns
+    * @return A new, empty <code>Table</code>with the specified number of
+    *         columns
     */
    public Table createTable(int numColumns) {
       return new MutableTableImpl(numColumns);
