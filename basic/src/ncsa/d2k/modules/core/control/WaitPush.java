@@ -49,7 +49,7 @@ import ncsa.d2k.core.modules.DataPrepModule;
 
 /**
  * Push the first input it receives on input 0, but will not push subsequent
- * inputs on 0 until it receives an input on one.
+ * inputs on 0 until it receives an input on 1.
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -58,30 +58,34 @@ public class WaitPush extends DataPrepModule {
 
    //~ Instance fields *********************************************************
 
-   /** Rirst time? */
+   /** Stores whether or not this is the first time the module has fired. */
    protected boolean firstTime = true;
 
    //~ Methods *****************************************************************
 
    /**
-    * set the first execution flag.
+    * Called by the D2K Infrastructure before the itinerary begins to execute.
+    * In this case, flags the first execution.
     */
    public void beginExecution() { firstTime = true; }
 
    /**
-    * If first time, just pull input 0 and push it, subsequent runs, pull input
-    * 1, push it and pull an input off the second input port, discard it.
+    * Performs the main work of the module. In this case, if this is the first
+    * time the module has fired, just pull input 0 and push it, subsequent runs,
+    * pull input 1, push it and pull an input off the second input port, discard
+    * it.
     *
-    * @throws Exception If an exception occurs, and exception is thrown.
+    * @throws Exception if a problem occurs while performing the work of the
+    *                   module.
     */
    public void doit() throws Exception {
       Object obj = this.pullInput(0);
-      this.pushOutput(obj, 0);
+      pushOutput(obj, 0);
 
       if (firstTime) {
          firstTime = false;
       } else {
-         this.pullInput(1);
+         pullInput(1);
       }
    }
 
@@ -222,10 +226,10 @@ public class WaitPush extends DataPrepModule {
    }
 
    /**
-    * Ready to run if we have received our first input on port zero or we have
-    * inputs on zero and one.
+    * Called by the D2K Infrastructure to determine if the module is ready to
+    * run.
     *
-    * @return true if we are ready to fire.
+    * @return Whether or not the module is ready to run.
     */
    public boolean isReady() {
 
