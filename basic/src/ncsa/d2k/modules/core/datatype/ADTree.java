@@ -1,4 +1,4 @@
-/* 
+/*
  * $Header$
  *
  * ===================================================================
@@ -6,17 +6,17 @@
  * D2K-Workflow
  * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
  * ILLINOIS. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License v2.0
  * as published by the Free Software Foundation and with the required
  * interpretation regarding derivative works as described below.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License v2.0 for more details.
- * 
+ *
  * This program and the accompanying materials are made available
  * under the terms of the GNU General Public License v2.0 (GPL v2.0)
  * which accompanies this distribution and is available at
@@ -34,7 +34,7 @@
  * make those components a derivative work of D2K-Workflow.
  * (Examples of such independently developed components include for
  * example, external databases or metadata and provenance stores).
- * 
+ *
  * Note: A non-GPL commercially licensed version of contributions
  * from the UNIVERSITY OF ILLINOIS may be available from the
  * designated commercial licensee RiverGlass, Inc. located at
@@ -56,46 +56,45 @@ import java.util.TreeSet;
 
 
 /**
- * An implementation of the data structure defined by Anderson and
- * Moore.
- * <p>
- * ADTree is an implementation of the data structure defined by 
- * B. Anderson and A. Moore in "ADTrees for fast counting and for 
- * fast learning of association rules". It stores counts for all 
- * possible queries of the type" how many x,y and z are there ?" 
- * It is able to answer these queries in constant time. ADTree works 
- * only for nominal attributes, cannot handle real numbers.
+ * An implementation of the data structure defined by Anderson and Moore.
  *
- *<p>
- *<b>Citation:</b>
- *<ul>
- *<li>
- * B. Anderson and A. Moore, "ADTrees for fast counting and for 
- * fast learning of association rules",
- * <i>Proceedings Fourth International Conference on Knowledge 
- * Discovery and Data Mining</i>, 
- * 27-31 Aug. 1998 , New York, pp. 134-8.
- * </li>
+ * <p>ADTree is an implementation of the data structure defined by B. Anderson
+ * and A. Moore in "ADTrees for fast counting and for fast learning of
+ * association rules". It stores counts for all possible queries of the type"
+ * how many x,y and z are there ?" It is able to answer these queries in
+ * constant time. ADTree works only for nominal attributes, cannot handle real
+ * numbers.</p>
+ *
+ * <p><b>Citation:</b></p>
+ *
+ * <ul>
+ *   <li>B. Anderson and A. Moore, "ADTrees for fast counting and for fast
+ *     learning of association rules", <i>Proceedings Fourth International
+ *     Conference on Knowledge Discovery and Data Mining</i>, 27-31 Aug. 1998 ,
+ *     New York, pp. 134-8.</li>
  * </ul>
- * <p>
+ *
  * @author  $Author$
  * @version $Revision$, $Date$
  */
 
 public class ADTree extends Node {
 
-   //~ Instance fields ************************************************
-	
+   //~ Instance fields *********************************************************
+
+   /** Controls some debugging. */
    boolean debug1 = false;
 
+   /** Controls some other debugging. */
    boolean debug2 = false;
 
    /** Unique values indexed from 1 to attribute arity. */
    ArrayList[] indexedUniqueValues;
-   
-   /**  Labels for each value */
+
+   /** Labels for each value. */
    String[] labels;
 
+   /** Description of field noOfAttributes. */
    int noOfAttributes;
 
    /** Unique values for each attribute. */
@@ -104,7 +103,7 @@ public class ADTree extends Node {
    /** Label to index mappings. */
    HashMap values;
 
-   //~ Constructors **************************************************
+   //~ Constructors ************************************************************
 
    /**
     * Create a new ADTree that will hold counts for n attributes.
@@ -125,7 +124,7 @@ public class ADTree extends Node {
       values = new HashMap();
    }
 
-   //~ Methods ********************************************************
+   //~ Methods *****************************************************************
 
    /**
     * Expands 'node' by adding a VarNode for 'index'
@@ -133,7 +132,7 @@ public class ADTree extends Node {
     * @param  index the number of the VarNode to be created
     * @param  node  node to be expanded
     *
-    * @return Description of return value.
+    * @return The expanded node.
     */
    private HashMap expandNode(int index, Node node) {
 
@@ -174,8 +173,8 @@ public class ADTree extends Node {
    } // end method expandNode
 
    /**
-    * Finds a node starting at a position and node for a given 
-    * attribute and value. If node does not exist create a new one.
+    * Finds a node starting at a position and node for a given attribute and
+    * value. If node does not exist create a new one.
     *
     * @param  position - postion to start the search
     * @param  index    - attribute number
@@ -184,8 +183,8 @@ public class ADTree extends Node {
     *
     * @return Node found or created
     */
-   private Node findNode(int position, int index, Node nd, 
-		   Object value) {
+   private Node findNode(int position, int index, Node nd,
+                         Object value) {
 
       HashMap varNode;
 
@@ -204,8 +203,8 @@ public class ADTree extends Node {
          Object key = it.next();
 
          Node node =
-            findNode(position + 1, index, (Node) varNode.get(key), 
-            		value);
+            findNode(position + 1, index, (Node) varNode.get(key),
+                     value);
 
          if (node != null) {
             newNode.count = newNode.count + node.count;
@@ -217,8 +216,8 @@ public class ADTree extends Node {
    } // end method findNode
 
    /**
-    * Increments the main ADTree branch counts based on the values 
-    * read from a line in the file.
+    * Increments the main ADTree branch counts based on the values read from a
+    * line in the file.
     *
     * @param nd     node root of the branch to be incremented
     * @param values attribute values
@@ -279,8 +278,8 @@ public class ADTree extends Node {
    } // end method countLine
 
    /**
-    * Increments the main ADTree branch counts based on the values 
-    * read from a line in the file.
+    * Increments the main ADTree branch counts based on the values read from a
+    * line in the file.
     *
     * @param nd     node root of the branch to be incremented
     * @param values attribute values
@@ -337,9 +336,8 @@ public class ADTree extends Node {
    } // end method countLine
 
    /**
-    * Expands the ADTree skeleton or main trunk created by 
-    * 'initializeFromVT' or 'countLine' methods to a full ADTree 
-    * ( all counts are stored).
+    * Expands the ADTree skeleton or main trunk created by 'initializeFromVT' or
+    * 'countLine' methods to a full ADTree ( all counts are stored).
     *
     * @param node the node that is going to be expanded. If the node is the root
     *             the entire tree will be expanded
@@ -365,8 +363,8 @@ public class ADTree extends Node {
    }
 
    /**
-    * Expands fully only the first level nodes. Does not expand 
-    * fully the root node.
+    * Expands fully only the first level nodes. Does not expand fully the root
+    * node.
     *
     * @param node the node where the expansion starts
     */
@@ -392,12 +390,12 @@ public class ADTree extends Node {
    public int getAttributesNum() { return noOfAttributes; }
 
    /**
-    * getCount implements an OR like expresion and returns the sums 
-    * of counts of all queries.
+    * getCount implements an OR like expresion and returns the sums of counts of
+    * all queries.
     *
     * @param  nd    - root of the ADTree
-    * @param  pairs - contains a list of HashMaps where each HashMap 
-    *               contains (attributeName ,value) mappings
+    * @param  pairs - contains a list of HashMaps where each HashMap contains
+    *               (attributeName ,value) mappings
     *
     * @return Description of return value.
     */
@@ -438,8 +436,8 @@ public class ADTree extends Node {
    } // end method getCount
 
    /**
-    * getCount implements an AND like expresion and returns the 
-    * sums of counts of all queries.
+    * getCount implements an AND like expresion and returns the sums of counts
+    * of all queries.
     *
     * @param  nd     - root of the ADTree
     * @param  values - map of attribute, value pairs
@@ -462,7 +460,7 @@ public class ADTree extends Node {
 
          if (varNode == null) {
             System.err.println("ADTree is not expanded: Trying to " +
-            		"expand");
+                               "expand");
 
             if (debug1) {
                System.out.println("node to expand " + node);
@@ -485,14 +483,14 @@ public class ADTree extends Node {
    } // end method getCount
 
    /**
-    * getCount implements an AND like expresion and returns the 
-    * sums of counts of all queries.
+    * getCount implements an AND like expresion and returns the sums of counts
+    * of all queries.
     *
     * @param  nd        - root of the ADTree
     * @param  values    - array of attribute values
     * @param  attribute - array of attribute indexes
     *
-    * @return Description of return value.
+    * @return The count.
     */
    public int getCount(Node nd, String[] values, int[] attribute) {
 
@@ -527,18 +525,28 @@ public class ADTree extends Node {
       return node.getCount();
    } // end method getCount
 
+   /**
+    * As the name implies.
+    *
+    * @return The value.
+    */
    public boolean getDebug() { return debug2; }
 
 
+   /**
+    * Description of method getDebug1.
+    *
+    * @return Description of return value.
+    */
    public boolean getDebug1() { return debug1; }
 
    /**
-    * getDirectCount implements an OR like expresion and returns 
-    * the sums of counts of all queries. It uses getDirectCount
+    * getDirectCount implements an OR like expresion and returns the sums of
+    * counts of all queries. It uses getDirectCount
     *
     * @param  nd    - root of the ADTree
-    * @param  pairs - contains a list of HashMaps where each HashMap 
-    *               contains (attributeName ,value) mappings
+    * @param  pairs - contains a list of HashMaps where each HashMap contains
+    *               (attributeName ,value) mappings
     *
     * @return sum of the counts.
     */
@@ -577,11 +585,11 @@ public class ADTree extends Node {
    } // end method getDirectCount
 
    /**
-    * getDirectCount - gets a count by using only the ADTree skeleton, 
-    * expanding the needed branches and then discarding them.
+    * getDirectCount - gets a count by using only the ADTree skeleton, expanding
+    * the needed branches and then discarding them.
     *
-    * @param  pos    -position where the search for the node containing
-    *                the count will begin
+    * @param  pos    -position where the search for the node containing the
+    *                count will begin
     * @param  nd     - root of the ADTree
     * @param  values - map of attribute, value pairs
     *
@@ -655,7 +663,7 @@ public class ADTree extends Node {
     */
    public String[] getUniqueValues(int index) {
 
- 
+
       TreeSet uniques = (TreeSet) uniqueValues[index];
 
 
@@ -663,7 +671,7 @@ public class ADTree extends Node {
       MutableTableImpl tbl = new MutableTableImpl();
       String missingStringValue = tbl.getMissingString();
 
-      // find if there are missing values and return only unique 
+      // find if there are missing values and return only unique
       // non missing
       // values
       uniques.remove(missingStringValue);
@@ -682,16 +690,16 @@ public class ADTree extends Node {
    } // end method getUniqueValues
 
    /**
-    * Get the unique valuse found in the tree.
+    * Get the unique values found in the tree.
     *
     * @param  index Description of parameter index.
     *
-    * @return SEt on non-missing unique values.
+    * @return Set of non-missing unique values.
     */
    public TreeSet getUniqueValuesTreeSet(int index) {
 
-      // find if there are missing values and return only unique non 
-	   // missing
+      // find if there are missing values and return only unique non
+      // missing
       // values
       MutableTableImpl tbl = new MutableTableImpl();
       String missingStringValue = tbl.getMissingString();
@@ -702,8 +710,8 @@ public class ADTree extends Node {
    }
 
    /**
-    * This method builds the main trunk of the ADTree from a Table. 
-    * Used mainly for testing.
+    * This method builds the main trunk of the ADTree from a Table. Used mainly
+    * for testing.
     *
     * @param vt table containig data
     */
@@ -717,8 +725,8 @@ public class ADTree extends Node {
          node.count++;
 
          if (debug1) {
-            System.out.println(" MAIN COUNT : " + node.count + " " + 
-            		this);
+            System.out.println(" MAIN COUNT : " + node.count + " " +
+                               this);
          }
 
          for (int j = 1; j <= noOfAttributes; j++) {
@@ -730,7 +738,8 @@ public class ADTree extends Node {
 
                if (debug2) {
                   System.out.println("created and inserted hashmap for" +
-                  		"  " +vt.getString(i, j - 1) + " with j=" +  j);
+                                     "  " + vt.getString(i, j - 1) +
+                                     " with j=" + j);
                }
             }
 
@@ -757,9 +766,8 @@ public class ADTree extends Node {
    } // end method initializeFromVT
 
    /**
-    * method called for each line of the file, identifies all the 
-    * unique values of the attributes, and stores them in a TreeMap 
-    * and an indexed ArrayList.
+    * Called for each line of the file, identifies all the unique values
+    * of the attributes, and stores them in a TreeMap and an indexed ArrayList.
     *
     * @param nd     root node
     * @param values list of values to add.
@@ -777,8 +785,18 @@ public class ADTree extends Node {
       }
    }
 
+   /**
+    * As the name implies.
+    *
+    * @param b The value.
+    */
    public void setDebug1(boolean b) { debug1 = b; }
 
+   /**
+    * As the name implies.
+    *
+    * @param b The value.
+    */
    public void setDebug2(boolean b) { debug2 = b; }
 
    /**
