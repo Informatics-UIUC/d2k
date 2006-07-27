@@ -67,6 +67,7 @@ public class Node {
     */
    public int count;
 
+   /** The nodes. */
    public TreeMap varNodes;
 
    //~ Constructors ************************************************************
@@ -169,6 +170,13 @@ public class Node {
       }
    } // end method addNode
 
+   /**
+    * Check for key.
+    *
+    * @param  key Key to llok up.
+    *
+    * @return True if key exists.
+    */
    public boolean containsKey(Object key) {
 
       if (varNodes == null) {
@@ -177,9 +185,21 @@ public class Node {
          return varNodes.containsKey(key);
       }
    }
-   
+
+   /**
+    * As the name implies.
+    *
+    * @return The count.
+    */
    public int getCount() { return count; }
 
+   /**
+    * Get node at index.
+    *
+    * @param  index Description of parameter $param.name$.
+    *
+    * @return The node.
+    */
    public HashMap getVarNode(int index) {
 
       if (varNodes == null) {
@@ -189,8 +209,19 @@ public class Node {
       }
    }
 
+   /**
+    * Get varNodes.
+    *
+    * @return varNodes.
+    */
    public TreeMap getVarNodes() { return varNodes; }
 
+   /**
+    * Put node at index.
+    *
+    * @param index Description of parameter $param.name$.
+    * @param node  A new node.
+    */
    public void putVarNode(int index, HashMap node) {
 
       if (varNodes == null) {
@@ -200,6 +231,11 @@ public class Node {
       varNodes.put(new Integer(index), node);
    }
 
+   /**
+    * String representation of the varNodes data structure.
+    *
+    * @return the STring.
+    */
    public String toString() {
       String result = "";
 
