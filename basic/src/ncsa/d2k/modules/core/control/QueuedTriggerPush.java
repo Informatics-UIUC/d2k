@@ -50,9 +50,10 @@ import ncsa.util.QuickQueue;
 
 
 /**
- * Push the first input it receives on input 0, but will not push subsequent
- * inputs on 0 until it receives an input on one.
+ * Pushes the first input it receives on input 0, but will not push subsequent
+ * inputs on 0 until it receives an input on 1.
  *
+ * @author  redman
  * @author  $Author$
  * @version $Revision$, $Date$
  */
@@ -61,7 +62,7 @@ public class QueuedTriggerPush extends DataPrepModule {
    //~ Instance fields *********************************************************
 
    /**
-    * Inputs from 0 are queued until an input from 1.
+    * Inputs from 0 are queued until an input from 1 arrives.
     *
     * <p>Inputs to 0 accumulate, and are output one at a time as inputs to 1
     * occur.</p>
@@ -74,7 +75,8 @@ public class QueuedTriggerPush extends DataPrepModule {
    //~ Methods *****************************************************************
 
    /**
-    * Initialize the queue.
+    * Called by the D2K Infrastructure before the itinerary begins to execute.
+    * In this case, initializes the queue.
     */
    public void beginExecution() { queue = new QuickQueue(); }
 
@@ -94,8 +96,7 @@ public class QueuedTriggerPush extends DataPrepModule {
       } else {
 
          // Here we know we have something in the queue, and there is
-         // something
-         // in the trigger pipe, or we would not have enabled.
+         // something in the trigger pipe, or we would not have enabled.
          Object obj = this.pullInput(1);
 
          if (queue.getSize() > 0) {
@@ -105,7 +106,8 @@ public class QueuedTriggerPush extends DataPrepModule {
    }
 
    /**
-    * Reset the queue.
+    * Called by the D2K Infrastructure after the itinerary completes execution.
+    * In this case, resets the queue.
     */
    public void endExecution() {
 
@@ -119,20 +121,19 @@ public class QueuedTriggerPush extends DataPrepModule {
    }
 
    /**
-    * Does what it says.
+    * Tests whether or not debug messages are turned on.
     *
-    * @return The value.
+    * @return Whether or not debug messages are turned on.
     */
    public boolean getDebug() { return debug; }
 
    /**
     * Returns a description of the input at the specified index.
     *
-    * @param inputIndex Index of the input for which a description 
-    * should be returned.
+    * @param  index Index of the input for which a description should be
+    *               returned.
     *
-    * @return <code>String</code> describing the input at the specified 
-    * index.
+    * @return <code>String</code> describing the input at the specified index.
     */
    public String getInputInfo(int index) {
 
@@ -152,11 +153,10 @@ public class QueuedTriggerPush extends DataPrepModule {
    /**
     * Returns the name of the input at the specified index.
     *
-    * @param inputIndex Index of the input for which a name should be 
-    * returned.
+    * @param  index Index of the input for which a name should be returned.
     *
-    * @return <code>String</code> containing the name of the input at 
-    * the specified index.
+    * @return <code>String</code> containing the name of the input at the
+    *         specified index.
     */
    public String getInputName(int index) {
 
@@ -174,13 +174,11 @@ public class QueuedTriggerPush extends DataPrepModule {
    }
 
    /**
-    * Returns an array of <code>String</code> objects each containing 
-    * the fully qualified Java data type of the input at the 
-    * corresponding index.
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the input at the corresponding index.
     *
-    * @return An array of <code>String</code> objects each containing 
-    * the fully qualified Java data type of the input at the 
-    * corresponding index.
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the input at the corresponding index.
     */
    public String[] getInputTypes() {
       String[] types = { "java.lang.Object", "java.lang.Object" };
@@ -203,7 +201,7 @@ public class QueuedTriggerPush extends DataPrepModule {
    }
 
    /**
-    * Returns the name of the module that is appropriate for end user 
+    * Returns the name of the module that is appropriate for end user
     * consumption.
     *
     * @return The name of the module.
@@ -213,11 +211,10 @@ public class QueuedTriggerPush extends DataPrepModule {
    /**
     * Returns a description of the output at the specified index.
     *
-    * @param outputIndex Index of the output for which a description 
-    * should be returned.
+    * @param  index Index of the output for which a description should be
+    *               returned.
     *
-    * @return <code>String</code> describing the output at the specified 
-    * index.
+    * @return <code>String</code> describing the output at the specified index.
     */
    public String getOutputInfo(int index) {
 
@@ -236,11 +233,11 @@ public class QueuedTriggerPush extends DataPrepModule {
    /**
     * Returns the name of the output at the specified index.
     *
-    * @param outputIndex Index of the output for which a description 
-    * should be returned.
+    * @param  index Index of the output for which a description should be
+    *               returned.
     *
-    * @return <code>String</code> containing the name of the output at 
-    *  the specified index.
+    * @return <code>String</code> containing the name of the output at the
+    *         specified index.
     */
    public String getOutputName(int index) {
 
@@ -255,11 +252,11 @@ public class QueuedTriggerPush extends DataPrepModule {
    }
 
    /**
-    * Returns an array of <code>String</code> objects each containing
-    *  the fully qualified Java data type of the output at the corresponding index.
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the output at the corresponding index.
     *
-    * @return An array of <code>String</code> objects each containing 
-    * the fully qualified Java data type of the output at the corresponding index.
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the output at the corresponding index.
     */
    public String[] getOutputTypes() {
       String[] types = { "java.lang.Object" };
@@ -268,11 +265,11 @@ public class QueuedTriggerPush extends DataPrepModule {
    }
 
    /**
-    * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> 
+    * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
     * objects for each property of the module.
     *
-    * @return An array of 
-    * <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+    * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    *         objects.
     */
    public PropertyDescription[] getPropertiesDescriptions() {
       PropertyDescription[] pds = new PropertyDescription[1];
@@ -289,9 +286,10 @@ public class QueuedTriggerPush extends DataPrepModule {
    }
 
    /**
-    * Ready to run if any data on any input.
+    * Called by the D2K Infrastructure to determine if the module is ready to
+    * run. In this case, it's ready to run if any data on any input.
     *
-    * @return true if are ready to fire.
+    * @return Whether or not the module is ready to run.
     */
    public boolean isReady() {
 
@@ -305,9 +303,9 @@ public class QueuedTriggerPush extends DataPrepModule {
    }
 
    /**
-    * As the name suggests.
+    * Sets whether or not debug messages should be printed.
     *
-    * @param b The value to set.
+    * @param b True if debug messages should be printed
     */
    public void setDebug(boolean b) { debug = b; }
 } // end class QueuedTriggerPush
