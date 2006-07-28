@@ -11,19 +11,41 @@ import ncsa.d2k.modules.core.vis.pgraph.*;
  */
 public class XMLToGraph extends InputModule {
 
-   public String getModuleName() {
+   /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
 	   return "XML to Graph";
    }
    
-   public void doit() throws IOException {
+   /**
+ * Performs the main work of the module.
+ */
+public void doit() throws IOException {
       pushOutput(PGraphML.load(new File((String)pullInput(0))), 0);
    }
 
-   public String getInputInfo(int index) {
+   /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int index) {
       return (index == 0) ? "The absolute path to the GraphML file." : null;
    }
 
-   public String getInputName(int index) {
+   /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
       return (index == 0) ? "File Name" : null;
    }
 
@@ -31,18 +53,37 @@ public class XMLToGraph extends InputModule {
       return new String[] {"java.lang.String"};
    }
 
-   public String getModuleInfo() {
+   /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
       return "<p>Overview: This module creates a Jung Graph object from a " +
              "GraphML file.</p><p>Acknowledgement: This module uses " +
              "functionality from the JUNG project. See " +
              "http://jung.sourceforge.net.</p>";
    }
 
-   public String getOutputInfo(int index) {
+   /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int index) {
       return (index == 0) ? "The loaded Graph object." : null;
    }
 
-   public String getOutputName(int index) {
+   /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
       return (index == 0) ? "Graph" : null;
    }
 

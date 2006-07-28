@@ -14,7 +14,12 @@ public class OutputSerializedObject extends OutputModule {
      * Return the common name of this module.
      * @return The display name for this module.
      */
-    public String getModuleName() {
+    /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
         return "Output Serialized Object";
     }
 
@@ -22,7 +27,12 @@ public class OutputSerializedObject extends OutputModule {
      * Return information about the module.
      * @return A detailed description of the module.
      */
-    public String getModuleInfo() {
+    /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
       StringBuffer sb = new StringBuffer("<p>Overview: ");
       sb.append("This module writes a serializable Java object to a file.");
       sb.append("</p><p>Detailed Description: In Java, an object that ");
@@ -63,7 +73,14 @@ public class OutputSerializedObject extends OutputModule {
      * @param i The index of the input.
      * @return The description of the input.
      */
-    public String getInputInfo (int i) {
+    /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo (int i) {
         switch (i) {
             case 0:
               return "The Java object to serialize.";
@@ -79,7 +96,14 @@ public class OutputSerializedObject extends OutputModule {
      * @param i The index of the input.
      * @return The name of the input.
      */
-    public String getInputName(int i) {
+    /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int i) {
         switch(i) {
             case 0:
                 return "Java Object";
@@ -95,7 +119,14 @@ public class OutputSerializedObject extends OutputModule {
      * @param i The index of the output.
      * @return The name of the output.
      */
-    public String getOutputInfo(int i) {
+    /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
         switch (i) {
             default: return "No such output";
         }
@@ -106,7 +137,14 @@ public class OutputSerializedObject extends OutputModule {
      * @param i The index of the output.
      * @return The name of the output.
      */
-    public String getOutputName(int i) {
+    /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int i) {
         switch(i) {
             default: return "No such output";
         }
@@ -116,7 +154,10 @@ public class OutputSerializedObject extends OutputModule {
     // Doit //
     //////////
 
-    public void doit() throws Exception {
+    /**
+ * Performs the main work of the module.
+ */
+public void doit() throws Exception {
         Object object = pullInput(0);
         String FileName = (String)pullInput(1);
 

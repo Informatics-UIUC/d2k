@@ -59,7 +59,12 @@ public class CreateDelimitedParser extends InputModule {
         return hasSpecDelim;
     }
 
-    public PropertyDescription [] getPropertiesDescriptions () {
+    /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription [] getPropertiesDescriptions () {
         PropertyDescription[] retVal = new PropertyDescription[3];
         retVal[0] = new PropertyDescription("labelsRow", "Labels Row",
             "This is the index of the labels row in the file, or -1 if there is no labels row.");
@@ -444,23 +449,56 @@ public class CreateDelimitedParser extends InputModule {
         return out;
     }
 
-    public String getInputInfo(int i) {
+    /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int i) {
         return "The absolute path to the delimited file.";
     }
 
-    public String getOutputInfo(int i) {
+    /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
         return "A Delimited File Parser for the specified file.";
     }
 
-    public String getInputName(int i) {
+    /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int i) {
         return "File Name";
     }
 
-    public String getOutputName(int i) {
+    /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int i) {
         return "File Parser";
     }
 
-    public String getModuleInfo() {
+    /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
         StringBuffer s = new StringBuffer("<p>Overview: ");
         s.append("This module creates a parser for the specified file. The file is expected to ");
 	s.append("have a consistent delimiter character. ");
@@ -491,11 +529,19 @@ public class CreateDelimitedParser extends InputModule {
         return s.toString();
     }
 
-    public String getModuleName() {
+    /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
         return "Create Delimited File Parser";
     }
 
-    public void doit() throws Exception {
+    /**
+ * Performs the main work of the module.
+ */
+public void doit() throws Exception {
         String fn = (String)pullInput(0);
         File file = new File(fn);
         if(!file.exists()) {

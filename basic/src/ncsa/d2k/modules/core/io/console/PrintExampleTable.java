@@ -8,7 +8,12 @@ public class PrintExampleTable
 
   int numProperties = 4;
 
-  public PropertyDescription[] getPropertiesDescriptions() {
+  /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
 
     PropertyDescription[] pds = new PropertyDescription[numProperties];
 
@@ -75,15 +80,32 @@ public class PrintExampleTable
     return this.PrintExampleValues;
   }
 
-  public String getModuleName() {
+  /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
     return "Print Example Table";
   }
 
-  public String getModuleInfo() {
+  /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
     return "<p>Overview: This module reports information in the given example set.</p>";
   }
 
-  public String getInputName(int i) {
+  /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int i) {
     switch (i) {
       case 0:
         return "Example Table";
@@ -91,7 +113,14 @@ public class PrintExampleTable
     return "";
   }
 
-  public String getInputInfo(int i) {
+  /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int i) {
     switch (i) {
       case 0:
         return "The Example Table to report on";
@@ -105,7 +134,14 @@ public class PrintExampleTable
     return in;
   }
 
-  public String getOutputName(int i) {
+  /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int i) {
     switch (i) {
       case 0:
         return "Example Table";
@@ -113,7 +149,14 @@ public class PrintExampleTable
     return "";
   }
 
-  public String getOutputInfo(int i) {
+  /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
     switch (i) {
       case 0:
         return "The Example Table that was input to the module without any modification";
@@ -127,7 +170,10 @@ public class PrintExampleTable
     return out;
   }
 
-  public void doit() {
+  /**
+ * Performs the main work of the module.
+ */
+public void doit() {
 
     ExampleTable exampleSet = (ExampleTable)this.pullInput(0);
     int numExamples = exampleSet.getNumRows();

@@ -58,7 +58,12 @@ public class WriteTableToFile extends OutputModule {
        Return a description of the function of this module.
        @return A description of this module.
     */
-    public String getModuleInfo() {
+    /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
        StringBuffer sb = new StringBuffer("<p>Overview: ");
        sb.append("This module writes the contents of a Table to a file.</p>");
        sb.append("<p>Detailed Description: ");
@@ -76,7 +81,12 @@ public class WriteTableToFile extends OutputModule {
        return sb.toString();
    }
 
-   public PropertyDescription[] getPropertiesDescriptions() {
+   /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
 
       PropertyDescription[] descriptions = new PropertyDescription [3];
 
@@ -101,7 +111,12 @@ public class WriteTableToFile extends OutputModule {
        Return the name of this module.
        @return The name of this module.
     */
-    public String getModuleName() {
+    /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
       return "Write Table to File";
    }
 
@@ -130,7 +145,14 @@ public class WriteTableToFile extends OutputModule {
        @param i The index of the input
        @return The description of the input
     */
-    public String getInputInfo(int i) {
+    /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int i) {
       switch (i) {
          case 0: return "The name of the file to be written.";
          case 1: return "The Table to write.";
@@ -143,7 +165,14 @@ public class WriteTableToFile extends OutputModule {
        @param i The index of the input.
        @return The name of the input
     */
-    public String getInputName(int i) {
+    /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int i) {
       switch(i) {
          case 0:
             return "File Name";
@@ -158,7 +187,14 @@ public class WriteTableToFile extends OutputModule {
        @param i The index of the output.
        @return The description of the output.
     */
-    public String getOutputInfo(int i) {
+    /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
       switch (i) {
          default: return "No such output";
       }
@@ -169,7 +205,14 @@ public class WriteTableToFile extends OutputModule {
        @param i The index of the output.
        @return The name of the output
     */
-    public String getOutputName(int i) {
+    /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int i) {
       switch(i) {
          default: return "No such output";
       }
@@ -179,7 +222,12 @@ public class WriteTableToFile extends OutputModule {
 	 * if the file name input is not connected, ignore it.
 	 * @return true if we are ready to fire.
 	 */
-	public boolean isReady() {
+	/**
+ * Called by the D2K Infrastructure to determine if the module is ready to run.
+ *
+ * @return Whether or not the module is ready to run.
+ */
+public boolean isReady() {
 		if (this.isInputPipeConnected(0))
 			return super.isReady();
 		else
@@ -189,7 +237,10 @@ public class WriteTableToFile extends OutputModule {
     /**
       Write the table to the file.
    */
-    public void doit() throws Exception {
+    /**
+ * Performs the main work of the module.
+ */
+public void doit() throws Exception {
       Table vt = (Table)pullInput(1);
 	  String filename;
 	  if (this.isInputPipeConnected(0))

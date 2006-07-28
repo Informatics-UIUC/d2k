@@ -11,7 +11,12 @@ public class PrintModel
 
   int numProperties = 5;
 
-  public PropertyDescription[] getPropertiesDescriptions() {
+  /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
 
     PropertyDescription[] pds = new PropertyDescription[numProperties];
 
@@ -100,11 +105,21 @@ public class PrintModel
     return this.OutputLabel;
   }
 
-  public String getModuleName() {
+  /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
     return "Print Model";
   }
 
-  public String getModuleInfo() {
+  /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
     return "<p>Overview: This module report the contents of a model based on the printing options in the module properties.</p>";
   }
 
@@ -120,7 +135,14 @@ public class PrintModel
     return out;
   }
 
-  public String getInputName(int i) {
+  /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int i) {
     switch (i) {
       case 0:
         return "Model";
@@ -128,7 +150,14 @@ public class PrintModel
     return "";
   }
 
-  public String getInputInfo(int i) {
+  /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int i) {
     switch (i) {
       case 0:
         return "Model to be reported";
@@ -136,7 +165,14 @@ public class PrintModel
     return "";
   }
 
-  public String getOutputName(int i) {
+  /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int i) {
     switch (i) {
       case 0:
         return "Model";
@@ -144,7 +180,14 @@ public class PrintModel
     return "";
   }
 
-  public String getOutputInfo(int i) {
+  /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
     switch (i) {
       case 0:
         return "The Model that was input to the module without any modification";
@@ -152,7 +195,10 @@ public class PrintModel
     return "";
   }
 
-  public void doit() throws Exception {
+  /**
+ * Performs the main work of the module.
+ */
+public void doit() throws Exception {
     ModelPrintOptions printOptions = null;
     if (Enabled) {
       printOptions = new ModelPrintOptions();

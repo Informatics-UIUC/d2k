@@ -348,9 +348,20 @@ public class DSTPView
   //====================================
   // Interface Implementation: UserView
   //====================================
-  public void setInput(Object o, int i) {}
+  /**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object o, int i) {}
 
-  public void initView(ViewModule vm) {
+  /**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule vm) {
     init();
   }
 

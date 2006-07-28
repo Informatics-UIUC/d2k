@@ -32,7 +32,12 @@ public class ReadTextFile extends ReentrantComputeModule {
 
     * @return PropertyDescription[]
     */
-   public PropertyDescription[] getPropertiesDescriptions()
+   /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions()
  {
    PropertyDescription[] pds = new PropertyDescription[1];
    pds[0] = new PropertyDescription("bufferSize", "Buffer Size", "The size " +
@@ -47,7 +52,12 @@ public class ReadTextFile extends ReentrantComputeModule {
 
    * @return String
    */
-  public String getModuleInfo(){
+  /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo(){
     return "<P><B>Overview:</b><br>" +
         "This module reads the content of a text file and outputs that content as a String.</P>" +
         "<P><B>Detailed Description:</b><BR>" +
@@ -63,7 +73,12 @@ public class ReadTextFile extends ReentrantComputeModule {
 
    * @return String
    */
-  public String getModuleName(){
+  /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName(){
     return "Read Text File";
   }
 
@@ -81,7 +96,14 @@ public class ReadTextFile extends ReentrantComputeModule {
   * @todo implement this method
   * @return String
   */
-  public String getInputInfo(int index){
+  /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int index){
     switch(index){
       case 0: return "A path to the text file to read in";
       default: return "no such input";
@@ -93,7 +115,14 @@ public class ReadTextFile extends ReentrantComputeModule {
 
   * @return String
   */
- public String getInputName(int index){
+ /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index){
     switch(index){
       case 0: return "File Name";
       default: return "no such input";
@@ -115,7 +144,14 @@ public class ReadTextFile extends ReentrantComputeModule {
  /**
  * @return String
  */
- public String getOutputInfo(int index){
+ /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int index){
    switch(index){
      case 0: return "The content of the input text file.";
      default: return "no such output";
@@ -125,6 +161,13 @@ public class ReadTextFile extends ReentrantComputeModule {
 
  /**
  * @return String
+ */
+/**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
  */
 public String getOutputName(int index){
    switch(index){

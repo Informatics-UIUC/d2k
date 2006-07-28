@@ -27,7 +27,12 @@ public class ParseFileToPagingTable extends ParseFileToTable {
 		pageSubsets = nr;
 	}
 
-	public PropertyDescription[] getPropertiesDescriptions() {
+	/**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
 		PropertyDescription[] retVal = new PropertyDescription[3];
 		retVal[0] =
 			new PropertyDescription(
@@ -47,15 +52,34 @@ public class ParseFileToPagingTable extends ParseFileToTable {
 		return retVal;
 	}
 
-	public String getOutputInfo(int i) {
+	/**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
 		return "The data read from the FlatFileParser in a PagingTable.";
 	}
 
-	public String getOutputName(int i) {
+	/**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int i) {
 		return "Table";
 	}
 
-	public String getModuleInfo() {
+	/**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
 		// return "Read the data from a FlatFileParser to a PagingTable.";
 		StringBuffer sb = new StringBuffer("<p>Overview: ");
 		sb.append("Given a FlatFileParser, this module reads the data ");
@@ -66,11 +90,19 @@ public class ParseFileToPagingTable extends ParseFileToTable {
 		return sb.toString();
 	}
 
-	public String getModuleName() {
+	/**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
 		return "Parse File to Paging Table";
 	}
 
-	public void doit() throws Exception {
+	/**
+ * Performs the main work of the module.
+ */
+public void doit() throws Exception {
 		try {
 			super.doit();
 		} catch (OutOfMemoryError e) {

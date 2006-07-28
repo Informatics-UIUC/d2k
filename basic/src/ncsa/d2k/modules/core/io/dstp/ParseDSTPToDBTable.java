@@ -85,7 +85,12 @@ public class ParseDSTPToDBTable
      Return the name of this module.
      @return The name of this module.
    */
-  public String getModuleName() {
+  /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
     return "Select DSTP Dataset";
   }
 
@@ -93,7 +98,12 @@ public class ParseDSTPToDBTable
    * Return array of property descriptors for this module.
    * @return array
    */
-  public PropertyDescription[] getPropertiesDescriptions() {
+  /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
     PropertyDescription[] descriptions = new PropertyDescription[4];
     descriptions[0] = super.supressDescription;
     descriptions[1] = new PropertyDescription("serverName",
@@ -110,7 +120,10 @@ public class ParseDSTPToDBTable
   /**
      Code to execute before doit.
    */
-  public void beginExecution() {
+  /**
+ * Called by the D2K Infrastructure before the itinerary begins to execute.
+ */
+public void beginExecution() {
     if (m_view != null) {
       m_view.reset(this.getServerName());
     }
@@ -119,7 +132,10 @@ public class ParseDSTPToDBTable
   /**
      Code to execute at end of itinerary run.
    */
-  public void endExecution() {
+  /**
+ * Called by the D2K Infrastructure after the itinerary completes execution.
+ */
+public void endExecution() {
     super.endExecution();
   }
 
@@ -132,7 +148,14 @@ public class ParseDSTPToDBTable
      @param i The index of the output.
      @return The description of the output.
    */
-  public String getOutputInfo(int parm1) {
+  /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int parm1) {
     if (parm1 == 0) {
       return
           "DBTable containing the data that was selected form the DSTP server.";
@@ -146,7 +169,14 @@ public class ParseDSTPToDBTable
      @param i The index of the output.
      @return The name of the output
    */
-  public String getOutputName(int parm1) {
+  /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int parm1) {
     if (parm1 == 0) {
       return "DBTable";
     } else {
@@ -169,7 +199,12 @@ public class ParseDSTPToDBTable
     Return information about the module.
     @return A detailed description of the module.
    */
-  public String getModuleInfo() {
+  /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
     String s = "<p>Overview: ";
     s += "This module provides a GUI that is a metadata viewer for a DSTP ";
     s += "server.  The user can select a data source to be loaded into a DBTable ";
@@ -229,7 +264,14 @@ public class ParseDSTPToDBTable
      @param i The index of the input
      @return The description of the input
    */
-  public String getInputInfo(int parm1) {
+  /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int parm1) {
     if (parm1 == 0) {
       return "";
     } else {
@@ -304,7 +346,10 @@ public class ParseDSTPToDBTable
 
 
 
-  public void doit() throws Exception{
+  /**
+ * Performs the main work of the module.
+ */
+public void doit() throws Exception{
 
     //validating that properties were set:
     if(m_servername == null || attNames == null || attTypes == null || category == null || datafileName == null)

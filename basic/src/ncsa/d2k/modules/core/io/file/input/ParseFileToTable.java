@@ -20,7 +20,12 @@ public class ParseFileToTable extends InputModule {
         return useBlanks;
     }
 
-    public PropertyDescription [] getPropertiesDescriptions () {
+    /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription [] getPropertiesDescriptions () {
         PropertyDescription[] retVal = new PropertyDescription[1];
         retVal[0] = new PropertyDescription("useBlanks", "Set Blanks to be Missing Values",
             "When true, any blank entries in the file will be set as missing values in the table.");
@@ -38,13 +43,27 @@ public class ParseFileToTable extends InputModule {
         return out;
     }
 
-    public String getInputInfo(int i) {
+    /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int i) {
         if(i == 0)
             return "A FlatFileParser to read data from.";
         return "An optional TableFactory to control the type of table created.  If not used, a basic table will be created.";
     }
 
-    public String getOutputInfo(int i) {
+    /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
         switch(i) {
             case 0:
                 return "A Table with the data from the file reader.";
@@ -53,11 +72,25 @@ public class ParseFileToTable extends InputModule {
         }
     }
 
-    public String getInputName(int i) {
+    /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int i) {
         return "File Parser";
     }
 
-    public String getOutputName(int i) {
+    /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int i) {
         switch(i) {
             case 0:
                 return "Table";
@@ -66,7 +99,12 @@ public class ParseFileToTable extends InputModule {
         }
     }
 
-    public String getModuleInfo() {
+    /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
         // return "Given a FlatFileReader, create a Table initialized with its contents.";
         StringBuffer sb = new StringBuffer("<p>Overview: ");
         sb.append("Given a FlatFileParser, this module creates a Table ");
@@ -78,18 +116,31 @@ public class ParseFileToTable extends InputModule {
         return sb.toString();
     }
 
-    public String getModuleName() {
+    /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
         return "Parse File To Table";
     }
 
-    public boolean isReady() {
+    /**
+ * Called by the D2K Infrastructure to determine if the module is ready to run.
+ *
+ * @return Whether or not the module is ready to run.
+ */
+public boolean isReady() {
         if(isInputPipeConnected(1))
                 return super.isReady();
         else
             return getInputPipeSize(0) > 0;
     }
 
-    public void doit() throws Exception {
+    /**
+ * Performs the main work of the module.
+ */
+public void doit() throws Exception {
         FlatFileParser fle = (FlatFileParser)pullInput(0);
 
         TableFactory tf = null;

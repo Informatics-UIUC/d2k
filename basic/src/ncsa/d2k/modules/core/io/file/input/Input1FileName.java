@@ -32,26 +32,57 @@ public class Input1FileName extends InputModule {
         return out;
     }
 
-    public String getInputInfo(int i) {
+    /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int i) {
         return "";
     }
 
-    public String getOutputInfo(int i) {
+    /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
         return "The name of the file, possibly including the path.";
     }
 
-    public String getOutputName(int i) {
+    /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int i) {
         return "File Name";
     }
 
     /** Return the name of this module.
      *  @return The display name for this module.
      */
-    public String getModuleName() {
+    /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
         return "Input File Name";
     }
 
-    public String getModuleInfo() {
+    /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
         String s = "<p>Overview: ";
         s += "This module is used to enter the name of a file. ";
         s += "</p><p>Detailed Description: ";
@@ -81,7 +112,12 @@ public class Input1FileName extends InputModule {
     /** Return an array with information on the properties the user may update.
      *  @return The PropertyDescriptions for properties the user may update.
      */
-    public PropertyDescription[] getPropertiesDescriptions() {
+    /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
         PropertyDescription[] pds = new PropertyDescription [1];
 
         pds[0] = new PropertyDescription( "fileName",
@@ -370,7 +406,10 @@ public class Input1FileName extends InputModule {
         }
     }
 
-    public void doit() throws Exception {
+    /**
+ * Performs the main work of the module.
+ */
+public void doit() throws Exception {
         String fn = getFileName();
         if(fn == null || fn.length() == 0)
             throw new Exception(getAlias()+": No file name was given.");

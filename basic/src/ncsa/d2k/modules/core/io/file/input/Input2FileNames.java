@@ -32,18 +32,39 @@ public class Input2FileNames extends InputModule {
         return out;
     }
 
-    public String getInputInfo(int i) {
+    /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int i) {
         return "";
     }
 
-    public String getOutputInfo(int i) {
+    /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
         if(i == 0)
             return  "The name of the first file, possibly including the path.";
         else
             return "The name of the second file, possibly including the path.";
     }
 
-    public String getOutputName(int i) {
+    /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int i) {
         if(i == 0)
             return "File Name 1";
         else
@@ -52,11 +73,21 @@ public class Input2FileNames extends InputModule {
    /** Return the name of this module.
      *  @return The display name for this module.
      */
-    public String getModuleName() {
+    /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
         return "Input 2 File Names";
     }
 
-    public String getModuleInfo() {
+    /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
         String s = "<p>Overview: ";
         s += "This module is used to enter the names of two files. ";
         s += "</p><p>Detailed Description: ";
@@ -87,7 +118,12 @@ public class Input2FileNames extends InputModule {
     /** Return an array with information on the properties the user may update.
      *  @return The PropertyDescriptions for properties the user may update.
      */
-    public PropertyDescription[] getPropertiesDescriptions() {
+    /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
         PropertyDescription[] pds = new PropertyDescription [2];
 
         pds[0] = new PropertyDescription( "fileName0",
@@ -441,7 +477,10 @@ public class Input2FileNames extends InputModule {
         }
     }
 
-    public void doit() throws Exception {
+    /**
+ * Performs the main work of the module.
+ */
+public void doit() throws Exception {
         String fn0 = getFileName0();
         String fn1 = getFileName1();
         if(fn0 == null || fn0.length() == 0)
