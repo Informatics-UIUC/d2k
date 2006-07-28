@@ -1,5 +1,11 @@
 package ncsa.d2k.modules.core.discovery.cluster.sample;
 
+
+
+import ncsa.d2k.core.modules.*;
+import ncsa.d2k.modules.core.datatype.table.*;
+import ncsa.d2k.modules.core.discovery.cluster.gui.properties.*;
+
 /**
  * <p>Title: FractionationParams</p>
  * <p>Description: MOdule to input parameters for KMeans</p>
@@ -8,55 +14,96 @@ package ncsa.d2k.modules.core.discovery.cluster.sample;
  * @author D. Searsmith
  * @version 1.0
  */
-
-//==============
-// Java Imports
-//==============
-
-//===============
-// Other Imports
-//===============
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.discovery.cluster.gui.properties.*;
-
 public class FractionationParams extends FractionationParamsOPT {
 
-  //==============
-  // Data Members
-  //==============
-
-  //================
-  // Constructor(s)
-  //================
 
   public FractionationParams() {
   }
 
-  //============
-  // Properties
-  //============
 
-  /** the number of rows to sample */
+
+  /**
+   * Sets the Number of Clusters property.
+   * @param i The Number of Clusters property.
+   */
   public void setNumClusters(int i) {N = i;}
+  /**
+   * Returns the Number of Clusters property.
+   * @return int The Number of Clusters property.
+   */
   public int getNumClusters() {return N;}
 
+
+  /**
+   * Returns the value of the Clustering Method property.
+   * @return int The value of the Clustering Method property.
+   */
   public int getClusterMethod () {return  _clusterMethod;}
+
+  /**
+   * Sets the value of the Clustering Method property.
+   * @param noc The value for the Clustering Method property, should be >=2
+   */
   public void setClusterMethod (int noc) {_clusterMethod = noc;}
 
+
+  /**
+   * Returns the value of the Distance Metric property
+   * @return int The value of the Distance Metric property
+   */
   public int getDistanceMetric() {return  _distanceMetric;}
+  /**
+   * Sets the value of the Distance Metric property.
+   * @param dm The value for the Distance Metric property
+   */
   public void setDistanceMetric(int dm) {_distanceMetric = dm;}
 
+
+  /**
+   * Returns the value of the HAC Distance Threshold property.
+   * @return int The value of the HAC Distance Threshold property, should be in the range [1,100].
+   */
   public int getHacDistanceThreshold() {return  _hacDistanceThreshold;}
+  /**
+   * Sets the value of the HAC Distance Threshold property.
+   * @param noc The value for the HAC Distance Threshold property, should be in the range [1,100].
+   */
   public void setHacDistanceThreshold (int noc) {_hacDistanceThreshold = noc;}
 
+
+  /**
+   * Returns the value of the Max Partition Size property.
+   * @return int The value of the Max Partition Size property.
+   */
   public int getPartitionSize() {return  _fracPart;}
+  /**
+   * Sets the value of the Max Partition Size property.
+   * @param noc The value of the Max Partition Size property.
+   */
   public void setPartitionSize (int noc) {_fracPart = noc;}
 
+
+  /**
+   * Returns the value of the Sort Attribute property.
+   * @return int The value of the Sort Attribute property.
+   */
   public int getNthSortTerm() {return _nthSortTerm;}
+  /**
+   * Sets the value of the Sort Attribute property.
+   * @param mt The value for the Sort Attribute property.
+   */
   public void setNthSortTerm(int mt) {_nthSortTerm = mt;}
 
+
+  /**
+   * Returns the value of the Number of Assignment Passes property.
+   * @return int The value of the Number of Assignment Passes property.
+   */
   public int getRefinementMaxIterations() {return  _maxIterations;}
+  /**
+   * Sets the value of the Number of Assignment Passes property.
+   * @param dm The value for the Number of Assignment Passes property, should be >0.
+   */
   public void setRefinementMaxIterations(int dm) {_maxIterations = dm;}
 
   /**
