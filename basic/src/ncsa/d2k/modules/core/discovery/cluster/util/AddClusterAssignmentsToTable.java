@@ -55,7 +55,12 @@ public class AddClusterAssignmentsToTable
     Return information about the module.
     @return A detailed description of the module.
   */
-  public String getModuleInfo() {
+  /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
     String s = "<p>Overview: ";
     s += "This module adds an attribute to each example in the table contained in the input <i>Cluster Model</i>. ";
     s += "The new attribute specifies the cluster label as an integer value. ";
@@ -99,7 +104,12 @@ public class AddClusterAssignmentsToTable
      Return the name of this module.
      @return The name of this module.
    */
-  public String getModuleName() {
+  /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
     return "Add Cluster Assignments";
   }
 
@@ -118,7 +128,14 @@ public class AddClusterAssignmentsToTable
      @param i The index of the input
      @return The description of the input
    */
-  public String getInputInfo(int i) {
+  /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int i) {
     switch (i) {
       case 0:
         return "The Cluster Model whose table will be modified.";
@@ -132,7 +149,14 @@ public class AddClusterAssignmentsToTable
      @param i The index of the input.
      @return The name of the input
    */
-  public String getInputName(int i) {
+  /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int i) {
     switch (i) {
       case 0:
         return "Cluster Model";
@@ -157,7 +181,14 @@ public class AddClusterAssignmentsToTable
      @param i The index of the output.
      @return The description of the output.
    */
-  public String getOutputInfo(int i) {
+  /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
     switch (i) {
       case 0:
         return "The modified table, possibly as part of the full Cluster Model.";
@@ -171,7 +202,14 @@ public class AddClusterAssignmentsToTable
      @param i The index of the output.
      @return The name of the output
    */
-  public String getOutputName(int i) {
+  /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int i) {
     switch (i) {
       case 0:
         return "Table or Cluster Model";
@@ -183,7 +221,10 @@ public class AddClusterAssignmentsToTable
   /**
      Perform the work of the module.
    */
-  public void doit() throws Exception {
+  /**
+ * Performs the main work of the module. <In this case, the code does these specific activities>.
+ */
+public void doit() throws Exception {
 
     boolean exceptionFlag = false;
     try {
