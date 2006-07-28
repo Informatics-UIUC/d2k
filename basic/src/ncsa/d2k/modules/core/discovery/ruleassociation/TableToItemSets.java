@@ -14,7 +14,12 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 	 * Return the human readable name of the module.
 	 * @return the human readable name of the module.
 	 */
-	public String getModuleName() {
+	/**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
 		return "Table To Item Sets";
 	}
 
@@ -23,7 +28,14 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 	 * @param index the index of the input.
 	 * @return the human readable name of the indexed input.
 	 */
-	public String getInputName(int index) {
+	/**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
 		switch(index) {
 			case 0:
 				return "Table";
@@ -36,7 +48,14 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
-	public String getInputInfo(int index) {
+	/**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int index) {
 		switch (index) {
 			case 0:
 				return "The table that items and sets will be extracted from.";
@@ -59,7 +78,14 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 	 * @param index the index of the output.
 	 * @return the human readable name of the indexed output.
 	 */
-	public String getOutputName(int index) {
+	/**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
 		switch(index) {
 			case 0:
 				return "Item Sets";
@@ -72,7 +98,14 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 		This method returns the description of the outputs.
 		@return the description of the indexed output.
 	*/
-	public String getOutputInfo (int index) {
+	/**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo (int index) {
 		switch (index) {
 			case 0:
 				return "The items of interest that were found in the table and " +
@@ -95,7 +128,12 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 		This method returns the description of the module.
 		@return the description of the module.
 	*/
-	public String getModuleInfo () {
+	/**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo () {
                 StringBuffer sb =  new StringBuffer("<p>Overview: ");
                 sb.append( "This module reads a Table and extracts from it items for use ");
                 sb.append( "in mining association rules with the Apriori algorithm. ");
@@ -155,7 +193,10 @@ public class TableToItemSets extends ncsa.d2k.core.modules.DataPrepModule
 	/**
 		PUT YOUR CODE HERE.
 	*/
-	public void doit () throws Exception {
+	/**
+ * Performs the main work of the module.
+ */
+public void doit () throws Exception {
 		ItemSets iss = new ItemSets((Table)this.pullInput(0));
 
 		this.pushOutput(iss,0);

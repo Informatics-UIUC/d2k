@@ -50,7 +50,14 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	 * @param index the index of the input.
 	 * @return the human readable name of the indexed input.
 	 */
-	public String getInputName(int index) {
+	/**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
 		switch(index) {
 			case 0:
 				return "Rule Table";
@@ -62,7 +69,14 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
-	public String getInputInfo(int index) {
+	/**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int index) {
 		switch (index) {
 		    case 0:
 			return "A representation of association rules to be displayed. ";
@@ -81,7 +95,14 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	/**	This method returns the description of the outputs.
 		@return the description of the indexed output.
 	*/
-	public String getOutputInfo (int index) {
+	/**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo (int index) {
 		switch (index) {
 			default: return "No such output";
 		}
@@ -92,7 +113,14 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	 * @param index the index of the output.
 	 * @return the human readable name of the indexed output.
 	 */
-	public String getOutputName(int index) {
+	/**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
 		switch(index) {
 			default: return "No such output";
 		}
@@ -102,14 +130,24 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	 * Return the human readable name of the module.
 	 * @return the human readable name of the module.
 	 */
-	public String getModuleName() {
+	/**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
 		return "Rule Visualization";
 	}
 
 	/**	This method returns the description of the module.
 		@return the description of the module.
 	*/
-       	public String getModuleInfo () {
+       	/**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo () {
 	  StringBuffer sb = new StringBuffer( "<p>Overview: ");
           sb.append( "This module provides a visual representation of the association rules encapsulated in the ");
           sb.append("input <i>Rule Table<i>. ");
@@ -186,7 +224,12 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 	}
 
 
-        public PropertyDescription[] getPropertiesDescriptions() {
+        /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
 		// hide properties that the user shouldn't udpate
        		return new PropertyDescription[0];
    	}
@@ -240,7 +283,12 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 		/**	This method adds the components to a Panel and then adds the Panel
 			to the view.
 		*/
-		public void initView(ViewModule mod) {
+		/**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule mod) {
 			//module = mod;
 			menuBar = new JMenuBar();
 			JMenu options = new JMenu("Options");
@@ -369,7 +417,10 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			menuBar.add(options);
 		}
 
-		public void endExecution () {
+		/**
+ * Called by the D2K Infrastructure after the itinerary completes execution.
+ */
+public void endExecution () {
 			itemLabels = null;
 			 ruleTable = null;
 		}
@@ -1042,7 +1093,13 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
 			@param index the index of the input that has been received.
 		*/
 
-		public void setInput(Object o, int index) {
+		/**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object o, int index) {
 			if (index == 0)
             removeAll();
 				ruleTable = (RuleTable)o;
@@ -1699,11 +1756,22 @@ public class RuleVis extends ncsa.d2k.core.modules.VisModule
                     //System.out.println("new Rule Filter");
                   }
 
-                  //public void initView(ViewModule m) {
+                  ///**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule m) {
                   //  mod = m;
                   //}
 
-                  public void setInput(Object obj, int ind) {
+                  /**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object obj, int ind) {
                     if (ind != 0)
                       return;
                     table = (RuleTable)obj;
