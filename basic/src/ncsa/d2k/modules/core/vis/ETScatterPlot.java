@@ -29,7 +29,12 @@ public class ETScatterPlot extends VisModule
        Return a description of the function of this module.
        @return A description of this module.
     */
-    public String getModuleInfo() {
+    /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
        StringBuffer sb = new StringBuffer("<p>Overview: ");
        sb.append("Given an <i>ExampleTable</i>, this module plots each ");
        sb.append("numeric input variable against each numeric output ");
@@ -47,7 +52,12 @@ public class ETScatterPlot extends VisModule
        Return the name of this module.
        @return The name of this module.
     */
-    public String getModuleName() {
+    /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
       return "Example Table Scatter Plot";
    }
 
@@ -76,7 +86,14 @@ public class ETScatterPlot extends VisModule
        @param i The index of the input
        @return The description of the input
     */
-    public String getInputInfo(int i) {
+    /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int i) {
       switch (i) {
          case 0: return "The <i>ExampleTable</i> to plot.";
          default: return "No such input";
@@ -88,7 +105,14 @@ public class ETScatterPlot extends VisModule
        @param i The index of the input.
        @return The name of the input
     */
-    public String getInputName(int i) {
+    /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int i) {
       switch(i) {
          case 0:
             return "Example Table";
@@ -101,7 +125,14 @@ public class ETScatterPlot extends VisModule
        @param i The index of the output.
        @return The description of the output.
     */
-    public String getOutputInfo(int i) {
+    /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
       switch (i) {
          default: return "No such output";
       }
@@ -112,7 +143,14 @@ public class ETScatterPlot extends VisModule
        @param i The index of the output.
        @return The name of the output
     */
-    public String getOutputName(int i) {
+    /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int i) {
       switch(i) {
          default: return "NO SUCH OUTPUT!";
       }
@@ -126,10 +164,18 @@ public class ETScatterPlot extends VisModule
       return null;
    }
 
-/*   public PropertyDescription[] getPropertiesDescriptions() {
-      return new PropertyDescription[0];
-   }*/
-  public PropertyDescription[] getPropertiesDescriptions() {
+/*   
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+
+  /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
     PropertyDescription[] pds = new PropertyDescription[1];
 
     pds[0] = new PropertyDescription("plotMissingValues",

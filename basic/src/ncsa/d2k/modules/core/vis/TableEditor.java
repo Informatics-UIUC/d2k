@@ -19,7 +19,12 @@ import ncsa.d2k.modules.core.vis.widgets.*;
  */
 public class TableEditor extends TableViewer {
 
-   public String getModuleInfo() {
+   /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
       String info = "<p>Overview: ";
       info += "This module displays a table and allows it to be edited. ";
       info += "</p>";
@@ -91,7 +96,12 @@ public class TableEditor extends TableViewer {
       return info;
    }
 
-   public String getModuleName() {
+   /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
       return "Table Editor";
    }
 
@@ -110,7 +120,14 @@ public class TableEditor extends TableViewer {
     @param i The index of the input
     @return The description of the input
     */
-   public String getInputInfo(int i) {
+   /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int i) {
       switch (i) {
          case 0 :
             return "The table to edit.";
@@ -124,7 +141,14 @@ public class TableEditor extends TableViewer {
     * @param index the index of the input.
     * @return the human readable name of the indexed input.
     */
-   public String getInputName(int index) {
+   /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
       switch (index) {
          case 0 :
             return "Mutable Table";
@@ -138,7 +162,14 @@ public class TableEditor extends TableViewer {
     * @param index the index of the output.
     * @return the human readable name of the indexed output.
     */
-   public String getOutputName(int index) {
+   /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
       switch (index) {
          case 0 :
             return "Edited Table";
@@ -162,7 +193,14 @@ public class TableEditor extends TableViewer {
         @param i The index of the output.
         @return The description of the output.
         */
-   public String getOutputInfo(int i) {
+   /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
       switch (i) {
          case 0 :
             return "The table after the edits.";
@@ -220,7 +258,12 @@ public class TableEditor extends TableViewer {
             SHORT_TYPE,
        OBJECT_TYPE };
 
-      public void initView(ViewModule module) {
+      /**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule module) {
          super.initView(module);
 
          JMenu edit = new JMenu("Edit");
@@ -230,7 +273,13 @@ public class TableEditor extends TableViewer {
          menuBar.add(edit);
       }
 
-      public void setInput(Object input, int idx) {
+      /**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object input, int idx) {
          if (idx == 0) {
             removeAll();
             table = (MutableTable)input;

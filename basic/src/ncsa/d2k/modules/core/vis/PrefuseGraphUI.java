@@ -581,7 +581,12 @@ public class PrefuseGraphUI extends UIModule {
       forceAction = new ForceDirectedLayout("graph", initialForce, false, false);
     }*/
 
-    public void initView(ViewModule vm) { }
+    /**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule vm) { }
 
     private void readPositions(File f) {
 
@@ -704,7 +709,13 @@ public class PrefuseGraphUI extends UIModule {
 
     }
 
-    public void setInput(Object object, int index) {
+    /**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object object, int index) {
 
       graph = (Graph)object;
 
@@ -1440,7 +1451,14 @@ public class PrefuseGraphUI extends UIModule {
     return null;
   }
 
-  public String getInputInfo(int index) {
+  /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int index) {
     if (index == 0) {
       return "A <i>prefuse</i> graph marked with attributes as in " +
         "<i>TableToPrefuse</i>.";
@@ -1450,7 +1468,14 @@ public class PrefuseGraphUI extends UIModule {
     }
   }
 
-  public String getInputName(int index) {
+  /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
     if (index == 0) {
       return "Prefuse Graph";
     }
@@ -1465,10 +1490,20 @@ public class PrefuseGraphUI extends UIModule {
     };
   }
 
-  public String getModuleName() {
+  /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
 	  return "Prefuse Graph UI";
   }
-  public String getModuleInfo() { // !:
+  /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() { // !:
       String s = "Overview: A simple interactive prefuse graph visualization.";
 
       s += "<p>Acknowledgement: ";
@@ -1478,7 +1513,14 @@ public class PrefuseGraphUI extends UIModule {
       return s;
   }
 
-  public String getOutputInfo(int index) {
+  /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int index) {
     return null;
   }
 
@@ -1486,7 +1528,12 @@ public class PrefuseGraphUI extends UIModule {
     return null;
   }
 
-  public PropertyDescription[] getPropertiesDescriptions() {
+  /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
 
     return new PropertyDescription[] {
 

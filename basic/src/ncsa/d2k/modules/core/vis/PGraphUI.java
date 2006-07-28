@@ -23,9 +23,23 @@ public class PGraphUI extends UIModule {
 
    public UserView createUserView() { return pgview = new PGView(); }
    public String[] getFieldNameMapping() { return null; }
-   public String getInputInfo(int index) { return null; }
+   /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int index) { return null; }
 
-   public String getInputName(int index) {
+   /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
 
       if (index == 0) {
          return "Graph";
@@ -40,10 +54,20 @@ public class PGraphUI extends UIModule {
       return new String[] {"edu.uci.ics.jung.graph.Graph"};
    }
 
-   public String getModuleName() {
+   /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
 	   return "PGraph UI";
    }
-   public String getModuleInfo() {
+   /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
       StringBuffer sb = new StringBuffer("<p>Overview: ");
       sb.append("This module implements a zooming user interface of a JUNG ");
       sb.append("graph. It provides some layout and clustering options as ");
@@ -57,10 +81,20 @@ public class PGraphUI extends UIModule {
       return sb.toString();
    }
 
-   public String getOutputInfo(int index) { return null; }
+   /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int index) { return null; }
    public String[] getOutputTypes() { return null; }
 
-   public void endExecution() {
+   /**
+ * Called by the D2K Infrastructure after the itinerary completes execution.
+ */
+public void endExecution() {
 
       if (pgview != null && pgview.canvas != null) {
          pgview.canvas.stop();
@@ -389,9 +423,20 @@ public class PGraphUI extends UIModule {
 
       }
 
-      public void initView(ViewModule vm) { }
+      /**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule vm) { }
 
-      public void setInput(Object o, int i) {
+      /**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object o, int i) {
 
          if (i != 0) {
             return;
@@ -763,7 +808,12 @@ public class PGraphUI extends UIModule {
 
    }
    
-   public PropertyDescription[] getPropertiesDescriptions() {
+   /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
 	    PropertyDescription[] pds = new PropertyDescription[2];
 
 	    pds[0] = new PropertyDescription("initWidth", "Initial width",

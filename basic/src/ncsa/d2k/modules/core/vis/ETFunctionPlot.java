@@ -18,7 +18,12 @@ public class ETFunctionPlot extends ETScatterPlot {
        Return a description of the function of this module.
        @return A description of this module.
     */
-   public String getModuleInfo() {
+   /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
       StringBuffer sb = new StringBuffer("<p>Overview: ");
       sb.append("Given an <i>ExampleTable</i>, this module plots each ");
       sb.append("numeric input variable against each numeric output ");
@@ -36,7 +41,12 @@ public class ETFunctionPlot extends ETScatterPlot {
        Return the name of this module.
        @return The name of this module.
     */
-    public String getModuleName() {
+    /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
       return "Example Table Function Plot";
    }
 
@@ -45,7 +55,14 @@ public class ETFunctionPlot extends ETScatterPlot {
     * @param index the index of the input.
     * @return the human readable name of the indexed input.
     */
-   public String getInputName(int index) {
+   /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
       switch(index) {
          case 0:
             return "Example Table";
@@ -58,7 +75,14 @@ public class ETFunctionPlot extends ETScatterPlot {
     * @param index the index of the output.
     * @return the human readable name of the indexed output.
     */
-   public String getOutputName(int index) {
+   /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
       switch(index) {
          default: return "NO SUCH OUTPUT!";
       }

@@ -23,13 +23,27 @@ public class BarChart2D extends VisModule {
     return null;
   }
 
-  public String getInputInfo(int index) {
+  /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int index) {
     if (index == 0)
       return "A <i>Table</i> containing the data to be visualized.";
     return "NO SUCH INPUT";
   }
 
-  public String getInputName(int index) {
+  /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
     if (index == 0)
       return "Table";
     return "NO SUCH INPUT";
@@ -39,7 +53,12 @@ public class BarChart2D extends VisModule {
     return new String[] {"ncsa.d2k.modules.core.datatype.table.Table"};
   }
 
-  public String getModuleInfo() {
+  /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
     StringBuffer sb = new StringBuffer("<p>Overview: ");
     sb.append("This module creates a bar chart visualization from ");
     sb.append("<i>Table</i> data. One column (by default, column 0) ");
@@ -54,15 +73,34 @@ public class BarChart2D extends VisModule {
     return sb.toString();
   }
 
-  public String getModuleName() {
+  /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
     return "Bar Chart 2D";
   }
 
-  public String getOutputInfo(int index) {
+  /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int index) {
     return "No such output";
   }
 
-  public String getOutputName(int index) {
+  /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
     return "No such output";
   }
 
@@ -96,7 +134,12 @@ public class BarChart2D extends VisModule {
   public int getCharacters() { return _characters; }
   public void setCharacters(int value) { _characters = value; }
 
-  public PropertyDescription[] getPropertiesDescriptions() {
+  /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
     PropertyDescription[] pds = new PropertyDescription[5];
 
     pds[0] = new PropertyDescription("labelsColumn", "Labels column",
@@ -124,9 +167,20 @@ public class BarChart2D extends VisModule {
 
     private Dimension preferredSize = new Dimension(400, 300);
 
-    public void initView(ViewModule mod) { }
+    /**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule mod) { }
 
-    public void setInput(Object obj, int ind) {
+    /**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object obj, int ind) {
       table = (Table)obj;
       initialize();
     }

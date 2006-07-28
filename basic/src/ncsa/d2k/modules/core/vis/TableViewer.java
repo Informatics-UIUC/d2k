@@ -34,13 +34,27 @@ public class TableViewer extends UIModule {
       return null;
    }
 
-   public String getInputInfo(int i) {
+   /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int i) {
       if (i == 0)
          return "The <i>Table</i> to be displayed.";
       return "No such input";
    }
 
-   public String getInputName(int i) {
+   /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int i) {
       if (i == 0)
          return "Table";
       return "No such input";
@@ -52,7 +66,12 @@ public class TableViewer extends UIModule {
       };
    }
 
-   public String getModuleInfo() {
+   /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
       StringBuffer sb = new StringBuffer("<p>Overview: ");
       sb.append("This module displays the contents of a <i>Table</i>.");
 
@@ -103,17 +122,36 @@ public class TableViewer extends UIModule {
       return sb.toString();
    }
 
-   public String getModuleName() {
+   /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
       return "Table Viewer";
    }
 
-   public String getOutputInfo(int i) {
+   /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
       if (i == 0)
          return "The <i>Table</i> that was displayed, unmodified.";
       return "No such output.";
    }
 
-   public String getOutputName(int i) {
+   /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int i) {
       if (i == 0)
          return "Table";
       return "No such output";
@@ -133,7 +171,12 @@ public class TableViewer extends UIModule {
    public int getMaxFractionDigits() { return maxFractionDigits; }
    public void setMaxFractionDigits(int value) { maxFractionDigits = value; }
 
-   public PropertyDescription[] getPropertiesDescriptions() {
+   /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
 
       PropertyDescription[] pds = new PropertyDescription[1];
 
@@ -145,17 +188,6 @@ public class TableViewer extends UIModule {
 
    }
 
-   /*
-   public PropertyDescription[] getPropertiesDescriptions() {
-
-      // This module doesn't have any properties that the user should edit.
-      // so we return an empty list
-
-      PropertyDescription[] pds = new PropertyDescription[0];
-      return pds;
-
-   }
-   */
 
 ////////////////////////////////////////////////////////////////////////////////
 // user view                                                                  //
@@ -184,7 +216,12 @@ public class TableViewer extends UIModule {
          Initialize the view.  Insert all components into the view.
          @param mod The VerticalTableViewer module that owns us
          */
-      public void initView(ViewModule mod) {
+      /**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule mod) {
          parent = (TableViewer)mod;
          menuBar = new JMenuBar();
          JMenu fileMenu = new JMenu("File");
@@ -204,7 +241,13 @@ public class TableViewer extends UIModule {
          @param input the Object that is the input
          @param idx the index of the input
          */
-      public void setInput(Object input, int idx) {
+      /**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object input, int idx) {
          if(idx == 0) {
             removeAll();
             table = (Table)input;

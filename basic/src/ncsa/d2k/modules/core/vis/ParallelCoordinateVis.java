@@ -11,7 +11,12 @@ import ncsa.d2k.modules.core.vis.widgets.PCView;
  */
 public class ParallelCoordinateVis extends VisModule {
 
-   public String getModuleInfo() {
+   /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
       StringBuffer sb = new StringBuffer("<p>Overview: ");
       sb.append("Shows the data contained in a <i>Table</i> on parallel axes.");
       sb.append("</p><p>Detailed Description: ");
@@ -43,14 +48,28 @@ public class ParallelCoordinateVis extends VisModule {
       return sb.toString();
    }
 
-   public String getInputInfo(int i) {
+   /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int i) {
       switch (i) {
          case 0: return "A <i>Table</i> with data to be visualized.";
          default: return "No such input";
       }
    }
 
-   public String getOutputInfo(int i) {
+   /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
       switch (i) {
          default: return "No such output";
       }
@@ -78,7 +97,12 @@ public class ParallelCoordinateVis extends VisModule {
     * Return the human readable name of the module.
     * @return the human readable name of the module.
     */
-   public String getModuleName() {
+   /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
       return "Parallel Coordinate Vis";
    }
 
@@ -87,7 +111,14 @@ public class ParallelCoordinateVis extends VisModule {
     * @param index the index of the input.
     * @return the human readable name of the indexed input.
     */
-   public String getInputName(int index) {
+   /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
       switch(index) {
          case 0:
             return "Table";
@@ -100,13 +131,25 @@ public class ParallelCoordinateVis extends VisModule {
     * @param index the index of the output.
     * @return the human readable name of the indexed output.
     */
-   public String getOutputName(int index) {
+   /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
       switch(index) {
          default: return "NO SUCH OUTPUT!";
       }
    }
 
-   public PropertyDescription[] getPropertiesDescriptions() {
+   /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
       return new PropertyDescription[0];
    }
 

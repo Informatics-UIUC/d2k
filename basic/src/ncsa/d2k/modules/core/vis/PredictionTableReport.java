@@ -21,7 +21,12 @@ public class PredictionTableReport extends VisModule  {
        Return a description of the function of this module.
        @return A description of this module.
     */
-    public String getModuleInfo() {
+    /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
       StringBuffer sb = new StringBuffer("<p>Overview: Provides a visualization");
       sb.append(" to evaluate the performance of a predictive model.");
       sb.append("<p>Detailed Description: Given a PredictionTable with both ");
@@ -59,7 +64,12 @@ public class PredictionTableReport extends VisModule  {
        Return the name of this module.
        @return The name of this module.
     */
-    public String getModuleName() {
+    /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
 		return "Prediction Table Report";
 	}
 
@@ -88,7 +98,14 @@ public class PredictionTableReport extends VisModule  {
        @param i The index of the input
        @return The description of the input
     */
-    public String getInputInfo(int i) {
+    /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int i) {
 		switch (i) {
 			case 0: return "A PredictionTable with both the actual values and predictions.";
 			default: return "No such input";
@@ -100,7 +117,14 @@ public class PredictionTableReport extends VisModule  {
        @param i The index of the input.
        @return The name of the input
     */
-    public String getInputName(int i) {
+    /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int i) {
 		switch(i) {
 			case 0:
 				return "Prediction Table";
@@ -113,7 +137,14 @@ public class PredictionTableReport extends VisModule  {
        @param i The index of the output.
        @return The description of the output.
     */
-    public String getOutputInfo(int i) {
+    /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
 		switch (i) {
 			default: return "No such output";
 		}
@@ -124,14 +155,26 @@ public class PredictionTableReport extends VisModule  {
        @param i The index of the output.
        @return The name of the output
     */
-    public String getOutputName(int i) {
+    /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int i) {
 		switch(i) {
 			default: return "NO SUCH OUTPUT!";
 		}
 	}
 
 
-    public PropertyDescription[] getPropertiesDescriptions() {
+    /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
 	return new PropertyDescription[0]; // so that "windowName" property
 	// is invisible
     }
@@ -162,7 +205,12 @@ public class PredictionTableReport extends VisModule  {
 	   		Initialize the view.  Insert all components into the view.
 	   		@param mod The VerticalTableViewer module that owns us
 		*/
-		public void initView(ViewModule mod) {
+		/**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule mod) {
 		}
 
 		public Dimension getPreferredSize() {
@@ -185,7 +233,13 @@ public class PredictionTableReport extends VisModule  {
 	   		@param input the Object that is the input
 	   		@param idx the index of the input
 		*/
-		public void setInput(Object input, int idx) throws Exception {
+		/**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object input, int idx) throws Exception {
 			PredictionTable pt = (PredictionTable)input;
 			int []outputs = pt.getOutputFeatures();
 			int []preds = pt.getPredictionSet();

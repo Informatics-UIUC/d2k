@@ -65,7 +65,12 @@ import java.util.Vector;
 
 public class SurfacePlot3D extends VisModule {
 
-   public String getModuleInfo() {
+   /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
       StringBuffer sb = new StringBuffer();
       sb.append("<p>Overview: ");
       sb.append("This module creates a three-dimensional visualization of ");
@@ -89,14 +94,28 @@ public class SurfacePlot3D extends VisModule {
       return types;
    }
 
-   public String getInputInfo(int index) {
+   /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int index) {
       switch (index) {
          case 0: return "The <i>Table</i> with data to be visualized.";
          default: return "No such input";
       }
    }
 
-   public String getOutputInfo(int index) {
+   /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int index) {
       switch (index) {
          default: return "No such output";
       }
@@ -131,8 +150,19 @@ public class SurfacePlot3D extends VisModule {
       private static final String FONT_TYPE = "Helvetica";
       private static final int FONT_SIZE = 14;
 
-      public void initView(ViewModule m) { }
-      public void setInput(Object o, int i) { if (i == 0) go((Table)o); }
+      /**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule m) { }
+      /**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object o, int i) { if (i == 0) go((Table)o); }
       public Object getMenu() { return menuBar; }
 
       private void go(Table table) {
@@ -955,7 +985,12 @@ public class SurfacePlot3D extends VisModule {
     * Return the human readable name of the module.
     * @return the human readable name of the module.
     */
-   public String getModuleName() {
+   /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
       return "3D Surface Plot";
    }
 
@@ -964,7 +999,14 @@ public class SurfacePlot3D extends VisModule {
     * @param index the index of the input.
     * @return the human readable name of the indexed input.
     */
-   public String getInputName(int index) {
+   /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
       switch(index) {
          case 0:
             return "Table";
@@ -977,14 +1019,26 @@ public class SurfacePlot3D extends VisModule {
     * @param index the index of the output.
     * @return the human readable name of the indexed output.
     */
-   public String getOutputName(int index) {
+   /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
       switch(index) {
          default: return "NO SUCH OUTPUT!";
       }
    }
    
 
-   public PropertyDescription[] getPropertiesDescriptions() {
+   /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
       return new PropertyDescription[0];
    }
 } // SurfacePlot3D

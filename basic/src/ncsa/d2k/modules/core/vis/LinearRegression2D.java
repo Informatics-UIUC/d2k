@@ -30,14 +30,28 @@ public final class LinearRegression2D extends ncsa.d2k.core.modules.VisModule
       This pair returns the description of the various inputs.
       @return the description of the indexed input.
    */
-   public String getInputInfo(int index) {
+   /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int index) {
       switch (index) {
          case 0: return "A <i>Table</i> to be visualized.";
          default: return "No such input";
       }
    }
 
-    public String getInputName(int index) {
+    /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
       switch(index) {
          case 0:
             return "Table";
@@ -58,13 +72,27 @@ public final class LinearRegression2D extends ncsa.d2k.core.modules.VisModule
       This pair returns the description of the outputs.
       @return the description of the indexed output.
    */
-   public String getOutputInfo(int index) {
+   /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int index) {
       switch (index) {
          default: return "No such output";
       }
    }
 
-    public String getOutputName(int index) {
+    /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
       switch(index) {
          default: return "NO SUCH OUTPUT!";
       }
@@ -83,7 +111,12 @@ public final class LinearRegression2D extends ncsa.d2k.core.modules.VisModule
       This pair returns the description of the module.
       @return the description of the module.
    */
-   public String getModuleInfo() {
+   /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
       StringBuffer sb = new StringBuffer("<p>Overview: ");
       sb.append("Given a <i>Table</i> of data, this module visualizes its ");
       sb.append("numeric columns as a scatter plot with a linear regression ");
@@ -96,7 +129,12 @@ public final class LinearRegression2D extends ncsa.d2k.core.modules.VisModule
       return sb.toString();
    }
 
-    public String getModuleName() {
+    /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
       return "2D Linear Regression";
    }
 
@@ -117,7 +155,12 @@ public final class LinearRegression2D extends ncsa.d2k.core.modules.VisModule
 
    }
 
-   public PropertyDescription[] getPropertiesDescriptions() {
+   /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
       return new PropertyDescription[0];
    }
 
@@ -135,7 +178,12 @@ class LinearRegressionUserPane extends ncsa.d2k.userviews.swing.JUserPane
    JMenuBar menuBar;
    HelpWindow hWindow;
 
-   public void initView(ViewModule viewmodule) {
+   /**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule viewmodule) {
       module = (LinearRegression2D) viewmodule;
       menuBar = new JMenuBar();
       JMenu m1 = new JMenu("Help");
@@ -150,7 +198,13 @@ class LinearRegressionUserPane extends ncsa.d2k.userviews.swing.JUserPane
       return menuBar;
    }
 
-   public void setInput(Object object, int index) {
+   /**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object object, int index) {
       table = (Table) object;
 
       buildView();
