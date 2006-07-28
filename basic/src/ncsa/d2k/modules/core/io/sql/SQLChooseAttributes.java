@@ -65,7 +65,14 @@ public class SQLChooseAttributes extends HeadlessUIModule {
   public SQLChooseAttributes() {
   }
 
-  public String getOutputInfo(int i) {
+  /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
     switch (i) {
       case 0: return "The name of the database table.";
       case 1: return "The meta table built from the data table.";
@@ -73,7 +80,14 @@ public class SQLChooseAttributes extends HeadlessUIModule {
     }
   }
 
-  public String getInputInfo (int i) {
+  /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo (int i) {
     switch (i) {
       case 0: return "JDBC data source to make database connection.";
       case 1: return "The name of the cube table.";
@@ -81,7 +95,14 @@ public class SQLChooseAttributes extends HeadlessUIModule {
     }
   }
 
-  public String getInputName(int i) {
+  /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int i) {
     switch (i) {
       case 0: return "Database Connection";
       case 1: return "Data Table Name";
@@ -89,7 +110,12 @@ public class SQLChooseAttributes extends HeadlessUIModule {
     }
   }
 
-  public String getModuleInfo () {
+  /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo () {
       String s = "<p> Overview: ";
       s += "This module allows a user to choose input and output attributes ";
       s += "from a database table. </p>";
@@ -111,7 +137,12 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 
     }
 
-  public String getModuleName() {
+  /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
     return "SQL Choose Attributes";
   }
 
@@ -125,7 +156,14 @@ public class SQLChooseAttributes extends HeadlessUIModule {
                 return types;
         }
 
-  public String getOutputName(int i) {
+  /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int i) {
     switch (i) {
       case 0: return "Selected Table";
       case 1: return "Meta Data Example Table";
@@ -138,7 +176,12 @@ public class SQLChooseAttributes extends HeadlessUIModule {
   }
 
 //conversion toheadless - vered: super class already implements this method.
-  /*public PropertyDescription[] getPropertiesDescriptions() {
+  /*
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+/*public PropertyDescription[] getPropertiesDescriptions() {
     return new PropertyDescription[0];
   }*/
 
@@ -153,7 +196,13 @@ public class SQLChooseAttributes extends HeadlessUIModule {
   public class GetFieldsView extends JUserPane
     implements ActionListener {
 
-    public void setInput(Object input, int index) {
+    /**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object input, int index) {
       if (index == 0) {
         removeAll();
         cw = (ConnectionWrapper)input;
@@ -168,7 +217,12 @@ public class SQLChooseAttributes extends HeadlessUIModule {
       return new Dimension (400, 300);
     }
 
-    public void initView(ViewModule mod) {
+    /**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule mod) {
     }
 
 
@@ -529,7 +583,10 @@ public class SQLChooseAttributes extends HeadlessUIModule {
 
 
 
-  public void doit() throws Exception{
+  /**
+ * Performs the main work of the module.
+ */
+public void doit() throws Exception{
     cw = (ConnectionWrapper)pullInput(0);
     String _table = (String)pullInput(1);
 

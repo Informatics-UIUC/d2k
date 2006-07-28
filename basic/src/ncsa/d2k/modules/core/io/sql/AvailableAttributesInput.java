@@ -14,11 +14,21 @@ public class AvailableAttributesInput extends InputModule
 	 * Return the human readable name of the module.
 	 * @return the human readable name of the module.
 	 */
-	public String getModuleName() {
+	/**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
 		return "Available Attributes Input";
 	}
 
-	public String getModuleInfo () {
+	/**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo () {
           String s = "<p>Overview: ";
           s += "This module builds a list of attributes (fields) available in a specified database table. </p>";
           s += "<p>Detailed Description: ";
@@ -38,7 +48,14 @@ public class AvailableAttributesInput extends InputModule
 	 * @param index the index of the input.
 	 * @return the human readable name of the indexed input.
 	 */
-	public String getInputName(int index) {
+	/**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
 		switch(index) {
 			case 0:
 				return "Database Connection";
@@ -49,7 +66,14 @@ public class AvailableAttributesInput extends InputModule
 		}
 	}
 
-	public String getInputInfo (int index) {
+	/**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo (int index) {
 		switch (index) {
 			case 0:
 				return "The database connection.";
@@ -70,7 +94,14 @@ public class AvailableAttributesInput extends InputModule
 	 * @param index the index of the output.
 	 * @return the human readable name of the indexed output.
 	 */
-	public String getOutputName(int index) {
+	/**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
 		switch(index) {
 			case 0:
 				return "Database Connection";
@@ -81,7 +112,14 @@ public class AvailableAttributesInput extends InputModule
 		}
 	}
 
-	public String getOutputInfo (int index) {
+	/**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo (int index) {
 		switch (index) {
  			case 0: return "The database connection, for use by the next module.";
 			case 1: return "A list of the attributes available in the selected table.";
@@ -94,7 +132,10 @@ public class AvailableAttributesInput extends InputModule
 		return types;
 	}
 
-	public void doit () throws Exception
+	/**
+ * Performs the main work of the module.
+ */
+public void doit () throws Exception
 	{
 		String tableName = (String) this.pullInput (1);
                 if (tableName == null || tableName.length()== 0) {

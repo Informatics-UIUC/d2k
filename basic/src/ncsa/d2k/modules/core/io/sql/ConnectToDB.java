@@ -70,7 +70,12 @@ public class ConnectToDB extends HeadlessUIModule {
 
       */
 
-    public String getModuleInfo() {
+    /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
       String s = "<p> Overview: ";
       s += "This module establishes a connection to a database. </p>";
       s += "<p> Detailed Description: ";
@@ -90,7 +95,12 @@ public class ConnectToDB extends HeadlessUIModule {
 
 
 
-    public String getModuleName() {
+    /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
 
         return "Connect To DB";
 
@@ -140,7 +150,14 @@ public class ConnectToDB extends HeadlessUIModule {
 
        */
 
-    public String getInputInfo(int i) {
+    /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int i) {
 
         return "No such input!";
 
@@ -148,7 +165,14 @@ public class ConnectToDB extends HeadlessUIModule {
 
 
 
-    public String getInputName(int i) {
+    /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int i) {
 
         return "No such input!";
 
@@ -164,7 +188,14 @@ public class ConnectToDB extends HeadlessUIModule {
 
        */
 
-    public String getOutputInfo(int i) {
+    /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int i) {
 
         switch(i) {
 
@@ -182,7 +213,14 @@ public class ConnectToDB extends HeadlessUIModule {
 
 
 
-    public String getOutputName(int i) {
+    /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int i) {
 
         switch(i) {
 
@@ -214,7 +252,12 @@ public class ConnectToDB extends HeadlessUIModule {
 
     }
 
-    public PropertyDescription [] getPropertiesDescriptions () {
+    /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription [] getPropertiesDescriptions () {
       PropertyDescription [] pds = new PropertyDescription [7];
 	  pds[0] = super.supressDescription;
       pds[1] = new PropertyDescription ("dbVendor", "Database Vendor", "The database vendor: Oracle, MS SQLSer, IBM DB2");
@@ -583,7 +626,12 @@ public class ConnectToDB extends HeadlessUIModule {
 
         private JButton bDo = new JButton("Done");
 
-        public void initView(ViewModule mod) {
+        /**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule mod) {
 
             /**
              *** Initial Setup ***
@@ -796,7 +844,13 @@ public class ConnectToDB extends HeadlessUIModule {
 
     */
 
-        public void setInput(Object input, int index) {
+        /**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object input, int index) {
 
         }
 
@@ -961,7 +1015,10 @@ public class ConnectToDB extends HeadlessUIModule {
 
 //	headless conversion support
 
-		  public void doit() throws Exception{
+		  /**
+ * Performs the main work of the module.
+ */
+public void doit() throws Exception{
 
 
 			if(getDriver() == null ||  getDriver().length() == 0)

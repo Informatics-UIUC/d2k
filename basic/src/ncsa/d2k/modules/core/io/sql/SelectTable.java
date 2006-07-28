@@ -21,7 +21,12 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 	 * Return the human readable name of the module.
 	 * @return the human readable name of the module.
 	 */
-	public String getModuleName() {
+	/**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
 		return "Select Table";
 	}
 
@@ -29,7 +34,12 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 		This method returns the description of the module.
 		@return the description of the module.
 	*/
-	public String getModuleInfo () {
+	/**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo () {
           String s = "<p> Overview: ";
           s += "This module allows the user to select a database table. </p>";
           s += "<p> Detailed Description: ";
@@ -52,7 +62,14 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 	 * @param index the index of the input.
 	 * @return the human readable name of the indexed input.
 	 */
-	public String getInputName(int index) {
+	/**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
 		switch(index) {
 			case 0:
 				return "Tables List";
@@ -64,7 +81,14 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
-	public String getInputInfo(int index) {
+	/**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int index) {
 		switch (index) {
 			case 0: return " A list of tables in the database.   ";
 			default: return "No such input";
@@ -85,7 +109,14 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 	 * @param index the index of the output.
 	 * @return the human readable name of the indexed output.
 	 */
-	public String getOutputName(int index) {
+	/**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
 		switch(index) {
 			case 0:
 				return "Selected Table";
@@ -98,7 +129,14 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 		This method returns the description of the outputs.
 		@return the description of the indexed output.
 	*/
-	public String getOutputInfo (int index) {
+	/**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo (int index) {
 		switch (index) {
 			case 0: return " The name of the table selected by the user.   ";
 			default: return "No such output";
@@ -116,7 +154,12 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
     //QA Anca added this:
     //conversion to headless - vered: the super class implements this method.
-   public PropertyDescription[] getPropertiesDescriptions() {
+   /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
         // so that "WindowName" property is invisible
      PropertyDescription[] pds = new PropertyDescription[2] ;
      pds[0] = super.supressDescription;
@@ -157,7 +200,12 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 			This method adds the components to a Panel and then adds the Panel
 			to the view.
 		*/
-		public void initView(ViewModule mod) {
+		/**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule mod) {
                   JPanel canvasArea = new JPanel();
                   canvasArea.setLayout (new BorderLayout ());
                   JPanel buttons = new JPanel ();
@@ -187,7 +235,13 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 			@param input this is the object that has been input.
 			@param index the index of the input that has been received.
 		*/
-		public void setInput(Object o, int index) {
+		/**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object o, int index) {
 			Vector inputs = (Vector) o;
                         availModel.removeAllElements();
                         String longest = null;
@@ -231,7 +285,10 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
         public String getSelectedTable(){return selectedTable;}
         public void setSelectedTable(String name){selectedTable = name;}
 
-        public void doit() throws Exception {
+        /**
+ * Performs the main work of the module.
+ */
+public void doit() throws Exception {
           Vector vec = (Vector) pullInput(0);
           HashMap available = new HashMap();
           for(int i=0; i<vec.size(); i++)

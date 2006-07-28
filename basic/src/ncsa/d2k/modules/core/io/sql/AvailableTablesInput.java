@@ -21,11 +21,21 @@ public class AvailableTablesInput extends InputModule
 	 * Return the human readable name of the module.
 	 * @return the human readable name of the module.
 	 */
-	public String getModuleName() {
+	/**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
 		return "Available Tables Input";
 	}
 
-	public String getModuleInfo () {
+	/**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo () {
           String s = "<p>Overview: ";
           s += "This module builds a list of available database tables. </p>";
           s += "<p>Detailed Description: ";
@@ -50,7 +60,14 @@ public class AvailableTablesInput extends InputModule
 	 * @param index the index of the input.
 	 * @return the human readable name of the indexed input.
 	 */
-	public String getInputName(int index) {
+	/**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
 		switch(index) {
 			case 0:
 				return "Database Connection";
@@ -59,7 +76,14 @@ public class AvailableTablesInput extends InputModule
 		}
 	}
 
-	public String getInputInfo (int index) {
+	/**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo (int index) {
 		switch (index) {
 			case 0: return "The database connection used to discover the available tables.";
 			default: return "No such input.";
@@ -76,7 +100,14 @@ public class AvailableTablesInput extends InputModule
 	 * @param index the index of the output.
 	 * @return the human readable name of the indexed output.
 	 */
-	public String getOutputName(int index) {
+	/**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
 		switch(index) {
 			case 0:
 				return "Database Connection";
@@ -87,7 +118,14 @@ public class AvailableTablesInput extends InputModule
 		}
 	}
 
-	public String getOutputInfo (int index) {
+	/**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo (int index) {
 		switch (index) {
 			case 0: return "The database connection, for use by the next module.";
 			case 1: return "A list of available tables of the specified type(s).";
@@ -141,7 +179,12 @@ public class AvailableTablesInput extends InputModule
                 }
 	}
 
-        public PropertyDescription [] getPropertiesDescriptions () {
+        /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription [] getPropertiesDescriptions () {
           PropertyDescription [] pds = new PropertyDescription [2];
           pds[0] = new PropertyDescription ("dataTableOnly", "List Data Tables", "Choose True if you want to list data tables.");
           pds[1] = new PropertyDescription ("dataCubeOnly", "List Data Cubes", "Choose True if you want to list data cubes.");

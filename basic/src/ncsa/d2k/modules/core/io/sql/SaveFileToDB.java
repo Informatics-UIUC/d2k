@@ -87,7 +87,12 @@ public class SaveFileToDB extends HeadlessUIModule
        Provide a description of this module.
        @return A description of this module.
     */
-    public String getModuleInfo() {
+    /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
       String s = "<p> Overview: ";
       s += "This module saves data from a data table to a database table. </p>";
       s += "<p> Detailed Description: ";
@@ -108,7 +113,12 @@ public class SaveFileToDB extends HeadlessUIModule
        Provide the module name.
        @return The name of this module.
     */
-    public String getModuleName() {
+    /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
       return "Save File To DB";
     }
     /**
@@ -133,7 +143,14 @@ public class SaveFileToDB extends HeadlessUIModule
         @param i The index of the input to get info about
         @return The information on the input
      */
-    public String getInputInfo (int i) {
+    /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo (int i) {
         switch(i)
         {
           case 0: return "JDBC data source to make database connection.";
@@ -141,7 +158,14 @@ public class SaveFileToDB extends HeadlessUIModule
           default: return "No such input.";
         }
     }
-    public String getInputName (int i) {
+    /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName (int i) {
       switch(i) {
               case 0:
                       return "DatabaseConnection";
@@ -155,11 +179,25 @@ public class SaveFileToDB extends HeadlessUIModule
         @param i The index of the output to get info about
         @return The information on the output
      */
-    public String getOutputInfo (int i) {
+    /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo (int i) {
         return null;
     }
 
-    public String getOutputName (int i) {
+    /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName (int i) {
         return null;
     }
 
@@ -208,7 +246,12 @@ public class SaveFileToDB extends HeadlessUIModule
            Perform initializations here.
            @param mod The module that created this UserView
         */
-        public void initView(ViewModule mod) {
+        /**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule mod) {
             removeAll();
             cw = (ConnectionWrapper)pullInput(0);
             vt = (Table)pullInput(1);
@@ -413,7 +456,13 @@ public class SaveFileToDB extends HeadlessUIModule
            @param input The input
            @param index The index of the input
         */
-        public void setInput(Object input, int index) {
+        /**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object input, int index) {
           if (index == 0) {
             cw = (ConnectionWrapper)input;
           }
@@ -885,7 +934,12 @@ public class SaveFileToDB extends HeadlessUIModule
         public void setTableName(String str){tableName = str;}
 
 
-        public PropertyDescription [] getPropertiesDescriptions () {
+        /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription [] getPropertiesDescriptions () {
          // PropertyDescription [] super_pds = super.getPropertiesDescriptions();
          PropertyDescription [] pds = new PropertyDescription [5];
          pds[0] = super.supressDescription;
@@ -949,7 +1003,10 @@ public class SaveFileToDB extends HeadlessUIModule
 
            }//checkTypeRow
 
-           public void doit() throws Exception{
+           /**
+ * Performs the main work of the module.
+ */
+public void doit() throws Exception{
          cw = (ConnectionWrapper)pullInput(0);
          vt = (Table)pullInput(1);
 
@@ -1330,7 +1387,10 @@ public class SaveFileToDB extends HeadlessUIModule
 
 
      protected String number;
-     public void beginExecution(){
+     /**
+ * Called by the D2K Infrastructure before the itinerary begins to execute.
+ */
+public void beginExecution(){
        if(isOracle) number = ORACLE_NUMBER;
        else number = SQL_NUMBER;
 

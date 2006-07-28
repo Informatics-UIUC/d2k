@@ -20,7 +20,12 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
 	 * Return the human readable name of the module.
 	 * @return the human readable name of the module.
 	 */
-	public String getModuleName() {
+	/**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
 		return "Select Attributes";
 	}
 
@@ -28,7 +33,12 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
 		This method returns the description of the module.
 		@return the description of the module.
 	*/
-	public String getModuleInfo () {
+	/**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo () {
           String s = "<p>Overview: ";
           s += "This module allows the user to select one or more attributes from a list of attributes. </p>";
           s += "<p>Detailed Description: ";
@@ -47,7 +57,14 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
 	 * @param index the index of the input.
 	 * @return the human readable name of the indexed input.
 	 */
-	public String getInputName(int index) {
+	/**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
 		switch(index) {
 			case 0:
 				return "Attributes List";
@@ -60,7 +77,14 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
-	public String getInputInfo(int index) {
+	/**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int index) {
 		switch (index) {
 			case 0:
 				return "A list of available attributes.";
@@ -83,7 +107,14 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
 	 * @param index the index of the output.
 	 * @return the human readable name of the indexed output.
 	 */
-	public String getOutputName(int index) {
+	/**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
 		switch(index) {
 			case 0:
 				return "Selected Attributes";
@@ -95,7 +126,14 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
 		This method returns the description of the outputs.
 		@return the description of the indexed output
 	*/
-	public String getOutputInfo (int index) {
+	/**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo (int index) {
 		switch (index) {
 			case 0:
 				return "The attributes that were selected.";
@@ -115,7 +153,12 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
 
 
     //QA Anca added this:
-  /*  public PropertyDescription[] getPropertiesDescriptions() {
+  /*  
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+/*public PropertyDescription[] getPropertiesDescriptions() {
         // so that "WindowName" property is invisible
         return new PropertyDescription[0];
     }*/
@@ -155,7 +198,12 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
 			This method adds the components to a Panel and then adds the Panel
 			to the view.
 		*/
-		public void initView(ViewModule mod) {
+		/**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule mod) {
 			JPanel canvasArea = new JPanel();
 			canvasArea.setLayout (new BorderLayout ());
 			JPanel buttons = new JPanel ();
@@ -255,7 +303,13 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
 			@param input this is the object that has been input.
 			@param index the index of the input that has been received.
 		*/
-		public void setInput(Object o, int index) {
+		/**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object o, int index) {
 			Vector attributes = (Vector) o;
 			selectedModel.removeAllElements();
 			possibleModel.removeAllElements();
@@ -289,7 +343,10 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
         public void setSelectedAttributes(Object[] att){selectedAttributes = (String[])att;}
         public Object[] getSelectedAttributes( ){return selectedAttributes;}
 
-        public void doit() throws Exception{
+        /**
+ * Performs the main work of the module.
+ */
+public void doit() throws Exception{
 
           Vector availableAttributes = (Vector)pullInput(0);
           if(selectedAttributes == null || selectedAttributes.length == 0)

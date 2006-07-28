@@ -47,11 +47,21 @@ public class BuildQuery extends HeadlessUIModule
   protected boolean dataTableOnly = true;
   protected boolean dataCubeOnly = false;
 
-  public String getModuleName() {
+  /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
     return "Build Query";
   }
 
-  public String getModuleInfo() {
+  /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
     String s = "<p> Overview: ";
     s += "This module helps a user to construct a SQL query. </p>";
     s += "<p> Detailed Description: ";
@@ -63,7 +73,14 @@ public class BuildQuery extends HeadlessUIModule
     return s;
   }
 
-  public String getInputName(int index) {
+  /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
     if (index == 0)
       return "Database Connection";
     return null;
@@ -74,7 +91,14 @@ public class BuildQuery extends HeadlessUIModule
     return types;
   }
 
-  public String getInputInfo(int index) {
+  /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int index) {
     if (index == 0)
       return "The database connection.";
     return "No such input.";
@@ -86,7 +110,14 @@ public class BuildQuery extends HeadlessUIModule
     return o;
   }
 
-  public String getOutputName(int index) {
+  /**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
     if (index == 0)
       return "Selected Tables";
     else if (index == 1)
@@ -98,7 +129,14 @@ public class BuildQuery extends HeadlessUIModule
     return null;
   }
 
-  public String getOutputInfo(int index) {
+  /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int index) {
     if (index == 0)
       return "A list of the tables to be joined";
     else if (index == 1)
@@ -172,7 +210,12 @@ public class BuildQuery extends HeadlessUIModule
     }
   }
 
-  public PropertyDescription[] getPropertiesDescriptions() {
+  /**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
     PropertyDescription[] pds = new PropertyDescription[5];
     pds[0] = super.getPropertiesDescriptions()[0];
     pds[1] = new PropertyDescription("queryCondition", "Query Condition",
@@ -246,7 +289,12 @@ public class BuildQuery extends HeadlessUIModule
       Perform initializations here.
       @param mod The module that created this UserView
     */
-    public void initView(ViewModule mod) {
+    /**
+ * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+ *
+ * @param module The module this view is associated with.
+ */
+public void initView(ViewModule mod) {
       viewModule = mod;
       cw = (ConnectionWrapper)pullInput(0);
       initialize();
@@ -828,7 +876,13 @@ public class BuildQuery extends HeadlessUIModule
         }
       }
 
-      public void setInput(Object o, int i) {
+      /**
+ * Called to pass the inputs received by the module to the view.
+ *
+ * @param input The object that has been input.
+ * @param index The index of the module input that been received.
+ */
+public void setInput(Object o, int i) {
         if (i == 0) {
           cw = (ConnectionWrapper)o;
           initialize();
