@@ -37,12 +37,18 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule {
 	/**
 	 Start a timer when we begin execution.
 	 */
-	public void beginExecution() {
+	/**
+ * Called by the D2K Infrastructure before the itinerary begins to execute.
+ */
+public void beginExecution() {
 		startTime = System.currentTimeMillis();
 		results = new ArrayList();
 	}
 
-	public void endExecution() {
+	/**
+ * Called by the D2K Infrastructure after the itinerary completes execution.
+ */
+public void endExecution() {
 		super.endExecution();
 		if (showProgress || debug) {
 			System.out.println(
@@ -65,7 +71,12 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule {
 	 * Return the human readable name of the module.
 	 * @return the human readable name of the module.
 	 */
-	public String getModuleName() {
+	/**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
 		return "Apriori";
 	}
 
@@ -73,7 +84,12 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule {
 	 This method returns the description of the module.
 	 @return the description of the module.
 	 */
-	public String getModuleInfo() {
+	/**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
 		StringBuffer sb = new StringBuffer("<p>Overview: ");
 		sb.append(
 			"This module implements the Apriori algorithm to generate frequent itemsets consisting of ");
@@ -165,7 +181,14 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule {
 	 * @param index the index of the input.
 	 * @return the human readable name of the indexed input.
 	 */
-	public String getInputName(int index) {
+	/**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
 		switch (index) {
 			case 0 :
 				return "Item Sets";
@@ -178,7 +201,14 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule {
 	 This method returns the description of the various inputs.
 	 @return the description of the indexed input.
 	 */
-	public String getInputInfo(int index) {
+	/**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int index) {
 		switch (index) {
 			case 0 :
 				return "An object produced by a <i>Table To Item Sets</i> module "
@@ -203,7 +233,14 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule {
 	 * @param index the index of the output.
 	 * @return the human readable name of the indexed output.
 	 */
-	public String getOutputName(int index) {
+	/**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
 		switch (index) {
 			case 0 :
 				return "Frequent Itemsets";
@@ -216,7 +253,14 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule {
 	 This method returns the description of the outputs.
 	 @return the description of the indexed output.
 	 */
-	public String getOutputInfo(int index) {
+	/**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int index) {
 		switch (index) {
 			case 0 :
 				String s =
@@ -298,7 +342,12 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule {
 	 * Return a list of the property descriptions.
 	 * @return a list of the property descriptions.
 	 */
-	public PropertyDescription[] getPropertiesDescriptions() {
+	/**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
 		PropertyDescription[] pds = new PropertyDescription[4];
 		pds[0] =
 			new PropertyDescription(
@@ -612,7 +661,12 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule {
 	 * Return true if either we still have input, or have more work to do.
 	 * @return
 	 */
-	public boolean isReady() {
+	/**
+ * Called by the D2K Infrastructure to determine if the module is ready to run.
+ *
+ * @return Whether or not the module is ready to run.
+ */
+public boolean isReady() {
 		if ((this.getFlags()[0] > 0) || !done) {
 			return true;
 		}
@@ -692,7 +746,10 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule {
 	int numExamples;
 	int[] targetIndices;
 	String[] nameAry;
-	public void doit() throws Exception {
+	/**
+ * Performs the main work of the module.
+ */
+public void doit() throws Exception {
 		HashMap names = sNames;
 
 		// get the item names, and the sets, from these num items and num examples.

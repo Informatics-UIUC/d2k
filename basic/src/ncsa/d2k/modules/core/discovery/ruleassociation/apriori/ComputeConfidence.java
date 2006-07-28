@@ -20,7 +20,12 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 	 * Return the human readable name of the module.
 	 * @return the human readable name of the module.
 	 */
-	public String getModuleName() {
+	/**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
 		return "Compute Confidence";
 	}
 
@@ -28,7 +33,12 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 		This method returns the description of the module.
 		@return the description of the module.
 	*/
-	public String getModuleInfo () {
+	/**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo () {
 	    StringBuffer sb = new StringBuffer( "<p>Overview: ");
 	    sb.append("This module works in conjunction with other modules implementing the Apriori ");
 	    sb.append("rule association algorithm to generate association rules satisfying a minimum confidence ");
@@ -67,7 +77,14 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 	 * @param index the index of the input.
 	 * @return the human readable name of the indexed input.
 	 */
-	public String getInputName(int index) {
+	/**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int index) {
 		switch(index) {
 			case 0:
 				return "Item Sets";
@@ -82,7 +99,14 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 		This method returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
-	public String getInputInfo(int index) {
+	/**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int index) {
 		switch (index) {
 		    case 0:
 			return "An Item Sets object containing the items of interest in the original data. " +
@@ -109,7 +133,14 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 	 * @param index the index of the output.
 	 * @return the human readable name of the indexed output.
 	 */
-	public String getOutputName(int index) {
+	/**
+ * Returns the name of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the output at the specified index.
+ */
+public String getOutputName(int index) {
 		switch(index) {
 			case 0:
 				return "Rule Table";
@@ -123,7 +154,14 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 		This method returns the description of the outputs.
 		@return the description of the indexed output.
 	*/
-	public String getOutputInfo (int index) {
+	/**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo (int index) {
 		switch (index) {
 		  case 0:
  		    String s = "A representation of the association rules found and accepted by this module. " +
@@ -182,7 +220,12 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 	 * Return a list of the property descriptions.
 	 * @return a list of the property descriptions.
 	 */
-	public PropertyDescription [] getPropertiesDescriptions () {
+	/**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription [] getPropertiesDescriptions () {
 		PropertyDescription [] pds = new PropertyDescription [3];
 		pds[0] = new PropertyDescription(
 			"confidence",
@@ -207,7 +250,12 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 		the module should ONLY check if input from pipes is ready through this method - jjm-uniq
 		return true if ready to fire , false otherwise
 	*/
-	public boolean isReady () {
+	/**
+ * Called by the D2K Infrastructure to determine if the module is ready to run.
+ *
+ * @return Whether or not the module is ready to run.
+ */
+public boolean isReady () {
 		if (this.getFlags()[0] > 0 && this.getFlags()[1] > 0)
 			return true;
 		else
@@ -218,7 +266,10 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 		So we have computed the support that each set is pertinate, now
 		compute confidence that each permutation of the set is a rule.
 	*/
-	public void doit () throws Exception {
+	/**
+ * Performs the main work of the module.
+ */
+public void doit () throws Exception {
 
 		long startTime = System.currentTimeMillis();
 
