@@ -1,126 +1,235 @@
+/*
+ * $Header$
+ *
+ * ===================================================================
+ *
+ * D2K-Workflow
+ * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
+ * ILLINOIS. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License v2.0
+ * as published by the Free Software Foundation and with the required
+ * interpretation regarding derivative works as described below.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License v2.0 for more details.
+ *
+ * This program and the accompanying materials are made available
+ * under the terms of the GNU General Public License v2.0 (GPL v2.0)
+ * which accompanies this distribution and is available at
+ * http://www.gnu.org/copyleft/gpl.html (or via mail from the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.), with the special and mandatory
+ * interpretation that software only using the documented public
+ * Application Program Interfaces (APIs) of D2K-Workflow are not
+ * considered derivative works under the terms of the GPL v2.0.
+ * Specifically, software only calling the D2K-Workflow Itinerary
+ * execution and workflow module APIs are not derivative works.
+ * Further, the incorporation of published APIs of other
+ * independently developed components into D2K Workflow code
+ * allowing it to use those separately developed components does not
+ * make those components a derivative work of D2K-Workflow.
+ * (Examples of such independently developed components include for
+ * example, external databases or metadata and provenance stores).
+ *
+ * Note: A non-GPL commercially licensed version of contributions
+ * from the UNIVERSITY OF ILLINOIS may be available from the
+ * designated commercial licensee RiverGlass, Inc. located at
+ * (www.riverglassinc.com)
+ * ===================================================================
+ *
+ */
 package ncsa.d2k.modules.core.prediction.svm;
 
-import ncsa.d2k.core.modules.*;
-import libsvm.*;
+import libsvm.svm;
+import libsvm.svm_model;
+
+import ncsa.d2k.core.modules.OutputModule;
+
 
 /**
-  Given a svm_model class, this module will output the model into a
-  plain text document that can be loaded later into a SVM.
+ * Given a svm_model class, this module will output the model into a plain text
+ * document that can be loaded later into a SVM.
+ *
+ * @author  Xiaolei Li
+ * @version $Revision$, $Date$
+ */
+public class SVMModelWriter extends OutputModule {
 
-  @author Xiaolei Li
-  */
-public class SVMModelWriter extends OutputModule
-{
-	String model_file_name;
-	svm_model model;
+   //~ Instance fields *********************************************************
 
-	/* empty constructor */
-	public SVMModelWriter()
-	{
-	}
+   /** the svm model */
+   protected svm_model model;
 
-	public String getInputInfo(int index)
-	{
-		switch (index) {
-			case 0:
-				return "Input SVM Model.";
-			case 1:
-				return "Desired file name of output model.";
-			default:
-				return "";
-		}
-	}
+   /** file to write to */
+   protected String model_file_name;
 
-	public String getInputName(int index)
-	{
-		switch (index) {
-			case 0:
-				return "SVM Model";
-			case 1:
-				return "File Name";
-			default:
-				return "";
-		}
-	}
+   //~ Constructors ************************************************************
 
-	public String[] getInputTypes()
-	{
-		String[] in = {"libsvm.svm_model", "java.lang.String"};
-		return in;
-	}
+   /**
+    * empty constructor.
+    */
+   public SVMModelWriter() { }
 
-        public String getModuleName()
-       {
-         return "SVM Model Writer";
+   //~ Methods *****************************************************************
 
-       }
+   /**
+    * Performs the main work of the module.
+    *
+    * @throws Exception if a problem occurs while performing the work of the
+    *                   module
+    */
+   protected void doit() throws Exception {
 
-	public String getModuleInfo()
-	{
-		return "<p>Overview: Given an svm_model class, this module will output the " +
-			"model into a plain text document that can be loaded later "
-			+ "by SVM Model Reader into an SVMModel.</p>";
-	}
+      try {
 
-	public String getOutputInfo(int index)
-	{
-		return null;
-	}
+         // load the SVM model
+         if (getFlags()[0] > 0 && model == null) {
+            model = (libsvm.svm_model) this.pullInput(0);
+         }
 
-	public String getOutputName(int index)
-	{
-		return null;
-	}
+         // load the file name
+         if (model_file_name == null && getFlags()[1] > 0) {
+            model_file_name = (String) this.pullInput(1);
+         }
 
-	public String[] getOutputTypes()
-	{
-		return null;
-	}
+         // write the stuff
+         if (model != null && model_file_name != null) {
+            svm.svm_save_model(model_file_name, model);
+            System.out.println("SVM Model written to disk.");
+            model = null;
+            model_file_name = null;
+         }
 
-	public void beginExecution()
-	{
-		model_file_name = null;
-		model = null;
-	}
+      } catch (Exception ex) {
+         ex.printStackTrace();
+         System.out.println(ex.getMessage());
+         System.out.println("ERROR: SVMModelWriter.doit()");
+         throw ex;
+      }
+   } // end method doit
 
-	public void endExecution()
-	{
-		super.endExecution();
-	}
+   /**
+    * Called by the D2K Infrastructure before the itinerary begins to execute.
+    */
+   public void beginExecution() {
+      model_file_name = null;
+      model = null;
+   }
 
-//	public boolean isReady()
-//	{
-//		if (getFlags()[0] > 0 || getFlags()[1] > 0)
-//			return true;
-//		else
-//			return false;
-//	}
+   /**
+    * Called by the D2K Infrastructure after the itinerary completes execution.
+    */
+   public void endExecution() { super.endExecution(); }
 
+   /**
+    * Returns a description of the input at the specified index.
+    *
+    * @param  index Index of the input for which a description should be
+    *               returned.
+    *
+    * @return <code>String</code> describing the input at the specified index.
+    */
+   public String getInputInfo(int index) {
 
-	protected void doit() throws Exception
-	{
-		try {
-			// load the SVM model
-			if (getFlags()[0] > 0 && model == null)
-				model = (libsvm.svm_model) this.pullInput(0);
+      switch (index) {
 
-			// load the file name
-			if (model_file_name == null && getFlags()[1] > 0)
-				model_file_name = (String) this.pullInput(1);
+         case 0:
+            return "Input SVM Model.";
 
-			// write the stuff
-			if (model != null && model_file_name != null) {
-				svm.svm_save_model(model_file_name, model);
-				System.out.println("SVM Model written to disk.");
-				model = null;
-                                model_file_name = null;
-			}
+         case 1:
+            return "Desired file name of output model.";
 
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println(ex.getMessage());
-			System.out.println("ERROR: SVMModelWriter.doit()");
-			throw ex;
-		}
-	}
-}
+         default:
+            return "";
+      }
+   }
+
+   /**
+    * Returns the name of the input at the specified index.
+    *
+    * @param  index Index of the input for which a name should be returned.
+    *
+    * @return <code>String</code> containing the name of the input at the
+    *         specified index.
+    */
+   public String getInputName(int index) {
+
+      switch (index) {
+
+         case 0:
+            return "SVM Model";
+
+         case 1:
+            return "File Name";
+
+         default:
+            return "";
+      }
+   }
+
+   /**
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the input at the corresponding index.
+    *
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the input at the corresponding index.
+    */
+   public String[] getInputTypes() {
+      String[] in = { "libsvm.svm_model", "java.lang.String" };
+
+      return in;
+   }
+
+   /**
+    * Describes the purpose of the module.
+    *
+    * @return <code>String</code> describing the purpose of the module.
+    */
+   public String getModuleInfo() {
+      return "<p>Overview: Given an svm_model class, this module will output the " +
+             "model into a plain text document that can be loaded later " +
+             "by SVM Model Reader into an SVMModel.</p>";
+   }
+
+   /**
+    * Returns the name of the module that is appropriate for end-user
+    * consumption.
+    *
+    * @return The name of the module.
+    */
+   public String getModuleName() { return "SVM Model Writer"; }
+
+   /**
+    * Returns a description of the output at the specified index.
+    *
+    * @param  index Index of the output for which a description should be
+    *               returned.
+    *
+    * @return <code>String</code> describing the output at the specified index.
+    */
+   public String getOutputInfo(int index) { return null; }
+
+   /**
+    * Returns the name of the output at the specified index.
+    *
+    * @param  index Index of the output for which a description should be
+    *               returned.
+    *
+    * @return <code>String</code> containing the name of the output at the
+    *         specified index.
+    */
+   public String getOutputName(int index) { return null; }
+
+   /**
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the output at the corresponding index.
+    *
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the output at the corresponding index.
+    */
+   public String[] getOutputTypes() { return null; }
+} // end class SVMModelWriter
