@@ -1756,12 +1756,13 @@ public void setInput(Object o, int index) {
                     //System.out.println("new Rule Filter");
                   }
 
-                  ///**
+                 
+/**
  * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
  *
  * @param module The module this view is associated with.
  */
-public void initView(ViewModule m) {
+//public void initView(ViewModule m) {
                   //  mod = m;
                   //}
 
