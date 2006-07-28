@@ -25,17 +25,37 @@ import gnu.trove.TIntHashSet;
 
 public class TableCluster implements Serializable {
 
-  //==============
-  // Data Members
-  //==============
 
-  static private int s_id = 0;
+    /**
+     * The assigned ID of the cluster.
+     * Since this is static and shared by all TableCluster objects it assures
+     * each one has a unique ID. The ID of this cluster is kept as the label
+     * of the cluster.
+     */
+    static private int s_id = 0;
+    /**
+     * rows indices into the <code>_table</code> that belong to this cluster.
+     */
+    private int[] _members = null;
+    /**
+     *
+     */
+    private Table _table = null;
 
-  private int[] _members = null;
-  private Table _table = null;
-  private double[] _centroid = null;
-  private double _centroid_norm = -1;
+    /**
+     * The centroid of all the rows in <code>_members</code>
+     */
+    private double[] _centroid = null;
+
+    /**
+     * square root of [the sum of [<code>_centroid</codE>[i] squared]]
+     */
+    private double _centroid_norm = -1;
+  /**
+   * A flag - whether the centroid was computed already or not
+   */
   private boolean _centroidComputed = false;
+
   private TableCluster _cluster1 = null;
   private TableCluster _cluster2 = null;
 

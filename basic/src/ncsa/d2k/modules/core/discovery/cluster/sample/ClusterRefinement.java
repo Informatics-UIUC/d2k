@@ -263,12 +263,13 @@ public class ClusterRefinement {
     *
     * @return ClusterModel
     *
-    * @throws java.lang.Exception <BR>
-    *                             If check missing vlaues property is on and the
-    *                             table has missing values in it. or if table
-    *                             has nominal data in it
-    * @throws TableMissingValuesException Description of exception
-    *                                     TableMissingValuesException.
+    * @throws java.lang.Exception         <BR>
+    *                                     If check missing vlaues property is on
+    *                                     and the table has missing values in
+    *                                     it. or if table has nominal data in it
+    * @throws TableMissingValuesException If check missing values flag is true
+    *                                     and the input table has missing values
+    *                                     in it.
     */
    public ClusterModel assign(Table initcenters, Table initEntities)
       throws java.lang.Exception {
@@ -278,8 +279,8 @@ public class ClusterRefinement {
 
          if (initEntities.hasMissingValues()) {
             throw new TableMissingValuesException(getAlias() +
-                                                  ": Please replace or filter out missing values in your data.\n" +
-                                                  "This module does not work with missing values. ");
+              ": Please replace or filter out missing values in your data.\n" +
+              "This module does not work with missing values. ");
          }
       }
 
@@ -329,14 +330,15 @@ public class ClusterRefinement {
                   String cname = initcenters.getColumnLabel(_ifeatures[i]);
                   Exception ex1 =
                      new TableColumnTypeException(ctype,
-                                                  "\n" +
-                                                  getAlias() +
-                                                  " module: Only boolean and numeric types are permitted.\n" +
-                                                  "Nominal data types must be transformed by a scalarization module or removed " +
-                                                  "prior to this module. \n" +
-                                                  "Column named " + cname +
-                                                  " has type " +
-                                                  ColumnTypes.getTypeName(ctype));
+                  "\n" +
+                  getAlias() +
+                  " module: Only boolean and numeric types are permitted.\n" +
+                  "Nominal data types must be transformed by a scalarization " +
+                  "module or removed " +
+                  "prior to this module. \n" +
+                  "Column named " + cname +
+                  " has type " +
+                  ColumnTypes.getTypeName(ctype));
                   throw ex1;
                }
             } // end for
@@ -382,14 +384,15 @@ public class ClusterRefinement {
                String cname = initEntities.getColumnLabel(_ifeatures[i]);
                Exception ex1 =
                   new TableColumnTypeException(ctype,
-                                               "\n" +
-                                               getAlias() +
-                                               " module: Only boolean and numeric types are permitted.\n" +
-                                               "Nominal data types must be transformed by a scalarization module or removed " +
-                                               "prior to this module. \n" +
-                                               "Column " + cname +
-                                               " has type " +
-                                               ColumnTypes.getTypeName(ctype));
+                 "\n" +
+                 getAlias() +
+                 " module: Only boolean and numeric types are permitted.\n" +
+                 "Nominal data types must be transformed by a scalarization " +
+                 "module or removed " +
+                 "prior to this module. \n" +
+                 "Column " + cname +
+                 " has type " +
+                 ColumnTypes.getTypeName(ctype));
                throw ex1;
             }
          } // end for
@@ -410,8 +413,9 @@ public class ClusterRefinement {
 
             // assign each element to one of k clusters
             if (getVerbose()) {
-               System.out.println("ClusterRefinement -- assigning entities pass " +
-                                  (i + 1) + " out of " + m_numAssignments +
+               System.out.println("ClusterRefinement -- assigning entities " +
+                                  "pass " + (i + 1) + " out of " +
+                                  m_numAssignments +
                                   " :: " +
                                   centers.size() + " input.");
             }
@@ -423,7 +427,8 @@ public class ClusterRefinement {
             if (evaluation(oldCenters, centers)) {
 
                if (getVerbose()) {
-                  System.out.println("New assignment has not changed significantly, assignments stopped at " +
+                  System.out.println("New assignment has not changed " +
+                                     "significantly, assignments stopped at " +
                                      (i + 1) + " iterations.");
                }
 

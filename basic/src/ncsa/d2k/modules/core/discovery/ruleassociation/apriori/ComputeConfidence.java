@@ -10,10 +10,24 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 import java.beans.PropertyVetoException;
+//import ncsa.d2k.modules.core.discovery.ruleassociation.apriori.MutableIntegerArray;
 
 /**
-	ComputeConfidence.java
-*/
+ *
+ * <p>Title: </p>
+ *
+ * <p>Description:
+ * This class used to be under the ncsa.d2k.modules.core.discovery.ruleassociation.apriori package
+ * and was moved to parent package July 28, 2006.
+ * </p>
+ *
+ * <p>Copyright: Copyright (c) 2006</p>
+ *
+ * <p>Company: </p>
+ *
+ * @author not attributable
+ * @version 1.0
+ */
 public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule{
 
 	/**

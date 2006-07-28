@@ -1,252 +1,400 @@
+/*
+ * $Header$
+ *
+ * ===================================================================
+ *
+ * D2K-Workflow
+ * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
+ * ILLINOIS. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License v2.0
+ * as published by the Free Software Foundation and with the required
+ * interpretation regarding derivative works as described below.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License v2.0 for more details.
+ *
+ * This program and the accompanying materials are made available
+ * under the terms of the GNU General Public License v2.0 (GPL v2.0)
+ * which accompanies this distribution and is available at
+ * http://www.gnu.org/copyleft/gpl.html (or via mail from the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.), with the special and mandatory
+ * interpretation that software only using the documented public
+ * Application Program Interfaces (APIs) of D2K-Workflow are not
+ * considered derivative works under the terms of the GPL v2.0.
+ * Specifically, software only calling the D2K-Workflow Itinerary
+ * execution and workflow module APIs are not derivative works.
+ * Further, the incorporation of published APIs of other
+ * independently developed components into D2K Workflow code
+ * allowing it to use those separately developed components does not
+ * make those components a derivative work of D2K-Workflow.
+ * (Examples of such independently developed components include for
+ * example, external databases or metadata and provenance stores).
+ *
+ * Note: A non-GPL commercially licensed version of contributions
+ * from the UNIVERSITY OF ILLINOIS may be available from the
+ * designated commercial licensee RiverGlass, Inc. located at
+ * (www.riverglassinc.com)
+ * ===================================================================
+ *
+ */
 package ncsa.d2k.modules.core.discovery.cluster.sample;
+
+
+import ncsa.d2k.core.modules.DataPrepModule;
+import ncsa.d2k.modules.core.datatype.parameter.ParameterPoint;
+import ncsa.d2k.modules.core.datatype.parameter.impl.ParameterPointImpl;
+import ncsa.d2k.modules.core.datatype.table.Table;
+import ncsa.d2k.modules.core.discovery.cluster.hac.HAC;
+
 
 /**
  * <p>Title: CoverageParamsOPT</p>
- * <p>Description: MOdule to input parameters for KMeans</p>
+ *
+ * <p>Overview: The Coverage clustering algorithm is a type of kmeans approach
+ * where a sample set is chosen from the input table such that the set formed is
+ * approximately the minimum number of samples needed such that for every
+ * example in the input table there is at least one example in the sample set of
+ * distance &lt;= <i>Distance Threshold (% of Maximum)</i>. This sampling is
+ * sent through the hierarchical agglomerative clustering module to form <i>
+ * Number of Clusters</i> clusters. These clusters' centroids are used as the
+ * initial "means" for the cluster assignment module. The assignment module,
+ * once it has made refinements, outputs the final <i>Cluster Model</i>.</p>
+ *
+ * <p>Detailed Description: This algorithm is comprised of four modules: this
+ * module (CoverageParams), the sampler (CoverageSamplerOPT), the clusterer
+ * (HierAgglomClustererOPT) and the cluster refiner (ClusterAssignment)</p>
+ *
+ * <p>Data Handling: The input table is not modified by this algorithm, however
+ * it is include as part of the <i>Cluster Model</i> that is created.</p>
+ *
+ * <p>Scalability: This algorithm runs in time O(num_examples^2) worst case but
+ * in most cases it runs in O(<i>Sample Size</i> * <i>Number of Clusters</i>).
+ * See the component modules information to understand the memory requirements
+ * overall.</p>
+ *
  * <p>Copyright: Copyright (c) 2003</p>
+ *
  * <p>Company: NCSA Automated Learning Group</p>
- * @author D. Searsmith
+ *
+ * @author  D. Searsmith
  * @version 1.0
  */
+public class CoverageParamsOPT extends DataPrepModule
+   implements ClusterParameterDefns {
 
-//==============
-// Java Imports
-//==============
+   //~ Static fields/initializers **********************************************
 
-//===============
-// Other Imports
-//===============
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.parameter.*;
-import ncsa.d2k.modules.core.datatype.parameter.impl.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.discovery.cluster.hac.*;
+   /** Use serialVersionUID for interoperability. */
+   static private final long serialVersionUID = 3809058994722709142L;
 
-public class CoverageParamsOPT
-    extends DataPrepModule implements ClusterParameterDefns {
+   //~ Instance fields *********************************************************
 
-  //==============
-  // Data Members
-  //==============
+   /** The method to use for determining the distance between two clusters. */
+   protected int _clusterMethod = HAC.s_WardsMethod_CLUSTER;
 
-  //================
-  // Constructor(s)
-  //================
+   /**
+    * An integer value specifying the maximum number of points to sample.(>0).
+    */
+   protected int _coverageMaxNumSamples = 500;
 
-  public CoverageParamsOPT() {
-  }
+   /**
+    * Specifies the percent of the max distance to use as a cutoff value to
+    * forming new samples [1...100].
+    */
+   protected int _covthresh = 25;
 
-  //============
-  // Properties
-  //============
+   /**
+    * Determine the type of distance function used to calculate distance between
+    * two examples.
+    */
+   protected int _distanceMetric = HAC.s_Euclidean_DISTANCE;
 
-  /** the number of rows to sample */
-  protected int N = 3;
+   /**
+    * Specifies the percent of the max distance to use as a cutoff value to halt
+    * clustering [1...100].
+    */
+   protected int _hacDistanceThreshold = 0;
 
-  protected int _clusterMethod = HAC.s_WardsMethod_CLUSTER;
+   /** maximum number of iteration to perform. */
+   protected int _maxIterations = 5;
 
-  protected int _distanceMetric = HAC.s_Euclidean_DISTANCE;
 
-  protected int _hacDistanceThreshold = 0;
+   /**
+    * The number of rows to sample, also the number of clusters to be formed.
+    */
+   protected int N = 3;
 
-  protected int _covthresh = 25;
+   //~ Constructors ************************************************************
 
-  protected int _coverageMaxNumSamples = 500;
 
-  protected int _maxIterations = 5;
+   /**
+    * Creates a new CoverageParamsOPT object.
+    */
+   public CoverageParamsOPT() { }
 
-  //========================
-  // D2K Abstract Overrides
+   //~ Methods *****************************************************************
 
-  /**
-     Return the name of this module.
-     @return The name of this module.
-   */
-  public String getModuleName() {
-    return "Coverage Parameters";
-  }
+   /**
+    * Creates <code>
+    * ncsa.d2k.modules.core.datatype.parameter.ParameterPoint</code> object for
+    * <code>tab</codE> according to the values of the properties.
+    *
+    * @param tab The data to be clustered according to the values of the output
+    *            <code>
+    *            ncsa.d2k.modules.core.datatype.parameter.ParameterPoint</code>
+    *            objects.
+    */
+   protected void doingit(Table tab) {
 
-  /**
-     Return a description of a specific input.
-     @param i The index of the input
-     @return The description of the input
-   */
-  public String getInputInfo(int parm1) {
-    if (parm1 == 0) {
-      return "Control Parameters";
-    } else if (parm1 == 1) {
-      return "Table of entities to cluster.";
-    } else {
-      return "";
-    }
-  }
+      String[] names1 = {
+         "clusterMethod", "distanceMetric", "maxIterations"
+      };
+      double[] values1 =
+      {
+         (double) this._clusterMethod,
+         (double) this._distanceMetric,
+         (double) this._maxIterations
+      };
+      ParameterPoint pp = ParameterPointImpl.getParameterPoint(names1, values1);
 
-  /**
-     Return the name of a specific input.
-     @param i The index of the input.
-     @return The name of the input
-   */
-  public String getInputName(int parm1) {
-    if (parm1 == 0) {
-      return "ParameterPoint";
-    } else if (parm1 == 1) {
-      return "Table";
-    } else {
-      return "";
-    }
-  }
+      this.pushOutput(pp, 0);
 
-  /**
-     Return a String array containing the datatypes the inputs to this
-     module.
-     @return The datatypes of the inputs.
-   */
-  public String[] getInputTypes() {
-    String[] in = {
-        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
-        "ncsa.d2k.modules.core.datatype.table.Table"};
-    return in;
-  }
+      String[] names2 =
+      {
+         "clusterMethod", "distanceMetric", "numClusters", "distanceThreshold"
+      };
+      double[] values2 =
+      {
+         (double) this._clusterMethod,
+         (double) this._distanceMetric,
+         (double) this.N,
+         (double) this._hacDistanceThreshold
+      };
+      pp = ParameterPointImpl.getParameterPoint(names2, values2);
 
-  /**
-    Return information about the module.
-    @return A detailed description of the module.
-   */
-  public String getModuleInfo() {
-    String s = "<p>Overview: ";
-    s += "The Coverage clustering algorithm is a type of kmeans approach where a sample set ";
-    s += "is chosen from the input table such that the set formed is approximately the minimum number of samples ";
-    s += "needed such that for every example in the input table there is at least one example in the sample set of distance ";
-    s += "<= <i>" + DISTANCE_THRESHOLD + "</i>. This sampling is sent through the hierarchical agglomerative clustering ";
-    s += "module to form <i>" + NUM_CLUSTERS + "</i> clusters.  These clusters' centroids are used as the initial ";
-    s += "\"means\" for the cluster assignment module. ";
-    s += "The assignment module, once it has made refinements, outputs the final <i>Cluster Model</i>. ";
-    s += "</p>";
+      this.pushOutput(pp, 1);
 
-    s += "<p>Detailed Description: ";
-    s += "This algorithm is comprised of four modules: this module (CoverageParams), the sampler ";
-    s += "(CoverageSamplerOPT), the clusterer (HierAgglomClustererOPT) and the cluster refiner ";
-    s += "(ClusterAssignment).";
-    s += "</p>";
+      String[] names3 = {
+         "maxNumCenters", "cutOff", "distanceMetric"
+      };
+      double[] values3 =
+      {
+         (double) this._coverageMaxNumSamples,
+         (double) this._covthresh,
+         (double) this._distanceMetric
+      };
+      pp = ParameterPointImpl.getParameterPoint(names3, values3);
 
-    s += "<p>Data Handling: ";
-    s += "The input table is not modified by this algorithm, however it is include as part of ";
-    s += "the <i>Cluster Model</i> that is created.";
-    s += "</p>";
+      this.pushOutput(pp, 2);
 
-    s += "<p>Scalability: ";
-    s += "This algorithm runs in time O(num_examples^2) worst case but in most cases it runs in O(<i>Sample Size</i> * <i>" + NUM_CLUSTERS + "</i>). ";
-    s += "See the component modules information to understand the memory requirements overall.";
-    s += "</p>";
-    return s;
-  }
+      this.pushOutput(tab, 3);
 
-  /**
-     Return the description of a specific output.
-     @param i The index of the output.
-     @return The description of the output.
-   */
-  public String getOutputInfo(int parm1) {
-    if (parm1 == 0) {
-      return "Parameters for Cluster Assignment";
-    } else if (parm1 == 1) {
-      return "Parameters for Hier. Agglom. Clusterer";
-    } else if (parm1 == 2) {
-      return "Parameters for Coverage Sampler";
-    } else if (parm1 == 3) {
-      return "Table of examples to cluster";
-    } else {
-      return "";
-    }
-  }
+   } // end method doingit
 
-  /**
-     Return the name of a specific output.
-     @param i The index of the output.
-     @return The name of the output
-   */
-  public String getOutputName(int parm1) {
-    if (parm1 == 0) {
-      return "Parameters for Cluster Assignment";
-    } else if (parm1 == 1) {
-      return "Parameters for Hier. Agglom. Clusterer";
-    } else if (parm1 == 2) {
-      return "Parameters for Coverage Sampler";
-    } else if (parm1 == 3) {
-      return "Table";
-    } else {
-      return "";
-    }
-  }
 
-  /**
-     Return a String array containing the datatypes of the outputs of this
-     module.
-     @return The datatypes of the outputs.
-   */
-  public String[] getOutputTypes() {
-    String[] out = {
-        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
-        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
-        "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
-        "ncsa.d2k.modules.core.datatype.table.Table"};
-    return out;
-  }
+   /**
+    * Performs the main work of the module: Creates 4 different parameter points
+    * using the properties values, as set by the user.
+    */
+   protected void doit() {
 
-  /**
-   Perform the work of the module.
-   @throws Exception
-   */
-  protected void doit() throws Exception {
+      ParameterPoint pp = (ParameterPoint) this.pullInput(0);
+      this.N = (int) pp.getValue(0);
+      this._clusterMethod = (int) pp.getValue(1);
+      this._distanceMetric = (int) pp.getValue(2);
+      this._hacDistanceThreshold = (int) pp.getValue(3);
+      this._covthresh = (int) pp.getValue(4);
+      this._coverageMaxNumSamples = (int) pp.getValue(5);
+      this._maxIterations = (int) pp.getValue(6);
 
-    ParameterPoint pp = (ParameterPoint)this.pullInput(0);
-    this.N = (int) pp.getValue(0);
-    this._clusterMethod = (int) pp.getValue(1);
-    this._distanceMetric = (int) pp.getValue(2);
-    this._hacDistanceThreshold = (int) pp.getValue(3);
-    this._covthresh = (int) pp.getValue(4);
-    this._coverageMaxNumSamples = (int) pp.getValue(5);
-    this._maxIterations = (int) pp.getValue(6);
+      Table tab = (Table) this.pullInput(1);
+      doingit(tab);
 
-    Table tab = (Table)this.pullInput(1);
-    doingit(tab);
+   }
 
-  }
+   /**
+    * Returns a description of the input at the specified index.
+    *
+    * @param  inputIndex Index of the input for which a description should be
+    *                    returned.
+    *
+    * @return <code>String</code> describing the input at the specified index.
+    */
+   public String getInputInfo(int inputIndex) {
 
-  protected void doingit(Table tab) {
+      if (inputIndex == 0) {
+         return "Control Parameters";
+      } else if (inputIndex == 1) {
+         return "Table of entities to cluster.";
+      } else {
+         return "";
+      }
+   }
 
-    String[] names1 = {
-        "clusterMethod", "distanceMetric", "maxIterations"};
-    double[] values1 = {
-         (double)this._clusterMethod,
-        (double)this._distanceMetric,
-        (double)this._maxIterations};
-    ParameterPoint pp = ParameterPointImpl.getParameterPoint(names1, values1);
+   /**
+    * Returns the name of the input at the specified index.
+    *
+    * @param  inputIndex Index of the input for which a name should be returned.
+    *
+    * @return <code>String</code> containing the name of the input at the
+    *         specified index.
+    */
+   public String getInputName(int inputIndex) {
 
-    this.pushOutput(pp, 0);
+      if (inputIndex == 0) {
+         return "ParameterPoint";
+      } else if (inputIndex == 1) {
+         return "Table";
+      } else {
+         return "";
+      }
+   }
 
-    String[] names2 = {
-        "clusterMethod", "distanceMetric", "numClusters", "distanceThreshold"};
-    double[] values2 = {
-         (double)this._clusterMethod,
-        (double)this._distanceMetric,
-        (double)this.N,
-        (double)this._hacDistanceThreshold};
-    pp = ParameterPointImpl.getParameterPoint(names2, values2);
+   /**
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the input at the corresponding index.
+    *
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the input at the corresponding index.
+    */
 
-    this.pushOutput(pp, 1);
+   public String[] getInputTypes() {
+      String[] in =
+      {
+         "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
+         "ncsa.d2k.modules.core.datatype.table.Table"
+      };
 
-    String[] names3 = {
-        "maxNumCenters", "cutOff", "distanceMetric"};
-    double[] values3 = {
-         (double)this._coverageMaxNumSamples,
-        (double)this._covthresh,
-        (double)this._distanceMetric};
-    pp = ParameterPointImpl.getParameterPoint(names3, values3);
+      return in;
+   }
 
-    this.pushOutput(pp, 2);
+   /**
+    * Describes the purpose of the module.
+    *
+    * @return <code>String</code> describing the purpose of the module.
+    */
+   public String getModuleInfo() {
+      String s = "<p>Overview: ";
+      s +=
+         "The Coverage clustering algorithm is a type of kmeans approach where a sample set ";
+      s +=
+         "is chosen from the input table such that the set formed is approximately the minimum number of samples ";
+      s +=
+         "needed such that for every example in the input table there is at least one example in the sample set of distance ";
+      s +=
+         "<= <i>" + DISTANCE_THRESHOLD +
+         "</i>. This sampling is sent through the hierarchical agglomerative clustering ";
+      s +=
+         "module to form <i>" + NUM_CLUSTERS +
+         "</i> clusters.  These clusters' centroids are used as the initial ";
+      s += "\"means\" for the cluster assignment module. ";
+      s +=
+         "The assignment module, once it has made refinements, outputs the final <i>Cluster Model</i>. ";
+      s += "</p>";
 
-    this.pushOutput(tab, 3);
+      s += "<p>Detailed Description: ";
+      s +=
+         "This algorithm is comprised of four modules: this module (CoverageParams), the sampler ";
+      s +=
+         "(CoverageSamplerOPT), the clusterer (HierAgglomClustererOPT) and the cluster refiner ";
+      s += "(ClusterAssignment).";
+      s += "</p>";
 
-  }
-}
+      s += "<p>Data Handling: ";
+      s +=
+         "The input table is not modified by this algorithm, however it is include as part of ";
+      s += "the <i>Cluster Model</i> that is created.";
+      s += "</p>";
+
+      s += "<p>Scalability: ";
+      s +=
+         "This algorithm runs in time O(num_examples^2) worst case but in most cases it runs in O(<i>Sample Size</i> * <i>" +
+         NUM_CLUSTERS + "</i>). ";
+      s +=
+         "See the component modules information to understand the memory requirements overall.";
+      s += "</p>";
+
+      return s;
+   } // end method getModuleInfo
+
+   /**
+    * Returns the name of the module that is appropriate for end user
+    * consumption.
+    *
+    * @return The name of the module.
+    */
+   public String getModuleName() { return "Coverage Parameters"; }
+
+
+   /**
+    * Returns a description of the output at the specified index.
+    *
+    * @param  outputIndex Index of the output for which a description should be
+    *                     returned.
+    *
+    * @return <code>String</code> describing the output at the specified index.
+    */
+   public String getOutputInfo(int outputIndex) {
+
+      if (outputIndex == 0) {
+         return "Parameters for Cluster Assignment";
+      } else if (outputIndex == 1) {
+         return "Parameters for Hier. Agglom. Clusterer";
+      } else if (outputIndex == 2) {
+         return "Parameters for Coverage Sampler";
+      } else if (outputIndex == 3) {
+         return "Table of examples to cluster";
+      } else {
+         return "";
+      }
+   }
+
+   /**
+    * Returns the name of the output at the specified index.
+    *
+    * @param  outputIndex Index of the output for which a description should be
+    *                     returned.
+    *
+    * @return <code>String</code> containing the name of the output at the
+    *         specified index.
+    */
+   public String getOutputName(int outputIndex) {
+
+      if (outputIndex == 0) {
+         return "Parameters for Cluster Assignment";
+      } else if (outputIndex == 1) {
+         return "Parameters for Hier. Agglom. Clusterer";
+      } else if (outputIndex == 2) {
+         return "Parameters for Coverage Sampler";
+      } else if (outputIndex == 3) {
+         return "Table";
+      } else {
+         return "";
+      }
+   }
+
+   /**
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the output at the corresponding index.
+    *
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the output at the corresponding index.
+    */
+
+   public String[] getOutputTypes() {
+      String[] out =
+      {
+         "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
+         "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
+         "ncsa.d2k.modules.core.datatype.parameter.ParameterPoint",
+         "ncsa.d2k.modules.core.datatype.table.Table"
+      };
+
+      return out;
+   }
+} // end class CoverageParamsOPT
