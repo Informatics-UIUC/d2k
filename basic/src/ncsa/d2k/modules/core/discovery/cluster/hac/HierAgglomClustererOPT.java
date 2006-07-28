@@ -84,8 +84,9 @@ public class HierAgglomClustererOPT extends OrderedReentrantModule
    //~ Instance fields *********************************************************
 
    /**
-    * Check missing values flag. If set to true, this module shall handle
-    * missing values in the input table in a special way.
+    *
+    * Check missing values flag. If set to true, this module verifies prior  to computation, that there are no missing values in the input table. (In the presence of missing values the module throws an Exception.)
+
     */
    protected boolean _mvCheck = true;
 

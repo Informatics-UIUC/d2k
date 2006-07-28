@@ -72,7 +72,11 @@ public class Coverage {
   public void setDistanceMetric(int dm) {
     _distanceMetric = dm;
   }
+  /**
+   *
+    * Check missing values flag. If set to true, this module verifies prior  to computation, that there are no missing values in the input table. (In the presence of missing values the module throws an Exception.)
 
+   */
   protected boolean _mvCheck = true;
   public boolean getCheckMissingValues() {return _mvCheck;}
   public void setCheckMissingValues(boolean b) {_mvCheck = b;}

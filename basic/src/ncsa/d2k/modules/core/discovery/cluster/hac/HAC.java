@@ -193,9 +193,9 @@ public class HAC {
    /** Time when clustering process starts. */
    private long m_start = -1;
 
-   /** Check for Missing Values flag. If set to true this object tests whether
-    * the input table has missing values, and if so throws an exception.
-    * Otherwise missing values are treated as regular ones.*/
+/**
+   * Check missing values flag. If set to true, this module verifies prior  to computation, that there are no missing values in the input table. (In the presence of missing values the module throws an Exception.)
+*/
    protected boolean _mvCheck = true;
 
    //~ Constructors ************************************************************

@@ -100,9 +100,7 @@ public class ClusterAssignmentOPT extends ComputeModule
 
 
    /**
-    * Check missing values flag. If set to true, this module verifies that the
-    * input table has no missing values. (in the precense of missing values this
-    * module throws exception)
+    * Check missing values flag. If set to true, this module verifies prior  to computation, that there are no missing values in the input table. (Clustering cannot be performed on missing values. In the presence of missing values the module throws an Exception.)
     */
 
    protected boolean _mvCheck = true;
