@@ -75,7 +75,12 @@ public class DendogramClusterVis
      Return the name of this module.
      @return The name of this module.
    */
-  public String getModuleName() {
+  /**
+* Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleName() {
     return "Dendogram Vis";
   }
 
@@ -84,7 +89,14 @@ public class DendogramClusterVis
      @param i The index of the output.
      @return The name of the output
    */
-  public String getOutputInfo(int parm1) {
+  /**
+ * Returns a description of the output at the specified index.
+ *
+ * @param outputIndex Index of the output for which a description should be returned.
+ *
+ * @return <code>String</code> describing the output at the specified index.
+ */
+public String getOutputInfo(int parm1) {
     return "";
   }
 
@@ -102,7 +114,12 @@ public class DendogramClusterVis
     Return information about the module.
     @return A detailed description of the module.
    */
-  public String getModuleInfo() {
+  /**
+ * Describes the purpose of the module.
+ *
+ * @return <code>String</code> describing the purpose of the module.
+ */
+public String getModuleInfo() {
     String s = "<p>Overview: ";
     s += "This module visualizes a ClusterModel object that is the output of an ";
     s += "hierarchical agglomerative clustering algorithm.  The visualization is ";
@@ -149,7 +166,14 @@ public class DendogramClusterVis
      @param i The index of the input
      @return The description of the input
    */
-  public String getInputInfo(int parm1) {
+  /**
+ * Returns a description of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a description should be returned.
+ *
+ * @return <code>String</code> describing the input at the specified index.
+ */
+public String getInputInfo(int parm1) {
     if (parm1 == 0) {
       return "ncsa.d2k.modules.core.discovery.cluster.ClusterModel";
     } else {
@@ -162,7 +186,14 @@ public class DendogramClusterVis
      @param i The index of the input.
      @return The name of the input
    */
-  public String getInputName(int i) {
+  /**
+ * Returns the name of the input at the specified index.
+ *
+ * @param inputIndex Index of the input for which a name should be returned.
+ *
+ * @return <code>String</code> containing the name of the input at the specified index.
+ */
+public String getInputName(int i) {
     switch (i) {
       case 0:
         return "Cluster Model";
@@ -186,7 +217,14 @@ public class DendogramClusterVis
      Return an array of the property variables, labels, and descriptions.
      @return The editable properties of the module - none in this case
    */
-  public PropertyDescription[] getPropertiesDescriptions() {
+
+
+/**
+ * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
+ *
+ * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+ */
+public PropertyDescription[] getPropertiesDescriptions() {
     // hide properties that the user shouldn't udpate
     return new PropertyDescription[0];
   }
