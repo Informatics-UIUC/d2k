@@ -66,10 +66,10 @@ public class ApplyFunctionInducerWithBagging extends OrderedReentrantModule {
 
    //~ Instance fields *********************************************************
 
-   /** the number of models in the ensemble. */
+   /** This is the number of models that will be included in the final ensemble. */
    private int NumberOfModelsInEnsemble = 10;
 
-   /** the number of subsample examples. */
+   /** This determins the number of subsamples that will be taken to produce the models. */
    private int NumSubSampleExamples = 100;
 
 
@@ -79,7 +79,7 @@ public class ApplyFunctionInducerWithBagging extends OrderedReentrantModule {
    /** A random number generator. */
    private Random RandomNumberGenerator;
 
-   /** the random seed. */
+   /** If not -1, will generate the same sequence of values at each run. */
    private int RandomSeed = 123;
 
    //~ Methods *****************************************************************

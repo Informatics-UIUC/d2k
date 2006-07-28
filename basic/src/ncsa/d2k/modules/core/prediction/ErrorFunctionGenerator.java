@@ -68,7 +68,7 @@ import javax.swing.*;
  * probabilities of the actual classes. This is useful when using Likelihood
  * to guide the formation of the Probability Density Function based models.
  * Variance returns the sum of all the squared differences between predicted
- * and actual output values.</p
+ * and actual output values.</p>
  *
  * @author  $Author$
  * @version $Revision$, $Date$

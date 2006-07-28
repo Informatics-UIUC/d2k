@@ -63,7 +63,7 @@ public class ApplyFunctionInducerWithBoosting extends OrderedReentrantModule {
 
    //~ Instance fields *********************************************************
 
-   /** the number of rounds. */
+   /** The number of models to generate. */
    private int NumberOfRounds = 100;
 
    //~ Methods *****************************************************************
