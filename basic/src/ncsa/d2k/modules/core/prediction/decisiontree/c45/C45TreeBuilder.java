@@ -46,7 +46,6 @@ package ncsa.d2k.modules.core.prediction.decisiontree.c45;
 
 import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
-import ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode;
 
 import java.beans.PropertyVetoException;
 
@@ -156,7 +155,7 @@ public class C45TreeBuilder extends C45TreeBuilderOPT {
 
    /*public String[] getOutputTypes() {
     * String[] out = {
-    * "ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode",
+    * "ncsa.d2k.modules.core.prediction.decisiontree.c45.DecisionTreeNode",
     * "ncsa.d2k.modules.core.datatype.table.ExampleTable"}; return out;}*/
 
    /**

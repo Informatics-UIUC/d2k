@@ -66,50 +66,50 @@ public class DecisionTreeNode implements java.io.Serializable,
 
    //~ Instance fields *********************************************************
 
-   /** Description of field bestErrorReduction. */
-   double bestErrorReduction;
+   /** bestErrorReduction. */
+   protected double bestErrorReduction;
 
    /** child 1 */
-   DecisionTreeNode childNode1 = null;
+   protected DecisionTreeNode childNode1 = null;
 
    /** child 2 */
-   DecisionTreeNode childNode2 = null;
+   protected DecisionTreeNode childNode2 = null;
 
    /** decomposition. */
-   Decomposition decomposition;
+   protected Decomposition decomposition;
 
    /** depth of node. */
-   int depth;
+   protected int depth;
 
    /** error of node. */
-   double error;
+   protected double error;
 
    /** examples. */
-   ExampleTable examples;
+   protected ExampleTable examples;
 
    /** index. */
-   int index;
+   protected int index;
 
    /** model */
-   Model model;
+   protected Model model;
 
    /** the number of examples. */
-   int numExamples;
+   protected int numExamples;
 
    /** outputMaxs. */
-   double[] outputMaxs;
+   protected double[] outputMaxs;
 
    /** outputMeans. */
-   double[] outputMeans;
+   protected double[] outputMeans;
 
    /** outputMins. */
-   double[] outputMins;
+   protected double[] outputMins;
 
    /** parent. */
-   DecisionTreeNode parent = null;
+   protected DecisionTreeNode parent = null;
 
    /** root. */
-   DecisionTreeNode root = null;
+   protected DecisionTreeNode root = null;
 
    //~ Constructors ************************************************************
 
@@ -121,7 +121,7 @@ public class DecisionTreeNode implements java.io.Serializable,
    /**
     * Creates a new DecisionTreeNode object.
     *
-    * @param index Description of parameter index.
+    * @param index index
     * @param depth depth of node
     */
    DecisionTreeNode(int index, int depth) {

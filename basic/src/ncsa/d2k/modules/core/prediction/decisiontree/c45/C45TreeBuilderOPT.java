@@ -49,12 +49,8 @@ import ncsa.d2k.modules.core.datatype.parameter.ParameterPoint;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.datatype.table.util.TableUtilities;
-import ncsa.d2k.modules.core.prediction.decisiontree
-          .CategoricalDecisionTreeNode;
-   import ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode;
-   import ncsa.d2k.modules.core.prediction.decisiontree.NumericDecisionTreeNode;
 
-   import java.beans.PropertyVetoException;
+import java.beans.PropertyVetoException;
    import java.text.NumberFormat;
    import java.util.ArrayList;
    import java.util.HashMap;
@@ -77,28 +73,17 @@ import ncsa.d2k.modules.core.prediction.decisiontree
  */
 public class C45TreeBuilderOPT extends ReentrantComputeModule {
 
-   /* public static void main(String[] args) {
-    * //double d1 = (double)9/(double)14; //double d2 = (double)5/(double)14;
-    * //double dd[] = {d1, d2}; //System.out.println(lg(2));
-    * //System.out.println(entropy(dd)); int[] tals = {    9, 5};
-    * System.out.println(info(tals)); }*/
-
    //~ Static fields/initializers **********************************************
 
    /** number format */
    static private NumberFormat nf;
 
-   /** constant for less than */
+   /** constant for < */
    static private final String LESS_THAN = " < ";
 
-   /** constant for greater than equal to */
+   /** constant for >= */
    static private final String GREATER_THAN_EQUAL_TO = " >= ";
 
-   /** Description of field NUMERIC_VAL_COLUMN. */
-   //static private final int NUMERIC_VAL_COLUMN = 0;
-
-   /** Description of field NUMERIC_OUT_COLUMN. */
-   //static private final int NUMERIC_OUT_COLUMN = 1;
 
    static {
       nf = NumberFormat.getInstance();
@@ -206,9 +191,10 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
    /**
     * Find the most common output value from a list of examples.
     *
-    * @param  t        Description of parameter t.
-    * @param  outCol   Description of parameter outCol.
-    * @param  examples the list of examples
+    * @param  t        table
+    * @param  outCol   output column index
+    * @param  examples the list of examples, which correspond to rows of the
+    *                  table
     *
     * @return the most common output value from the examples
     */
@@ -251,7 +237,7 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
    /**
     * Get the unique values of the examples in a column.
     *
-    * @param  t        Description of parameter t.
+    * @param  t        table
     * @param  colNum   the index of the attribute column
     * @param  examples the list of examples, which correspond to rows of the
     *                  table
@@ -289,9 +275,9 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
    /**
     * Calculate the entropy of a specific value of an attribute.
     *
-    * @param  t        Description of parameter t.
+    * @param  t        table
     * @param  colNum   the index of the attribute column
-    * @param  outCol   Description of parameter outCol.
+    * @param  outCol   the index of the output column
     * @param  attValue the value of the attribute we are interested in
     * @param  examples the list of examples, which correspond to rows of the
     *                  table
@@ -334,9 +320,9 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
     * used, where the information gain is divided by the split information. This
     * prevents highly branching attributes from becoming dominant.
     *
-    * @param  t        Description of parameter $param.name$.
+    * @param  t        table
     * @param  attCol   the index of the attribute column
-    * @param  outCol   Description of parameter outCol.
+    * @param  outCol   the index of the output column
     * @param  examples the list of examples, which correspond to rows of the
     *                  table
     *
@@ -491,10 +477,10 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
     * available columns. If none of the attributes has a gain higher than the
     * threshold, return null
     *
-    * @param  t          Description of parameter t.
+    * @param  t          table
     * @param  attributes the list of available attributes, which correspond to
     *                    columns of the table
-    * @param  outCol     Description of parameter outCol.
+    * @param  outCol     the index of the output column
     * @param  examples   the list of examples, which correspond to rows of the
     *                    table
     *
@@ -1389,7 +1375,7 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
    public String[] getOutputTypes() {
       String[] out =
       {
-         "ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode"
+         "ncsa.d2k.modules.core.prediction.decisiontree.c45.DecisionTreeNode"
       };
 
       return out;
@@ -1427,5 +1413,9 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
       }
    }
 
+    /**
+     * An exception to throw when the minimum number of records per leaf
+     * does not meet the threshold
+     */
    private class MinimumRecordsPerLeafException extends Exception { }
 } // end class C45TreeBuilderOPT

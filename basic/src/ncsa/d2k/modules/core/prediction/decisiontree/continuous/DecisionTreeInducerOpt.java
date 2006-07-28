@@ -60,7 +60,43 @@ import ncsa.d2k.modules.core.prediction.regression.continuous
 
 
 /**
- * Description of class DecisionTreeInducerOpt.
+ * <p>
+ * Overview:
+ * This module builds a decision tree from an example table. </p>
+ * <p>Detailed Description:
+ * The module implements a decision tree learning algorithm for continuous
+ * attributes.  For inducing functions within a node, one of two different
+ * learning algorithms can be used.
+ * <ul>
+ * <li><i>Use the mean averaging for models</i>:  Simple averaging of output
+ * values.  </li>
+ * <li><i>Use multiple regression for models</i>:  Using the best 1-d linear
+ * function using a single input attribute.  </li>
+ * </ul>
+ * It allows for multiple decomposition strategies to be used simultaneously.
+ * <ul>
+ * <li><i>Generate splits only at 1/2</i>:  Generate splits only at 0.5.  Works
+ * well when inputs are scaled from 0.0 to 1.0.</li>
+ * <li><i>Generate mean splits</i>:  Generate splits at the mean input attribute
+ * value within the node.  </li>
+ * <li><i>Generate midpoint splits</i>:  Generate splits at the midpoint between
+ * the min and max input attribute value within the node.  </li>
+ * <li><i>Generate median splits</i>:  Generate splits at the median input
+ * attribute value within the node which requires n log n sorting.  </li>
+ * </ul>
+ * Determining whether to split a node is controlled by the following
+ * parameters:
+ * <i>Minimum examples per leaf</i> and <i>Minimum split error reduction</i>.
+ * A split is not considered if it results in a node with less than <i>Minimum
+ * examples per leaf</i> examples in it.
+ * A split is not considered if the resubstitution based error weighted by
+ * population does improve by at least <i>Minimum split error reduction</i>.
+ * <p>Restrictions:
+ * This module will only classify examples with continuous outputs.  </p>
+ * <p>Data Handling: This module does not modify the input data. </p>
+ * <p>Scalability: This module can efficiently process a data set that can be
+ * stored in memory.  The ultimate limit is how much virtual memory java can
+ * access. </p>
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -70,52 +106,81 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
    //~ Instance fields *********************************************************
 
    /** the errorFunction. */
-   ErrorFunction errorFunction = null;
+   protected ErrorFunction errorFunction = null;
 
    /** the max tree depth. */
-   int MaxTreeDepth = 20;
+   protected int MaxTreeDepth = 20;
 
-   /** MinDecompositionPopulation. */
-   int MinDecompositionPopulation = 20;
+   /** Prevents the generation of splits that result in leaf nodes with
+                                 less than the specified number of examples. */
+   protected int MinDecompositionPopulation = 20;
 
-   /** MinErrorReduction. */
-   double MinErrorReduction = 0.0;
+    /** The units of this error reduction are relative to the error function
+     *  passed to the decision tree inducer.  A split will not occur unless the
+     * error is reduced by at least the amount specified
+     */
+   protected double MinErrorReduction = 0.0;
 
    /** ModelPrintOptions. */
-   ModelPrintOptions ModelPrintOptions = new ModelPrintOptions();
+   protected ModelPrintOptions ModelPrintOptions = new ModelPrintOptions();
 
    /** NodeIndex. */
-   int NodeIndex;
+   protected int NodeIndex;
 
    /** Print Evolving Models. */
-   boolean PrintEvolvingModels = false;
+   protected boolean PrintEvolvingModels = false;
 
    /** the root */
-   DecisionTreeNode RootNode;
+   protected DecisionTreeNode RootNode;
 
-   /** save node examples */
-   boolean SaveNodeExamples = false;
+   /** In order to compute and print statistics of the node you must save the
+    * examples at the node which increases the space and time complexity of the
+    * algorithm by a linear factor.
+    */
+   protected boolean SaveNodeExamples = false;
 
    /** sort array */
-   double[][] SortArray;
+   protected double[][] SortArray;
 
-   /** use linear node models */
-   boolean UseLinearNodeModels = false;
+    /** This results in a decision tree with linear functions of the input
+     * attributes at the leaves.  UseLinearNodeModels and UseMeanNodeModels are
+     * mutually exclusive.
+     */
+   protected boolean UseLinearNodeModels = false;
 
-   /** use mean based split */
-   boolean UseMeanBasedSplit = true;
+    /** The mean of each attribute value is calculated in the given node and
+     *  used to generate splits for that node.  One or more split methods
+     * (mean, midpoint, and median) can be use simultaneously.
+     */
+   protected boolean UseMeanBasedSplit = true;
 
-   /** use mean node models */
-   boolean UseMeanNodeModels = true;
+    /** This results in a simple decision tree with constant functions at the
+     *  leaves.  UseMeanNodeModels and UseLinearNodeModels are mutually
+     * exclusive.
+     */
+   protected boolean UseMeanNodeModels = true;
 
-   /** use mid-point based split */
-   boolean UseMidPointBasedSplit = false;
+    /**The median of each attribute value is calculated in the given node and
+     * used to generate splits for that node.  This requires sorting of all the
+     * examples in a node and therefore scales at n log n in time complexity.
+     * One or more split methods (mean, midpoint, and median) can be use
+     * simultaneously.
+     */
+   protected boolean UseMidPointBasedSplit = false;
 
-   /** use one-half split. */
-   boolean UseOneHalfSplit = false;
+    /** This works fine for boolean and continuous values.  If used as the sole
+     *  decomposition strategy, it forces the system to only split on a variable
+     * once.
+     */
+   protected boolean UseOneHalfSplit = false;
 
-   /** use population-based split */
-   boolean UsePopulationBasedSplit = false;
+    /** The median of each attribute value is calculated in the given node and
+     *  used to generate splits for that node.  This requires sorting of all the
+     *  examples in a node and therefore scales at n log n in time complexity.
+     *  One or more split methods (mean, midpoint, and median) can be use
+     *  simultaneously.
+     */
+   protected boolean UsePopulationBasedSplit = false;
 
    /**
     * This method partitions the given example table into two tables based on
@@ -124,10 +189,10 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
     * example table assigned to node2 contains the examples that the
     * decomposition function evaluates false for.
     */
-   int[] workNode1ExampleIndices;
+   protected int[] workNode1ExampleIndices;
 
-   /** Description of field workNode2ExampleIndices. */
-   int[] workNode2ExampleIndices;
+   /**workNode2ExampleIndices. */
+   protected int[] workNode2ExampleIndices;
 
    //~ Methods *****************************************************************
 

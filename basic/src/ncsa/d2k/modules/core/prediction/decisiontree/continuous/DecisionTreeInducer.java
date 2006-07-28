@@ -53,7 +53,7 @@ import java.beans.PropertyVetoException;
 
 
 /**
- * Description of class DecisionTreeInducer.
+ * Inducer for continuous decision tree.
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -62,7 +62,7 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
 
    //~ Instance fields *********************************************************
 
-   /** the number of bias dimensions. */
+   /** the number of bias parameters */
    int numBiasDimensions = 9;
 
    //~ Methods *****************************************************************
@@ -75,20 +75,24 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     }
 
 
+    /**
+     * Performs the main work of the module.
+     *
+     * @throws Exception if a problem occurs while performing the work of the module
+     */
+    public void doit() throws Exception {
 
-   public void doit() throws Exception {
+        ExampleTable exampleSet = (ExampleTable) this.pullInput(0);
+        ErrorFunction errorFunction = (ErrorFunction) this.pullInput(1);
 
-      ExampleTable exampleSet = (ExampleTable) this.pullInput(0);
-      ErrorFunction errorFunction = (ErrorFunction) this.pullInput(1);
+        instantiateBiasFromProperties();
 
-      instantiateBiasFromProperties();
+        Model model = null;
 
-      Model model = null;
+        model = generateModel(exampleSet, errorFunction);
 
-      model = generateModel(exampleSet, errorFunction);
-
-      this.pushOutput(model, 0);
-   }
+        this.pushOutput(model, 0);
+    }
 
    /**
     * Description of method getInputInfo.
@@ -301,60 +305,60 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
    } // end method getPropertiesDescriptions
 
    /**
-    * Description of method getSaveNodeExamples.
+    * Get saveNodeExamples
     *
-    * @return Description of return value.
+    * @return saveNodeExamples
     */
    public boolean getSaveNodeExamples() { return this.SaveNodeExamples; }
 
    /**
-    * Description of method getTrace.
+    * Get _Trace
     *
-    * @return Description of return value.
+    * @return _Trace
     */
    public boolean getTrace() { return this._Trace; }
 
    /**
-    * Description of method getUseLinearNodeModels.
+    * Get useLinearNodeModels
     *
-    * @return Description of return value.
+    * @return useLinearNodeModels
     */
    public boolean getUseLinearNodeModels() { return this.UseLinearNodeModels; }
 
    /**
-    * Description of method getUseMeanBasedSplit.
+    * Get UseMeanBasedSplit
     *
-    * @return Description of return value.
+    * @return UseMeanBasedSplit
     */
    public boolean getUseMeanBasedSplit() { return this.UseMeanBasedSplit; }
 
    /**
-    * Description of method getUseMeanNodeModels.
+    * DGet UseMeanNodeModels
     *
-    * @return Description of return value.
+    * @return UseMeanNodeModels
     */
    public boolean getUseMeanNodeModels() { return this.UseMeanNodeModels; }
 
    /**
-    * Description of method getUseMidPointBasedSplit.
+    * Get UseMidPointBasedSplit
     *
-    * @return Description of return value.
+    * @return UseMidPointBasedSplit
     */
    public boolean getUseMidPointBasedSplit() {
       return this.UseMidPointBasedSplit;
    }
 
    /**
-    * Description of method getUseOneHalfSplit.
+    * Get UseOneHalfSplit
     *
-    * @return Description of return value.
+    * @return UseOneHalfSplit
     */
    public boolean getUseOneHalfSplit() { return this.UseOneHalfSplit; }
 
    /**
-    * Description of method getUsePopulationBasedSplit.
+    * Get UsePopulationBasedSplit
     *
-    * @return Description of return value.
+    * @return UsePopulationBasedSplit
     */
    public boolean getUsePopulationBasedSplit() {
       return this.UsePopulationBasedSplit;
@@ -362,7 +366,10 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
 
 
    /**
-    * Description of method instantiateBiasFromProperties.
+    * Nothing to do in this case since properties are reference directly by
+    * the algorithm and no other control parameters need be set.  This may
+    * not be the case in general so this stub is left open for future
+    * development.
     */
    public void instantiateBiasFromProperties() {
       // Nothing to do in this case since properties are reference directly by
@@ -372,12 +379,11 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
    }
 
    /**
-    * Description of method setMaxTreeDepth.
+    * Set MaxTreeDepth.  Must be at least 1.
     *
-    * @param  value Description of parameter value.
+    * @param  value new MaxTreeDepth
     *
-    * @throws PropertyVetoException Description of exception
-    *                               PropertyVetoException.
+    * @throws PropertyVetoException when value is less than 1.
     */
    public void setMaxTreeDepth(int value) throws PropertyVetoException {
 
@@ -389,17 +395,11 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
    }
 
    /**
-    * public void setUseSimpleBooleanSplit (boolean value)
-    * {this.UseSimpleBooleanSplit = value;} public boolean
-    * getUseSimpleBooleanSplit () {return this.UseSimpleBooleanSplit;} public
-    * void setPrintEvolvingModels (boolean value) { this.PrintEvolvingModels =
-    * value;} public boolean getPrintEvolvingModels () {return
-    * this.PrintEvolvingModels;} private int MinDecompositionPopulation = 20;
+    * Set MinDcompositionPopulation.  Must be at least 1.
     *
-    * @param  value Description of parameter value.
+    * @param  value new MinDcompositionPopulation
     *
-    * @throws PropertyVetoException Description of exception
-    *                               PropertyVetoException.
+    * @throws PropertyVetoException when value is less than 1.
     */
    public void setMinDecompositionPopulation(int value)
       throws PropertyVetoException {
@@ -412,34 +412,34 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
    }
 
    /**
-    * private double MinErrorReduction = 0.0;
+    * Set MinErrorReduction
     *
-    * @param value Description of parameter value.
+    * @param value new MinErrorReduction
     */
    public void setMinErrorReduction(double value) {
       this.MinErrorReduction = value;
    }
 
    /**
-    * public boolean SaveNodeExamples = false;
+    * Set SaveNodeExamples
     *
-    * @param value Description of parameter value.
+    * @param value new SaveNodeExamples
     */
    public void setSaveNodeExamples(boolean value) {
       this.SaveNodeExamples = value;
    }
 
    /**
-    * public boolean UseLinearNodeModels = false;
+    * Set _Trace
     *
-    * @param value Description of parameter value.
+    * @param value new _Trace
     */
    public void setTrace(boolean value) { this._Trace = value; }
 
    /**
-    * public boolean UseLinearNodeModels = false;
+    * Set UseLinearNodeModels.
     *
-    * @param value Description of parameter value.
+    * @param value new UseLinearNodeModels
     */
    public void setUseLinearNodeModels(boolean value) {
       this.UseLinearNodeModels = value;
@@ -447,18 +447,18 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
    }
 
    /**
-    * public boolean UseMeanBasedSplit = true;
+    * Set UseMeanBasedSplit
     *
-    * @param value Description of parameter value.
+    * @param value new UseMeanBasedSplit
     */
    public void setUseMeanBasedSplit(boolean value) {
       this.UseMeanBasedSplit = value;
    }
 
    /**
-    * public boolean UseMeanNodeModels = true;
+    * Set UseMeanNodeModels
     *
-    * @param value Description of parameter value.
+    * @param value new UseMeanNodeModels
     */
    public void setUseMeanNodeModels(boolean value) {
       this.UseMeanNodeModels = value;
@@ -466,27 +466,27 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
    }
 
    /**
-    * public boolean UseMidPointBasedSplit = false;
+    * Set UseMidPointBasedSplit
     *
-    * @param value Description of parameter value.
+    * @param value new UseMidPointBasedSplit
     */
    public void setUseMidPointBasedSplit(boolean value) {
       this.UseMidPointBasedSplit = value;
    }
 
    /**
-    * public boolean UseOneHalfSplit = false;
+    * Set UseOneHalfSplit
     *
-    * @param value Description of parameter value.
+    * @param value UseOneHalfSplit
     */
    public void setUseOneHalfSplit(boolean value) {
       this.UseOneHalfSplit = value;
    }
 
    /**
-    * public boolean UsePopulationBasedSplit = false;
+    * Set UsePopulationBasedSplit
     *
-    * @param value Description of parameter value.
+    * @param value UsePopulationBasedSplit
     */
    public void setUsePopulationBasedSplit(boolean value) {
       this.UsePopulationBasedSplit = value;

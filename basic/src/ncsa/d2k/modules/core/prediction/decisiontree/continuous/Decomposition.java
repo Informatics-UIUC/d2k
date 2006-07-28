@@ -63,10 +63,10 @@ public class Decomposition implements java.io.Serializable {
    //~ Instance fields *********************************************************
 
    /** inputIndex. */
-   int inputIndex;
+   protected int inputIndex;
 
    /** value. */
-   double value;
+   protected double value;
 
    //~ Methods *****************************************************************
 

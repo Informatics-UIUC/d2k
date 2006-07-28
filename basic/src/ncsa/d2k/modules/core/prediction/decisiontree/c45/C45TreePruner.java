@@ -47,12 +47,8 @@ package ncsa.d2k.modules.core.prediction.decisiontree.c45;
 import ncsa.d2k.core.modules.OrderedReentrantModule;
 import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
-import ncsa.d2k.modules.core.prediction.decisiontree
-          .CategoricalDecisionTreeNode;
-   import ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeModel;
-   import ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode;
 
-   import java.util.HashSet;
+import java.util.HashSet;
 
 
 /**
@@ -88,16 +84,16 @@ public class C45TreePruner
    /** training table. */
    private ExampleTable et;
 
-   /** Description of field gray. */
+   /** visited nodes, used in DFS */
    private HashSet gray;
 
    /** root node of the tree. */
    private DecisionTreeNode rootNode;
 
-   /** Description of field white. */
+   /** unvisited nodes, used in DFS */
    private HashSet white;
 
-   /** Description of field Z. */
+   /** Z */
    private double Z = 0.69;
 
    //~ Methods *****************************************************************
@@ -126,11 +122,11 @@ public class C45TreePruner
    }
 
    /**
-    * Description of method areAllChildrenLeaves.
+    * Return true if the children of rt are all leaves.
     *
-    * @param  rt Description of parameter rt.
+    * @param  rt decision tree node
     *
-    * @return Description of return value.
+    * @return true if all the children of rt are leaves
     */
    private boolean areAllChildrenLeaves(DecisionTreeNode rt) {
 
@@ -149,7 +145,7 @@ public class C45TreePruner
     *
     * @param  rt the root
     *
-    * @throws Exception Description of exception Exception.
+    * @throws Exception when something goes wrong
     */
    private void DFS(DecisionTreeNode rt) throws Exception {
 
@@ -165,11 +161,11 @@ public class C45TreePruner
    }
 
    /**
-    * Description of method DFSvisit.
+    * Visit a decision tree node.  Part of DFS.
     *
-    * @param  rt Description of parameter $param.name$.
+    * @param  rt decision tree node
     *
-    * @throws Exception Description of exception Exception.
+    * @throws Exception when something goes wrong
     */
    private void DFSvisit(DecisionTreeNode rt) throws Exception {
       white.remove(rt);
@@ -187,9 +183,9 @@ public class C45TreePruner
    }
 
    /**
-    * Description of method putAllInWhite.
+    * Put node and all its children in white set.  Part of DFS
     *
-    * @param rt Description of parameter rt.
+    * @param rt decision tree node
     */
    private void putAllInWhite(DecisionTreeNode rt) {
       white.add(rt);
@@ -204,7 +200,7 @@ public class C45TreePruner
     *
     * @param  node the root
     *
-    * @throws Exception Description of exception Exception.
+    * @throws Exception when something goes wrong
     */
    private void visit(DecisionTreeNode node) throws Exception {
       gray.remove(node);
@@ -435,7 +431,7 @@ public class C45TreePruner
    public String[] getInputTypes() {
       String[] in =
       {
-         "ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode",
+         "ncsa.d2k.modules.core.prediction.decisiontree.c45.DecisionTreeNode",
          "ncsa.d2k.modules.core.datatype.table.ExampleTable"
       };
 
@@ -530,7 +526,7 @@ public class C45TreePruner
     */
    public String[] getOutputTypes() {
       String[] out =
-      { "ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeNode" };
+      { "ncsa.d2k.modules.core.prediction.decisiontree.c45.DecisionTreeNode" };
 
       return out;
    }

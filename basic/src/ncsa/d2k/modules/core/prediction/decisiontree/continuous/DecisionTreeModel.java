@@ -54,7 +54,7 @@ import java.text.DecimalFormat;
 
 
 /**
- * Description of class DecisionTreeModel.
+ * A Model that implements a decision tree.
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -72,7 +72,7 @@ public class DecisionTreeModel extends Model implements java.io.Serializable,
    /** root of the decision tree */
    DecisionTreeNode decisionTree;
 
-   /**  */
+   /** formatting */
    DecimalFormat Format = new DecimalFormat();
 
    /** PrintOptions. */
@@ -94,19 +94,11 @@ public class DecisionTreeModel extends Model implements java.io.Serializable,
 
    //~ Methods *****************************************************************
 
-   /**
-    * public void instantiate(int numInputs, int numOutputs, String []
-    * inputNames, String [] outputNames, DecisionTreeNode decisionTree) {
-    * this.numInputs = numInputs; this.numOutputs = numOutputs; this.inputNames
-    * = inputNames; this.outputNames = outputNames; this.decisionTree =
-    * decisionTree; }.
-
-
     /*
     * print level number of spaces to System.out
     * @param level number of spaces
     */
-   void indent(int level) {
+   protected void indent(int level) {
 
       for (int i = 0; i < level * 2; i++) {
          System.out.print(" ");
@@ -209,9 +201,9 @@ public class DecisionTreeModel extends Model implements java.io.Serializable,
     * Print a node
     *
     * @param  node       the node
-    * @param  level      Description of parameter level.
-    * @param  leafNode   Description of parameter leafNode.
-    * @param  splitIndex Description of parameter splitIndex.
+    * @param  level      level
+    * @param  leafNode   true if node is a leaf
+    * @param  splitIndex index of split
     *
     * @throws Exception when something goes wrong
     */
@@ -291,7 +283,7 @@ public class DecisionTreeModel extends Model implements java.io.Serializable,
     * Print the tree
     *
     * @param  node  root of tree
-    * @param  level Description of parameter level.
+    * @param  level the level
     *
     * @throws Exception when something goes wrong
     */

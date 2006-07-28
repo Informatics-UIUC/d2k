@@ -107,9 +107,6 @@ public class C45ParamSpaceGenerator extends AbstractParamSpaceGenerator {
    public PropertyDescription[] getPropertiesDescriptions() {
       PropertyDescription[] pds = new PropertyDescription[1];
 
-//    pds[0] = new PropertyDescription(MIN_RATIO, MIN_RATIO,      "Ratio of the
-// record on a leaf to in a tree.  The tree construction is "+      "terminated
-// when this ratio is reached.");
       pds[0] =
          new PropertyDescription(MIN_RATIO, MIN_RATIO,
                                  "The minimum ratio of records in a leaf to the total number of records in the tree. " +
