@@ -694,10 +694,10 @@ public final class ByteColumn extends MissingValuesColumn
     * contents, they change, but if you reassign the reference, the <code>
     * Column</code> is not affected.
     *
-    * @param  pos the start position for the subset
-    * @param  len the length of the subset
+    * @param  pos Start position for the subset
+    * @param  len Length of the subset
     *
-    * @return a subset of this <code>Column</code>
+    * @return Subset of this <code>Column</code>
     *
     * @throws ArrayIndexOutOfBoundsException If <code>pos</code> + <code>
     *                                        len</code> is greater than the
@@ -1000,7 +1000,7 @@ public final class ByteColumn extends MissingValuesColumn
     * truncated. If internal.length > newCapacity then the <code>Column</code>
     * will be truncated.
     *
-    * @param newCapacity a new capacity
+    * @param newCapacity New capacity
     */
    public void setNumRows(int newCapacity) {
 
