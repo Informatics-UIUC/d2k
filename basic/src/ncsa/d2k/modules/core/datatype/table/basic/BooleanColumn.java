@@ -219,7 +219,7 @@ public class BooleanColumn extends MissingValuesColumn {
    /**
     * Appends the new entry to the end of the <code>Column</code>.
     *
-    * @param newEntry a new entry
+    * @param newEntry A new entry
     */
    public void addRow(Object newEntry) {
       int last = internal.length;
@@ -237,9 +237,9 @@ public class BooleanColumn extends MissingValuesColumn {
    }
 
    /**
-    * Add the specified number of blank rows.
+    * Adds the specified number of blank rows.
     *
-    * @param number number of rows to add.
+    * @param number Number of rows to add.
     */
    public void addRows(int number) {
       int last = internal.length;
@@ -261,12 +261,12 @@ public class BooleanColumn extends MissingValuesColumn {
     * element</code> is true and row element is false and less than 0 if <code>
     * element</code> is false and row element is true.
     *
-    * @param  element the object to be passed in should be a subclass of <code>
+    * @param  element Object to be passed in should be a subclass of <code>
     *                 Boolean</code>
-    * @param  row     the position of the element in this <code>Column</code> to
+    * @param  row     Position of the element in this <code>Column</code> to
     *                 be compared with
     *
-    * @return a value representing the relationship: <code>&gt;</code>, <code>
+    * @return Value representing the relationship: <code>&gt;</code>, <code>
     *         &lt;</code>, or <code>==</code> 0
     */
    public int compareRows(Object element, int row) {
@@ -284,10 +284,10 @@ public class BooleanColumn extends MissingValuesColumn {
     * element is true, and greater than 0 if r1 element is true and r2 element
     * is false.
     *
-    * @param  r1 the first row to compare
-    * @param  r2 the second row to compare
+    * @param  r1 First row to compare
+    * @param  r2 Second row to compare
     *
-    * @return a value representing the relationship: <code>&gt;</code>, <code>
+    * @return Value representing the relationship: <code>&gt;</code>, <code>
     *         &lt;</code>, or <code>==</code> 0
     */
    public int compareRows(int r1, int r2) {
@@ -305,7 +305,7 @@ public class BooleanColumn extends MissingValuesColumn {
     * created, initialized with the same data as this <code>
     * BooleanColumn</code>.
     *
-    * @return a new <code>BooleanColumn</code> with a copy of the contents of
+    * @return New <code>BooleanColumn</code> with a copy of the contents of
     *         this column.
     */
    public Column copy() {
@@ -607,10 +607,10 @@ public class BooleanColumn extends MissingValuesColumn {
     * length. The primitive values are copied, so they have no destructive
     * abilities as far as the <code>Column</code> is concerned.
     *
-    * @param  pos the start position for the subset
-    * @param  len the length of the subset
+    * @param  pos Start position for the subset
+    * @param  len Length of the subset
     *
-    * @return a subset of this <code>Column</code>
+    * @return Subset of this <code>Column</code>
     *
     * @throws ArrayIndexOutOfBoundsException If <code>pos</code> + <code>
     *                                        len</code> is greater than the
@@ -654,7 +654,7 @@ public class BooleanColumn extends MissingValuesColumn {
     * Column</code>, the new entry will be appended to the end of the <code>
     * Column</code> by calling <code>addRow</code>.
     *
-    * @param newEntry a <code>Boolean</code>-wrapped <code>boolean</code> as the
+    * @param newEntry <code>Boolean</code>-wrapped <code>boolean</code> as the
     *                 new entry to insert
     * @param pos      Position to insert at
     */
@@ -709,9 +709,9 @@ public class BooleanColumn extends MissingValuesColumn {
     * Removes an entry from the <code>Column</code>, at <code>pos</code>. All
     * entries from <code>pos</code>+1 will be moved back 1 position.
     *
-    * @param  pos the position to remove
+    * @param  pos Position to remove
     *
-    * @return a <code>Boolean</code> representation of the removed <code>
+    * @return <code>Boolean</code> representation of the removed <code>
     *         boolean</code>
     */
    public Object removeRow(int pos) {
