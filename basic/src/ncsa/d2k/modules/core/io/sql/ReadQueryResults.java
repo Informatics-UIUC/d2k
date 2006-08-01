@@ -143,7 +143,7 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
           ////////////////////////////
           
           String query = "SELECT COUNT(*) FROM " + tableList;
-          if (whereClause != null && whereClause.length() > 0)
+          if (whereClause != null && whereClause.trim().length() > 0)
             query += " WHERE " + whereClause;
           Statement stmt = con.createStatement();
           ResultSet rs = stmt.executeQuery(query);
@@ -160,7 +160,7 @@ public class ReadQueryResults extends ncsa.d2k.core.modules.DataPrepModule
           
           query = "SELECT " + fieldList.toString() + " FROM " + tableList;
 
-          if (whereClause != null && whereClause.length() > 0)
+          if (whereClause != null && whereClause.trim().length() > 0)
             query += " WHERE " + whereClause;
 
           // DC 2.6.06 --- closed the result set and statement
