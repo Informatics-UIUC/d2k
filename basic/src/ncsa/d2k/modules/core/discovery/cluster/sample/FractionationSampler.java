@@ -108,8 +108,9 @@ public class FractionationSampler extends FractionationSamplerOPT {
     * Performs the main work of the module: Chooses a sample set of rows through
     * a process of repeated partitioning and clustering. The table rows are
     * treated as vectors of a vector space.
+    * @throws java.lang.Exception If Check Missing Values flag is on and the input table has missing values.
     */
-   protected void doit() {
+   protected void doit() throws Exception{
 
       ArrayList clusters = null;
       ClusterModel cm = null;

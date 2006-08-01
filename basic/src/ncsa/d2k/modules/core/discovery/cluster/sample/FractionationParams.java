@@ -100,9 +100,9 @@ public class FractionationParams extends FractionationParamsOPT {
    /**
     * Perform the work of the module.
     *
-    * @throws Exception
+
     */
-   protected void doit() throws Exception {
+   protected void doit() {
 
       Table tab = (Table) this.pullInput(0);
       doingit(tab);
