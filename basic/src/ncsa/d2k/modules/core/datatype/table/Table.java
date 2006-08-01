@@ -1,430 +1,611 @@
+/*
+ * $Header$
+ *
+ * ===================================================================
+ *
+ * D2K-Workflow
+ * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
+ * ILLINOIS. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License v2.0
+ * as published by the Free Software Foundation and with the required
+ * interpretation regarding derivative works as described below.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License v2.0 for more details.
+ *
+ * This program and the accompanying materials are made available
+ * under the terms of the GNU General Public License v2.0 (GPL v2.0)
+ * which accompanies this distribution and is available at
+ * http://www.gnu.org/copyleft/gpl.html (or via mail from the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.), with the special and mandatory
+ * interpretation that software only using the documented public
+ * Application Program Interfaces (APIs) of D2K-Workflow are not
+ * considered derivative works under the terms of the GPL v2.0.
+ * Specifically, software only calling the D2K-Workflow Itinerary
+ * execution and workflow module APIs are not derivative works.
+ * Further, the incorporation of published APIs of other
+ * independently developed components into D2K Workflow code
+ * allowing it to use those separately developed components does not
+ * make those components a derivative work of D2K-Workflow.
+ * (Examples of such independently developed components include for
+ * example, external databases or metadata and provenance stores).
+ *
+ * Note: A non-GPL commercially licensed version of contributions
+ * from the UNIVERSITY OF ILLINOIS may be available from the
+ * designated commercial licensee RiverGlass, Inc. located at
+ * (www.riverglassinc.com)
+ * ===================================================================
+ *
+ */
 package ncsa.d2k.modules.core.datatype.table;
 
 
 /**
-	Table is a data structure of m rows where each row has n columns.  Therefore,
-	a Table is a two-dimensional and rectangular datastructure.  Each column of a table
-	contains elements of a single type.  Hence, any two elements of a particular
-	column will be castable to the same type.  Each row of a given Table
-	represents a single record.  Thus, the synchronization of columns is
-	important to maintaining the records.  For example, if the order of one column's
-	elements are manipulated, then all other columns must be likewise updated.
-	<br><br>
-	A Table can have a key column associated with it.  The key column is the column
-	which should contain unique keys that uniquely identify the rows (records)
-	within the Table.  This can be accessed with the get/setKeyColumn methods.
-	If the key column is not set, it should default to Column 0.
-	<br><br>
-	The data within a Table is immutable.  Methods are provided to access the Table
-	contents, but not mutate it.  The MutableTable interface defines the methods
-	used to mutate the contents of a Table.
-	<br><br>
-	A single column of the Table will contain values of the same datatype.  To
-	determine the datatype of the column, use the getColumnType() method.  Columns
-	can also be designated as scalar or nominal.  The isColumnNumeric() method
-	has been provided as a convienience to determine whether all the items in
-	a column contain numeric values.
-	<br><br>
-	Table is designed for the primary use of linking/grouping (possibly
-	variously-typed) data together.  So that the linked data (synchronized columns)
-	may be accessed and manipulated as a group.
-	<br>
-	Table was designed for 2 types of access or manipulation:
-	<ul><li>Specific access, where the accessor knows the underlying data types
-		and content.  This is enabled by convienience methods such as getFloat(row, col).
-		Programmers will find this to the easiest way to use Table for a specific solution.
-	<li>Generalized access, where the accessor has no knowledge of the underlying data types or content.
-	This is enabled by a generalized and flexible class hierarchy which allows
-	columns to be manipulated in an efficient manner without knowledge of their
-	underlying types or content, while programming for this generalized result is
-	more complex and generally yields less efficient code, it yields a more flexible and
-	extensible result.
-	</ul>
-*/
+ * <p><code>Table</code> is a data structure of m rows where each row has n
+ * columns. Therefore, a <code>Table</code> is a two-dimensional and rectangular
+ * datastructure. Each <code>Column</code> of a <code>Table</code> contains
+ * elements of a single type. Hence, any two elements of a particular <code>
+ * Column</code> will be castable to the same type. Each row of a given <code>
+ * Table</code> represents a single record. Thus, the synchronization of columns
+ * is important to maintaining the records. For example, if the order of one
+ * column's elements are manipulated, then all other columns must be likewise
+ * updated.</p>
+ *
+ * <p>A <code>Table</code> can have a key <code>Column</code> associated with
+ * it. The key <code>Column</code> is the <code>Column</code> which should
+ * contain unique keys that uniquely identify the rows (records) within the
+ * <code>Table</code>. This can be accessed with the get/setKeyColumn methods.
+ * If the key <code>Column</code> is not set, it should default to Column 0.</p>
+ *
+ * <p>The data within a <code>Table</code> is immutable. Methods are provided to
+ * access the <code>Table</code> contents, but not mutate it. The <code>
+ * MutableTable</code> interface defines the methods used to mutate the contents
+ * of a <code>Table</code>.</p>
+ *
+ * <p>A single <code>Column</code> of the <code>Table</code> will contain values
+ * of the same datatype. To determine the datatype of the <code>Column</code>,
+ * use the getColumnType() method. Columns can also be designated as scalar or
+ * nominal. The <code>isColumnNumeric()</code> method has been provided as a
+ * convienience to determine whether all the items in a <code>Column</code>
+ * contain numeric values.</p>
+ *
+ * <p><code>Table</code> is designed for the primary use of linking/grouping
+ * (possibly variously-typed) data together. So that the linked data
+ * (synchronized columns) may be accessed and manipulated as a group.</p>
+ *
+ * <p><code>Table</code> was designed for 2 types of access or manipulation:</p>
+ *
+ * <ul>
+ *   <li>Specific access, where the accessor knows the underlying data types and
+ *     content. This is enabled by convienience methods such as getFloat(row,
+ *     col). Programmers will find this to the easiest way to use <code>
+ *     Table</code> for a specific solution.</li>
+ *   <li>Generalized access, where the accessor has no knowledge of the
+ *     underlying data types or content. This is enabled by a generalized and
+ *     flexible class hierarchy which allows columns to be manipulated in an
+ *     efficient manner without knowledge of their underlying types or content,
+ *     while programming for this generalized result is more complex and
+ *     generally yields less efficient code, it yields a more flexible and
+ *     extensible result.</li>
+ * </ul>
+ *
+ * @author  suvalala
+ * @author  redman
+ * @author  clutter
+ * @author  $Author$
+ * @version $Revision$, $Date$
+ */
 public interface Table extends java.io.Serializable {
 
-	//static final long serialVersionUID = 2508941379956505568L;
+   //~ Static fields/initializers **********************************************
 
-	static final long serialVersionUID = 1L;
+   /** The universal version identifier. */
+   static final long serialVersionUID = 1L;
 
-    /**
-	 * Get an Object from the table.
-     * @param row the row of the table
-     * @param column the column of the table
-     * @return the Object at (row, column)
-     */
-	public Object getObject(int row, int column);
+   //~ Methods *****************************************************************
 
-    /**
-	 * Get an int value from the table.
-     * @param row the row of the table
-     * @param column the column of the table
-     * @return the int at (row, column)
-     */
-	public int getInt(int row, int column);
+   /**
+    * Creates a copy of this <code>Table</code>. This is a deep copy, and it
+    * contains a copy of all the data.
+    *
+    * @return Deep copy of this <code>Table</code>
+    */
+   public Table copy();
 
-    /**
-	 * Get a short value from the table.
-     * @param row the row of the table
-     * @param column the column of the table
-     * @return the short at (row, column)
-     */
-	public short getShort(int row, int column) ;
+   /**
+    * Creates a copy of the specified rows of this <code>Table</code>. This is a
+    * deep copy, and it contains a copy of all the data.
+    *
+    * @param  rows Row indices to copy
+    *
+    * @return Copy of the specified rows as a <code>Table</code>
+    */
+   public Table copy(int[] rows);
 
-    /**
-	 * Get a float value from the table.
-     * @param row the row of the table
-     * @param column the column of the table
-     * @return the float at (row, column)
-     */
-	public float getFloat(int row, int column) ;
+   /**
+    * Creates a copy of the specified range of rows of this <code>Table</code>.
+    * This is a deep copy, and it contains a copy of all the data.
+    *
+    * @param  start Starting row index for the copy
+    * @param  len   Number of rows to copy
+    *
+    * @return Copy of the specified rows as a <code>Table</code>
+    */
+   public Table copy(int start, int len);
 
-    /**
-	 * Get a double value from the table.
-     * @param row the row of the table
-     * @param column the column of the table
-     * @return the double at (row, column)
-     */
-	public double getDouble(int row, int column) ;
+   /**
+    * Creates a new empty <code>Table</code> of the same type as the
+    * implementation.
+    *
+    * @return New empty <code>Table</code>.
+    */
+   public MutableTable createTable();
 
-    /**
-	 * Get a long value from the table.
-     * @param row the row of the table
-     * @param column the column of the table
-     * @return the long at (row, column)
-     */
-	public long getLong(int row, int column);
+   /**
+    * Gets a boolean value from the <code>Table</code>.
+    *
+    * @param  row    Row of the <code>Table</code>
+    * @param  column Column of the <code>Table</code>
+    *
+    * @return Boolean value at (row, column)
+    */
+   public boolean getBoolean(int row, int column);
 
-    /**
-	 * Get a String value from the table.
-     * @param row the row of the table
-     * @param column the column of the table
-     * @return the String at (row, column)
-     */
-	public String getString(int row, int column) ;
+   /**
+    * Gets a byte value from the <code>Table</code>.
+    *
+    * @param  row    Row of the <code>Table</code>
+    * @param  column Column of the <code>Table</code>
+    *
+    * @return Byte value at (row, column)
+    */
+   public byte getByte(int row, int column);
 
-    /**
-	 * Get a value from the table as an array of bytes.
-     * @param row the row of the table
-     * @param column the column of the table
-     * @return the value at (row, column) as an array of bytes
-     */
-	public byte[] getBytes(int row, int column) ;
+   /**
+    * Gets a value from the <code>Table</code> as a byte array.
+    *
+    * @param  row    Row of the <code>Table</code>
+    * @param  column Column of the <code>Table</code>
+    *
+    * @return Byte value at (row, column)
+    */
+   public byte[] getBytes(int row, int column);
 
-    /**
-	 * Get a boolean value from the table.
-     * @param row the row of the table
-     * @param column the column of the table
-     * @return the boolean value at (row, column)
-     */
-	public boolean getBoolean(int row, int column);
+   /**
+    * Gets a char value from the <code>Table</code>.
+    *
+    * @param  row    Row of the <code>Table</code>
+    * @param  column Column of the <code>Table</code>
+    *
+    * @return Char value at (row, column)
+    */
+   public char getChar(int row, int column);
 
-    /**
-	 * Get a value from the table as an array of chars.
-     * @param row the row of the table
-     * @param column the column of the table
-     * @return the value at (row, column) as an array of chars
-     */
-	public char[] getChars(int row, int column);
+   /**
+    * Gets a value from the <code>Table</code> as a char array.
+    *
+    * @param  row    Row of the <code>Table</code>
+    * @param  column Column of the <code>Table</code>
+    *
+    * @return Value at (row, column) as an char array
+    */
+   public char[] getChars(int row, int column);
 
-    /**
-	 * Get a byte value from the table.
-     * @param row the row of the table
-     * @param column the column of the table
-     * @return the byte value at (row, column)
-     */
-	public byte getByte(int row, int column);
+   /**
+    * Returns a <code>Column</code> representing the data in <code>Column</code>
+    * n.
+    *
+    * @param  n <code>Column</code> to get.
+    *
+    * @return <code>Column</code> representing the data.
+    */
+   public Column getColumn(int n);
 
-    /**
-	 * Get a char value from the table.
-     * @param row the row of the table
-     * @param column the column of the table
-     * @return the char value at (row, column)
-     */
-	public char getChar(int row, int column);
+   /**
+    * Returns the comment associated with the <code>Column</code>.
+    *
+    * @param  position Index of the <code>Column</code> name to get.
+    *
+    * @return Comment associated with the <code>Column</code>.
+    */
+   public String getColumnComment(int position);
 
-	//////////////////////////////////////
-	//// Accessing Table Metadata
+   /**
+    * Returns the name associated with the <code>Column</code>.
+    *
+    * @param  position Index of the <code>Column</code> name to get.
+    *
+    * @return Name associated with the <code>Column</code>.
+    */
+   public String getColumnLabel(int position);
 
-	/**
-		Returns the name associated with the column.
-		@param position the index of the Column name to get.
-		@return the name associated with the column.
-	*/
-	public String getColumnLabel(int position);
+   /**
+    * Returns the type of <code>Column</code> located at the given position.
+    *
+    * @param  position Index of the <code>Column</code>
+    *
+    * @return <code>Column</code> type
+    *
+    * @see    ColumnTypes
+    */
+   public int getColumnType(int position);
 
-	/**
-		Returns the comment associated with the column.
-		@param position the index of the Column name to get.
-		@return the comment associated with the column.
-	*/
-	public String getColumnComment(int position);
+   /**
+    * Gets the comment associated with this <code>Table</code>.
+    *
+    * @return Comment which describes this <code>Table</code>
+    */
+   public String getComment();
 
-	/**
-		Get the label associated with this Table.
-		@return the label which describes this Table
-	*/
-	public String getLabel();
+   /**
+    * Gets a double value from the <code>Table</code>.
+    *
+    * @param  row    Row of the <code>Table</code>
+    * @param  column Column of the <code>Table</code>
+    *
+    * @return The double at (row, column)
+    */
+   public double getDouble(int row, int column);
 
-	/**
-		Set the label associated with this Table.
-		@param labl the label which describes this Table
-	*/
-	public void setLabel(String labl);
+   /**
+    * Gets a float value from the <code>Table</code>.
+    *
+    * @param  row    Row of the <code>Table</code>
+    * @param  column Column of the <code>Table</code>
+    *
+    * @return The float at (row, column)
+    */
+   public float getFloat(int row, int column);
 
-	/**
-		Get the comment associated with this Table.
-		@return the comment which describes this Table
-	*/
-	public String getComment();
+   /**
+    * Gets an int value from the <code>Table</code>.
+    *
+    * @param  row    Row of the <code>Table</code>
+    * @param  column Column of the <code>Table</code>
+    *
+    * @return The int at (row, column)
+    */
+   public int getInt(int row, int column);
 
-	/**
-		Set the comment associated with this Table.
-		@param comment the comment which describes this Table
-	*/
-	public void setComment(String comment);
+   /**
+    * Gets the label associated with this <code>Table</code>.
+    *
+    * @return Label which describes this <code>Table</code>
+    */
+   public String getLabel();
 
-	/**
-	  	Get the number of rows in this Table.  Same as getCapacity().
-		@return the number of rows in this Table.
-	*/
-	public int getNumRows();
+   /**
+    * Gets a long value from the <code>Table</code>.
+    *
+    * @param  row    Row of the <code>Table</code>
+    * @param  column Column of the <code>Table</code>
+    *
+    * @return The long at (row, column)
+    */
+   public long getLong(int row, int column);
 
-	/**
-		Return the number of columns this table holds.
-		@return the number of columns in this table
-	*/
-	public int getNumColumns();
+   /**
+    * Returns the default missing value for boolean.
+    *
+    * @return Default missing value for boolean
+    */
+   public boolean getMissingBoolean();
 
-	/**
-		Get a subset of this Table, given a start position and length.  The
-		subset will be a new Table.
-		@param start the start position for the subset
-		@param len the length of the subset
-		@return a subset of this Table
-	*/
-	public Table getSubset(int start, int len);
+   /**
+    * Returns the default missing value for byte.
+    *
+    * @return Default missing value for byte
+    */
+   public byte getMissingByte();
 
-	/**
-	 * get a subset of the table consisting of the rows identified by the array
-	 * of indices passed in.
-	 * @param rows the rows to be in the subset.
-	 * @return a Table that contains the specified subset
-	 */
-	public Table getSubset(int[] rows);
+   /**
+    * Returns the default missing value for byte arrays.
+    *
+    * @return Default missing value for byte arrays
+    */
+   public byte[] getMissingBytes();
 
-	/**
-	 * Create a copy of this Table. This is a deep copy, and it contains a copy of
-	 * 	all the data.
-	 * @return a copy of this Table
-	 */
-	public Table copy();
+   /**
+    * Returns the default missing value for char.
+    *
+    * @return Default missing value for char
+    */
+   public char getMissingChar();
 
-	/**
-	 * Create a copy of this Table. This is a deep copy, and it contains a copy of
-	 * 	all the data.
-	 * @return a copy of this Table
-	 */
-	public Table copy(int start, int len);
+   /**
+    * Returns the default missing value for chars.
+    *
+    * @return Default missing value for chars
+    */
+   public char[] getMissingChars();
 
-	/**
-	 * Create a copy of this Table. This is a deep copy, and it contains a copy of
-	 * 	all the data.
-	 * @return a copy of this Table
-	 */
-	public Table copy(int [] rows);
-	/**
-	 * Create a copy of this Table. A copy of every field in the class should be made,
-	 * but the data itself should not be copied.
-	 * @return a shallow copy of this Table
-	 */
-	public Table shallowCopy();
+   /**
+    * Returns the default missing value for double.
+    *
+    * @return Default missing value for double
+    */
+   public double getMissingDouble();
 
-	/**
-	 * Create a new empty table of the same type as the implementation
-	 * @return a new empty table.
-	 */
-	public MutableTable createTable();
+   /**
+    * Returns the default missing value for int.
+    *
+    * @return Default missing value for int
+    */
+   public int getMissingInt();
 
-	/**
-	 * Returns true if the column at position contains nominal data, false
-	 * otherwise.
-	 * @param position the index of the column
-	 * @return true if the column contains nominal data, false otherwise.
-	 */
-	public boolean isColumnNominal(int position);
+   /**
+    * Returns the default missing value for String.
+    *
+    * @return Default missing value for String
+    */
+   public String getMissingString();
 
-	/**
-	 * Returns true if the column at position contains scalar data, false
-	 * otherwise
-	 * @param position
-	 * @return true if the column contains scalar data, false otherwise
-	 */
-	 public boolean isColumnScalar(int position);
+   /**
+    * Returns the number of columns this <code>Table</code> holds.
+    *
+    * @return Number of columns in this <code>Table</code>
+    */
+   public int getNumColumns();
 
-	 /**
-	  * Set whether the column at position contains nominal data or not.
-	  * @param value true if the column at position holds nominal data, false otherwise
-	  * @param position the index of the column
-	  */
-	 public void setColumnIsNominal(boolean value, int position);
+   /**
+    * Gets the number of rows in this <code>Table</code>. Same as getCapacity().
+    *
+    * @return Number of rows in this <code>Table</code>.
+    */
+   public int getNumRows();
 
-	 /**
-	  * Set whether the column at position contains scalar data or not.
-	  * @param value true if the column at position holds scalar data, false otherwise
-	  * @param position the index of the column
-	  */
-	 public void setColumnIsScalar(boolean value, int position);
+   /**
+    * Gets an <code>Object</code> from the <code>Table</code>.
+    *
+    * @param  row    Row of the <code>Table</code> to get the <code>
+    *                Object</code> from
+    * @param  column Column of the <code>Table</code> to get the <code>
+    *                Object</code> from
+    *
+    * @return <code>Object</code> at (row, column)
+    */
+   public Object getObject(int row, int column);
 
-	/**
-	 * Returns true if the column at position contains only numeric values,
-	 * false otherwise.
-	 * @param position the index of the column
-	 * @return true if the column contains only numeric values, false otherwise
-	 */
-	public boolean isColumnNumeric(int position);
+   /**
+    * Returns a <code>Row</code> object. The <code>Row</code> object can be used
+    * over and over to access the rows of the <code>Table</code> by setting its
+    * index to access a particular <code>Row</code>.
+    *
+    * @return <code>Row</code> object that can access the rows of the <code>
+    *         Table</code>.
+    */
+   public Row getRow();
 
-	/**
-	  * Return the type of column located at the given position.
-	  * @param position the index of the column
-	  * @return the column type
-	  * @see ColumnTypes
-	  */
-	public int getColumnType(int position);
+   /**
+    * Gets a short value from the <code>Table</code>.
+    *
+    * @param  row    Row of the <code>Table</code>
+    * @param  column Column of the <code>Table</code>
+    *
+    * @return The short at (row, column)
+    */
+   public short getShort(int row, int column);
 
-	/**
-	 * This method will return a Row object. The row object can be used over and over
-	 * to access the rows of the table by setting it's index to access a particular row.
-	 * @return a Row object that can access the rows of the table.
-	 */
-	public Row getRow ();
+   /**
+    * Gets a String value from the <code>Table</code>.
+    *
+    * @param  row    Row of the <code>Table</code>
+    * @param  column Column of the <code>Table</code>
+    *
+    * @return The String at (row, column)
+    */
+   public String getString(int row, int column);
 
-	/**
-	  * Return this Table as an ExampleTable.
-	  * @return This object as an ExampleTable
-	  */
-	public ExampleTable toExampleTable();
+   /**
+    * Gets a subset of the <code>Table</code> consisting of the rows identified
+    * by the array of indices passed in.
+    *
+    * @param  rows Rows to be in the subset
+    *
+    * @return <code>Table</code> that contains the specified subset
+    */
+   public Table getSubset(int[] rows);
 
-	/**
-	 * Return true if the value at (row, col) is a missing value, false otherwise.
-	 * @param row the row index
-	 * @param col the column index
-	* @return true if the value is missing, false otherwise
-	*/
-	public boolean isValueMissing(int row, int col);
+   /**
+    * Gets a subset of this <code>Table</code>, given a start position and
+    * length. The subset will be a new <code>Table</code>.
+    *
+    * @param  start Start position for the subset
+    * @param  len   Length of the subset
+    *
+    * @return Subset of this <code>Table</code>
+    */
+   public Table getSubset(int start, int len);
 
-	/**
-	* Return true if the value at (row, col) is an empty value, false otherwise.
-	* @param row the row index
-	* @param col the column index
-	* @return true if the value is empty, false otherwise
-	*/
-	public boolean isValueEmpty(int row, int col);
+   /**
+    * Returns a <code>TableFactory</code> for this <code>Table</code>.
+    *
+    * @return A <code>TableFactory</code>
+    */
+   public TableFactory getTableFactory();
 
-	/**
-	* Return true if any value in this Table is missing.
-	* @return true if there are any missing values, false if there are no missing values
-	*/
-	public boolean hasMissingValues();
+   /**
+    * Returns true if any value in this <code>Table</code> is missing.
+    *
+    * @return True if there are any missing values, false if there are no
+    *         missing values
+    */
+   public boolean hasMissingValues();
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @return the integer for missing value.
-	 */
-	public int getMissingInt ();
+   /**
+    * Returns true if any value in the <code>Column</code> at columnIndex is
+    * missing.
+    *
+    * @param  columnIndex Index of the column to check.
+    *
+    * @return True if there are any missing values, false if there are no
+    *         missing values
+    */
+   public boolean hasMissingValues(int columnIndex);
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingInt the integer for missing values.
-	 */
-	public void setMissingInt (int newMissingInt);
+   /**
+    * Returns true if the <code>Column</code> at position contains nominal data,
+    * false otherwise.
+    *
+    * @param  position Index of the <code>Column</code> to check
+    *
+    * @return True if the <code>Column</code> contains nominal data, false
+    *         otherwise
+    */
+   public boolean isColumnNominal(int position);
 
-	/** return the default missing value for doubles, floats and extendeds.
-	 * @return the double for missing value.
-	 */
-	public double getMissingDouble ();
+   /**
+    * Returns true if the <code>Column</code> at position contains only numeric
+    * values, false otherwise.
+    *
+    * @param  position Index of the <code>Column</code> to check
+    *
+    * @return True if the <code>Column</code> contains only numeric values,
+    *         false otherwise
+    */
+   public boolean isColumnNumeric(int position);
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingDouble the integer for missing values.
-	 */
-	public void setMissingDouble (double newMissingDouble);
+   /**
+    * Returns true if the <code>Column</code> at position contains scalar data,
+    * false otherwise.
+    *
+    * @param  position Index of the <code>Column</code> to check
+    *
+    * @return True if the <code>Column</code> contains scalar data, false
+    *         otherwise
+    */
+   public boolean isColumnScalar(int position);
 
-	/** return the default missing value for doubles, floats and extendeds.
-	 * @return the double for missing value.
-	 */
-	public String getMissingString ();
+   /**
+    * Returns true if the value at (row, col) is an empty value, false
+    * otherwise.
+    *
+    * @param  row Row index
+    * @param  col Column index
+    *
+    * @return True if the value is empty, false otherwise
+    */
+   public boolean isValueEmpty(int row, int col);
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingString the integer for missing values.
-	 */
-	public void setMissingString (String newMissingString);
+   /**
+    * Returns true if the value at (row, col) is a missing value, false
+    * otherwise.
+    *
+    * @param  row Row index
+    * @param  col Column index
+    *
+    * @return True if the value is missing, false otherwise
+    */
+   public boolean isValueMissing(int row, int col);
 
-	/** return the default missing value for doubles, floats and extendeds.
-	 * @return the double for missing value.
-	 */
-	public boolean getMissingBoolean();
+   /**
+    * Sets whether the <code>Column</code> at position contains nominal data or
+    * not.
+    *
+    * @param value    True if the <code>Column</code> at position holds nominal
+    *                 data, false otherwise
+    * @param position Index of the <code>Column</code>
+    */
+   public void setColumnIsNominal(boolean value, int position);
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingBoolean the integer for missing values.
-	 */
-	public void setMissingBoolean(boolean newMissingBoolean);
+   /**
+    * Sets whether the <code>Column</code> at position contains scalar data or
+    * not.
+    *
+    * @param value    True if the <code>Column</code> at position holds scalar
+    *                 data, false otherwise
+    * @param position Index of the <code>Column</code>
+    */
+   public void setColumnIsScalar(boolean value, int position);
 
-	/** return the default missing value for doubles, floats and extendeds.
-	 * @return the double for missing value.
-	 */
-	public char[] getMissingChars();
+   /**
+    * Sets the comment associated with this <code>Table</code>.
+    *
+    * @param comment Comment which describes this <code>Table</code>
+    */
+   public void setComment(String comment);
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingChars the integer for missing values.
-	 */
-	public void setMissingChars(char[] newMissingChars);
+   /**
+    * Sets the label associated with this <code>Table</code>.
+    *
+    * @param labl Label which describes this <code>Table</code>
+    */
+   public void setLabel(String labl);
 
-	/** return the default missing value for doubles, floats and extendeds.
-	 * @return the double for missing value.
-	 */
-	public byte[] getMissingBytes();
+   /**
+    * Sets the default missing value for boolean.
+    *
+    * @param newMissingBoolean Default missing value for boolean
+    */
+   public void setMissingBoolean(boolean newMissingBoolean);
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingBytes the integer for missing values.
-	 */
-	public void setMissingBytes(byte[] newMissingBytes);
+   /**
+    * Sets the default missing value for byte.
+    *
+    * @param newMissingByte Default missing value for byte
+    */
+   public void setMissingByte(byte newMissingByte);
 
-	/** return the default missing value for doubles, floats and extendeds.
-	 * @return the double for missing value.
-	 */
-	public char getMissingChar();
+   /**
+    * Sets the default missing value for byte arrays.
+    *
+    * @param newMissingBytes Default missing value for byte arrays.
+    */
+   public void setMissingBytes(byte[] newMissingBytes);
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingChar the integer for missing values.
-	 */
-	public void setMissingChar(char newMissingChar);
+   /**
+    * Sets the default missing value for char.
+    *
+    * @param newMissingChar Default missing value for char
+    */
+   public void setMissingChar(char newMissingChar);
 
-	/** return the default missing value for doubles, floats and extendeds.
-	 * @return the double for missing value.
-	 */
-	public byte getMissingByte();
+   /**
+    * Sets the default missing value for char arrays.
+    *
+    * @param newMissingChars Default missing value for char arrays
+    */
+   public void setMissingChars(char[] newMissingChars);
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingByte the integer for missing values.
-	 */
-	public void setMissingByte(byte newMissingByte);
+   /**
+    * Sets the default missing value for double.
+    *
+    * @param newMissingDouble Default missing value for double
+    */
+   public void setMissingDouble(double newMissingDouble);
 
-	/**
-	* Return true if any value in the column at columnIndex is missing.\
-	* @param columnIndex the index of the column to check.
-	* @return true if there are any missing values, false if there are no missing values
-	*/
-	public boolean hasMissingValues(int columnIndex);
+   /**
+    * Sets the default missing value for int.
+    *
+    * @param newMissingInt Default missing value for int
+    */
+   public void setMissingInt(int newMissingInt);
 
-	/**
-	 * Return a column representing the data in column n.
-	 * @param n the column to get.
-	 * @return a column representing the data.
-	 */
-	public Column getColumn(int n);
+   /**
+    * Sets the default missing value for String.
+    *
+    * @param newMissingString Default missing value for String
+    */
+   public void setMissingString(String newMissingString);
 
-    /**
-     * Return a TableFactory for this Table.
-     * @return A TableFactory
-     */
-    public TableFactory getTableFactory();
+   /**
+    * Creates a copy of this <code>Table</code>. A copy of every field in the
+    * class will be made, but the data itself will not be copied.
+    *
+    * @return Shallow copy of this <code>Table</code>
+    */
+   public Table shallowCopy();
 
-}/*Table*/
+   /**
+    * Returns this <code>Table</code> as an <code>ExampleTable</code>.
+    *
+    * @return This <code>Table</code> as an <code>ExampleTable</code>
+    */
+   public ExampleTable toExampleTable();
+
+} // end interface Table
