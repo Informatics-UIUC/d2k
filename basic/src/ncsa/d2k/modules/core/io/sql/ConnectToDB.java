@@ -2,17 +2,26 @@ package ncsa.d2k.modules.core.io.sql;
 
 
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import java.awt.event.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
-import javax.swing.*;
-
-import ncsa.d2k.core.modules.*;
-
-import ncsa.d2k.userviews.swing.*;
-
-import ncsa.gui.*;
+import ncsa.d2k.core.modules.HeadlessUIModule;
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.core.modules.UserView;
+import ncsa.d2k.core.modules.ViewModule;
+import ncsa.d2k.userviews.swing.JUserPane;
+import ncsa.gui.Constrain;
 
 
 

@@ -10,23 +10,28 @@ package ncsa.d2k.modules.core.io.sql;
  * @version 1.0
  */
 
-import java.sql.*;
-import java.util.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.Vector;
+
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 public class ResultSetTableModel implements TableModel{
-    ResultSet results;             // The ResultSet to interpret
-    Vector vector;
+    ResultSet results;             // The ResultSet data to interpret
+    Vector vector;				   // The Vector data to interpet
     ResultSetMetaData metadata;    // Additional information about the results
     int numcols, numrows;          // How many rows and columns in the table
 
-    // This class has two constructors. One is used for general queries, which takes
-    // a ResultSet as the input. Another is used for listing table name or column name,
-    // which takes a vector as the input.
+
     /**
+     * Constructor ResultSetTableModel()
+     * 
      * This constructor creates a TableModel from a ResultSet.
-     * @param results The result set to display
+     * 
+     * @param <code>ResultSet</code> The data collection to display
+     * 
      * @throws SQLException
      **/
     ResultSetTableModel(ResultSet results) throws SQLException {
@@ -37,13 +42,20 @@ public class ResultSetTableModel implements TableModel{
 	numrows = results.getRow();             // How many rows?
     }
 
+    /**
+     * Constructor ResultSetTableModel()
+     * 
+     * This constructor creates a TableModel from a ResultSet.
+     * 
+     * @param <code>Vector</code> The data collection to display
+     * 
+     * @throws SQLException
+     **/
+
     ResultSetTableModel(Vector results) throws SQLException {
         vector = results;
-        //this.results = results;                 // Save the results
-        //metadata = results.getMetaData();       // Get metadata on them
-        numcols = 1;    // How many columns?
-        //results.last();                         // Move to last row
-        numrows = vector.size();             // How many rows?
+        numcols = 1;    					// How many columns?
+        numrows = vector.size();            // How many rows?
     }
 
     /**
@@ -52,65 +64,134 @@ public class ResultSetTableModel implements TableModel{
      **/
     public void close() {
       if (metadata != null) {
-	try { results.getStatement().close(); }
-	catch(SQLException e) {};
+		try { 
+			results.getStatement().close();
+		}
+		catch(SQLException e) {
+			// ??
+		}
       }
     }
 
-    /** Automatically close when we're garbage collected */
-    protected void finalize() { close(); }
+    /**
+     * protected Finalize()
+     *  
+     *  Automatically close when we're garbage collected 
+     *  
+     */
+    protected void finalize() { 
+    	close(); 
+    }
 
-    // These two TableModel methods return the size of the table
-    public int getColumnCount() { return numcols; }
-    public int getRowCount() { return numrows; }
+    /**
+     * Method getColumnCount()
+     *  
+     *  @return <code>int</code> number of columns from global field
+     */
+    public int getColumnCount() { 
+    	return numcols; 
+    }
+    /**
+     * Method getRowCount()
+     *  
+     *  @return <code>int</code> number of rows from global field
+     */
+    public int getRowCount() { 
+    	return numrows; 
+    }
 
-    // This TableModel method returns columns names from the ResultSetMetaData
+    /**
+     * Method getColumnName()
+     *  
+     *  @return <code>String</code> the name of column identified by index or "Name"
+     */
     public String getColumnName(int column) {
       if (metadata == null) {
         return ("Name");
       }
-      else {
-	try {
-	    return metadata.getColumnLabel(column+1);
-	} catch (SQLException e) { return e.toString(); }
+      else 
+      {
+		try {
+		    return metadata.getColumnLabel(column+1);
+		} catch (SQLException e) { 
+			return e.toString(); 
+		}
       }
     }
 
-    // This TableModel method specifies the data type for each column.
-    // We could map SQL types to Java types, but for this example, we'll just
-    // convert all the returned data to strings.
+    /**
+     * Method getColumnClass()
+     * 
+     * This TableModel method specifies the data type for each column.
+     * We could map SQL types to Java types, but for this example, we'll just
+     * convert all the returned data to strings.
+     * 
+     * @param <code>int</code> column index to fetch Java class for 
+     * 
+     * @return <code>java.lang.Class</code> for column identified by index
+     */
     public Class getColumnClass(int column) { return String.class; }
 
     /**
+     * Method getValueAt().
+     * 
      * This is the key method of TableModel: it returns the value at each cell
      * of the table.  We use strings in this case.  If anything goes wrong, we
      * return the exception as a string, so it will be displayed in the table.
      * Note that SQL row and column numbers start at 1, but TableModel column
      * numbers start at 0.
+     * 
      * @param row The row index
      * @param column The column index
+     * 
      * @return A object in the specified cell
      **/
     public Object getValueAt(int row, int column) {
       if (metadata != null) {
-	try {
-	    results.absolute(row+1);                // Go to the specified row
-	    Object o = results.getObject(column+1); // Get value of the column
-	    if (o == null) return null;
-	    else return o.toString();               // Convert it to a string
-	} catch (SQLException e) { return e.toString(); }
+		try {
+		    results.absolute(row+1);                // Go to the specified row
+		    Object o = results.getObject(column+1); // Get value of the column
+		    if (o == null) return null;
+		    else return o.toString();               // Convert it to a string
+		} catch (SQLException e) { return e.toString(); }
       }
-      else {
+      else 
+      {
         Object o = vector.get(row);
         return o.toString();
       }
     }
 
-    // Our table isn't editable
+    /**
+     * Method isCellEditable.
+     *    
+     * Our table isn't editable
+     * 
+     * @return <code>boolean</code> always returns false
+     */
     public boolean isCellEditable(int row, int column) { return false; }
 
-    // Since its not editable, we don't need to implement these methods
+    /**
+     * Method setValueAt().
+     *    
+     * Our table isn't editable   
+     * Since its not editable, we don't need to implement these methods
+     */
     public void setValueAt(Object value, int row, int column) {}
+
+    /**
+     * Method addTableModelListener().
+     *    
+     * Our table isn't editable   
+     * Since its not editable, we don't need to implement these methods
+     */    
     public void addTableModelListener(TableModelListener l) {}
+
+    /**
+     * Method removeTableModelListener().
+     *    
+     * Our table isn't editable   
+     * Since its not editable, we don't need to implement these methods
+     */        
     public void removeTableModelListener(TableModelListener l) {}
 }
