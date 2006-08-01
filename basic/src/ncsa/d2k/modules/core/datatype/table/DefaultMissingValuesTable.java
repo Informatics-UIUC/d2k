@@ -1,156 +1,220 @@
 /*
- * Created on Nov 21, 2003
+ * $Header$
  *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
+ * ===================================================================
+ *
+ * D2K-Workflow
+ * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
+ * ILLINOIS. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License v2.0
+ * as published by the Free Software Foundation and with the required
+ * interpretation regarding derivative works as described below.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License v2.0 for more details.
+ *
+ * This program and the accompanying materials are made available
+ * under the terms of the GNU General Public License v2.0 (GPL v2.0)
+ * which accompanies this distribution and is available at
+ * http://www.gnu.org/copyleft/gpl.html (or via mail from the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.), with the special and mandatory
+ * interpretation that software only using the documented public
+ * Application Program Interfaces (APIs) of D2K-Workflow are not
+ * considered derivative works under the terms of the GPL v2.0.
+ * Specifically, software only calling the D2K-Workflow Itinerary
+ * execution and workflow module APIs are not derivative works.
+ * Further, the incorporation of published APIs of other
+ * independently developed components into D2K Workflow code
+ * allowing it to use those separately developed components does not
+ * make those components a derivative work of D2K-Workflow.
+ * (Examples of such independently developed components include for
+ * example, external databases or metadata and provenance stores).
+ *
+ * Note: A non-GPL commercially licensed version of contributions
+ * from the UNIVERSITY OF ILLINOIS may be available from the
+ * designated commercial licensee RiverGlass, Inc. located at
+ * (www.riverglassinc.com)
+ * ===================================================================
+ *
  */
 package ncsa.d2k.modules.core.datatype.table;
 
+
 /**
- * @author redman
+ * Abstract base class for <code>Table</code> implmentations that have missing
+ * values.
  *
- * To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Generation - Code and Comments
+ * @author  redman
+ * @author  clutter
+ * @author  $Author$
+ * @version $Revision$, $Date$
  */
-abstract public class DefaultMissingValuesTable implements Table {
+public abstract class DefaultMissingValuesTable implements Table {
 
- //static final long serialVersionUID = -2665265507442721687L;
-//    static final long serialVersionUID = -3647609596218447012L;
-    static final long serialVersionUID = 1L;
+   //~ Static fields/initializers **********************************************
 
-    /** this is the missing value for longs, ints, and shorts. */
-	protected int defaultMissingInt = 0;
+   /** The universal version identifier. */
+   static final long serialVersionUID = 1L;
 
-	/** default for float double and extended. */
-	protected double defaultMissingDouble = 0.0;
+   //~ Instance fields *********************************************************
 
-	/** default missing string. */
-	protected String defaultMissingString = "?";
+   /** Default missing value for boolean. */
+   protected boolean defaultMissingBoolean = false;
 
-	/** default missing string. */
-	protected boolean defaultMissingBoolean = false;
+   /** Default missing value for byte. */
+   protected byte defaultMissingByte = (byte) '\000';
 
-	/** default missing string. */
-	protected char[] defaultMissingCharArray = {'\000'};
+   /** Default missing value for byte arrays. */
+   protected byte[] defaultMissingByteArray = { (byte) '\000' };
 
-	/** default missing string. */
-	protected byte[] defaultMissingByteArray = {(byte)'\000'};
+   /** Default missing value for char. */
+   protected char defaultMissingChar = '\000';
 
-	/** default missing string. */
-	protected char defaultMissingChar = '\000';
+   /** Default missing value for char arrays. */
+   protected char[] defaultMissingCharArray = { '\000' };
 
-	/** default missing string. */
-	protected byte defaultMissingByte = (byte)'\000';
+   /** Default missing value for double, float, and extended. */
+   protected double defaultMissingDouble = 0.0;
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @return the integer for missing value.
-	 */
-	public int getMissingInt () {
-		return defaultMissingInt;
-	}
+   /** Default missing value for longs, ints, and shorts. */
+   protected int defaultMissingInt = 0;
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingInt the integer for missing values.
-	 */
-	public void setMissingInt (int newMissingInt) {
-		this.defaultMissingInt = newMissingInt;
-	}
+   /** Default missing value for String. */
+   protected String defaultMissingString = "?";
 
-	/** return the default missing value for doubles, floats and extendeds.
-	 * @return the double for missing value.
-	 */
-	public double getMissingDouble () {
-		return this.defaultMissingDouble;
-	}
+   //~ Methods *****************************************************************
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingDouble the integer for missing values.
-	 */
-	public void setMissingDouble (double newMissingDouble) {
-		this.defaultMissingDouble = newMissingDouble;
-	}
+   /**
+    * Returns the default missing value for boolean.
+    *
+    * @return Default missing value for boolean
+    */
+   public boolean getMissingBoolean() { return defaultMissingBoolean; }
 
-	/** return the default missing value for doubles, floats and extendeds.
-	 * @return the double for missing value.
-	 */
-	public String getMissingString () {
-		return this.defaultMissingString;
-	}
+   /**
+    * Returns the default missing value for byte.
+    *
+    * @return Default missing value for byte
+    */
+   public byte getMissingByte() { return defaultMissingByte; }
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingString the integer for missing values.
-	 */
-	public void setMissingString (String newMissingString) {
-		this.defaultMissingString = newMissingString;
-	}
+   /**
+    * Returns the default missing value for byte array.
+    *
+    * @return Default missing value for byte array
+    */
+   public byte[] getMissingBytes() { return this.defaultMissingByteArray; }
 
-	/** return the default missing value for doubles, floats and extendeds.
-	 * @return the double for missing value.
-	 */
-	public boolean getMissingBoolean() {
-		return defaultMissingBoolean;
-	}
+   /**
+    * Returns the default missing value for char.
+    *
+    * @return Default missing value for char
+    */
+   public char getMissingChar() { return this.defaultMissingChar; }
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingBoolean the integer for missing values.
-	 */
-	public void setMissingBoolean(boolean newMissingBoolean) {
-		this.defaultMissingBoolean = newMissingBoolean;
-	}
+   /**
+    * Returns the default missing value for char array.
+    *
+    * @return Default missing value for char array.
+    */
+   public char[] getMissingChars() { return this.defaultMissingCharArray; }
 
-	/** return the default missing value for doubles, floats and extendeds.
-	 * @return the double for missing value.
-	 */
-	public char[] getMissingChars() {
-		return this.defaultMissingCharArray;
-	}
+   /**
+    * Returns the default missing value for double, float, and extended.
+    *
+    * @return Default missing value for double, float, and extended
+    */
+   public double getMissingDouble() { return this.defaultMissingDouble; }
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingChars the integer for missing values.
-	 */
-	public void setMissingChars(char[] newMissingChars) {
-		this.defaultMissingCharArray = newMissingChars;
-	}
+   /**
+    * Returns the default missing value for int, long, and short.
+    *
+    * @return Default missing value for int, long, and short
+    */
+   public int getMissingInt() { return defaultMissingInt; }
 
-	/** return the default missing value for doubles, floats and extendeds.
-	 * @return the double for missing value.
-	 */
-	public byte[] getMissingBytes() {
-		return this.defaultMissingByteArray;
-	}
+   /**
+    * Returns the default missing value for String.
+    *
+    * @return Default missing value for String
+    */
+   public String getMissingString() { return this.defaultMissingString; }
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingBytes the integer for missing values.
-	 */
-	public void setMissingBytes(byte[] newMissingBytes) {
-		this.defaultMissingByteArray = newMissingBytes;
-	}
+   /**
+    * Sets the default missing value for boolean.
+    *
+    * @param newMissingBoolean Default missing value for boolean
+    */
+   public void setMissingBoolean(boolean newMissingBoolean) {
+      this.defaultMissingBoolean = newMissingBoolean;
+   }
 
-	/** return the default missing value for doubles, floats and extendeds.
-	 * @return the double for missing value.
-	 */
-	public char getMissingChar() {
-		return this.defaultMissingChar;
-	}
+   /**
+    * Sets the default missing value for byte.
+    *
+    * @param newMissingByte Default missing value for byte
+    */
+   public void setMissingByte(byte newMissingByte) {
+      this.defaultMissingByte = newMissingByte;
+   }
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingChar the integer for missing values.
-	 */
-	public void setMissingChar(char newMissingChar) {
-		this.defaultMissingChar = newMissingChar;
-	}
+   /**
+    * Sets the default missing value for byte array.
+    *
+    * @param newMissingBytes Default missing value for byte array
+    */
+   public void setMissingBytes(byte[] newMissingBytes) {
+      this.defaultMissingByteArray = newMissingBytes;
+   }
 
-	/** return the default missing value for doubles, floats and extendeds.
-	 * @return the double for missing value.
-	 */
-	public byte getMissingByte() {
-		return defaultMissingByte;
-	}
+   /**
+    * Sets the default missing value for char.
+    *
+    * @param newMissingChar Default missing value for char
+    */
+   public void setMissingChar(char newMissingChar) {
+      this.defaultMissingChar = newMissingChar;
+   }
 
-	/** return the default missing value for integers, both short, int and long.
-	 * @param newMissingByte the integer for missing values.
-	 */
-	public void setMissingByte(byte newMissingByte) {
-		this.defaultMissingByte = newMissingByte;
-	}
-}
+   /**
+    * Sets the default missing value for char array.
+    *
+    * @param newMissingChars Default missing value for char array
+    */
+   public void setMissingChars(char[] newMissingChars) {
+      this.defaultMissingCharArray = newMissingChars;
+   }
+
+   /**
+    * Sets the default missing value for double, float and extended.
+    *
+    * @param newMissingDouble Default missing value for double, float and
+    *                         extended
+    */
+   public void setMissingDouble(double newMissingDouble) {
+      this.defaultMissingDouble = newMissingDouble;
+   }
+
+   /**
+    * Sets the default missing value for int, short, and long.
+    *
+    * @param newMissingInt Default missing value for int, short, and long
+    */
+   public void setMissingInt(int newMissingInt) {
+      this.defaultMissingInt = newMissingInt;
+   }
+
+   /**
+    * Sets the default missing value for String.
+    *
+    * @param newMissingString Default missing value for String
+    */
+   public void setMissingString(String newMissingString) {
+      this.defaultMissingString = newMissingString;
+   }
+} // end class DefaultMissingValuesTable
