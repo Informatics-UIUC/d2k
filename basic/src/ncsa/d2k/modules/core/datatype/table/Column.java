@@ -365,7 +365,6 @@ public interface Column extends Serializable {
     *
     * @return True if the value at row is empty, false otherwise
     */
-
    public boolean isValueEmpty(int row);
 
    /**
