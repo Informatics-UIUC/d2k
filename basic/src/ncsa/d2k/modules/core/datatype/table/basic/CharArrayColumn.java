@@ -349,7 +349,7 @@ public final class CharArrayColumn extends MissingValuesColumn
    }
 
    /**
-    * Compare the values of the elements at <code>r1</code> and <code>r2</code>.
+    * Compare the values of the elements at <code>pos1</code> and <code>pos2</code>.
     * Return 0 if they are the same, less than 0 if r1 element is false and r2
     * element is true, and greater than 0 if r1 element is true and r2 element
     * is false.
