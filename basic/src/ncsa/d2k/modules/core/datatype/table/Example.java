@@ -45,7 +45,7 @@
 package ncsa.d2k.modules.core.datatype.table;
 
 /**
- * Defines methods of a <code>Table</code> with some additional features
+ * A <code>Row</code> with some additional features
  * designed to support the model-building process in a standard and
  * interchangable way.
  *
