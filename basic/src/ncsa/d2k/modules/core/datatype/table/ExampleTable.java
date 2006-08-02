@@ -117,8 +117,6 @@ public interface ExampleTable extends MutableTable {
 	 */
 	public PredictionTable toPredictionTable();
 
-    //*****************
-
     /**
      * Get the ith input as a double.
      * @param e the example index
