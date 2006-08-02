@@ -822,18 +822,6 @@ public final class CharArrayColumn extends MissingValuesColumn
    } // end method removeRowsByIndex
 
    /**
-    * Return a copy of this <code>Column</code>, re-ordered based on the input
-    * array of indexes. Does not overwrite this <code>Column</code>.
-    *
-    * @param  newOrder an array of indices indicating a new order
-    *
-    * @return a copy of this column, re-ordered
-    *
-    * @throws ArrayIndexOutOfBoundsException Description of exception
-    *                                        ArrayIndexOutOfBoundsException.
-    */
-
-   /**
     * Gets a copy of this <code>Column</code> reordered based on the input array
     * of indexes. Does not overwrite this <code>Column</code>.
     *
