@@ -157,48 +157,48 @@ public class SQLRainForest extends SQLRainForestOPT {
    private int[] outputFeatures;
 
    /** the number of split values for numeric attribute. */
-   double binNumber = 100;
+   protected double binNumber = 100;
 
    /** class label column. */
-   String classColName;
+   protected String classColName;
 
    /** connection */
-   Connection con;
+   protected Connection con;
 
    /** connection wrapper */
-   ConnectionWrapper cw;
+   protected ConnectionWrapper cw;
 
    /**
     * dominateRatio = (% of MostCommonClass) / (% of SecondMostCommonClass) if
     * dominateRatio > specified Ratio, the node should not be split further, and
     * should be created as a leaf.
     */
-   double dominateRatio = 100.00;
+   protected double dominateRatio = 100.00;
 
    /**
     * the ration calculated by: abs(parent node's dominate ratio - child node's
     * dominate ratio) When below this ratio, the child node is pruned.
     */
-   double improvementRatio = dominateRatio * 0.05;
+   protected double improvementRatio = dominateRatio * 0.05;
 
    /** minimum records ratio (% of totalRow) for leaf node. */
-   double minimumRatioPerLeaf = 0.001;
+   protected double minimumRatioPerLeaf = 0.001;
 
    /** minimum records for leaf node: minimumRatioPerLeaf * totalRow. */
-   double minimumRecordsPerLeaf = 0.00;
+   protected double minimumRecordsPerLeaf = 0.00;
 
    /**
     * the threshold for choosing in-memory or in-database mode If the totalRow <
     * modeThreshold, the entire data set is retrieved and load in memory.
     * Otherwise, the data set is partitioned at each tree node
     */
-   double modeThreshold = 200000;
+   protected double modeThreshold = 200000;
 
    /** Description of field msgBoard. */
-   JOptionPane msgBoard = new JOptionPane();
+   //JOptionPane msgBoard = new JOptionPane();
 
    /** total number of rows */
-   int totalRow;
+   protected int totalRow;
 
    //~ Constructors ************************************************************
 
@@ -235,7 +235,6 @@ public class SQLRainForest extends SQLRainForestOPT {
     *
     * @return a tree node
     */
-
    private DecisionForestNode buildTree(ArrayList path, String[] availCols,
                                         NodeInfo aNodeInfo,
                                         int[] examples) {
@@ -890,7 +889,7 @@ public class SQLRainForest extends SQLRainForestOPT {
 
          return aNodeInfo;
       } catch (Exception e) {
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
                                        e.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
          System.out.println("Error occurred in createDataTable.");
@@ -1027,7 +1026,7 @@ public class SQLRainForest extends SQLRainForestOPT {
          return (aNodeInfo);
       } // end of try
       catch (Exception e) {
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
                                        e.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
          System.out.println("Error occurred in extractDataFromDB.");
@@ -1160,7 +1159,7 @@ public class SQLRainForest extends SQLRainForestOPT {
 
          return toStringArray(classAL);
       } catch (Exception e) {
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
                                        e.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
          System.out.println("Error occurred in getClassValues.");
@@ -1381,7 +1380,7 @@ public class SQLRainForest extends SQLRainForestOPT {
 
          return uniqCols;
       } catch (Exception e) {
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
                                        e.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
          System.out.println("Error occurred in getUniqValue (db mode).");
@@ -2503,12 +2502,19 @@ public class SQLRainForest extends SQLRainForestOPT {
       return (newArray);
    }
 
-   /**
-    * Description of method getFieldNameMapping.
-    *
-    * @return Description of return value.
-    */
-   protected String[] getFieldNameMapping() { return null; }
+
+    /**
+     * The list of strings returned by this method allows the module to map the
+     * results returned from the pier to the position dependent outputs. The
+     * order in which the names appear in the string array is the order in which
+     * to assign them to the outputs.
+     *
+     * @return a string array containing the names associated with the outputs in
+     *         the order the results should appear in the outputs.
+     */
+    protected String[] getFieldNameMapping() {
+        return null;
+    }
 
    /**
     * sort the unique value list.
@@ -2557,7 +2563,7 @@ public class SQLRainForest extends SQLRainForestOPT {
 
 
       if (meta.isColumnScalar(outputFeatures[0])) {
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
                                        getAlias() +
                                        ": You cannot choose a numeric column as the output column",
                                        "Error",
@@ -2623,7 +2629,7 @@ public class SQLRainForest extends SQLRainForestOPT {
             PredictionModelModule pmm = (PredictionModelModule) mdl;
             pushOutput(pmm, 0);
          } else {
-            JOptionPane.showMessageDialog(msgBoard,
+            JOptionPane.showMessageDialog(null,
                                           "No data", "Error",
                                           JOptionPane.ERROR_MESSAGE);
             System.out.println("Error occurred in doit, no data.");
@@ -2991,7 +2997,13 @@ public class SQLRainForest extends SQLRainForestOPT {
       public String highValue; // high end attribute value
       public String lowValue; // low end attribute value
    }
-
+    
+   /**
+    * Simple structure to hold node information.
+    *
+    * @author  $Author$
+    * @version $Revision$, $Date$
+    */
    public class NodeInfo {
       public ArrayList[] avcSets;
       public int[] classTallies;

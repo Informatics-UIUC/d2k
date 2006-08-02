@@ -145,11 +145,12 @@ public abstract class DecisionForestNode implements ViewableDTNode,
    public abstract void addBranch(String val, DecisionForestNode child);
 
    /**
-    * Description of method addBranch.
+    * Add a branch to this node, given the split value, branch label, and child
+    * node.
     *
-    * @param split       Description of parameter split.
-    * @param branchLabel Description of parameter branchLabel.
-    * @param child       Description of parameter child.
+    * @param split       split value
+    * @param branchLabel label of branch
+    * @param child       the child node
     */
    public abstract void addBranch(double split, String branchLabel,
                                   DecisionForestNode child);
@@ -168,11 +169,11 @@ public abstract class DecisionForestNode implements ViewableDTNode,
                                     DecisionForestNode right);
 
    /**
-    * Description of method setBranch.
+    * set a branch to be child.
     *
-    * @param branchNum Description of parameter branchNum.
-    * @param val       Description of parameter val.
-    * @param child     Description of parameter child.
+    * @param branchNum branch number
+    * @param val      branch label
+    * @param child     child node
     */
    public abstract void setBranch(int branchNum, String val,
                                   DecisionForestNode child);

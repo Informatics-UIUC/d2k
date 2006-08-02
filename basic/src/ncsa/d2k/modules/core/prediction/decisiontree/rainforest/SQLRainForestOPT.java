@@ -159,48 +159,48 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
    private int[] outputFeatures;
 
    /** the number of split values for numeric attribute. */
-   double binNumber = 100;
+   protected double binNumber = 100;
 
    /** class label column. */
-   String classColName;
+   protected String classColName;
 
    /** Description of field con. */
-   Connection con;
+   protected Connection con;
 
    /** Description of field cw. */
-   ConnectionWrapper cw;
+   protected ConnectionWrapper cw;
 
    /**
     * dominateRatio = (% of MostCommonClass) / (% of SecondMostCommonClass) if
     * dominateRatio > specified Ratio, the node should not be split further, and
     * should be created as a leaf.
     */
-   double dominateRatio = 100.00;
+   protected double dominateRatio = 100.00;
 
    /**
     * the ration calculated by: abs(parent node's dominate ratio - child node's
     * dominate ratio) When below this ratio, the child node is pruned.
     */
-   double improvementRatio = dominateRatio * 0.05;
+   protected double improvementRatio = dominateRatio * 0.05;
 
    /** minimum records ratio (% of totalRow) for leaf node. */
-   double minimumRatioPerLeaf = 0.001;
+   protected double minimumRatioPerLeaf = 0.001;
 
    /** minimum records for leaf node: minimumRatioPerLeaf * totalRow. */
-   double minimumRecordsPerLeaf = 0.00;
+   protected double minimumRecordsPerLeaf = 0.00;
 
    /**
     * the threshold for choosing in-memory or in-database mode If the totalRow <
     * modeThreshold, the entire data set is retrieved and load in memory.
     * Otherwise, the data set is partitioned at each tree node
     */
-   double modeThreshold = 200000;
+   protected double modeThreshold = 200000;
 
    /**  */
-   JOptionPane msgBoard = new JOptionPane();
+   //JOptionPane msgBoard = new JOptionPane();
 
    /** total number of rows */
-   int totalRow;
+   protected int totalRow;
 
    //~ Constructors ************************************************************
 
@@ -237,7 +237,6 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return a tree node
     */
-
    private DecisionForestNode buildTree(ArrayList path, String[] availCols,
                                         NodeInfo aNodeInfo,
                                         int[] examples) {
@@ -892,7 +891,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
 
          return aNodeInfo;
       } catch (Exception e) {
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
                                        e.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
          System.out.println("Error occurred in createDataTable.");
@@ -1029,7 +1028,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
          return (aNodeInfo);
       } // end of try
       catch (Exception e) {
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
                                        e.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
          System.out.println("Error occurred in extractDataFromDB.");
@@ -1162,7 +1161,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
 
          return toStringArray(classAL);
       } catch (Exception e) {
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
                                        e.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
          System.out.println("Error occurred in getClassValues.");
@@ -1383,7 +1382,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
 
          return uniqCols;
       } catch (Exception e) {
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
                                        e.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
          System.out.println("Error occurred in getUniqValue (db mode).");
@@ -2564,7 +2563,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
       outputFeatures = meta.getOutputFeatures();
 
       if (meta.isColumnScalar(outputFeatures[0])) {
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
                                        getAlias() +
                                        ": You cannot choose a numeric column as the output column",
                                        "Error",
@@ -2635,7 +2634,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
             PredictionModelModule pmm = (PredictionModelModule) mdl;
             pushOutput(pmm, 0);
          } else {
-            JOptionPane.showMessageDialog(msgBoard,
+            JOptionPane.showMessageDialog(null,
                                           "No data", "Error",
                                           JOptionPane.ERROR_MESSAGE);
             System.out.println("Error occurred in doit, no data.");

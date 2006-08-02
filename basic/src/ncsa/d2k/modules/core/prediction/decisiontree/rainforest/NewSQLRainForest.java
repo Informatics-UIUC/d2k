@@ -163,52 +163,52 @@ public class NewSQLRainForest extends SQLRainForestOPT {
    private int[] outputFeatures;
 
    /** the number of split values for numeric attribute. */
-   double binNumber = 100;
+   protected double binNumber = 100;
 
    /** class label column. */
-   String classColName;
+   protected String classColName;
 
    /** connection to database */
-   Connection con;
+   protected Connection con;
 
 
    /** connection wrapper */
-   ConnectionWrapper cw;
+   protected ConnectionWrapper cw;
 
    /**
     * dominateRatio = (% of MostCommonClass) / (% of SecondMostCommonClass) if
     * dominateRatio > specified Ratio, the node should not be split further, and
     * should be created as a leaf.
     */
-   double dominateRatio = 100.00;
+   protected double dominateRatio = 100.00;
 
    /**
     * the ration calculated by: abs(parent node's dominate ratio - child node's
     * dominate ratio) When below this ratio, the child node is pruned.
     */
-   double improvementRatio = dominateRatio * 0.05;
+   protected double improvementRatio = dominateRatio * 0.05;
 
    /** minimum records ratio (% of totalRow) for leaf node. */
-   double minimumRatioPerLeaf = 0.001;
+   protected double minimumRatioPerLeaf = 0.001;
 
    /** minimum records for leaf node: minimumRatioPerLeaf * totalRow. */
-   double minimumRecordsPerLeaf = 0.00;
+   protected double minimumRecordsPerLeaf = 0.00;
 
    /**
     * the threshold for choosing in-memory or in-database mode If the totalRow <
     * modeThreshold, the entire data set is retrieved and load in memory.
     * Otherwise, the data set is partitioned at each tree node
     */
-   double modeThreshold = 200000;
+   protected double modeThreshold = 200000;
 
    /**  */
-   JOptionPane msgBoard = new JOptionPane();
+   //JOptionPane msgBoard = new JOptionPane();
 
    /** totalRow */
-   int totalRow;
+   protected int totalRow;
 
    /** where clause of the query. It may include join condition and filters */
-   String whereClause;
+   protected String whereClause;
 
    //~ Constructors ************************************************************
 
@@ -1218,7 +1218,7 @@ public class NewSQLRainForest extends SQLRainForestOPT {
 
       } catch (Exception e) {
 
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
 
 
          e.getMessage(), "Error",
@@ -1416,7 +1416,7 @@ public class NewSQLRainForest extends SQLRainForestOPT {
       } // end of try
       catch (Exception e) {
 
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
 
 
          e.getMessage(), "Error",
@@ -1615,7 +1615,7 @@ public class NewSQLRainForest extends SQLRainForestOPT {
 
       } catch (Exception e) {
 
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
 
 
          e.getMessage(), "Error",
@@ -1930,7 +1930,7 @@ public class NewSQLRainForest extends SQLRainForestOPT {
 
       } catch (Exception e) {
 
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
 
 
          e.getMessage(), "Error",
@@ -3587,7 +3587,7 @@ public class NewSQLRainForest extends SQLRainForestOPT {
 
       if (meta.getOutputFeatures().length == 0) { // no class label is defined
 
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
 
          getAlias() +
                                        ": You must choose a column as the output column (class label).",
@@ -3601,7 +3601,7 @@ public class NewSQLRainForest extends SQLRainForestOPT {
 
       } else if (meta.isColumnScalar(outputFeatures[0])) {
 
-         JOptionPane.showMessageDialog(msgBoard,
+         JOptionPane.showMessageDialog(null,
 
          getAlias() +
                                        ": You cannot choose a numeric column as the output column",
@@ -3712,7 +3712,7 @@ public class NewSQLRainForest extends SQLRainForestOPT {
 
          } else {
 
-            JOptionPane.showMessageDialog(msgBoard,
+            JOptionPane.showMessageDialog(null,
 
 
             "No data", "Error",

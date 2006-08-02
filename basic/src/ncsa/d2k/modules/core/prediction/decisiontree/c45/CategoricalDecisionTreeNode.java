@@ -252,10 +252,10 @@ public class CategoricalDecisionTreeNode extends DecisionTreeNode
    }
 
    /**
-    * setBranch
+    * Set the branch to be newChild
     *
     * @param branchNum branch num
-    * @param val       val
+    * @param val       branch label
     * @param newChild  child node
     */
    public void setBranch(int branchNum, String val, DecisionTreeNode newChild) {

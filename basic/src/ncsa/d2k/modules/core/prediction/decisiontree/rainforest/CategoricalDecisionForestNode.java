@@ -58,7 +58,7 @@ import java.util.HashMap;
  * @author  David Clutter
  * @version $Revision$, $Date$
  */
-public final class CategoricalDecisionForestNode extends DecisionForestNode
+public class CategoricalDecisionForestNode extends DecisionForestNode
    implements Serializable, NominalViewableDTNode {
 
    //~ Static fields/initializers **********************************************
@@ -66,7 +66,7 @@ public final class CategoricalDecisionForestNode extends DecisionForestNode
    /** Use serialVersionUID for interoperability. */
    static private final long serialVersionUID = -3601266827987916742L;
 
-   /** Description of field EQUALS. */
+   /** constant for = */
    static private final String EQUALS = " = ";
 
    //~ Instance fields *********************************************************
@@ -97,7 +97,7 @@ public final class CategoricalDecisionForestNode extends DecisionForestNode
     * @param val   the label of the branch
     * @param child the child node
     */
-   public final void addBranch(String val, DecisionForestNode child) {
+   public void addBranch(String val, DecisionForestNode child) {
       outputToChildMap.put(val, child);
       children.add(child);
       branchLabels.add(val);
@@ -111,7 +111,7 @@ public final class CategoricalDecisionForestNode extends DecisionForestNode
     * @param branchLabel Description of parameter branchLabel.
     * @param child       Description of parameter child.
     */
-   public final void addBranch(double split, String branchLabel,
+   public void addBranch(double split, String branchLabel,
                                DecisionForestNode child) { }
 
    /**
@@ -124,7 +124,7 @@ public final class CategoricalDecisionForestNode extends DecisionForestNode
     * @param rightlabel Description of parameter rightlabel.
     * @param right      Description of parameter right.
     */
-   public final void addBranches(double split, String leftlabel,
+   public void addBranches(double split, String leftlabel,
                                  DecisionForestNode left, String rightlabel,
                                  DecisionForestNode right) { }
 
@@ -147,7 +147,7 @@ public final class CategoricalDecisionForestNode extends DecisionForestNode
     *
     * @return the result of evaluating the record
     */
-   public final Object evaluate(Table vt, int row) { return null; }
+   public Object evaluate(Table vt, int row) { return null; }
 
    /**
     * Get the label of a branch.
@@ -172,9 +172,9 @@ public final class CategoricalDecisionForestNode extends DecisionForestNode
    public String getSplitAttribute() { return getLabel(); }
 
    /**
-    * Description of method getSplitValue.
+    * Get the split value
     *
-    * @return Description of return value.
+    * @return split value
     */
    public double getSplitValue() { return 0; }
 
@@ -191,15 +191,15 @@ public final class CategoricalDecisionForestNode extends DecisionForestNode
    }
 
    /**
-    * Description of method setBranch.
+    * Set the branch to be newChild
     *
-    * @param branchNum Description of parameter branchNum.
-    * @param val       Description of parameter val.
-    * @param newChild  Description of parameter newChild.
+    * @param branchNum branch num
+    * @param val       branch label
+    * @param newChild  child node
     */
    public void setBranch(int branchNum, String val,
                          DecisionForestNode newChild) {
-      DecisionForestNode oldChild = getChild(branchNum);
+      //DecisionForestNode oldChild = getChild(branchNum);
 
       outputToChildMap.put(val, newChild);
       children.set(branchNum, newChild);

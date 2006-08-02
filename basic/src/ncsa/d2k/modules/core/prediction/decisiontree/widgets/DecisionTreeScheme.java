@@ -1,135 +1,315 @@
+/* 
+ * $Header$
+ *
+ * ===================================================================
+ *
+ * D2K-Workflow
+ * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
+ * ILLINOIS. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License v2.0
+ * as published by the Free Software Foundation and with the required
+ * interpretation regarding derivative works as described below.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License v2.0 for more details.
+ * 
+ * This program and the accompanying materials are made available
+ * under the terms of the GNU General Public License v2.0 (GPL v2.0)
+ * which accompanies this distribution and is available at
+ * http://www.gnu.org/copyleft/gpl.html (or via mail from the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.), with the special and mandatory
+ * interpretation that software only using the documented public
+ * Application Program Interfaces (APIs) of D2K-Workflow are not
+ * considered derivative works under the terms of the GPL v2.0.
+ * Specifically, software only calling the D2K-Workflow Itinerary
+ * execution and workflow module APIs are not derivative works.
+ * Further, the incorporation of published APIs of other
+ * independently developed components into D2K Workflow code
+ * allowing it to use those separately developed components does not
+ * make those components a derivative work of D2K-Workflow.
+ * (Examples of such independently developed components include for
+ * example, external databases or metadata and provenance stores).
+ * 
+ * Note: A non-GPL commercially licensed version of contributions
+ * from the UNIVERSITY OF ILLINOIS may be available from the
+ * designated commercial licensee RiverGlass, Inc. located at
+ * (www.riverglassinc.com)
+ * ===================================================================
+ *
+ */
 package ncsa.d2k.modules.core.prediction.decisiontree.widgets;
 
 import java.awt.*;
-import javax.swing.*;
 
-/*
- DecisionTreeVis
- Colors and fonts used
+
+/**
+ * Colors and fonts used.
+ *
+ * @author  $Author$
+ * @version $Revision$, $Date$
  */
 public final class DecisionTreeScheme {
 
-  // Search
-  public static final Color searchcolor = new Color(156, 0, 0);
+   //~ Static fields/initializers **********************************************
 
-  // Background
-  public static final Color backgroundcolor = new Color(219, 217, 203);
+   /** Search. */
+   static public final Color searchcolor = new Color(156, 0, 0);
 
-  // Text
-  public static final Font textfont = new Font("Sans Serif", Font.PLAIN, 12);
-  public static final Color textcolor = new Color(0, 0, 0);
+   /** Background. */
+   static public final Color backgroundcolor = new Color(219, 217, 203);
 
-  // Decision tree
-  public static final Color treebackgroundcolor = new Color(255, 255, 255);
-  public static final Color treelinelevelcolor = new Color(219, 217, 214);
-  public static final Color treecirclestrokecolor = new Color(100, 98, 87);
-  public static final Color treecirclebackgroundcolor = new Color(252, 252, 252);
-  public static final Color treelinecolor = new Color(100, 98, 87);
+   /** Text. */
+   static public final Font textfont = new Font("Sans Serif", Font.PLAIN, 12);
 
-  // View nodes
-  public static final Color viewbackgroundcolor = new Color(233, 232, 231);
-  public static final Color viewtickcolor = new Color(164, 164, 164);
-  public static final Color viewtrianglecolor = new Color(76, 76, 76);
-  public static final Color viewrollcolor = new Color(197, 195, 184);
-  public static final Color viewsearchcolor = new Color(177, 72, 69);
-  public static final Color viewsearchbackgroundcolor = new Color(207, 215, 224);
+   /** text color. */
+   static public final Color textcolor = new Color(0, 0, 0);
 
-  // Scaled nodes
-  public static final Color scaledviewbackgroundcolor = new Color(76, 76, 76);
-  public static final Color scaledviewbarcolor = new Color(219, 217, 206);
+   /** tree background color. */
+   static public final Color treebackgroundcolor = new Color(255, 255, 255);
 
-  // Expanded graphs
-  public static final Font expandedfont = new Font("Sans Serif", Font.PLAIN, 18);
-  public static final Color expandedfontcolor = new Color(51, 51, 51);
+   /**  tree line level color. */
+   static public final Color treelinelevelcolor = new Color(219, 217, 214);
 
-  public static final Color expandedbackgroundcolor = new Color(219, 217, 206);
-  public static final Color expandedborderbackgroundcolor = new Color(252, 255, 255);
-  public static final Color expandedgraphgridcolor = new Color(0, 0, 0);
+   /** tree circle stroke color. */
+   static public final Color treecirclestrokecolor = new Color(100, 98, 87);
 
-  // Navigator
-  public static final Color viewercolor = new Color(0, 0, 0);
+   /** tree circle background color. */
+   static public final Color treecirclebackgroundcolor =
+      new Color(252, 252, 252);
 
-  // Border
-  public static final Color borderbackgroundcolor = new Color(233, 232, 230);
-  public static final Color borderupperbevelcolor = new Color(127, 127, 127);
-  public static final Color borderlowerbevelcolor = new Color(10, 10, 10);
-  public static final Color borderhighlightcolor = new Color(242, 242, 242);
-  public static final Color bordershadowcolor = new Color(127, 127, 127);
+   /** tree line color. */
+   static public final Color treelinecolor = new Color(100, 98, 87);
 
-  // Components
-  public static final Font componentbuttonfont = new Font("Sans Serif", Font.PLAIN, 10);
-  public static final Font componentlabelfont = new Font("Sans Serif", Font.PLAIN, 12);
+   /** View nodes. */
+   static public final Color viewbackgroundcolor = new Color(233, 232, 231);
 
-  public static BarColors barcolors = new BarColors();
+   /** view tick color. */
+   static public final Color viewtickcolor = new Color(164, 164, 164);
 
-  public DecisionTreeScheme() {
-  }
+   /** view triangle color. */
+   static public final Color viewtrianglecolor = new Color(76, 76, 76);
 
-  public DecisionTreeScheme(int size) {
-    barcolors.setColors(size);
-  }
+   /** view roll color. */
+   static public final Color viewrollcolor = new Color(197, 195, 184);
 
-  public BarColors getBarColors() {
-    return barcolors;
-  }
+   /** view search color. */
+   static public final Color viewsearchcolor = new Color(177, 72, 69);
 
-  public void setColors(Color[] values) {
-    barcolors.setColors(values);
-  }
+   /** view search background color. */
+   static public final Color viewsearchbackgroundcolor =
+      new Color(207, 215, 224);
 
-  public Color getNextColor() {
-    return barcolors.getNextColor();
-  }
+   /** Scaled nodes. */
+   static public final Color scaledviewbackgroundcolor = new Color(76, 76, 76);
 
-  public void setIndex(int index) {
-    barcolors.setIndex(index);
-  }
-}
+   /** scaled view bar color. */
+   static public final Color scaledviewbarcolor = new Color(219, 217, 206);
 
-// Circular array that holds bar graph colors
+   /** Expanded graphs. */
+   static public final Font expandedfont =
+      new Font("Sans Serif", Font.PLAIN, 18);
+
+   /** expanded font color. */
+   static public final Color expandedfontcolor = new Color(51, 51, 51);
+
+   /** expanded background color. */
+   static public final Color expandedbackgroundcolor = new Color(219, 217, 206);
+
+   /** expanded border background color. */
+   static public final Color expandedborderbackgroundcolor =
+      new Color(252, 255, 255);
+
+   /** expanded graph grid color. */
+   static public final Color expandedgraphgridcolor = new Color(0, 0, 0);
+
+   /** Navigator. */
+   static public final Color viewercolor = new Color(0, 0, 0);
+
+   /** Border. */
+   static public final Color borderbackgroundcolor = new Color(233, 232, 230);
+
+   /** border upper bevel color. */
+   static public final Color borderupperbevelcolor = new Color(127, 127, 127);
+
+   /** border lower bevel color. */
+   static public final Color borderlowerbevelcolor = new Color(10, 10, 10);
+
+   /** border highlight color. */
+   static public final Color borderhighlightcolor = new Color(242, 242, 242);
+
+   /** border shadow color. */
+   static public final Color bordershadowcolor = new Color(127, 127, 127);
+
+   /** Components. */
+   static public final Font componentbuttonfont =
+      new Font("Sans Serif", Font.PLAIN, 10);
+
+   /** component label font. */
+   static public final Font componentlabelfont =
+      new Font("Sans Serif", Font.PLAIN, 12);
+
+   /** bar colors. */
+   static public BarColors barcolors = new BarColors();
+
+   //~ Constructors ************************************************************
+
+   /**
+    * Creates a new DecisionTreeScheme object.
+    */
+   public DecisionTreeScheme() { }
+
+   /**
+    * Creates a new DecisionTreeScheme object.
+    *
+    * @param size size
+    */
+   public DecisionTreeScheme(int size) { barcolors.setColors(size); }
+
+   //~ Methods *****************************************************************
+
+   /**
+    * Get the BarColors
+    *
+    * @return BarColors
+    */
+   public BarColors getBarColors() { return barcolors; }
+
+   /**
+    * Get the next color
+    *
+    * @return next color
+    */
+   public Color getNextColor() { return barcolors.getNextColor(); }
+
+   /**
+    * Set the colors array.
+    *
+    * @param values new colors
+    */
+   public void setColors(Color[] values) { barcolors.setColors(values); }
+
+   /**
+    * Set the index into barcolors
+    *
+    * @param index index into barcolors
+    */
+   public void setIndex(int index) { barcolors.setIndex(index); }
+} // end class DecisionTreeScheme
+
+/**
+ * Circular array that holds bar graph colors.
+ *
+ * @author  $Author$
+ * @version $Revision$, $Date$
+ */
 class BarColors {
-  private static final Color barcolor0 = new Color(71, 74, 98);
-  private static final Color barcolor1 = new Color(191, 191, 115);
-  private static final Color barcolor2 = new Color(111, 142, 116);
-  private static final Color barcolor3 = new Color(178, 198, 181);
-  private static final Color barcolor4 = new Color(153, 185, 216);
-  private static final Color barcolor5 = new Color(96, 93, 71);
-  private static final Color barcolor6 = new Color(146, 205, 163);
-  private static final Color barcolor7 = new Color(203, 84, 84);
-  private static final Color barcolor8 = new Color(217, 183, 170);
-  private static final Color barcolor9 = new Color(140, 54, 57);
-  private static final Color barcolor10 = new Color(203, 136, 76);
-  private static final Color[] barcolors = {
-      barcolor0, barcolor1, barcolor2, barcolor3, barcolor4, barcolor5, barcolor6, barcolor7, barcolor8, barcolor9, barcolor10};
 
-  int size;
-  int index;
-  Color[] colors;
+   //~ Static fields/initializers **********************************************
 
-  void setColors(int value) {
-    size = value;
+   /** barcolor0. */
+   static private final Color barcolor0 = new Color(71, 74, 98);
 
-    colors = new Color[size];
-    for (index = 0; index < size; index++)
-      colors[index] = barcolors[index % barcolors.length];
+   /** barcolor1. */
+   static private final Color barcolor1 = new Color(191, 191, 115);
 
-    index = 0;
-  }
+   /** barcolor2. */
+   static private final Color barcolor2 = new Color(111, 142, 116);
 
-  void setColors(Color[] values) {
-    colors = values;
-  }
+   /** barcolor3. */
+   static private final Color barcolor3 = new Color(178, 198, 181);
 
-  Color getNextColor() {
-    Color color = colors[index];
-    index++;
-    if (index == size)
+   /** barcolor4. */
+   static private final Color barcolor4 = new Color(153, 185, 216);
+
+   /** barcolor5. */
+   static private final Color barcolor5 = new Color(96, 93, 71);
+
+   /** barcolor6. */
+   static private final Color barcolor6 = new Color(146, 205, 163);
+
+   /** barcolor7. */
+   static private final Color barcolor7 = new Color(203, 84, 84);
+
+   /** barcolor8. */
+   static private final Color barcolor8 = new Color(217, 183, 170);
+
+   /** barcolor9. */
+   static private final Color barcolor9 = new Color(140, 54, 57);
+
+   /** barcolor10. */
+   static private final Color barcolor10 = new Color(203, 136, 76);
+
+   /** barcolors. */
+   static private final Color[] barcolors =
+   {
+      barcolor0, barcolor1, barcolor2, barcolor3, barcolor4, barcolor5,
+      barcolor6, barcolor7, barcolor8, barcolor9, barcolor10
+   };
+
+   //~ Instance fields *********************************************************
+
+   /** colors */
+   Color[] colors;
+
+   /** index into array */
+   int index;
+
+   /** size of array */
+   int size;
+
+   //~ Methods *****************************************************************
+
+   /**
+    * Get the next color in the colors array.  increment index so subsequent
+    * call will get a different color.
+    *
+    * @return next color
+    */
+   Color getNextColor() {
+      Color color = colors[index];
+      index++;
+
+      if (index == size) {
+         index = 0;
+      }
+
+      return color;
+   }
+
+   /**
+    * Set the size of colors.  Copy the colors from barcolors into colors.
+    * Colors will be reused if value is greater than barcolors.size
+    *
+    * @param value the new size of colors
+    */
+   void setColors(int value) {
+      size = value;
+
+      colors = new Color[size];
+
+      for (index = 0; index < size; index++) {
+         colors[index] = barcolors[index % barcolors.length];
+      }
+
       index = 0;
+   }
 
-    return color;
-  }
+   /**
+    * Set the colors used
+    *
+    * @param values new set of colors
+    */
+   void setColors(Color[] values) { colors = values; }
 
-  void setIndex(int index) {
-    this.index = index;
-  }
-}
+   /**
+    * Set the index into colors
+    *
+    * @param index new index
+    */
+   void setIndex(int index) { this.index = index; }
+} // end class BarColors

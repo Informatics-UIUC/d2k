@@ -82,18 +82,23 @@ public class CreateModelComparisonTable extends ComputeModule {
    //~ Static fields/initializers **********************************************
 
    /** constants. */
-   static public final int CORRECT = 0; // indices into the performance 2D array
+   // indices into the performance 2D array
 
-   /** Description of field TRUE_TRUE. */
+   /** correct index in performance array */
+   static public final int CORRECT = 0;
+
+   /** true true index in performance array */
    static public final int TRUE_TRUE = 1;
 
-   /** Description of field INDEX. */
-   static public final int INDEX = 0; // indices into the output table.
+   // indices into the output table.
 
-   /** Description of field PRECISION. */
+   /** index column index in output table */
+   static public final int INDEX = 0;
+
+   /** precision column index in output table */
    static public final int PRECISION = 1;
 
-   /** Description of field RECALL. */
+   /** recall column index in output table */
    static public final int RECALL = 2;
 
    //~ Instance fields *********************************************************
@@ -251,7 +256,6 @@ public class CreateModelComparisonTable extends ComputeModule {
          e.printStackTrace();
 
          return;
-
       }
 
       try {

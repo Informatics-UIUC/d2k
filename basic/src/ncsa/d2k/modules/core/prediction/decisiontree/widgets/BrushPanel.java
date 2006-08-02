@@ -1,158 +1,165 @@
+/* 
+ * $Header$
+ *
+ * ===================================================================
+ *
+ * D2K-Workflow
+ * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
+ * ILLINOIS. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License v2.0
+ * as published by the Free Software Foundation and with the required
+ * interpretation regarding derivative works as described below.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License v2.0 for more details.
+ * 
+ * This program and the accompanying materials are made available
+ * under the terms of the GNU General Public License v2.0 (GPL v2.0)
+ * which accompanies this distribution and is available at
+ * http://www.gnu.org/copyleft/gpl.html (or via mail from the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.), with the special and mandatory
+ * interpretation that software only using the documented public
+ * Application Program Interfaces (APIs) of D2K-Workflow are not
+ * considered derivative works under the terms of the GPL v2.0.
+ * Specifically, software only calling the D2K-Workflow Itinerary
+ * execution and workflow module APIs are not derivative works.
+ * Further, the incorporation of published APIs of other
+ * independently developed components into D2K Workflow code
+ * allowing it to use those separately developed components does not
+ * make those components a derivative work of D2K-Workflow.
+ * (Examples of such independently developed components include for
+ * example, external databases or metadata and provenance stores).
+ * 
+ * Note: A non-GPL commercially licensed version of contributions
+ * from the UNIVERSITY OF ILLINOIS may be available from the
+ * designated commercial licensee RiverGlass, Inc. located at
+ * (www.riverglassinc.com)
+ * ===================================================================
+ *
+ */
 package ncsa.d2k.modules.core.prediction.decisiontree.widgets;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.text.*;
-import java.util.*;
-import javax.swing.*;
-import ncsa.d2k.modules.core.prediction.decisiontree.*;
+import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel;
 
-/*
- DecisionTreeVis
- Draws data when mouse moves over a node in tree scroll pane
+import javax.swing.*;
+
+import java.awt.*;
+
+
+/**
+ * Draws data when mouse moves over a node in tree scroll pane.
+ *
+ * @author  $Author$
+ * @version $Revision$, $Date$
  */
 public final class BrushPanel extends JPanel {
 
-  View view;
+   //~ Instance fields *********************************************************
 
-  public BrushPanel(ViewableDTModel model) {
-    DecisionTreeScheme scheme = new DecisionTreeScheme();
+   /** the view */
+   View view;
 
-    setOpaque(true);
-    setBackground(scheme.borderbackgroundcolor);
-  }
+   //~ Constructors ************************************************************
 
-  public void updateBrush(View view) {
-    this.view = view;
-
-    revalidate();
-    repaint();
-  }
-
-  public void paintComponent(Graphics g) {
-    super.paintComponent(g);
-
-    Graphics2D g2 = (Graphics2D) g;
-
-    Insets insets = getInsets();
-
-    if (view != null) {
-      g2.translate(insets.left, insets.top);
-      view.drawBrush(g2);
-      g2.translate(-insets.left, -insets.top);
-    }
-  }
-
-  /*
-   ViewableDTModel dmodel;
-   ViewableDTNode droot;
-   ViewableDTNode dnode;
-   double samplesize = 10;
-   double samplespace = 8;
-   double outputwidth = 80;
-   double outputspace = 10;
-   double tallywidth;
-   double tallyspace = 10;
-   double percentwidth;
-// Outputs
-   String[] outputs;
-// Distribution values
-   double[] values;
-   int[] tallies;
-   DecisionTreeScheme scheme;
-   FontMetrics metrics;
-   int ascent, descent;
-   NumberFormat numberformat;
+   /**
+    * Creates a new BrushPanel object.
+    *
+    * @param model the decision tree model
+    */
    public BrushPanel(ViewableDTModel model) {
-    dmodel = model;
-    droot = dmodel.getViewableRoot();
-    //outputs = model.getUniqueOutputValues();
+      DecisionTreeScheme scheme = new DecisionTreeScheme();
 
-
-    metrics = getFontMetrics(scheme.textfont);
-    ascent = metrics.getAscent();
-    descent = metrics.getDescent();
-    percentwidth = metrics.stringWidth("100.0%");
-    numberformat = NumberFormat.getInstance();
-    numberformat.setMaximumFractionDigits(1);
-    setOpaque(true);
-    setBackground(scheme.borderbackgroundcolor);
+      setOpaque(true);
+      setBackground(scheme.borderbackgroundcolor);
    }
-   public void paintComponent(Graphics g) {
-    super.paintComponent(g);
-    Graphics2D g2 = (Graphics2D) g;
-    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    g2.setFont(scheme.textfont);
-    Insets insets = getInsets();
-    double x = insets.left;
-    double y = insets.top;
-    if (dnode != null) {
-     values = new double[outputs.length];
-     tallies = new int[outputs.length];
-     for (int index = 0; index < values.length; index++) {
-      try{
-       if (dnode.getTotal() == 0)
-        values[index] = 0;
-       else
-       ;	//values[index] = 100*(double)dnode.getOutputTally(outputs[index])/(double)dnode.getTotal();
-       //tallies[index] = dnode.getOutputTally(outputs[index]);
-      } catch(Exception exception){
-       System.out.println("getOutputTally threw an exception");
+
+   //~ Methods *****************************************************************
+
+   /**
+    * Get the minimum size
+    *
+    * @return the minimum size
+    */
+   public Dimension getMinimumSize() { return getPreferredSize(); }
+
+   /**
+    * Get the preferred size
+    * @return the preferred size
+    */
+   public Dimension getPreferredSize() {
+
+      /*Insets insets = getInsets();
+       *   int pwidth = (int) (insets.left + samplesize + samplespace +
+       * outputwidth + outputspace + tallywidth + tallyspace + percentwidth +
+       * insets.right);  int pheight = (int) (insets.top +
+       * samplesize*(outputs.length) + samplespace*(outputs.length-1) + descent
+       * + insets.bottom);  return new Dimension(pwidth, pheight);*/
+
+      Insets insets = getInsets();
+
+      double width = insets.left + insets.right;
+      double height = insets.top + insets.bottom;
+
+      if (view != null) {
+         width += view.getBrushWidth();
+         height += view.getBrushHeight();
       }
-     }
-     for (int index = 0; index < tallies.length; index++) {
-      double stringwidth = metrics.stringWidth(Integer.toString(tallies[index]));
-      if (stringwidth > tallywidth)
-       tallywidth = stringwidth;
-     }
-    }
-    for (int index = 0; index < outputs.length; index++) {
-     g2.setColor(scheme.getNextColor());
-     g2.fill(new Rectangle2D.Double(x, y, samplesize, samplesize));
-     x += samplesize + samplespace;
-     y += samplesize;
-     String output = outputs[index];
-     g2.setColor(scheme.textcolor);
-     g2.drawString(output, (int) x, (int) y);
-     if (dnode != null) {
-      x += outputwidth + outputspace;
-      String tally = Integer.toString(tallies[index]);
-      g2.drawString(tally, (int) x, (int) y);
-      x += tallywidth + tallyspace;
-      String value = numberformat.format(values[index]) + "%";
-      g2.drawString(value, (int) x, (int) y);
-     }
-     x = insets.left;
-     y += samplespace;
-    }
+
+      return new Dimension((int) width, (int) height);
    }
-// Called by tree scroll pane
-   public void updateBrush(ViewableDTNode node) {
-    dnode = node;
-    repaint();
-   }*/
 
-  public Dimension getPreferredSize() {
 
-    /*Insets insets = getInsets();
-         int pwidth = (int) (insets.left + samplesize + samplespace + outputwidth + outputspace + tallywidth + tallyspace + percentwidth + insets.right);
-         int pheight = (int) (insets.top + samplesize*(outputs.length) + samplespace*(outputs.length-1) + descent + insets.bottom);
-         return new Dimension(pwidth, pheight);*/
+    /**
+     * Calls the UI delegate's paint method, if the UI delegate
+     * is non-<code>null</code>.  We pass the delegate a copy of the
+     * <code>Graphics</code> object to protect the rest of the
+     * paint code from irrevocable changes
+     * (for example, <code>Graphics.translate</code>).
+     * <p/>
+     * If you override this in a subclass you should not make permanent
+     * changes to the passed in <code>Graphics</code>. For example, you
+     * should not alter the clip <code>Rectangle</code> or modify the
+     * transform. If you need to do these operations you may find it
+     * easier to create a new <code>Graphics</code> from the passed in
+     * <code>Graphics</code> and manipulate it. Further, if you do not
+     * invoker super's implementation you must honor the opaque property,
+     * that is
+     * if this component is opaque, you must completely fill in the background
+     * in a non-opaque color. If you do not honor the opaque property you
+     * will likely see visual artifacts.
+     *
+     * @param g the <code>Graphics</code> object to protect
+     * @see #paint
+     * @see javax.swing.plaf.ComponentUI
+     */
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-    Insets insets = getInsets();
+        Graphics2D g2 = (Graphics2D) g;
 
-    double width = insets.left + insets.right;
-    double height = insets.top + insets.bottom;
+        Insets insets = getInsets();
 
-    if (view != null) {
-      width += view.getBrushWidth();
-      height += view.getBrushHeight();
+        if (view != null) {
+            g2.translate(insets.left, insets.top);
+            view.drawBrush(g2);
+            g2.translate(-insets.left, -insets.top);
+        }
     }
 
-    return new Dimension((int) width, (int) height);
-  }
+   /**
+    * update
+    *
+    * @param view the view
+    */
+   public void updateBrush(View view) {
+      this.view = view;
 
-  public Dimension getMinimumSize() {
-    return getPreferredSize();
-  }
-}
+      revalidate();
+      repaint();
+   }
+} // end class BrushPanel

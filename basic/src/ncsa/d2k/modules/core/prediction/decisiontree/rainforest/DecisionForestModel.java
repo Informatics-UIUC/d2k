@@ -66,7 +66,6 @@ import java.util.Iterator;
  * @author  Dora Cai
  * @version $Revision$, $Date$
  */
-
 public class DecisionForestModel extends PredictionModelModule
    implements Serializable, NominalViewableDTModel {
 
@@ -98,9 +97,9 @@ public class DecisionForestModel extends PredictionModelModule
     * Constructor.
     *
     * @param rt          the root of the decision tree
-    * @param table       Description of parameter table.
-    * @param totalRow    Description of parameter totalRow.
-    * @param classValues Description of parameter classValues.
+    * @param table       training table
+    * @param totalRow    number of examples
+    * @param classValues unique class values
     */
    public DecisionForestModel(DecisionForestNode rt, ExampleTable table,
                               int totalRow, String[] classValues) {

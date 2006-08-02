@@ -1,4 +1,4 @@
-/* 
+/*
  * $Header$
  *
  * ===================================================================
@@ -6,17 +6,17 @@
  * D2K-Workflow
  * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
  * ILLINOIS. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License v2.0
  * as published by the Free Software Foundation and with the required
  * interpretation regarding derivative works as described below.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License v2.0 for more details.
- * 
+ *
  * This program and the accompanying materials are made available
  * under the terms of the GNU General Public License v2.0 (GPL v2.0)
  * which accompanies this distribution and is available at
@@ -34,7 +34,7 @@
  * make those components a derivative work of D2K-Workflow.
  * (Examples of such independently developed components include for
  * example, external databases or metadata and provenance stores).
- * 
+ *
  * Note: A non-GPL commercially licensed version of contributions
  * from the UNIVERSITY OF ILLINOIS may be available from the
  * designated commercial licensee RiverGlass, Inc. located at
@@ -88,7 +88,7 @@ public class DecisionTreeViewer extends VisModule {
    /** constant for empty string. */
    static String NOTHING = "";
 
-   /** number format */
+   /** number format. */
    static private NumberFormat nf;
 
    static {
@@ -98,35 +98,35 @@ public class DecisionTreeViewer extends VisModule {
 
    //~ Instance fields *********************************************************
 
-   /** column headings */
-   String[] columnHeading;
+   /** column headings. */
+   protected String[] columnHeading;
 
-   /** file */
-   File file;
+   /** file. */
+   protected File file;
 
-   /** file writer */
-   FileWriter fw;
+   /** file writer. */
+   protected FileWriter fw;
 
    /** input column labels. */
-   String[] inputColumnLabels;
+   protected String[] inputColumnLabels;
 
    /** output column labels. */
-   String[] outputColumnLabels;
+   protected String[] outputColumnLabels;
 
-   /** outputs */
-   String[] outputs;
+   /** unique output values. */
+   protected String[] outputs;
 
-   /** list of rules */
-   ArrayList rules;
+   /** list of rules. */
+   protected ArrayList rules;
 
-   /** total */
-   int total;
+   /** total. */
+   protected int total;
 
-   /** treeList */
-   JTable treeList;
+   /** treeList. */
+   protected JTable treeList;
 
-   /** table model */
-   GenericMatrixModel treeTableModel;
+   /** table model. */
+   protected GenericMatrixModel treeTableModel;
 
    //~ Constructors ************************************************************
 
@@ -161,7 +161,7 @@ public class DecisionTreeViewer extends VisModule {
    }
 
    /**
-    * Get accuracy for a node
+    * Get accuracy for a node.
     *
     * @param  aNode      node
     * @param  classLabel class label
@@ -176,7 +176,7 @@ public class DecisionTreeViewer extends VisModule {
    }
 
    /**
-    * the coverage
+    * compute the coverage.
     *
     * @param  aNode      node
     * @param  classLabel class label
@@ -188,7 +188,7 @@ public class DecisionTreeViewer extends VisModule {
    }
 
    /**
-    * print contents of array list
+    * print contents of array list.
     *
     * @param al array list
     */
@@ -208,7 +208,7 @@ public class DecisionTreeViewer extends VisModule {
    }
 
    /**
-    * print a rule
+    * print a rule.
     *
     * @param al array list containing rules
     */
@@ -336,7 +336,7 @@ public class DecisionTreeViewer extends VisModule {
    } // end method prunePredicate
 
    /**
-    * Concatenate two strings
+    * Concatenate two strings.
     *
     * @param  str1 first string
     * @param  str2 second string
@@ -380,7 +380,7 @@ public class DecisionTreeViewer extends VisModule {
    protected UserView createUserView() { return new DisplayTreeView(); }
 
    /**
-    * Add the rules to treeList
+    * Add the rules to treeList.
     */
    protected void displayRules() {
       String leftRule;
@@ -452,21 +452,19 @@ public class DecisionTreeViewer extends VisModule {
    } // end method extractRules
 
 
-    /**
-     * The list of strings returned by this method allows the module to map the
-     * results returned from the pier to the position dependent outputs. The
-     * order in which the names appear in the string array is the order in which
-     * to assign them to the outputs.
-     *
-     * @return a string array containing the names associated with the outputs
-     *         in the order the results should appear in the outputs.
-     */
-    protected String[] getFieldNameMapping() {
-        return null;
-    }
+   /**
+    * The list of strings returned by this method allows the module to map the
+    * results returned from the pier to the position dependent outputs. The
+    * order in which the names appear in the string array is the order in which
+    * to assign them to the outputs.
+    *
+    * @return a string array containing the names associated with the outputs in
+    *         the order the results should appear in the outputs.
+    */
+   protected String[] getFieldNameMapping() { return null; }
 
    /**
-    * write rules to a file
+    * write rules to a file.
     */
    protected void writeToFile() {
       JFileChooser chooser = new JFileChooser();
@@ -561,162 +559,194 @@ public class DecisionTreeViewer extends VisModule {
    } // end method writeToFile
 
 
-    /**
-     * Returns a description of the input at the specified index.
-     *
-     * @param index Index of the input for which a description should be returned.
-     * @return <code>String</code> describing the input at the specified index.
-     */
-    public String getInputInfo(int index) {
+   /**
+    * Returns a description of the input at the specified index.
+    *
+    * @param  index Index of the input for which a description should be
+    *               returned.
+    *
+    * @return <code>String</code> describing the input at the specified index.
+    */
+   public String getInputInfo(int index) {
 
-        switch (index) {
+      switch (index) {
 
-            case 0:
-                return "Decision Tree Model.";
+         case 0:
+            return "Decision Tree Model.";
 
-            default:
-                return "No such input";
-        }
-    }
+         default:
+            return "No such input";
+      }
+   }
 
-    /**
-     * Returns the name of the input at the specified index.
-     *
-     * @param index Index of the input for which a name should be returned.
-     * @return <code>String</code> containing the name of the input at the specified index.
-     */
-    public String getInputName(int index) {
+   /**
+    * Returns the name of the input at the specified index.
+    *
+    * @param  index Index of the input for which a name should be returned.
+    *
+    * @return <code>String</code> containing the name of the input at the
+    *         specified index.
+    */
+   public String getInputName(int index) {
 
-        switch (index) {
+      switch (index) {
 
-            case 0:
-                return "Decision Tree Model";
+         case 0:
+            return "Decision Tree Model";
 
-            default:
-                return "NO SUCH INPUT!";
-        }
-    }
-
-
-    /**
-     * Returns an array of <code>String</code> objects each containing the fully qualified Java data type of the input at
-     * the corresponding index.
-     *
-     * @return An array of <code>String</code> objects each containing the fully qualified Java data type of the input at
-     *         the corresponding index.
-     */
-    public String[] getInputTypes() {
-        String[] types =
-                {"ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel"};
-
-        return types;
-    }
+         default:
+            return "NO SUCH INPUT!";
+      }
+   }
 
 
-    /**
-     * Describes the purpose of the module.
-     *
-     * @return <code>String</code> describing the purpose of the module.
-     */
-    public String getModuleInfo() {
-        String s = "<p> Overview: ";
-        s += "This module displays a decision tree in a tablet form. </p> ";
-        s += "<p> Detailed Description: ";
-        s +=
-                "This module takes a decision tree model, and display the rules in text ";
-        s +=
-                "using a tablet form. Each rule represents a branch in a tree. The nodes ";
-        s +=
-                "in the branch form the IF part of the rule, and the leaf of the branch ";
-        s += "forms the THEN part of the rule.";
-        s +=
-                "<p>The rules displayed can be saved into a file. The <i>File</i> pull-down ";
-        s += "menu offers a <i>Save</i> option to do this. ";
-        s += "A file browser window pops up, allowing the user to select ";
-        s += "where the rules should be saved. ";
+   /**
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the input at the corresponding index.
+    *
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the input at the corresponding index.
+    */
+   public String[] getInputTypes() {
+      String[] types =
+      { "ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel" };
 
-        return s;
-
-    }
+      return types;
+   }
 
 
-    /**
-     * Returns the name of the module that is appropriate for end-user consumption.
-     *
-     * @return The name of the module.
-     */
-    public String getModuleName() {
-        return "Decision Tree Viewer";
-    }
+   /**
+    * Describes the purpose of the module.
+    *
+    * @return <code>String</code> describing the purpose of the module.
+    */
+   public String getModuleInfo() {
+      String s = "<p> Overview: ";
+      s += "This module displays a decision tree in a tablet form. </p> ";
+      s += "<p> Detailed Description: ";
+      s +=
+         "This module takes a decision tree model, and display the rules in text ";
+      s +=
+         "using a tablet form. Each rule represents a branch in a tree. The nodes ";
+      s +=
+         "in the branch form the IF part of the rule, and the leaf of the branch ";
+      s += "forms the THEN part of the rule.";
+      s +=
+         "<p>The rules displayed can be saved into a file. The <i>File</i> pull-down ";
+      s += "menu offers a <i>Save</i> option to do this. ";
+      s += "A file browser window pops up, allowing the user to select ";
+      s += "where the rules should be saved. ";
+
+      return s;
+
+   }
 
 
-    /**
-     * Returns a description of the output at the specified index.
-     *
-     * @param i Index of the output for which a description should be returned.
-     * @return <code>String</code> describing the output at the specified index.
-     */
-    public String getOutputInfo(int i) {
-
-        switch (i) {
-
-            default:
-                return "No such output";
-        }
-    }
+   /**
+    * Returns the name of the module that is appropriate for end-user
+    * consumption.
+    *
+    * @return The name of the module.
+    */
+   public String getModuleName() { return "Decision Tree Viewer"; }
 
 
-    /**
-     * Returns the name of the output at the specified index.
-     *
-     * @param index Index of the output for which a description should be returned.
-     * @return <code>String</code> containing the name of the output at the specified index.
-     */
-    public String getOutputName(int index) {
+   /**
+    * Returns a description of the output at the specified index.
+    *
+    * @param  i Index of the output for which a description should be returned.
+    *
+    * @return <code>String</code> describing the output at the specified index.
+    */
+   public String getOutputInfo(int i) {
 
-        switch (index) {
+      switch (i) {
 
-            default:
-                return "NO SUCH OUTPUT!";
-        }
-    }
-
-
-    /**
-     * Returns an array of <code>String</code> objects each containing the fully qualified Java data type of the output at
-     * the corresponding index.
-     *
-     * @return An array of <code>String</code> objects each containing the fully qualified Java data type of the output at
-     *         the corresponding index.
-     */
-    public String[] getOutputTypes() {
-        String[] types = {};
-
-        return types;
-    }
+         default:
+            return "No such output";
+      }
+   }
 
 
-    /**
-     * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the
-     * module.
-     *
-     * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
-     */
-    public PropertyDescription[] getPropertiesDescriptions() {
-        return new PropertyDescription[0];
-    }
+   /**
+    * Returns the name of the output at the specified index.
+    *
+    * @param  index Index of the output for which a description should be
+    *               returned.
+    *
+    * @return <code>String</code> containing the name of the output at the
+    *         specified index.
+    */
+   public String getOutputName(int index) {
+
+      switch (index) {
+
+         default:
+            return "NO SUCH OUTPUT!";
+      }
+   }
+
+
+   /**
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the output at the corresponding index.
+    *
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the output at the corresponding index.
+    */
+   public String[] getOutputTypes() {
+      String[] types = {};
+
+      return types;
+   }
+
+
+   /**
+    * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    * objects for each property of the module.
+    *
+    * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    *         objects.
+    */
+   public PropertyDescription[] getPropertiesDescriptions() {
+      return new PropertyDescription[0];
+   }
 
    //~ Inner Classes ***********************************************************
 
+   /**
+    * class for each rule extracted from the tree.
+    *
+    * @author  $Author$
+    * @version $Revision$, $Date$
+    */
+   protected class rule {
+      double accuracy;
+      double coverage;
+      String leftRule;
+      String rightRule;
+   }
+
+   /**
+    * This is the user view.
+    *
+    * @author  $Author$
+    * @version $Revision$, $Date$
+    */
    public class DisplayTreeView extends ncsa.d2k.userviews.swing.JUserPane
       implements ActionListener {
+
+      /** menu bar. */
       JMenuBar menuBar;
+
+      /** print menu item. */
       JMenuItem print;
 
-       /**
-        * Action listener
-        * @param e
-        */
+      /**
+       * Action listener.
+       *
+       * @param e Description of parameter $param.name$.
+       */
       public void actionPerformed(ActionEvent e) {
          Object src = e.getSource();
 
@@ -725,7 +755,9 @@ public class DecisionTreeViewer extends VisModule {
          }
       }
 
-       /** layout the UI */
+      /**
+       * layout the UI.
+       */
       public void doGUI() {
 
          // Panel to hold outline panels
@@ -820,65 +852,58 @@ public class DecisionTreeViewer extends VisModule {
          add(displayTreePanel, BorderLayout.SOUTH);
       } // end method doGUI
 
-       /**
-        * Get the menu bar
-        * @return menu bar
-        */
+      /**
+       * Get the menu bar.
+       *
+       * @return menu bar
+       */
       public Object getMenu() { return menuBar; }
 
 
-       /**
-        * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
-        *
-        * @param mod The module this view is associated with.
-        */
-       public void initView(ViewModule mod) {
-           menuBar = new JMenuBar();
+      /**
+       * Called by the D2K Infrastructure to allow the view to perform
+       * initialization tasks.
+       *
+       * @param mod The module this view is associated with.
+       */
+      public void initView(ViewModule mod) {
+         menuBar = new JMenuBar();
 
-           JMenu fileMenu = new JMenu("File");
-           print = new JMenuItem("Save...");
-           print.addActionListener(this);
-           fileMenu.add(print);
-           menuBar.add(fileMenu);
-       }
+         JMenu fileMenu = new JMenu("File");
+         print = new JMenuItem("Save...");
+         print.addActionListener(this);
+         fileMenu.add(print);
+         menuBar.add(fileMenu);
+      }
 
-       /**
-        * Called to pass the inputs received by the module to the view.
-        *
-        * @param input The object that has been input.
-        * @param index The index of the module input that been received.
-        */
-       public void setInput(Object input, int index) {
-           ViewableDTModel inputModel = (ViewableDTModel) input;
+      /**
+       * Called to pass the inputs received by the module to the view.
+       *
+       * @param input The object that has been input.
+       * @param index The index of the module input that been received.
+       */
+      public void setInput(Object input, int index) {
+         ViewableDTModel inputModel = (ViewableDTModel) input;
 
-           DecisionForestModel model = (DecisionForestModel) inputModel;
-           DecisionForestNode root = model.getRoot();
-           total = root.getTotal();
-           outputColumnLabels = model.getOutputColumnLabels();
-           inputColumnLabels = model.getInputColumnLabels();
-           outputs = model.getUniqueOutputValues();
+         DecisionForestModel model = (DecisionForestModel) inputModel;
+         DecisionForestNode root = model.getRoot();
+         total = root.getTotal();
+         outputColumnLabels = model.getOutputColumnLabels();
+         inputColumnLabels = model.getInputColumnLabels();
+         outputs = model.getUniqueOutputValues();
 
-           rules = new ArrayList();
+         rules = new ArrayList();
 
-           ArrayList leftRule = new ArrayList();
-           extractRules(leftRule, root);
+         ArrayList leftRule = new ArrayList();
+         extractRules(leftRule, root);
 
-           // printRule(rules);
-           doGUI();
-           displayRules();
-       }
+         // printRule(rules);
+         doGUI();
+         displayRules();
+      }
       /*
        * public Dimension getPreferredSize() { return new Dimension (600, 500);}
        */
    } // end class DisplayTreeView
-
-
-   // class for each rule extracted from the tree
-   public class rule {
-      double accuracy;
-      double coverage;
-      String leftRule;
-      String rightRule;
-   }
 
 } // end class DecisionTreeViewer

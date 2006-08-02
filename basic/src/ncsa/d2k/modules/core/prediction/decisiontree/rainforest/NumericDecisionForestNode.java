@@ -58,7 +58,7 @@ import java.io.Serializable;
  * @author  $Author$
  * @version $Revision$, $Date$
  */
-public final class NumericDecisionForestNode extends DecisionForestNode
+public class NumericDecisionForestNode extends DecisionForestNode
    implements Serializable, NominalViewableDTNode {
 
    //~ Static fields/initializers **********************************************
@@ -100,7 +100,7 @@ public final class NumericDecisionForestNode extends DecisionForestNode
      * @param val   the label of the branch
      * @param child the child node
      */
-    public final void addBranch(String val, DecisionForestNode child) {
+    public void addBranch(String val, DecisionForestNode child) {
     }
 
    /**
@@ -110,7 +110,7 @@ public final class NumericDecisionForestNode extends DecisionForestNode
     * @param branchLabel Description of parameter branchLabel.
     * @param child       Description of parameter child.
     */
-   public final void addBranch(double split, String branchLabel,
+   public void addBranch(double split, String branchLabel,
                                DecisionForestNode child) {
       splitValue = split;
       branchLabels.add(branchLabel);
@@ -127,7 +127,7 @@ public final class NumericDecisionForestNode extends DecisionForestNode
     * @param rightLabel the label for the right branch
     * @param right      the right child
     */
-   public final void addBranches(double split, String leftLabel,
+   public void addBranches(double split, String leftLabel,
                                  DecisionForestNode left, String rightLabel,
                                  DecisionForestNode right) {
 
@@ -153,7 +153,7 @@ public final class NumericDecisionForestNode extends DecisionForestNode
     *
     * @return the result of evaluating the record
     */
-   public final Object evaluate(Table vt, int row) { return null; }
+   public Object evaluate(Table vt, int row) { return null; }
 
    /**
     * Get the split attribute.
@@ -170,21 +170,21 @@ public final class NumericDecisionForestNode extends DecisionForestNode
    public double getSplitValue() { return splitValue; }
 
    /**
-    * Description of method getSplitValues.
+    * Get the split values.  Should not be called, this is only for categorical
     *
-    * @return Description of return value.
+    * @return split values
     */
    public String[] getSplitValues() { return null; }
 
    /**
-    * Description of method setBranch.
+    * Set a specific branch to be child.
     *
-    * @param branchNum Description of parameter branchNum.
-    * @param val       Description of parameter val.
-    * @param child     Description of parameter child.
+    * @param branchNum branch number
+    * @param val       branch label
+    * @param child     new child
     */
    public void setBranch(int branchNum, String val, DecisionForestNode child) {
-      DecisionForestNode oldChild = getChild(branchNum);
+      //DecisionForestNode oldChild = getChild(branchNum);
 
       children.set(branchNum, child);
       branchLabels.set(branchNum, val);

@@ -95,7 +95,6 @@ public final class NaiveBayesModel
    Constructor
    @param bt the bin tree
    @param vt the vertical table
-   @param t the types lookup table
    */
   NaiveBayesModel(BinTree bt, ExampleTable vt) {
     super(vt);
@@ -238,7 +237,7 @@ public final class NaiveBayesModel
    attribute with the least number of correct predictions will be
    the most significant attribute, and will be ranked first.
    */
-  final private void rank() {
+  private void rank() {
     try {
       HashMap predictions = new HashMap();
 

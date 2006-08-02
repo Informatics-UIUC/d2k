@@ -103,10 +103,6 @@ import java.util.Random;
 	is practical.
 	</html>
 */
-
-
-
-
 public class BackPropModel extends PredictionModelModule
 	implements Serializable{
 
@@ -150,7 +146,6 @@ public class BackPropModel extends PredictionModelModule
 	   there being something obviously wrong
 
 	**/
-
 	public double[][][] weights;
 
 	/**sums[i][j]
@@ -167,7 +162,6 @@ public class BackPropModel extends PredictionModelModule
 	  same mapping as 'sums'. row zero is set to the threshold/bias value
 	  (normally -1)
 	*/
-
 	private double[][] activations;
 
 	/**The 'deltas', or error distribution values, for each node.
@@ -213,26 +207,31 @@ public class BackPropModel extends PredictionModelModule
 		table, if the inputs in the training table are invalid
 		*/
 	protected int[] inputFeatures;
-	protected int numInputs;
-	/**
+    /** the number of inputs */
+    protected int numInputs;
+
+    /**
 		These may be different than the output features in the training
 		table, if the outputs in the training table are invalid
 		*/
 	protected int[] outputFeatures;
-	protected int numOutputs;
+    /** the number of outputs */
+    protected int numOutputs;
 
 
 	/////////////////////
 	//work methods
 	////////////////////
-	/*
-		does it
-	*/
-	public void doit() throws Exception{
-		if(debug){
-			System.out.println(getAlias()+":Firing");
-		}
-		super.doit();
+
+    /**
+     * Pull in the ExampleTable, pass it to the predict() method,
+     * and push out the PredictionTable returned by predict();
+     */
+    public void doit() throws Exception {
+        if (debug) {
+            System.out.println(getAlias() + ":Firing");
+        }
+        super.doit();
 	}
 
 
@@ -340,13 +339,12 @@ public class BackPropModel extends PredictionModelModule
 
 
 
-	/*** compute
-
-	the main function to calculate the output(s) given an input vector.
-	@param e the row index in the table 'data' to use as input
-	@param results[e][out] the output 'out' will be put in row 'e' of this table
+	/***
+     * compute
+     * the main function to calculate the output(s) given an input vector.
+     * @param e the row index in the table 'data' to use as input
+     * @param results [e][out] the output 'out' will be put in row 'e' of this table
 	*/
-
 	public void compute(int e, double[][] results){
 		int i,j,k;
 		double tempSum;
@@ -403,12 +401,12 @@ public class BackPropModel extends PredictionModelModule
 	}
 
 
-		/**Scales the outputs of the training data to the range required
-		by the activation function chosen. No longer scales the inputs
-		to the range -2,2. It will now be up to the user to scale the
-		inputs appropriately (it may be helpful to optimize the range).
+		/**
+         * Scales the outputs of the training data to the range required
+         * by the activation function chosen. No longer scales the inputs
+         * to the range -2,2. It will now be up to the user to scale the
+         * inputs appropriately (it may be helpful to optimize the range).
 		*/
-
 	private void transformTrainTable(){
 		boolean sig=false;
 
@@ -492,13 +490,11 @@ public class BackPropModel extends PredictionModelModule
 	}
 
 	/**
-
-		Checks for non-numeric (or non-boolean) inputs and outputs.
-		will remove them and
-		reset the data if found. if removing them leaves either zero inputs
-		or zero outputs, this will return false and the model-building
-		will have to fail
-		*/
+     * Checks for non-numeric (or non-boolean) inputs and outputs.
+     * will remove them and reset the data if found. if removing them leaves
+     * either zero inputs or zero outputs, this will return false and the
+     * model-building will have to fail
+    */
 	protected boolean verifyData(){
 		int i,j;
 		numInputs = data.getNumInputFeatures();
@@ -610,12 +606,11 @@ public class BackPropModel extends PredictionModelModule
 	}//verifyData()
 
 	/**
-		tells the user that a column was of the wrong type and will not be
-		part of training.
-
-		@param inout  0 for inputs, 1 for outputs
-		@param colIdx column in table 'data'
-		*/
+     * tells the user that a column was of the wrong type and will not be
+     * part of training.
+     * @param inout  0 for inputs, 1 for outputs
+     * @param colIdx column in table 'data'
+	*/
 	private void alertRemoving(int colIdx, int inout){
 		String io;
 		if(inout==0)
@@ -629,10 +624,9 @@ public class BackPropModel extends PredictionModelModule
 	}
 
 	/**
-
-		Called if the data verification process removed either all input or
-		all output columns.
-		*/
+     *  Called if the data verification process removed either all input or
+     * all output columns.
+	*/
 	private void alertFailure(int inout){
 		String io;
 		if(inout==0)
@@ -644,13 +638,11 @@ public class BackPropModel extends PredictionModelModule
 	}
 
 
-	/** initArrays.
-
-		sets up the weights, sums, activations, and deltas arrays, puts in
-		NaN in the appropriate places, and fills the weights w/ random
-		initial values in the range defined by the params
+	/**
+     * sets up the weights, sums, activations, and deltas arrays, puts in
+     * NaN in the appropriate places, and fills the weights w/ random
+     * initial values in the range defined by the params
 	*/
-
 	protected void initArrays(){
 		int i,j,k;
 		/////////////////////
@@ -747,10 +739,8 @@ public class BackPropModel extends PredictionModelModule
 	}
 
   /**
-
-	randomly initializes the weights arrays within the range
-	[0,Weight_init_range]
-
+   * randomly initializes the weights arrays within the range
+   * [0,Weight_init_range]
   */
 	private void randomizeWeights(){
 		double d;
@@ -768,9 +758,9 @@ public class BackPropModel extends PredictionModelModule
 	}
 
 	/**
-	put the bias in the activations at index [0] to use as a threshold
-	put NaN in the sums and deltas at index [0]
-	also fills the appropriate weight spots with  NaN
+     * put the bias in the activations at index [0] to use as a threshold
+     * put NaN in the sums and deltas at index [0]
+     * also fills the appropriate weight spots with  NaN
 	*/
 	private void setFiller(){
 		double nan=Double.NaN;
@@ -789,49 +779,47 @@ public class BackPropModel extends PredictionModelModule
 	}
 
 
-	/**********************************
-		makePredictions
+    /**
+     * Make predictions on a prediction table
+     *
+     * @param pt
+     */
+    public void makePredictions(PredictionTable pt) {
+        //make predictions for the test examples
+        data = pt;
 
-		*******************************/
+        try {
+            //must scale the inputs before making predicitons
+            //!!!scaler.transform(pt);
+        } catch (Exception e) {
+            System.out.println("Error scaling the prediction table. A possible" +
+                    " reason for this is that the prediction table *must* have its" +
+                    " output columns set for the neural net to work (even though this" +
+                    " is not normally a constraint.");
+            e.printStackTrace();
+        }
 
+        //make a Table to put the predictions in, a column for every output
+        //feature
+        int numRows = pt.getNumRows();
+        int numOutputs = this.getOutputColumnLabels().length;
+        double[][] predictedResults = new double[numRows][numOutputs];
 
-	public void makePredictions(PredictionTable pt){
-		//make predictions for the test examples
-		data = pt;
-
-		try{
-			//must scale the inputs before making predicitons
-			//!!!scaler.transform(pt);
-		}catch(Exception e){
-			System.out.println("Error scaling the prediction table. A possible"+
-			" reason for this is that the prediction table *must* have its"+
-			" output columns set for the neural net to work (even though this"+
-			" is not normally a constraint.");
-			e.printStackTrace();
-		}
-
-		//make a Table to put the predictions in, a column for every output
-		//feature
-		int numRows=pt.getNumRows();
-		int numOutputs=this.getOutputColumnLabels().length;
-		double[][] predictedResults= new double[numRows][numOutputs];
-
-
-		//make predictions, put them in predictedResults
-		for(int i=0; i<numRows; i++){
-			compute(i, predictedResults);
-			//transfer the predictions to the prediction table
-			for(int j=0;j<numOutputs;j++){
-				pt.setDoublePrediction(predictedResults[i][j], i,j);
-			}
-		}
-		//now must untransform for the sake of the predictions
-		//!!!scaler.untransform(pt);
+        //make predictions, put them in predictedResults
+        for (int i = 0; i < numRows; i++) {
+            compute(i, predictedResults);
+            //transfer the predictions to the prediction table
+            for (int j = 0; j < numOutputs; j++) {
+                pt.setDoublePrediction(predictedResults[i][j], i, j);
+            }
+        }
+        //now must untransform for the sake of the predictions
+        //!!!scaler.untransform(pt);
 	}
 
 	/**
-		prints the arrays, only for debugging
-		*/
+     * prints the arrays, only for debugging
+	*/
 	private void printVTs(){
 		System.out.println("Sums:");
 		printVT(sums);
@@ -840,7 +828,11 @@ public class BackPropModel extends PredictionModelModule
 		System.out.println("Acts:");
 		printVT(activations);
 	}
-	private void printVT(double[][] vt){
+
+    /**
+     * prints the arrays, only for debugging
+	*/
+    private void printVT(double[][] vt){
 		for(int i=0; i<vt.length; i++){
 			System.out.print("col "+i+":");
 			for(int j=0; j<vt[i].length; j++){
@@ -849,7 +841,11 @@ public class BackPropModel extends PredictionModelModule
 			System.out.println();
 		}
 	}
-	private void printWeights(){
+
+	/**
+     * prints the arrays, only for debugging
+	*/
+    private void printWeights(){
 		for(int i=0;i<weights.length;i++){
 			for(int j=0;j<weights[i].length;j++){
 				for(int k=0;k<weights[i][j].length;k++){
@@ -897,47 +893,58 @@ public class BackPropModel extends PredictionModelModule
 	///////////////////////////////////////////////////////////
 	///D2K info methods
 	///////////////////////////////////////////////////////////
-	public String getModuleInfo(){
-		return
-		"<p><b>Overview</b>: This is an instance of a Back Propagation "+
-		" Neural Network produced by the module BackPropModelGenerator.  "+
-		"</p><p><b>Detailed Description</b>: This model was built using a data "+
-		" set with the following properties:</p><br> "+
 
-		super.getTrainingInfoHtml()+
+    /**
+     * Describe the function of this module.
+     *
+     * @return the description of this module.
+     */
+    public String getModuleInfo() {
+        return
+                "<p><b>Overview</b>: This is an instance of a Back Propagation " +
+                        " Neural Network produced by the module BackPropModelGenerator.  " +
+                        "</p><p><b>Detailed Description</b>: This model was built using a data " +
+                        " set with the following properties:</p><br> " +
 
-		"<p><b>Parameters</b>: The parameters that defined this neural "+
-		"network are "+
-		"listed below. See the documentation of the model "+
-		"producer (BackPropModelGenerator) for descriptions "+
-		"of these attributes.</p> "+
+                        super.getTrainingInfoHtml() +
 
-		getModelInfoHtml()+
+                        "<p><b>Parameters</b>: The parameters that defined this neural " +
+                        "network are " +
+                        "listed below. See the documentation of the model " +
+                        "producer (BackPropModelGenerator) for descriptions " +
+                        "of these attributes.</p> " +
 
-		"<p><b>Data Type Restrictions</b>: This module requires the input "+
-		"ExampleTable "+
-		"to have the same number of input features as the data trained "+
-		"on, and for all input features to be scalar or boolean. "+
-		"</p><p><b>Data Handling</b>:If the input table is a PredictionTable "+
-		"with prediction "+
-		"columns already present, those prediction columns will simply "+
-		"be filled "+
-		"with predictions and the same table will be returned. If not, a  "+
-		"PredictionTable will be generated from the input ExampleTable "+
-		"and the "+
-		"necessary prediction columns will be added and filled in. "+
-		"</p><p><b>Scalability</b>: Prediction using a backprop neural net is "+
-		"much "+
-		"faster "+
-		"than training. As a result, predictions for any data set of size "+
-		"roughly the same order of magnitude as the training set will be "+
-		"computed in a reasonable amount of time as compared to the "+
-		"training process.</p> ";
-	}
+                        getModelInfoHtml() +
 
-	public String getModuleName() {
-		return "Back Propagation Neural Net";
-	}
+                        "<p><b>Data Type Restrictions</b>: This module requires the input " +
+                        "ExampleTable " +
+                        "to have the same number of input features as the data trained " +
+                        "on, and for all input features to be scalar or boolean. " +
+                        "</p><p><b>Data Handling</b>:If the input table is a PredictionTable " +
+                        "with prediction " +
+                        "columns already present, those prediction columns will simply " +
+                        "be filled " +
+                        "with predictions and the same table will be returned. If not, a  " +
+                        "PredictionTable will be generated from the input ExampleTable " +
+                        "and the " +
+                        "necessary prediction columns will be added and filled in. " +
+                        "</p><p><b>Scalability</b>: Prediction using a backprop neural net is " +
+                        "much " +
+                        "faster " +
+                        "than training. As a result, predictions for any data set of size " +
+                        "roughly the same order of magnitude as the training set will be " +
+                        "computed in a reasonable amount of time as compared to the " +
+                        "training process.</p> ";
+    }
+
+    /**
+     * Returns the name of the module that is appropriate for end-user consumption.
+     *
+     * @return The name of the module.
+     */
+    public String getModuleName() {
+        return "Back Propagation Neural Net";
+    }
 
 	/** formats the parameters used to build this model into html for
 	use by the module doc*/

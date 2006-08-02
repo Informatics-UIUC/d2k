@@ -73,7 +73,7 @@ import java.util.Hashtable;
 
 
 /**
- * DecisionTreeVis.
+ * DecisionTree Visualization
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -251,7 +251,7 @@ public final class DecisionTreeVis extends VisModule {
       switch (index) {
 
          case 0:
-            return "Decision Tree Model";
+            return "ViewableDTModel";
 
          default:
             return "NO SUCH INPUT!";
@@ -370,24 +370,34 @@ public final class DecisionTreeVis extends VisModule {
    //~ Inner Classes ***********************************************************
 
    /*
-    * DecisionTreeUserView
+    * DecisionTree UserView
     */
    private class DecisionTreeUserView
       extends ncsa.d2k.userviews.swing.JUserPane implements ActionListener,
                                                             Printable {
-
+      /** brushing panel */
       private BrushPanel brushpanel;
+       /** panel for buttons */
       private JPanel buttonpanel;
+       /** menu items that represent colors */
       private ColorMenuItem[] coloritems;
 
+       /** color lookup table */
       private Hashtable colortable;
+       /** depth menu item */
       private JMenuItem depth;
+       /** */
       private JD2KFrame depthframe;
+       /** */
       private DepthPanel depthpanel;
+       /** help button */
       private JButton helpbutton;
+       /** help window */
       private transient HelpWindow helpWindow;
 
+       /** menubar */
       private JMenuBar menubar;
+       /** navigator panel */
       private NavigatorPanel navigatorpanel;
       private Hashtable ordertable;
       private JButton printbutton;
@@ -413,7 +423,7 @@ public final class DecisionTreeVis extends VisModule {
       private JCheckBoxMenuItem zoom;
       private JToggleButton zoombutton;
 
-      ViewableDTModel model;
+      private ViewableDTModel model;
 
 
        /**
