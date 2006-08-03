@@ -83,7 +83,7 @@ public final class ContinuousByteArrayColumn extends MissingValuesColumn
 
    //~ Static fields/initializers **********************************************
 
-   /** Description of field serialVersionUID. */
+   /** The universal version identifier. */
    static final long serialVersionUID = -495473524189333589L;
 
    /** Default size for the internal buffer. */
