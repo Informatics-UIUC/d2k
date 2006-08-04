@@ -67,6 +67,8 @@ import java.util.HashSet;
  *
  * <p>It is very inefficient for: removals, insertions, additions</p>
  *
+ * @author  suvalala
+ * @author  redman
  * @author  $Author$
  * @version $Revision$, $Date$
  */
