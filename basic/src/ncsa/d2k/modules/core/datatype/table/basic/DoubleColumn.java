@@ -108,7 +108,7 @@ public final class DoubleColumn extends MissingValuesColumn
     * @param miss Missing values in the column
     * @param emp  Empty values in the column
     * @param lbl  Labels for the column
-    * @param com  Comment for the column
+    * @param comm Comment for the column
     */
    private DoubleColumn(double[] vals, boolean[] miss, boolean[] emp,
                         String lbl,
@@ -995,10 +995,11 @@ public final class DoubleColumn extends MissingValuesColumn
    }
 
    /**
-    * Description of method setValueToEmpty.
+    * Sets the value of <code>row</code> to <code>b</code> which should be
+    * false.
     *
-    * @param b   Description of parameter b.
-    * @param row Description of parameter row.
+    * @param b   Should be true
+    * @param row Row to se to empty
     */
    public void setValueToEmpty(boolean b, int row) { empty[row] = b; }
 

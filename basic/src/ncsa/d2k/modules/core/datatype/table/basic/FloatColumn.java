@@ -104,11 +104,11 @@ public final class FloatColumn extends MissingValuesColumn
    /**
     * Creates a new FloatColumn object.
     *
-    * @param vals    Description of parameter vals.
-    * @param newMiss Description of parameter newMiss.
-    * @param newEmp  Description of parameter newEmp.
-    * @param lbl     Description of parameter lbl.
-    * @param comm    Description of parameter comm.
+    * @param vals Values in the column
+    * @param miss Missing values in the column
+    * @param emp  Empty values in the column
+    * @param lbl  Labels for the column
+    * @param comm Comment for the column
     */
    private FloatColumn(float[] vals, boolean[] newMiss, boolean[] newEmp,
                        String lbl, String comm) {
@@ -696,11 +696,11 @@ public final class FloatColumn extends MissingValuesColumn
    } // end method insertRow
 
    /**
-    * Description of method isValueEmpty.
+    * Tests if the value at <code>row</code> is empty.
     *
-    * @param  row Description of parameter row.
+    * @param  row Row to test for empty status
     *
-    * @return Description of return value.
+    * @return Whether or not the row is empty
     */
    public boolean isValueEmpty(int row) { return empty[row]; }
 
@@ -984,10 +984,11 @@ public final class FloatColumn extends MissingValuesColumn
 
 
    /**
-    * Description of method setValueToEmpty.
+    * Sets the value of <code>row</code> to <code>b</code> which should be
+    * false.
     *
-    * @param b   Description of parameter b.
-    * @param row Description of parameter row.
+    * @param b   Should be true
+    * @param row Row to se to empty
     */
    public void setValueToEmpty(boolean b, int row) { empty[row] = b; }
 
