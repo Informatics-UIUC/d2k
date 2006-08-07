@@ -57,9 +57,9 @@ public interface DBDataSource extends java.io.Serializable {
    //~ Methods *****************************************************************
 
    /**
-    * Description of method copy.
+    * Returns a copy of this instance.
     *
-    * @return Description of return value.
+    * @return Copy of this instance
     */
    public DBDataSource copy();
 
