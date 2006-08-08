@@ -55,7 +55,7 @@ import java.io.IOException;
 
 
 /**
- * Description of class ExamplePagingTable.
+ * <code>ExampleTable</code> that supports paging.
  *
  * @author  redman
  * @version $Revision$, $Date$
