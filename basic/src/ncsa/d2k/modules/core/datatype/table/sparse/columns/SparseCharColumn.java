@@ -298,8 +298,8 @@ public class SparseCharColumn extends AbstractSparseColumn
     * Compares 2 values that are in this column. Returns an int representation
     * of the relation between the values.
     *
-    * @param  pos1 - Row number of the first value to be compared
-    * @param  pos2 - Row number of the second value to be compared
+    * @param  pos1 Row number of the first value to be compared
+    * @param  pos2 Row number of the second value to be compared
     *
     * @return Int representing the relation between the values at row # <code>
     *         pos1</code> and row # <code>pos2</code>. If pos1's value > pos2'
