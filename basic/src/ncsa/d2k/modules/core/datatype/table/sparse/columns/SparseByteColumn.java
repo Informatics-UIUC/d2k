@@ -62,7 +62,9 @@ import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash
 /**
  * SparseByteColumn is a column in a sparse table that holds data of type byte.
  *
- * @author  $Author$
+ * @author  suvalala
+ * @author  searsmith
+ * @author  goren
  * @version 1.0
  */
 public class SparseByteColumn extends AbstractSparseColumn
