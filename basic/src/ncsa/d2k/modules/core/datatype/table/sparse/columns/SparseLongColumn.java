@@ -1,804 +1,872 @@
 /*
- * put your module comment here
- * formatted with JxBeauty (c) johann.langhofer@nextra.at
+ * $Header$
+ *
+ * ===================================================================
+ *
+ * D2K-Workflow
+ * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
+ * ILLINOIS. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License v2.0
+ * as published by the Free Software Foundation and with the required
+ * interpretation regarding derivative works as described below.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License v2.0 for more details.
+ *
+ * This program and the accompanying materials are made available
+ * under the terms of the GNU General Public License v2.0 (GPL v2.0)
+ * which accompanies this distribution and is available at
+ * http://www.gnu.org/copyleft/gpl.html (or via mail from the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.), with the special and mandatory
+ * interpretation that software only using the documented public
+ * Application Program Interfaces (APIs) of D2K-Workflow are not
+ * considered derivative works under the terms of the GPL v2.0.
+ * Specifically, software only calling the D2K-Workflow Itinerary
+ * execution and workflow module APIs are not derivative works.
+ * Further, the incorporation of published APIs of other
+ * independently developed components into D2K Workflow code
+ * allowing it to use those separately developed components does not
+ * make those components a derivative work of D2K-Workflow.
+ * (Examples of such independently developed components include for
+ * example, external databases or metadata and provenance stores).
+ *
+ * Note: A non-GPL commercially licensed version of contributions
+ * from the UNIVERSITY OF ILLINOIS may be available from the
+ * designated commercial licensee RiverGlass, Inc. located at
+ * (www.riverglassinc.com)
+ * ===================================================================
+ *
  */
+package ncsa.d2k.modules.core.datatype.table.sparse.columns;
 
-
-package  ncsa.d2k.modules.core.datatype.table.sparse.columns;
-
-//===============
-// Other Imports
-//===============
-import  ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
 import ncsa.d2k.modules.core.datatype.table.Column;
-import  ncsa.d2k.modules.core.datatype.table.ColumnTypes;
-import  ncsa.d2k.modules.core.datatype.table.MutableTable;
+import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import ncsa.d2k.modules.core.datatype.table.NumericColumn;
-import  ncsa.d2k.modules.core.datatype.table.sparse.*;
-//==============
-// Java Imports
-//==============
-import  java.io.*;
-import  java.util.*;
+import ncsa.d2k.modules.core.datatype.table.sparse.SparseDefaultValues;
+import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.VHashMap;
+import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash
+          .VIntLongHashMap;
+
+   import java.io.ByteArrayInputStream;
+   import java.io.ByteArrayOutputStream;
+   import java.io.ObjectInputStream;
+   import java.io.ObjectOutputStream;
 
 
 /**
- * Title:        Sparse Table
- * Description:  Sparse Table projects will implement data structures compatible
- * to the interface tree of Table, for sparsely stored data.
- * Copyright:    Copyright (c) 2002
- * Company:      ncsa
- * @author vered goren
- * @version 1.0
+ * SparseLongColumn is a column in a sparse table that holds data of type long.
+ *
+ * @author  $Author$
+ * @version $Revision$, $Date$
  */
-public class SparseLongColumn extends AbstractSparseColumn implements NumericColumn {
+public class SparseLongColumn extends AbstractSparseColumn
+   implements NumericColumn {
 
-    private static final long serialVersionUID = 1L;
-    /**
-     * SparseLongColumn is a column in a sparse table that holds data of type long.
-     * internal representation: the column is an int to long hashmap.
-     * the value j mapped to key i is the value j in line i in this column.
-     */
-    //==============
-    // Data Members
-    //==============
-    private VIntLongHashMap elements;
+   //~ Static fields/initializers **********************************************
 
-    private long min, max;
+   /** The universal version identifier. */
+   static private final long serialVersionUID = 1L;
 
-    //================
-    // Constructor(s)
-    //================
-    /**
-     * Creates a new <code>SparseLongColumn</code> instance with the
-     * capacity zero and default load factor.
-     */
-    public SparseLongColumn () {
-        this(0);
-    }
+   //~ Instance fields *********************************************************
 
-    /**
-     * Creates a new <code>SparseLongColumn</code> instance with a prime
-     * capacity equal to or greater than <tt>initialCapacity</tt> and
-     * with the default load factor.
-     *
-     * @param initialCapacity an <code>int</code> value
-     */
-    public SparseLongColumn (int initialCapacity) {
-        super();
-        if (initialCapacity == 0) {
-            elements = new VIntLongHashMap();
-        }
-        else {
-            elements = new VIntLongHashMap(initialCapacity);
-        }
-        setIsScalar(true);
-        type = ColumnTypes.LONG;
-    }
+   /** Values in this column. */
+   private VIntLongHashMap elements;
 
-    /**
-     * Creates a new <code>SparseLongColumn</code> instance that will hold the
-     * data in the <code>data</code> array. the elements in <code>data</code> are
-     * being stored in <code>elements</code> in rows 0 through the size of
-     * <code>data</code>.
-     *
-     * this is just to comply with regular column objects that have this constructor.
-     * because this is a sparse column it is unlikely to be used.
-     */
-    public SparseLongColumn (long[] data) {
-        this(data.length);
-        for (int i = 0; i < data.length; i++) {
-            elements.put(i, data[i]);
-        }
-    }
+   /** Max value in this column. */
+   private long max;
 
-    /**
-     * each value data[i] is set to validRows[i].
-     * if validRows is smaller than data, the rest of the
-     * values in data are being inserted to the end of this column
-     *
-     * @param data     a long array that holds the values to be inserted
-     *                 into this column
-     * @param validRows  the indices to be valid in this column
-     */
-    public SparseLongColumn (long[] data, int[] validRows) {
-        this(data.length);
-        int i;
-        for (i = 0; i < data.length && i < validRows.length; i++) {
-            setLong(data[i], validRows[i]);
-        }
-        for (; i < data.length; i++) {
-            elements.put(getNumRows(), data[i]);
-        }
-    }
+   /** Min value in this column. */
+   private long min;
 
-    //================
-    // Static Methods
-    //================
-    /**
-     * Converts obj into type long.
-     * If obj is null returns the Minimum Value of class Long.
-     *
-     * @param obj   an Object to be converted into type long
-     * @return      a long representation of the data held by <code>obj</code>
-     *              # If obj is null returns a value signifying the position is empty,
-     *                as defined by this class.
-     *              # If obj is a Number return its long value
-     *              # If obj is a Character return it char value casted into long
-     *              # If obj is a Boolean return 1 if obj=true else return 0
-     *              # Otherwise: construct a String from obj and attempt to
-     *                  parse a long from it.
-     */
-    public static long toLong (Object obj) {
-        if (obj == null) {
-            return  (long)SparseDefaultValues.getDefaultInt();
-        }
-        if (obj instanceof Number) {
-            return  ((Number)obj).longValue();
-        }
-        if (obj instanceof Character) {
-            return  (long)((Character)obj).charValue();
-        }
-        if (obj instanceof Boolean) {
-            return  ((Boolean)obj).booleanValue() ? 1 : 0;
-        }
-        String str;
-        if (obj instanceof char[]) {
-            str = new String((char[])obj);
-        }
-        else if (obj instanceof byte[]) {
-            str = new String((byte[])obj);
-        }
-        else {                  //obj is a String or an unknown object
-            str = obj.toString();
-        }
-        float f = Float.parseFloat(str);
-        return  (long)f;
-    }
+   //~ Constructors ************************************************************
 
-    //================
-    // Public Methods
-    //================
-    /**
-     * Returns the value at row # row, casted to type byte.
-     * @param row the row number
-     * @return the value at row casted to byte.
-     * if no such value exists returns a value signifying the position
-     *          is empty, as defined by SparseByteColumn
-     */
-    public byte getByte (int row) {
-        if (!elements.containsKey(row)) {
-            return  SparseDefaultValues.getDefaultByte();
-        }
-        return  (byte)getLong(row);
-    }
+   /**
+    * Creates a new <code>SparseLongColumn</code> instance with the capacity
+    * zero and default load factor.
+    */
+   public SparseLongColumn() { this(0); }
 
-    /**
-     Casts newEntry to long an sets its value at pos
-     @param newEntry the new item
-     @param pos the position
-     */
-    public void setByte (byte newEntry, int pos) {
-        setLong((long)newEntry, pos);
-    }
+   /**
+    * Creates a new <code>SparseLongColumn</code> instance with a prime capacity
+    * equal to or greater than <code>initialCapacity</code> and with the default
+    * load factor.
+    *
+    * @param initialCapacity Initial capacity for the column
+    */
+   public SparseLongColumn(int initialCapacity) {
+      super();
 
-    /**
-     * Returns the value at row # row, casted to type boolean.
-     * @param row the row number
-     * @return false if the value at row # row equals zero, true otherwise.
-     * if no such value exists returns false.
-     */
-    public boolean getBoolean (int row) {
-        if (!elements.containsKey(row)) {
-            return  SparseDefaultValues.getDefaultBoolean();
-        }
-        return  (getLong(row) != 0);
-    }
+      if (initialCapacity == 0) {
+         elements = new VIntLongHashMap();
+      } else {
+         elements = new VIntLongHashMap(initialCapacity);
+      }
 
-    /**
-     Set the value at pos to 1 if newEntry is true, otherwise
-     set it to 0.
-     @param newEntry the new item
-     @param pos the position
-     */
-    public void setBoolean (boolean newEntry, int pos) {
-        if (newEntry) {
-            setLong((long)1, pos);
-        }
-        else {
-            setLong((long)0, pos);
-        }
-    }
+      setIsScalar(true);
+      type = ColumnTypes.LONG;
+   }
 
-    /**
-     * Returns the value at row # row converted to a bytes array.
-     * @param row the row number
-     * @return the value in row # row represented with a bytes array
-     * If no such value exists returns null.
-     */
-    public byte[] getBytes (int row) {
-        if (!elements.containsKey(row)) {
-            return  SparseDefaultValues.getDefaultBytes();
-        }
-        return  String.valueOf(getLong(row)).getBytes();
-    }
+   /**
+    * Creates a new <code>SparseLongColumn</code> instance that will hold the
+    * data in the <code>data</code> array. The elements in <code>data</code> are
+    * being stored in <code>elements</code> in rows 0 through the size of <code>
+    * data</code>.
+    *
+    * <p>This is just to comply with regular column objects that have this
+    * constructor. Because this is a sparse column it is unlikely to be used.
+    * </p>
+    *
+    * @param data Data to populate the column with
+    */
+   public SparseLongColumn(long[] data) {
+      this(data.length);
 
-    /**
-     Converts <code>newEntry</cdoe> into a String, then sets the long value represented by it
-     at row #<code>pos</cdoe>
-     @param newEntry the new value
-     @param pos the position
-     */
-    public void setBytes (byte[] newEntry, int pos) {
-        setString(new String(newEntry), pos);
-    }
+      for (int i = 0; i < data.length; i++) {
+         elements.put(i, data[i]);
+      }
+   }
 
-    /**
-     * Returns the value at row # row casted to char type
-     * @param row the row number
-     * @return the value at row # row casted to char. if no such
-     * value exists return a value signifying the position is empty, as defined
-     * by SparseCharColumn.
-     */
-    public char getChar (int row) {
-        if (!elements.containsKey(row)) {
-            return  SparseDefaultValues.getDefaultChar();
-        }
-        return  (char)getInt(row);
-    }
+   /**
+    * Each value data[i] is set to validRows[i]. If validRows is smaller than
+    * data, the rest of the values in data are being inserted to the end of this
+    * column
+    *
+    * @param data      A long array that holds the values to be inserted into
+    *                  this column
+    * @param validRows The indices to be valid in this column
+    */
+   public SparseLongColumn(long[] data, int[] validRows) {
+      this(data.length);
 
-    /**
-     Convert newEntry to a char array and call setChars()
-     @param newEntry the new item
-     @param pos the position
-     */
-    public void setChar (char newEntry, int pos) {
-        /*char[] c = new char[1];
-         c[0] = newEntry;
-         setChars(c, pos);*/
-        setLong((long)newEntry, pos);
-    }
+      int i;
 
-    /**
-     * Returns the value at row # row, ina chars array.
-     * @param row the row number
-     * @return the value at row # row represented with a chars array.
-     * If no such value exists returns null.
-     */
-    public char[] getChars (int row) {
-        if (!elements.containsKey(row)) {
-            return  SparseDefaultValues.getDefaultChars();
-        }
-        return  Long.toString(getLong(row)).toCharArray();
-    }
+      for (i = 0; i < data.length && i < validRows.length; i++) {
+         setLong(data[i], validRows[i]);
+      }
 
-    /**
-     Convert newEntry to a String and call setString()
-     @param newEntry the new item
-     @param pos the position
-     */
-    public void setChars (char[] newEntry, int pos) {
-        setString(new String(newEntry), pos);
-    }
+      for (; i < data.length; i++) {
+         elements.put(getNumRows(), data[i]);
+      }
+   }
 
-    /**
-     * Returns the value at row # row casted  to double
-     * @param row the row number
-     * @return the value at row # row casted to double.
-     * If no such value exists returns a value signifying the position is empty,
-     * as defined by SparseDoubleColumn.
-     */
-    public double getDouble (int row) {
-        if (!elements.containsKey(row)) {
-            return  SparseDefaultValues.getDefaultDouble();
-        }
-        return  (double)getLong(row);
-    }
+   //~ Methods *****************************************************************
 
-    /**
-     * Returns the value at row # row casted to float type
-     * @param row the row number
-     * @return the value at row # row casted to float.
-     * If no such value exists returns a value signifying the position is empty,
-     * as defined by SparseFloatColumn.
-     */
-    public float getFloat (int row) {
-        if (!elements.containsKey(row)) {
-            return  (float)SparseDefaultValues.getDefaultDouble();
-        }
-        return  (float)getLong(row);
-    }
+   /**
+    * Converts obj into type long. If obj is null returns the Minimum Value of
+    * class Long.
+    *
+    * @param  obj Object to be converted into type long
+    *
+    * @return Long representation of the data held by <code>obj</code>. If obj
+    *         is null returns a value signifying the position is empty, as
+    *         defined by this class. If obj is a Number return its long value.
+    *         If obj is a Character return it char value casted into long. If
+    *         obj is a Boolean return 1 if obj=true else return 0. Otherwise:
+    *         construct a String from obj and attempt to parse a long from it.
+    */
+   static public long toLong(Object obj) {
 
-    /**
-     * Returns the value at row # row casted to int
-     * @param row  the row number
-     * @return the value at row number row casted to int.
-     * if no such value exists returns a value signifying the position is empty,
-     * as defined by SparseIntColumn.
-     */
-    public int getInt (int row) {
-        if (!elements.containsKey(row)) {
-            return  SparseDefaultValues.getDefaultInt();
-        }
-        return  (int)getLong(row);
-    }
+      if (obj == null) {
+         return (long) SparseDefaultValues.getDefaultInt();
+      }
 
-    /**
-     * Returns the value at row # row
-     * @param row the row number
-     * @return the value at row # row.
-     * if no such value exists returns a value signifying the position is empty,
-     * as defined by this class.
-     */
-    public long getLong (int row) {
-        if (elements.containsKey(row)) {
-            return  elements.get(row);
-        }
-        else {
-            return  (long)SparseDefaultValues.getDefaultInt();
-        }
-    }
+      if (obj instanceof Number) {
+         return ((Number) obj).longValue();
+      }
 
-    /**
-     * Returns the value at row # row, encapsulated in a Long object
-     * @param row the row number
-     * @return Long object encapsulating the value at row # row
-     */
-    public Object getObject (int row) {
-        if (elements.containsKey(row)) {
-            return  new Long(elements.get(row));
-        }
-        else {
-            return  new Long((long)SparseDefaultValues.getDefaultInt());
-        }
-    }
+      if (obj instanceof Character) {
+         return (long) ((Character) obj).charValue();
+      }
 
-    /**
-     * Returns the value at row # row, casted to type short.
-     * @param row the row number
-     * @return the value at row # row casted to short.
-     * if no such value exists returns a value signifying the position is empty,
-     * as defined by SparseShortColumn.
-     */
-    public short getShort (int row) {
-        if (!elements.containsKey(row)) {
-            return  (short)SparseDefaultValues.getDefaultInt();
-        }
-        return  (short)getLong(row);
-    }
+      if (obj instanceof Boolean) {
+         return ((Boolean) obj).booleanValue() ? 1 : 0;
+      }
 
-    /**
-     * Returns the value at row # row, represented as  a String.
-     * @param row the row number
-     * @return a String Object representing the value at row # row.
-     * If no such value exists returns null.
-     */
-    public String getString (int row) {
-        if (!elements.containsKey(row)) {
-            return  "" + (long)SparseDefaultValues.getDefaultInt();
-        }
-        return  String.valueOf(getLong(row));
-    }
+      String str;
 
-    /**
-     Casts newEntry to long an sets its value at pos
-     @param newEntry the new item
-     @param pos the position
-     */
-    public void setDouble (double newEntry, int pos) {
-        setLong((long)newEntry, pos);
-    }
+      if (obj instanceof char[]) {
+         str = new String((char[]) obj);
+      } else if (obj instanceof byte[]) {
+         str = new String((byte[]) obj);
+      } else { // obj is a String or an unknown object
+         str = obj.toString();
+      }
 
-    /**
-     Casts newEntry to long an sets its value at pos
-     @param newEntry the new item
-     @param pos the position
-     */
-    public void setFloat (float newEntry, int pos) {
-        setLong((long)newEntry, pos);
-    }
+      float f = Float.parseFloat(str);
 
-    /**
-     Casts newEntry to long an sets its value at pos
-     @param newEntry the new item
-     @param pos the position
-     */
-    public void setInt (int newEntry, int pos) {
-        setLong((long)newEntry, pos);
-    }
+      return (long) f;
+   } // end method toLong
 
-    /**
-     Set the value at pos to newEntry
-     @param newEntry the new item
-     @param pos the position
-     */
-    public void setLong (long newEntry, int pos) {
-  //      elements.remove(pos);
-        elements.put(pos, newEntry);
-    }
+   /**
+    * Compares 2 values and Retruns an int representation of the relation
+    * between the values.
+    *
+    * @param  val_1 First value to be compared
+    * @param  val_2 Second value to be compared
+    *
+    * @return Result of the comparison (-1,0, or 1)
+    */
+   private int compareLongs(long val_1, long val_2) {
 
-    /**
-     Casts newEntry to long an sets its value at pos
-     @param newEntry the new item
-     @param pos the position
-     */
-    public void setShort (short newEntry, int pos) {
-        setLong((long)newEntry, pos);
-    }
+      if (val_1 > val_2) {
+         return 1;
+      }
 
-    /**
-     Converts newEntry to a Long and inserts the long value
-     @param newEntry the new item
-     @param pos the position
-     */
-    public void setString (String newEntry, int pos) {
-        setLong((long)(Double.parseDouble(newEntry)), pos);
-    }
+      if (val_1 < val_2) {
+         return -1;
+      }
 
-    /**
-     If newEntry is a Number, get its long value, otherwise
-     call setString() on newEntry.toString()
-     @param newEntry the new item
-     @param pos the position
-     */
-    public void setObject (Object newEntry, int pos) {
-        long l = toLong(newEntry);
-        setLong(l, pos);
-    }
+      return 0;
+   }
 
-    /**
-     * performs a deep copy of this SparseIntColumn
-     * returns an exact copy of this SparseIntColumn
-     */
-    public Column copy () {
-        SparseLongColumn retVal;
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(this);
-            byte buf[] = baos.toByteArray();
-            oos.close();
-            ByteArrayInputStream bais = new ByteArrayInputStream(buf);
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            retVal = (SparseLongColumn)ois.readObject();
-            ois.close();
-            return  retVal;
-        } catch (Exception e) {
-            retVal = new SparseLongColumn();
-            retVal.elements = elements.copy();
-            retVal.copy(this);
-            return  retVal;
-        }
-    }
 
-    /**
-     * returns a subset of this column with entried from rows indicated by
-     * <code>indices</code>.
-     *
-     * @param indices  row numbers to include in the returned subset.
-     * @return         a subset of this column, including rows indicated by
-     *                 <code>indices</code>.
-     */
-    public Column getSubset (int[] indices) {
-        SparseLongColumn retVal = new SparseLongColumn(indices.length);
-        for (int i = 0; i < indices.length; i++) {
-            if (elements.containsKey(indices[i])) {
-                //XIAOLEI
-                //retVal.setLong(getLong(indices[i]), indices[i]);
-                retVal.setLong(getLong(indices[i]), i);
+   /**
+    * Initializes the min and max of this LongColumn.
+    */
+   private void initRange() {
+      max = Long.MIN_VALUE;
+      min = Long.MAX_VALUE;
+
+      for (int i = 1; i < getNumRows(); i++) {
+
+         if (!isValueMissing(i) && !isValueEmpty(i)) {
+
+            if (getLong(i) > max) {
+               max = getLong(i);
             }
-        }
-        super.getSubset(retVal, indices);
-        return  retVal;
-    }
 
-    /**
-     * Returns a SparseLongColumn that holds only the data from rows <code>
-     * pos</code> through <code>pos+len</code>
-     * @param pos   the row number which is the beginning of the subset
-     * @param len   number of consequetive rows after <code>pos</code> that are
-     *              to be included in the subset.
-     * @return      a SparseLongColumn with the data from rows <code>pos</code>
-     *              through <code>pos+len</code>
-     */
-    public Column getSubset (int pos, int len) {
-        SparseLongColumn subCol = new SparseLongColumn();
-        subCol.elements = (VIntLongHashMap)elements.getSubset(pos, len);
-        getSubset(subCol, pos, len);
-        return  subCol;        /*
-         //the map to hold the data of the new column
-         VIntLongHashMap tempMap = new VIntLongHashMap (len);
-         //for each row from pos till pos+len
-         for (int i=0; i<len; i++)
-         //if a value is mapped to current inspected row number
-         if(elements.containsKey(pos+i))
-         //put it in the new map
-         tempMap.put(pos+i, getInt(pos+i));
-         SparseLongColumn subCol = new SparseLongColumn();   //the returned value
-         super.copy(subCol);     //copying general attributes
-         subCol.elements = tempMap;    //linking the data to the returned value
-         return subCol;
-         */
-
-    }
-
-    /**
-     * Removes the byte value in row # <code>pos</code> and returns it
-     * encapsulated in a Long object
-     */
-    public Object removeRow (int pos) {
-        if (elements.containsKey(pos)) {
-            return  new Long(elements.remove(pos));
-        }
-        else {
-            return  null;
-        }
-    }
-
-    /**
-     * sorts the elements in this column so that the rows that were originally
-     * valid remain valid after sorting
-     */
-    /*  public void sort() {
-     VIntIntHashMap newOrder = elements.getSortedOrder();
-     elements = (VIntLongHashMap) elements.reorder(newOrder);
-     missing = missing.reorder(newOrder);
-     empty = empty.reorder(newOrder);
-     }
-     */
-    /**
-     * Swaps the values between 2 rows.
-     * If there is no data in row #<code>pos1</code> then nothing is stored in
-     * row #<ocde>pos2</code>, and vice versia.
-     *
-     * @param pos1 - the row number of first item to be swaped
-     * @param pos2 - the row number of second item to be swaped
-     *
-     */
-    public void swapRows (int pos1, int pos2) {
-        if (pos1 == pos2) {
-            return;
-        }
-        boolean valid_1 = elements.containsKey(pos1);
-        boolean valid_2 = elements.containsKey(pos2);
-        long val1 = elements.remove(pos1);
-        long val2 = elements.remove(pos2);
-        if (valid_1) {
-            setLong(val1, pos2);
-        }
-        if (valid_2) {
-            setLong(val2, pos1);
-        }
-        missing.swapRows(pos1, pos2);
-        empty.swapRows(pos1, pos2);
-    }
-
-    /**
-     * Compares the value represented by element and the one of row number
-     * <code>pos</code>. <code>elements</code> will be converted to a compatible
-     * type to this column.
-     * if element > pos returns 1.
-     * if element < pos retruns -1.
-     * if the are equal returns 0.
-     * if one of the representation does not hold a value, it is considered
-     * smaller than the other.
-     */
-    public int compareRows (Object obj, int pos) {
-        int val = validate(obj, pos);
-        if (val <= 1) {
-            return  val;
-        }
-        else {
-            long val_1 = toLong(obj);
-            long val_2 = elements.get(pos);
-            return  compareLongs(val_1, val_2);
-        }
-    }
-
-    /**
-     * Compares 2 values that are in this column.
-     * Retruns an int representation of the relation between the values.
-     *
-     * @param pos1 - the row number of the first value to be compared
-     * @param pos2 - the row number of the second value to be compared
-     * @return int - representing the relation between the values at row #
-     * <code>pos1</code> and row # <code>pos2</code>.
-     * if pos1's value > pos2' value returns 1.
-     * if pos1's value < pos2' value returns -1.
-     * returns 0 if they are equal.
-     */
-    public int compareRows (int pos1, int pos2) {
-        int val = validate(pos1, pos2);
-        if (val <= 1) {
-            return  val;
-        }
-        else {
-            long val_1 = elements.get(pos1);
-            long val_2 = elements.get(pos2);
-            return  compareLongs(val_1, val_2);
-        }
-    }
-
-    /**
-     * Reorders the data stored in this column in a new column.
-     * Does not change this column.
-     *
-     * Algorithm: copy this column into the returned vlaue.
-     * for each pair (key, val) in <code>newOrder</code>, if val is a valid row
-     * in this column, put the value mapped to it in row no. key in the returned
-     * values.
-     *
-     * @param newOrder - an int to int hashmap, defining the new order for
-     *                   the returned column.
-     * @return a SparseLongColumn ordered according to <code>newOrder</code>.
-     */
-    //VERED - this is implemented in the abstract level.
-    /*
-     public Column reorderRows(VIntIntHashMap newOrder) {
-     SparseLongColumn retVal = new SparseLongColumn();
-     retVal.elements = (VIntLongHashMap) elements.reorder(newOrder);
-     reorderRows(retVal, newOrder);
-     return retVal;
-     }*/
-    /**
-     * Returns the internal representation of this column.
-     *
-     */
-    public Object getInternal () {
-        int max_index = -1;
-        long[] internal = null;
-        int[] keys = elements.keys();
-        for (int i = 0; i < keys.length; i++) {
-            if (keys[i] > max_index) {
-                max_index = keys[i];
+            if (getLong(i) < min) {
+               min = getLong(i);
             }
-        }
-        internal = new long[max_index + 1];
-        for (int i = 0; i < max_index + 1; i++) {
-            internal[i] = (long)SparseDefaultValues.getDefaultInt();
-        }
-        for (int i = 0; i < keys.length; i++) {
-            internal[keys[i]] = elements.get(keys[i]);
-        }
-        return  internal;
-    }
+         }
+      }
+   }
 
-    /**
-     * Add the specified number of blank rows.
-     * @param number number of rows to add.
-     */
-    public void addRows (int number) {
-    // table is already sparse.  nothing to do.
-    }
+   /**
+    * Returns a reference to the data in this column.
+    *
+    * @return Map that holds the data of this column (VIntByteHashMap).
+    */
+   protected VHashMap getElements() { return elements; }
 
-    //===================
-    // Protected Methods
-    //===================
-    /**
-     * Inserts <code>val<code> into row #<code>pos</code>. If this position
-     * already holds data - insert the old data into row #<code>pos+1</code>
-     * recursively.
-     *
-     * @param val   the new boolean value to be inserted at pos.
-     * @param pos   the row number to insert val.
-     */
-    protected void insertRow (long val, int pos) {
-        boolean valid = elements.containsKey(pos);
-        long removedValue = elements.remove(pos);
-        //putting the new value
-        setLong(val, pos);
-        //recursively moving the items in the column as needed
-        if (valid) {
-            insertRow(removedValue, pos + 1);
-        }
-    }
+   /**
+    * Returns the valid values in rows <code>begin</code> through <code>
+    * end</code>.
+    *
+    * @param  begin Row number from to begin retrieving of values
+    * @param  end   Last row number in the section from which values are
+    *               retrieved
+    *
+    * @return Valid values from rows no. <code>begin</code> through <code>
+    *         end</code>, sorted
+    */
+   protected long[] getValuesInRange(int begin, int end) {
 
-    /**
-     * Returns the valid values in rows <codE>begin</code> through <codE>end</code>
-     *
-     * @param begin    row number from to begin retrieving of values
-     * @param end      last row number in the section from which values are retrieved.
-     * @return         only valid values from rows no. <code>begin</code> through
-     *                 <codE>end</code>, sorted.
-     */
-    protected long[] getValuesInRange (int begin, int end) {
-        if (end < begin) {
-            long[] retVal =  {};
-            return  retVal;
-        }
-        return  elements.getValuesInRange(begin, end);        /*
-         long[] values =  new long[end - begin +1];
-         int j= 0;
-         for (int i=begin; i<=end; i++)
-         if(doesValueExist(i)){
-         values[j] = getLong(i);
-         j++;
-         }//end if
-         //now j is number of real elements in values.
-         long[] retVal = new long[j];
-         System.arraycopy(values, 0, retVal, 0, j);
-         Arrays.sort(retVal);
+      if (end < begin) {
+         long[] retVal = {};
+
          return retVal;
-         */
+      }
 
-    }
+      return elements.getValuesInRange(begin, end);
+   }
 
-    /**
-     * put your documentation comment here
-     * @return
-     */
-    protected VHashMap getElements () {
-        return  elements;
-    }
+   /**
+    * Inserts <code>val</code>into row #<code>pos</code>. If this position
+    * already holds data - insert the old data into row #<code>pos+1</code>
+    * recursively.
+    *
+    * @param val New boolean value to be inserted at pos
+    * @param pos Row number to insert val
+    */
+   protected void insertRow(long val, int pos) {
+      boolean valid = elements.containsKey(pos);
+      long removedValue = elements.remove(pos);
 
-    /**
-     * put your documentation comment here
-     * @param map
-     */
-    protected void setElements (VHashMap map) {
-        elements = (VIntLongHashMap)map;
-    }
+      // putting the new value
+      setLong(val, pos);
 
-    //=================
-    // Private Methods
-    //=================
-    /**
-     * Compares 2 values and Retruns an int representation of the relation
-     * between the values.
-     *
-     * @param va1_1 - the first value to be compared
-     * @param vla_2 - the second value to be compared
-     * @return int - representing the relation between the values
-     *
-     * if val_1 > val_2 returns 1.
-     * if val_1 < val_2 returns -1.
-     * returns 0 if they are equal.
-     */
-    private int compareLongs (long val_1, long val_2) {
-        if (val_1 > val_2) {
-            return  1;
-        }
-        if (val_1 < val_2) {
-            return  -1;
-        }
-        return  0;
-    }
+      // recursively moving the items in the column as needed
+      if (valid) {
+         insertRow(removedValue, pos + 1);
+      }
+   }
 
-    /**
-     Get the minimum value contained in this Column
-     @return the minimum value of this Column
-     */
-    public double getMin () {
-        initRange();
-        return  (double)min;
-    }
+   /**
+    * Replaces the current map of elements with the supplied map.
+    *
+    * @param map New elements
+    */
+   protected void setElements(VHashMap map) {
+      elements = (VIntLongHashMap) map;
+   }
 
-    /**
-     Get the maximum value contained in this Column
-     @return the maximum value of this Column
-     */
-    public double getMax () {
-        initRange();
-        return  (double)max;
-    }
+   /**
+    * Add the specified number of blank rows.
+    *
+    * @param number Number of rows to add
+    */
+   public void addRows(int number) {
+      // table is already sparse.  nothing to do.
+   }
 
+   /**
+    * Compares the value represented by element and the one of row number <code>
+    * pos</code>. <code>elements</code> will be converted to a compatible type
+    * to this column. If element > pos returns 1. If element < pos returns -1.
+    * If the are equal returns 0. If one of the representation does not hold a
+    * value, it is considered smaller than the other.
+    *
+    * @param  obj Object to compare
+    * @param  pos Position of element to compare
+    *
+    * @return Result of comparison (-1, 0, or 1)
+    */
+   public int compareRows(Object obj, int pos) {
+      int val = validate(obj, pos);
 
-    /**
-     Initializes the min and max of this LongColumn.
-     */
-    private void initRange () {
-        max = Long.MIN_VALUE;
-        min = Long.MAX_VALUE;
-        for (int i = 1; i < getNumRows(); i++) {
-			if(!isValueMissing(i) && !isValueEmpty(i)) {
-            	if (getLong(i) > max)
-                	max = getLong(i);
-            	if (getLong(i) < min)
-                	min = getLong(i);
-			}
-        }
-    }
-}
+      if (val <= 1) {
+         return val;
+      } else {
+         long val_1 = toLong(obj);
+         long val_2 = elements.get(pos);
 
+         return compareLongs(val_1, val_2);
+      }
+   }
 
+   /**
+    * Compares 2 values that are in this column. Returns an int representation
+    * of the relation between the values.
+    *
+    * @param  pos1 Row number of the first value to be compared
+    * @param  pos2 Row number of the second value to be compared
+    *
+    * @return Result of comparison (-1, 0, or 1)
+    */
+   public int compareRows(int pos1, int pos2) {
+      int val = validate(pos1, pos2);
 
+      if (val <= 1) {
+         return val;
+      } else {
+         long val_1 = elements.get(pos1);
+         long val_2 = elements.get(pos2);
+
+         return compareLongs(val_1, val_2);
+      }
+   }
+
+   /**
+    * Performs a deep copy of this SparseIntColumn.
+    *
+    * @return Deep copy of this SparseIntColumn
+    */
+   public Column copy() {
+      SparseLongColumn retVal;
+
+      try {
+         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+         ObjectOutputStream oos = new ObjectOutputStream(baos);
+         oos.writeObject(this);
+
+         byte[] buf = baos.toByteArray();
+         oos.close();
+
+         ByteArrayInputStream bais = new ByteArrayInputStream(buf);
+         ObjectInputStream ois = new ObjectInputStream(bais);
+         retVal = (SparseLongColumn) ois.readObject();
+         ois.close();
+
+         return retVal;
+      } catch (Exception e) {
+         retVal = new SparseLongColumn();
+         retVal.elements = elements.copy();
+         retVal.copy(this);
+
+         return retVal;
+      }
+   }
+
+   /**
+    * Returns the value at row # row, cast to type boolean.
+    *
+    * @param  row The row number
+    *
+    * @return False if the value at row # row equals zero, true otherwise. If no
+    *         such value exists returns false.
+    */
+   public boolean getBoolean(int row) {
+
+      if (!elements.containsKey(row)) {
+         return SparseDefaultValues.getDefaultBoolean();
+      }
+
+      return (getLong(row) != 0);
+   }
+
+   /**
+    * Returns the value at row # row, cast to type byte.
+    *
+    * @param  row The row number
+    *
+    * @return The value at row cast to byte. If no such value exists returns a
+    *         value signifying the position is empty, as defined by
+    *         SparseByteColumn
+    */
+   public byte getByte(int row) {
+
+      if (!elements.containsKey(row)) {
+         return SparseDefaultValues.getDefaultByte();
+      }
+
+      return (byte) getLong(row);
+   }
+
+   /**
+    * Returns the value at row # row converted to a bytes array.
+    *
+    * @param  row The row number
+    *
+    * @return The value in row # row represented with a bytes array. If no such
+    *         value exists returns null.
+    */
+   public byte[] getBytes(int row) {
+
+      if (!elements.containsKey(row)) {
+         return SparseDefaultValues.getDefaultBytes();
+      }
+
+      return String.valueOf(getLong(row)).getBytes();
+   }
+
+   /**
+    * Returns the value at row # row cast to char type.
+    *
+    * @param  row The row number
+    *
+    * @return The value at row # row cast to char. If no such value exists
+    *         return a value signifying the position is empty, as defined by
+    *         SparseCharColumn.
+    */
+   public char getChar(int row) {
+
+      if (!elements.containsKey(row)) {
+         return SparseDefaultValues.getDefaultChar();
+      }
+
+      return (char) getInt(row);
+   }
+
+   /**
+    * Returns the value at row # row, ina chars array.
+    *
+    * @param  row The row number
+    *
+    * @return The value at row # row represented with a chars array. If no such
+    *         value exists returns null.
+    */
+   public char[] getChars(int row) {
+
+      if (!elements.containsKey(row)) {
+         return SparseDefaultValues.getDefaultChars();
+      }
+
+      return Long.toString(getLong(row)).toCharArray();
+   }
+
+   /**
+    * Returns the value at row # row cast to double.
+    *
+    * @param  row The row number
+    *
+    * @return The value at row # row cast to double. If no such value exists
+    *         returns a value signifying the position is empty, as defined by
+    *         SparseDoubleColumn.
+    */
+   public double getDouble(int row) {
+
+      if (!elements.containsKey(row)) {
+         return SparseDefaultValues.getDefaultDouble();
+      }
+
+      return (double) getLong(row);
+   }
+
+   /**
+    * Returns the value at row # row cast to float type.
+    *
+    * @param  row The row number
+    *
+    * @return The value at row # row cast to float. If no such value exists
+    *         returns a value signifying the position is empty, as defined by
+    *         SparseFloatColumn.
+    */
+   public float getFloat(int row) {
+
+      if (!elements.containsKey(row)) {
+         return (float) SparseDefaultValues.getDefaultDouble();
+      }
+
+      return (float) getLong(row);
+   }
+
+   /**
+    * Returns the value at row # row cast to int.
+    *
+    * @param  row The row number
+    *
+    * @return Value at row number row cast to int. If no such value exists
+    *         returns a value signifying the position is empty, as defined by
+    *         SparseIntColumn.
+    */
+   public int getInt(int row) {
+
+      if (!elements.containsKey(row)) {
+         return SparseDefaultValues.getDefaultInt();
+      }
+
+      return (int) getLong(row);
+   }
+
+   /**
+    * Returns the internal representation of this column.
+    *
+    * @return Internal representation of this column.
+    */
+   public Object getInternal() {
+      int max_index = -1;
+      long[] internal = null;
+      int[] keys = elements.keys();
+
+      for (int i = 0; i < keys.length; i++) {
+
+         if (keys[i] > max_index) {
+            max_index = keys[i];
+         }
+      }
+
+      internal = new long[max_index + 1];
+
+      for (int i = 0; i < max_index + 1; i++) {
+         internal[i] = (long) SparseDefaultValues.getDefaultInt();
+      }
+
+      for (int i = 0; i < keys.length; i++) {
+         internal[keys[i]] = elements.get(keys[i]);
+      }
+
+      return internal;
+   }
+
+   /**
+    * Returns the value at row # row.
+    *
+    * @param  row The row number
+    *
+    * @return The value at row # row. If no such value exists returns a value
+    *         signifying the position is empty, as defined by this class.
+    */
+   public long getLong(int row) {
+
+      if (elements.containsKey(row)) {
+         return elements.get(row);
+      } else {
+         return (long) SparseDefaultValues.getDefaultInt();
+      }
+   }
+
+   /**
+    * Get the maximum value contained in this Column.
+    *
+    * @return Maximum value of this Column
+    */
+   public double getMax() {
+      initRange();
+
+      return (double) max;
+   }
+
+   /**
+    * Get the minimum value contained in this Column.
+    *
+    * @return Minimum value of this Column
+    */
+   public double getMin() {
+      initRange();
+
+      return (double) min;
+   }
+
+   /**
+    * Returns the value at row # row, encapsulated in a Long object.
+    *
+    * @param  row The row number
+    *
+    * @return Long object encapsulating the value at row # row
+    */
+   public Object getObject(int row) {
+
+      if (elements.containsKey(row)) {
+         return new Long(elements.get(row));
+      } else {
+         return new Long((long) SparseDefaultValues.getDefaultInt());
+      }
+   }
+
+   /**
+    * Returns the value at row # row, cast to type short.
+    *
+    * @param  row The row number
+    *
+    * @return The value at row # row cast to short. If no such value exists
+    *         returns a value signifying the position is empty, as defined by
+    *         SparseShortColumn.
+    */
+   public short getShort(int row) {
+
+      if (!elements.containsKey(row)) {
+         return (short) SparseDefaultValues.getDefaultInt();
+      }
+
+      return (short) getLong(row);
+   }
+
+   /**
+    * Returns the value at row # row, represented as a String.
+    *
+    * @param  row The row number
+    *
+    * @return String Object representing the value at row # row. If no such
+    *         value exists returns null.
+    */
+   public String getString(int row) {
+
+      if (!elements.containsKey(row)) {
+         return "" + (long) SparseDefaultValues.getDefaultInt();
+      }
+
+      return String.valueOf(getLong(row));
+   }
+
+   /**
+    * Returns a subset of this column with entried from rows indicated by <code>
+    * indices</code>.
+    *
+    * @param  indices Row numbers to include in the returned subset.
+    *
+    * @return Subset of this column, including rows indicated by <code>
+    *         indices</code>.
+    */
+   public Column getSubset(int[] indices) {
+      SparseLongColumn retVal = new SparseLongColumn(indices.length);
+
+      for (int i = 0; i < indices.length; i++) {
+
+         if (elements.containsKey(indices[i])) {
+            retVal.setLong(getLong(indices[i]), i);
+         }
+      }
+
+      super.getSubset(retVal, indices);
+
+      return retVal;
+   }
+
+   /**
+    * Returns a SparseLongColumn that holds only the data from rows <code>
+    * pos</code> through <code>pos+len.</code>
+    *
+    * @param  pos The row number which is the beginning of the subset
+    * @param  len Number of consequetive rows after <code>pos</code> that are to
+    *             be included in the subset.
+    *
+    * @return SparseLongColumn with the data from rows <code>pos</code> through
+    *         <code>pos+len</code>
+    */
+   public Column getSubset(int pos, int len) {
+      SparseLongColumn subCol = new SparseLongColumn();
+      subCol.elements = (VIntLongHashMap) elements.getSubset(pos, len);
+      getSubset(subCol, pos, len);
+
+      return subCol;
+   }
+
+   /**
+    * Removes the byte value in row # <code>pos</code> and returns it
+    * encapsulated in a Long object.
+    *
+    * @param  pos Description of parameter pos.
+    *
+    * @return Removes the byte value in row # <code>pos</code> and returns it
+    *         encapsulated in a Long object.
+    */
+   public Object removeRow(int pos) {
+
+      if (elements.containsKey(pos)) {
+         return new Long(elements.remove(pos));
+      } else {
+         return null;
+      }
+   }
+
+   /**
+    * Set the value at pos to 1 if newEntry is true, otherwise set it to 0.
+    *
+    * @param newEntry The new item
+    * @param pos      The position
+    */
+   public void setBoolean(boolean newEntry, int pos) {
+
+      if (newEntry) {
+         setLong((long) 1, pos);
+      } else {
+         setLong((long) 0, pos);
+      }
+   }
+
+   /**
+    * Casts newEntry to long an sets its value at pos.
+    *
+    * @param newEntry The new item
+    * @param pos      The position
+    */
+   public void setByte(byte newEntry, int pos) {
+      setLong((long) newEntry, pos);
+   }
+
+   /**
+    * Converts <code>newEntry</code> into a String, then sets the long value
+    * represented by it at row #<code>pos</code>.
+    *
+    * @param newEntry The new value
+    * @param pos      The position
+    */
+   public void setBytes(byte[] newEntry, int pos) {
+      setString(new String(newEntry), pos);
+   }
+
+   /**
+    * Convert newEntry to a char array and call setChars().
+    *
+    * @param newEntry The new item
+    * @param pos      The position
+    */
+   public void setChar(char newEntry, int pos) {
+      setLong((long) newEntry, pos);
+   }
+
+   /**
+    * Convert newEntry to a String and call setString().
+    *
+    * @param newEntry The new item
+    * @param pos      The position
+    */
+   public void setChars(char[] newEntry, int pos) {
+      setString(new String(newEntry), pos);
+   }
+
+   /**
+    * Casts newEntry to long an sets its value at pos.
+    *
+    * @param newEntry The new item
+    * @param pos      The position
+    */
+   public void setDouble(double newEntry, int pos) {
+      setLong((long) newEntry, pos);
+   }
+
+   /**
+    * Casts newEntry to long an sets its value at pos.
+    *
+    * @param newEntry The new item
+    * @param pos      The position
+    */
+   public void setFloat(float newEntry, int pos) {
+      setLong((long) newEntry, pos);
+   }
+
+   /**
+    * Casts newEntry to long an sets its value at pos.
+    *
+    * @param newEntry The new item
+    * @param pos      The position
+    */
+   public void setInt(int newEntry, int pos) { setLong((long) newEntry, pos); }
+
+   /**
+    * Sets the value at pos to newEntry.
+    *
+    * @param newEntry The new item
+    * @param pos      The position
+    */
+   public void setLong(long newEntry, int pos) { elements.put(pos, newEntry); }
+
+   /**
+    * If newEntry is a Number, get its long value, otherwise call setString() on
+    * newEntry.toString().
+    *
+    * @param newEntry The new item
+    * @param pos      The position
+    */
+   public void setObject(Object newEntry, int pos) {
+      long l = toLong(newEntry);
+      setLong(l, pos);
+   }
+
+   /**
+    * Casts newEntry to long an sets its value at pos.
+    *
+    * @param newEntry The new item
+    * @param pos      The position
+    */
+   public void setShort(short newEntry, int pos) {
+      setLong((long) newEntry, pos);
+   }
+
+   /**
+    * Converts newEntry to a Long and inserts the long value.
+    *
+    * @param newEntry The new item
+    * @param pos      The position
+    */
+   public void setString(String newEntry, int pos) {
+      setLong((long) (Double.parseDouble(newEntry)), pos);
+   }
+
+   /**
+    * Swaps the values between 2 rows. If there is no data in row
+    * #<code>pos1</code> then nothing is stored in row #<ocde>pos2, and vice
+    * versa.
+    *
+    * @param pos1 Row number of first item to be swaped
+    * @param pos2 Row number of second item to be swaped
+    */
+   public void swapRows(int pos1, int pos2) {
+
+      if (pos1 == pos2) {
+         return;
+      }
+
+      boolean valid_1 = elements.containsKey(pos1);
+      boolean valid_2 = elements.containsKey(pos2);
+      long val1 = elements.remove(pos1);
+      long val2 = elements.remove(pos2);
+
+      if (valid_1) {
+         setLong(val1, pos2);
+      }
+
+      if (valid_2) {
+         setLong(val2, pos1);
+      }
+
+      missing.swapRows(pos1, pos2);
+      empty.swapRows(pos1, pos2);
+   }
+} // end class SparseLongColumn
