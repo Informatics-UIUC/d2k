@@ -72,23 +72,18 @@ public class SparseFloatColumn extends AbstractSparseColumn
 
    //~ Static fields/initializers **********************************************
 
-   /** Description of field serialVersionUID. */
+   /** The universal version identifier. */
    static private final long serialVersionUID = 1L;
 
    //~ Instance fields *********************************************************
 
-   /** Description of field elements. */
+   /** Values in this column. */
    private VIntFloatHashMap elements;
 
-   /**
-    * SparseFloatColumn is a column in a sparse table that holds data of type
-    * float. internal representation: the column is an int to float hashmap. the
-    * value j mapped to key i is the value j in line i in this column.
-    */
-
+   /** Max value in this column. */
    private float max;
 
-   /** Description of field min. */
+   /** Min value in this column. */
    private float min;
 
    //~ Constructors ************************************************************
@@ -104,7 +99,7 @@ public class SparseFloatColumn extends AbstractSparseColumn
     * capacity equal to or greater than <tt>initialCapacity</tt> and with the
     * default load factor.
     *
-    * @param initialCapacity an <code>int</code> value
+    * @param initialCapacity Initial capacity for the column
     */
    public SparseFloatColumn(int initialCapacity) {
       super();
@@ -121,15 +116,15 @@ public class SparseFloatColumn extends AbstractSparseColumn
 
    /**
     * Creates a new <code>SparseFloatColumn</code> instance that will hold the
-    * data in the <code>data</code> array. the elements in <code>data</code> are
+    * data in the <code>data</code> array. The elements in <code>data</code> are
     * being stored in <code>elements</code> in rows 0 through the size of <code>
     * data</code>.
     *
-    * <p>this is just to comply with regular column objects that have this
+    * <p>This is just to comply with regular column objects that have this
     * constructor. because this is a sparse column it is unlikely to be used.
     * </p>
     *
-    * @param data Description of parameter data.
+    * @param data Data to populate the column with
     */
    public SparseFloatColumn(float[] data) {
       this(data.length);
@@ -140,13 +135,13 @@ public class SparseFloatColumn extends AbstractSparseColumn
    }
 
    /**
-    * each value data[i] is set to validRows[i]. if validRows is smaller than
+    * Each value data[i] is set to validRows[i]. If validRows is smaller than
     * data, the rest of the values in data are being inserted to the end of this
     * column
     *
-    * @param data      a float array that holds the values to be inserted into
+    * @param data      A float array that holds the values to be inserted into
     *                  this column
-    * @param validRows the indices to be valid in this column
+    * @param validRows The indices to be valid in this column
     */
    public SparseFloatColumn(float[] data, int[] validRows) {
       this(data.length);
@@ -168,15 +163,14 @@ public class SparseFloatColumn extends AbstractSparseColumn
     * Converts obj into type float. If obj is null returns the negative infinity
     * of class Float.
     *
-    * @param  obj an Object to be converted into type float
+    * @param  obj Object to be converted into type float
     *
-    * @return a float representation of the data held by <code>obj</code> # If
+    * @return A float representation of the data held by <code>obj</code>. If
     *         obj is null returns a value signifying the position is empty, as
-    *         defined by this class. # If obj is a Number return its float value
-    *         # If obj is a Character return it char value casted into float #
-    *         If obj is a Boolean return 1 if obj=true else return 0 #
-    *         Otherwise: construct a String from obj and attempt to parse a
-    *         float from it.
+    *         defined by this class. If obj is a Number return its float value.
+    *         If obj is a Character return it char value casted into float. If
+    *         obj is a Boolean return 1 if obj=true else return 0. Otherwise:
+    *         construct a String from obj and attempt to parse a float from it.
     */
    static public float toFloat(Object obj) {
 
@@ -213,10 +207,10 @@ public class SparseFloatColumn extends AbstractSparseColumn
     * Compares 2 values and Retruns an int representation of the relation
     * between the values.
     *
-    * @param  val_1 - the first value to be compared
-    * @param  val_2 - the second value to be compared
+    * @param  val_1 First value to be compared
+    * @param  val_2 Second value to be compared
     *
-    * @return int - representing the relation between the values
+    * @return Value the relation between the values
     *
     *         <p>if val_1 > val_2 returns 1. if val_1 < val_2 returns -1.
     *         returns 0 if they are equal.</p>
@@ -235,21 +229,21 @@ public class SparseFloatColumn extends AbstractSparseColumn
    }
 
    /**
-    * put your documentation comment here.
+    * Returns a reference to the data in this column.
     *
-    * @return put your documentation comment here.
+    * @return Map that holds the data of this column (VIntByteHashMap).
     */
    protected VHashMap getElements() { return elements; }
 
    /**
-    * Returns the valid values in rows <codE>begin</code> through <codE>end.
+    * Returns the valid values in rows <code>begin</code> through <code>end.
     * </code>
     *
-    * @param  begin row number from to begin retrieving of values
-    * @param  end   last row number in the section from which values are
+    * @param  begin Row number from to begin retrieving of values
+    * @param  end   Last row number in the section from which values are
     *               retrieved.
     *
-    * @return only valid values from rows no. <code>begin</code> through <codE>
+    * @return Only valid values from rows no. <code>begin</code> through <codE>
     *         end</code>, sorted.
     */
    protected float[] getValuesInRange(int begin, int end) {
@@ -286,12 +280,12 @@ public class SparseFloatColumn extends AbstractSparseColumn
    }
 
    /**
-    * Inserts <code>val <code>into row #<code>pos</code>. If this position
-    * already holds data - insert the old data into row #<code>pos+1</code>
+    * Inserts <code>val<code>into row #<code>pos</code>. If this position
+    * already holds data, insert the old data into row #<code>pos+1</code>
     * recursively.</code></code>
     *
-    * @param val the new boolean value to be inserted at pos.
-    * @param pos the row number to insert val.
+    * @param val New boolean value to be inserted at pos.
+    * @param pos Row number to insert val.
     */
    protected void insertRow(float val, int pos) {
       boolean valid = elements.containsKey(pos);
@@ -307,9 +301,9 @@ public class SparseFloatColumn extends AbstractSparseColumn
    }
 
    /**
-    * put your documentation comment here.
+    * Replaces the current map of elements with the supplied map.
     *
-    * @param map Description of parameter $param.name$.
+    * @param map New elements
     */
    protected void setElements(VHashMap map) {
       elements = (VIntFloatHashMap) map;
@@ -318,7 +312,7 @@ public class SparseFloatColumn extends AbstractSparseColumn
    /**
     * Add the specified number of blank rows.
     *
-    * @param number number of rows to add.
+    * @param number Number of rows to add.
     */
    public void addRows(int number) {
 
@@ -328,19 +322,14 @@ public class SparseFloatColumn extends AbstractSparseColumn
    /**
     * Compares the value represented by element and the one of row number <code>
     * pos</code>. <code>elements</code> will be converted to a compatible type
-    * to this column. if element > pos returns 1. if element < pos retruns -1.
-    * if the are equal returns 0. if one of the representation does not hold a
+    * to this column. If element > pos returns 1. if element < pos retruns -1.
+    * If the are equal returns 0. If one of the representation does not hold a
     * value, it is considered smaller than the other.
     *
-    * @param  obj Description of parameter obj.
-    * @param  pos Description of parameter pos.
+    * @param  obj Object to compare
+    * @param  pos Position of element to compare
     *
-    * @return compares the value represented by element and the one of row
-    *         number <code>pos</code>. <code>elements</code> will be converted
-    *         to a compatible type to this column. if element > pos returns 1.
-    *         if element < pos retruns -1. if the are equal returns 0. if one of
-    *         the representation does not hold a value, it is considered smaller
-    *         than the other.
+    * @return Result of comparison (-1, 0, or 1)
     */
    public int compareRows(Object obj, int pos) {
       int val = validate(obj, pos);
@@ -356,16 +345,13 @@ public class SparseFloatColumn extends AbstractSparseColumn
    }
 
    /**
-    * Compares 2 values that are in this column. Retruns an int representation
+    * Compares 2 values that are in this column. Returns an int representation
     * of the relation between the values.
     *
-    * @param  pos1 - the row number of the first value to be compared
-    * @param  pos2 - the row number of the second value to be compared
+    * @param  pos1 Row number of the first value to be compared
+    * @param  pos2 Row number of the second value to be compared
     *
-    * @return int - representing the relation between the values at row # <code>
-    *         pos1</code> and row # <code>pos2</code>. if pos1's value > pos2'
-    *         value returns 1. if pos1's value < pos2' value returns -1. returns
-    *         0 if they are equal.
+    * @return Result of comparison (-1, 0, or 1)
     */
    public int compareRows(int pos1, int pos2) {
       int val = validate(pos1, pos2);
@@ -381,11 +367,10 @@ public class SparseFloatColumn extends AbstractSparseColumn
    }
 
    /**
-    * performs a deep copy of this SparseFloatColumn returns an exact copy of
+    * Performs a deep copy of this SparseFloatColumn returns an exact copy of
     * this SparseFloatColumn.
     *
-    * @return performs a deep copy of this SparseFloatColumn returns an exact
-    *         copy of this SparseFloatColumn.
+    * @return Deep copy of this SparseFloatColumn
     */
    public Column copy() {
       SparseFloatColumn retVal;
@@ -414,11 +399,11 @@ public class SparseFloatColumn extends AbstractSparseColumn
    }
 
    /**
-    * Returns the value at row # row, casted to type boolean.
+    * Returns the value at row # row, cast to type boolean.
     *
-    * @param  row the row number
+    * @param  row The row number
     *
-    * @return false if the value at row # row equals zero, true otherwise. if
+    * @return False if the value at row # row equals zero, true otherwise. if
     *         nosuch value exists returns false.
     */
    public boolean getBoolean(int row) {
@@ -431,11 +416,11 @@ public class SparseFloatColumn extends AbstractSparseColumn
    }
 
    /**
-    * Returns the value at row # row, casted to type byte.
+    * Returns the value at row # row, cast to type byte.
     *
-    * @param  row the row number
+    * @param  row The row number
     *
-    * @return the value at row casted to byte. if no such value exists returns a
+    * @return The value at row cast to byte. If no such value exists returns a
     *         value signifying the position is empty, as defined by
     *         SparseByteColumn
     */
@@ -451,9 +436,9 @@ public class SparseFloatColumn extends AbstractSparseColumn
    /**
     * Returns the value at row # row converted to a bytes array.
     *
-    * @param  row the row number
+    * @param  row The row number
     *
-    * @return the value in row # row represented with a bytes array. If no such
+    * @return Value in row # row represented with a bytes array. If no such
     *         value exists returns null.
     */
    public byte[] getBytes(int row) {
@@ -466,12 +451,12 @@ public class SparseFloatColumn extends AbstractSparseColumn
    }
 
    /**
-    * Returns the value at row # row casted to char type.
+    * Returns the value at row # row cast to char type.
     *
-    * @param  row the row number
+    * @param  row The row number
     *
-    * @return the value at row # row casted to char. if no such value exists
-    *         return a value signifying the position is empty, as defined by
+    * @return Value at row # row cast to char. If no such value exists return a
+    *         value signifying the position is empty, as defined by
     *         SparseCharColumn.
     */
    public char getChar(int row) {
@@ -486,9 +471,9 @@ public class SparseFloatColumn extends AbstractSparseColumn
    /**
     * Returns the value at row # row, ina chars array.
     *
-    * @param  row the row number
+    * @param  row The row number
     *
-    * @return the value at row # row represented with a chars array. If no such
+    * @return Value at row # row represented with a chars array. If no such
     *         value exists returns null.
     */
    public char[] getChars(int row) {
@@ -501,12 +486,12 @@ public class SparseFloatColumn extends AbstractSparseColumn
    }
 
    /**
-    * Returns the value at row # row casted to double.
+    * Returns the value at row # row cast to double.
     *
-    * @param  row the row number
+    * @param  row The row number
     *
-    * @return the value at row # row casted to double. If no such value exists
-    *         returns a value signifying the position is empty, as defined by
+    * @return Value at row # row cast to double. If no such value exists returns
+    *         a value signifying the position is empty, as defined by
     *         SparseDoubleColumn.
     */
    public double getDouble(int row) {
@@ -521,9 +506,9 @@ public class SparseFloatColumn extends AbstractSparseColumn
    /**
     * Returns the value at row # row.
     *
-    * @param  row the row number
+    * @param  row The row number
     *
-    * @return the value at row # row. If no such value exists returns a value
+    * @return Value at row # row. If no such value exists returns a value
     *         signifying the position is empty, as defined by this class.
     */
    public float getFloat(int row) {
@@ -536,11 +521,11 @@ public class SparseFloatColumn extends AbstractSparseColumn
    }
 
    /**
-    * Returns the value at row # row casted to int.
+    * Returns the value at row # row cast to int.
     *
-    * @param  row the row number
+    * @param  row The row number
     *
-    * @return the value at row number row casted to int. if no such value exists
+    * @return Value at row number row cast to int. If no such value exists
     *         returns a value signifying the position is empty, as defined by
     *         SparseIntColumn.
     */
@@ -556,7 +541,7 @@ public class SparseFloatColumn extends AbstractSparseColumn
    /**
     * Returns the internal representation of this column.
     *
-    * @return returns the internal representation of this column.
+    * @return Internal representation of this column.
     */
    public Object getInternal() {
       int max_index = -1;
@@ -584,12 +569,12 @@ public class SparseFloatColumn extends AbstractSparseColumn
    }
 
    /**
-    * Returns the value at row # row, casted to type long.
+    * Returns the value at row # row, cast to type long.
     *
-    * @param  row the row number
+    * @param  row The row number
     *
-    * @return the value at row # row casted to long. if no such value exists
-    *         returns a value signifying the position is empty, as defined by
+    * @return Value at row # row cast to long. if no such value exists returns a
+    *         value signifying the position is empty, as defined by
     *         SparseLongColumn.
     */
    public long getLong(int row) {
@@ -604,7 +589,7 @@ public class SparseFloatColumn extends AbstractSparseColumn
    /**
     * Get the maximum value contained in this Column.
     *
-    * @return the maximum value of this Column
+    * @return Maximum value of this Column
     */
    public double getMax() {
       initRange();
@@ -615,7 +600,7 @@ public class SparseFloatColumn extends AbstractSparseColumn
    /**
     * Get the minimum value contained in this Column.
     *
-    * @return the minimum value of this Column
+    * @return Minimum value of this Column
     */
    public double getMin() {
       initRange();
@@ -626,7 +611,7 @@ public class SparseFloatColumn extends AbstractSparseColumn
    /**
     * Returns the value at row # row, encapsulated in a Float object.
     *
-    * @param  row the row number
+    * @param  row The row number
     *
     * @return Float object encapsulating the value at row # row
     */
@@ -640,11 +625,11 @@ public class SparseFloatColumn extends AbstractSparseColumn
    }
 
    /**
-    * Returns the value at row # row, casted to type short.
+    * Returns the value at row # row, cast to type short.
     *
-    * @param  row the row number
+    * @param  row The row number
     *
-    * @return the value at row # row casted to short. if no such value exists
+    * @return The value at row # row cast to short. If no such value exists
     *         returns a value signifying the position is empty, as defined by
     *         SparseShortColumn.
     */
@@ -660,9 +645,9 @@ public class SparseFloatColumn extends AbstractSparseColumn
    /**
     * Returns the value at row # row, represented as a String.
     *
-    * @param  row the row number
+    * @param  row The row number
     *
-    * @return a String Object representing the value at row # row. If no such
+    * @return String Object representing the value at row # row. If no such
     *         value exists returns null.
     */
    public String getString(int row) {
@@ -675,12 +660,12 @@ public class SparseFloatColumn extends AbstractSparseColumn
    }
 
    /**
-    * returns a subset of this column with entried from rows indicated by <code>
+    * Returns a subset of this column with entried from rows indicated by <code>
     * indices</code>.
     *
-    * @param  indices row numbers to include in the returned subset.
+    * @param  indices Row numbers to include in the returned subset.
     *
-    * @return a subset of this column, including rows indicated by <code>
+    * @return Subset of this column, including rows indicated by <code>
     *         indices</code>.
     */
    public Column getSubset(int[] indices) {
@@ -690,8 +675,6 @@ public class SparseFloatColumn extends AbstractSparseColumn
 
          if (elements.containsKey(indices[i])) {
 
-            // XIAOLEI
-            // retVal.setFloat(getFloat(indices[i]), indices[i]);
             retVal.setFloat(getFloat(indices[i]), i);
          }
       }
@@ -705,12 +688,12 @@ public class SparseFloatColumn extends AbstractSparseColumn
     * Returns a SparseFloatColumn that holds only the data from rows <code>
     * pos</code> through <code>pos+len.</code>
     *
-    * @param  pos the row number which is the beginning of the subset
-    * @param  len number of consequetive rows after <code>pos</code> that are to
+    * @param  pos The row number which is the beginning of the subset
+    * @param  len Number of consequetive rows after <code>pos</code> that are to
     *             be included in the subset.
     *
-    * @return a SparseFloatColumn with the data from rows <code>pos</code>
-    *         through <code>pos+len</code>
+    * @return SparseFloatColumn with the data from rows <code>pos</code> through
+    *         <code>pos+len</code>
     */
    public Column getSubset(int pos, int len) {
       SparseFloatColumn subCol = new SparseFloatColumn();
@@ -726,8 +709,8 @@ public class SparseFloatColumn extends AbstractSparseColumn
     *
     * @param  pos Description of parameter pos.
     *
-    * @return removes the byte value in row # <code>pos</code> and returns it
-    *         encapsulated in a Float object.
+    * @return Returns the byte value in row #<code>pos</code> encapsulated in a
+    *         Float object.
     */
    public Object removeRow(int pos) {
 
@@ -741,8 +724,8 @@ public class SparseFloatColumn extends AbstractSparseColumn
    /**
     * Set the value at pos to be 1.0 if newEntry is true, 0 otherwise.
     *
-    * @param newEntry the new item
-    * @param pos      the position
+    * @param newEntry The new item
+    * @param pos      The position
     */
    public void setBoolean(boolean newEntry, int pos) {
 
@@ -757,8 +740,8 @@ public class SparseFloatColumn extends AbstractSparseColumn
     * Casting <code>newEntry>/code> into float type and setting it at row #
     * <code>pos.</code></code>
     *
-    * @param newEntry the new item
-    * @param pos      the position
+    * @param newEntry The new item
+    * @param pos      The position
     */
    public void setByte(byte newEntry, int pos) {
       setFloat((float) newEntry, pos);
@@ -767,8 +750,8 @@ public class SparseFloatColumn extends AbstractSparseColumn
    /**
     * Converts newEntry to a float (via conversion to a String first).
     *
-    * @param newEntry the new item
-    * @param pos      the position
+    * @param newEntry The new item
+    * @param pos      The position
     */
    public void setBytes(byte[] newEntry, int pos) {
       setString(new String(newEntry), pos);
@@ -777,8 +760,8 @@ public class SparseFloatColumn extends AbstractSparseColumn
    /**
     * Convert newEntry to a char array and call setChars().
     *
-    * @param newEntry the new item
-    * @param pos      the position
+    * @param newEntry The new item
+    * @param pos      The position
     */
    public void setChar(char newEntry, int pos) {
       setFloat((float) newEntry, pos);
@@ -787,8 +770,8 @@ public class SparseFloatColumn extends AbstractSparseColumn
    /**
     * Converts newEntry to a String and calls setString().
     *
-    * @param newEntry the new item
-    * @param pos      the position
+    * @param newEntry The new item
+    * @param pos      The position
     */
    public void setChars(char[] newEntry, int pos) {
       setString(new String(newEntry), pos);
@@ -798,18 +781,18 @@ public class SparseFloatColumn extends AbstractSparseColumn
     * Converts <code>newEntry</code> to a float an set the value at row # <code>
     * pos.</code>
     *
-    * @param newEntry the new item
-    * @param pos      the position
+    * @param newEntry The new item
+    * @param pos      The position
     */
    public void setDouble(double newEntry, int pos) {
       setFloat((float) newEntry, pos);
    }
 
    /**
-    * Set the value at pos to be newEntry.
+    * Sets the value at pos to be newEntry.
     *
-    * @param newEntry the new item
-    * @param pos      the position
+    * @param newEntry The new item
+    * @param pos      The position
     */
    public void setFloat(float newEntry, int pos) {
       elements.put(pos, newEntry);
@@ -819,8 +802,8 @@ public class SparseFloatColumn extends AbstractSparseColumn
     * Converts <code>newEntry</code> to a float an set the value at row # <code>
     * pos.</code>
     *
-    * @param newEntry the new item
-    * @param pos      the position
+    * @param newEntry The new item
+    * @param pos      The position
     */
    public void setInt(int newEntry, int pos) {
       setFloat((float) newEntry, pos);
@@ -830,8 +813,8 @@ public class SparseFloatColumn extends AbstractSparseColumn
     * Converts <code>newEntry</code> to a float an set the value at row # <code>
     * pos.</code>
     *
-    * @param newEntry the new item
-    * @param pos      the position
+    * @param newEntry The new item
+    * @param pos      The position
     */
    public void setLong(long newEntry, int pos) {
       setFloat((float) newEntry, pos);
@@ -841,8 +824,8 @@ public class SparseFloatColumn extends AbstractSparseColumn
     * If newEntry is a Number, store the float value of newEntry otherwise call
     * setString() on newEntry.toString().
     *
-    * @param newEntry the object to put into this column at pos
-    * @param pos      the row to put newEntry into
+    * @param newEntry Object to put into this column at pos
+    * @param pos      Row to put newEntry into
     */
    public void setObject(Object newEntry, int pos) {
       float f = toFloat(newEntry);
@@ -853,18 +836,18 @@ public class SparseFloatColumn extends AbstractSparseColumn
     * Converts <code>newEntry</code> to a float an set the value at row # <code>
     * pos.</code>
     *
-    * @param newEntry the new item
-    * @param pos      the position
+    * @param newEntry The new item
+    * @param pos      The position
     */
    public void setShort(short newEntry, int pos) {
       setFloat((float) newEntry, pos);
    }
 
    /**
-    * Set the value at pos to be newEntry by calling Float.parseFloat().
+    * Sets the value at pos to be newEntry by calling Float.parseFloat().
     *
-    * @param newEntry the newEntry
-    * @param pos      the position
+    * @param newEntry The newEntry
+    * @param pos      The position
     */
    public void setString(String newEntry, int pos) {
       setFloat(Float.parseFloat(newEntry), pos);
@@ -872,11 +855,11 @@ public class SparseFloatColumn extends AbstractSparseColumn
 
    /**
     * Swaps the values between 2 rows. If there is no data in row
-    * #<code>pos1</code> then nothing is stored in row #<ocde>pos2 , and vice
-    * versia.
+    * #<code>pos1</code> then nothing is stored in row #<ocde>pos2, and vice
+    * versa.
     *
-    * @param pos1 - the row number of first item to be swaped
-    * @param pos2 - the row number of second item to be swaped
+    * @param pos1 Row number of first item to be swaped
+    * @param pos2 Row number of second item to be swaped
     */
    public void swapRows(int pos1, int pos2) {
 
