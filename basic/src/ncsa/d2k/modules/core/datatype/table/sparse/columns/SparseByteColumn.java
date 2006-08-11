@@ -70,10 +70,10 @@ public class SparseByteColumn extends AbstractSparseColumn
 
    //~ Instance fields *********************************************************
 
-   /** Description of field max. */
+   /** Max value in this column. */
    private byte max;
 
-   /** Description of field min. */
+   /** Min value in this column. */
    private byte min;
 
    /** Values in this column. */
