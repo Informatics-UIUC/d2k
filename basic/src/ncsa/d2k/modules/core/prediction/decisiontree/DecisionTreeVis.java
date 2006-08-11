@@ -73,7 +73,12 @@ import java.util.Hashtable;
 
 
 /**
- * DecisionTree Visualization
+ * <p>Overview: Visualize a decision tree.
+ * <p>Detailed Description: Given a ViewableDTModel, displays the structure
+ * and contents of the nodes of the decision tree.  The <i>Navigator</i>
+ * on the left shows a small view of the entire tree.  The main area
+ * shows an expanded view of the tree. For more information look up the help
+ * provided in the UI of the module
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -110,7 +115,7 @@ public final class DecisionTreeVis extends VisModule {
    /** size of buttons. */
    static private final Dimension buttonsize = new Dimension(22, 22);
 
-   /** Description of field MENUITEMS. */
+   /** number of menu items in pop-out menus */
    static private final int MENUITEMS = 15;
 
    //~ Methods *****************************************************************
@@ -380,16 +385,16 @@ public final class DecisionTreeVis extends VisModule {
        /** panel for buttons */
       private JPanel buttonpanel;
        /** menu items that represent colors */
-      private ColorMenuItem[] coloritems;
+      //private ColorMenuItem[] coloritems;
 
        /** color lookup table */
       private Hashtable colortable;
        /** depth menu item */
       private JMenuItem depth;
-       /** */
+       /** frame */
       private JD2KFrame depthframe;
        /** */
-      private DepthPanel depthpanel;
+      //private DepthPanel depthpanel;
        /** help button */
       private JButton helpbutton;
        /** help window */
@@ -399,32 +404,51 @@ public final class DecisionTreeVis extends VisModule {
       private JMenuBar menubar;
        /** navigator panel */
       private NavigatorPanel navigatorpanel;
+       /** order table */
       private Hashtable ordertable;
+       /** print button */
       private JButton printbutton;
+       /** print tree menu item */
       private JMenuItem printtree;
+       /** print window menu item */
       private JMenuItem printwindow;
+       /** reset view button */
       private JButton resetbutton;
+       /** save as pmml menu item */
       private JMenuItem saveAsPmml;
+       /** color scheme */
       private DecisionTreeScheme scheme;
+       /** search menu item */
       private JMenuItem search;
+       /** search button */
       private JButton searchbutton;
+       /** search frame */
       private JD2KFrame searchframe;
+       /** search panel */
       private SearchPanel searchpanel;
+       /** show branch labels checkbox */
       private JCheckBoxMenuItem showlabels;
-
+        /** side panel */
       private JPanel sidepanel;
+       /** scroll pane */
       private JScrollPane sidescrollpane;
+       /** spacing menu item */
       private JMenuItem spacing;
+       /** spacing frame */
       private JD2KFrame spacingframe;
+       /** spacing panel */
       private SpacingPanel spacingpanel;
 
+       /** toolbar */
       private JPanel toolpanel;
+       /** scroll pane holding tree */
       private TreeScrollPane treescrollpane;
+       /** zoom checkbox */
       private JCheckBoxMenuItem zoom;
+       /** zoom button */
       private JToggleButton zoombutton;
-
+        /** this is the decision tree model */
       private ViewableDTModel model;
-
 
        /**
         * Invoked when an action occurs.
@@ -597,47 +621,65 @@ public final class DecisionTreeVis extends VisModule {
            helpWindow = new HelpWindow();
        }
 
+
        /**
-        * Print this view
-        * @param g
-        * @param pf
-        * @param pi
-        * @return
-        * @throws PrinterException
+        * Prints the page at the specified index into the specified
+        * {@link java.awt.Graphics} context in the specified
+        * format.  A <code>PrinterJob</code> calls the
+        * <code>Printable</code> interface to request that a page be
+        * rendered into the context specified by
+        * <code>graphics</code>.  The format of the page to be drawn is
+        * specified by <code>pageFormat</code>.  The zero based index
+        * of the requested page is specified by <code>pageIndex</code>.
+        * If the requested page does not exist then this method returns
+        * NO_SUCH_PAGE; otherwise PAGE_EXISTS is returned.
+        * The <code>Graphics</code> class or subclass implements the
+        * {@link java.awt.print.PrinterGraphics} interface to provide additional
+        * information.  If the <code>Printable</code> object
+        * aborts the print job then it throws a {@link java.awt.print.PrinterException}.
+        *
+        * @param g   the context into which the page is drawn
+        * @param pf the size and orientation of the page being drawn
+        * @param pi  the zero based index of the page to be drawn
+        * @return PAGE_EXISTS if the page is rendered successfully
+        *         or NO_SUCH_PAGE if <code>pageIndex</code> specifies a
+        *         non-existent page.
+        * @throws java.awt.print.PrinterException
+        *          thrown when the print job is terminated.
         */
        public int print(Graphics g, PageFormat pf, int pi)
-         throws PrinterException {
-         double pageHeight = pf.getImageableHeight();
-         double pageWidth = pf.getImageableWidth();
+               throws PrinterException {
+           double pageHeight = pf.getImageableHeight();
+           double pageWidth = pf.getImageableWidth();
 
-         double cWidth = getWidth();
-         double cHeight = getHeight();
+           double cWidth = getWidth();
+           double cHeight = getHeight();
 
-         double scale = 1;
+           double scale = 1;
 
-         if (cWidth >= pageWidth) {
-            scale = pageWidth / cWidth;
-         }
+           if (cWidth >= pageWidth) {
+               scale = pageWidth / cWidth;
+           }
 
-         if (cHeight >= pageHeight) {
-            scale = Math.min(scale, pageHeight / cHeight);
+           if (cHeight >= pageHeight) {
+               scale = Math.min(scale, pageHeight / cHeight);
 
-         }
+           }
 
-         double cWidthOnPage = cWidth * scale;
-         double cHeightOnPage = cHeight * scale;
+           double cWidthOnPage = cWidth * scale;
+           double cHeightOnPage = cHeight * scale;
 
-         if (pi >= 1) {
-            return Printable.NO_SUCH_PAGE;
-         }
+           if (pi >= 1) {
+               return Printable.NO_SUCH_PAGE;
+           }
 
-         Graphics2D g2 = (Graphics2D) g;
-         g2.translate(pf.getImageableX(), pf.getImageableY());
-         g2.scale(scale, scale);
-         print(g2);
+           Graphics2D g2 = (Graphics2D) g;
+           g2.translate(pf.getImageableX(), pf.getImageableY());
+           g2.scale(scale, scale);
+           print(g2);
 
-         return Printable.PAGE_EXISTS;
-      } // end method print
+           return Printable.PAGE_EXISTS;
+       } // end method print
 
        /**
         * Called to pass the inputs received by the module to the view.
@@ -648,14 +690,6 @@ public final class DecisionTreeVis extends VisModule {
        public void setInput(Object object, int index) {
            model = (ViewableDTModel) object;
 
-           /*String[] outputs = model.getUniqueOutputValues();
-      *     scheme = new DecisionTreeScheme(outputs.length);    colortable =
-      * new Hashtable(outputs.length);    ordertable = new
-      * Hashtable(outputs.length);    for (int outindex = 0; outindex <
-      * outputs.length; outindex++) { colortable.put(outputs[outindex],
-      * scheme.getNextColor()); ordertable.put(outputs[outindex], new
-      * Integer(outindex));    }*/
-
            // Menu
            JMenu optionsmenu = new JMenu("Options");
            JMenu viewsmenu = new JMenu("Views");
@@ -665,17 +699,6 @@ public final class DecisionTreeVis extends VisModule {
            menubar.add(viewsmenu);
            menubar.add(toolsmenu);
 
-           /*JMenu colorsmenu = new JMenu("Set Colors");
-    *     coloritems = new ColorMenuItem[outputs.length];    JMenu
-    * currentmenu = colorsmenu;    int items = 0;    for (int outindex =
-    * 0; outindex < coloritems.length; outindex++) { coloritems[outindex]
-    * = new ColorMenuItem(outputs[outindex]);
-    * coloritems[outindex].addActionListener(this); if (items ==
-    * MENUITEMS) { JMenu nextmenu = new JMenu("More...");
-    * currentmenu.insert(nextmenu, 0); nextmenu.add(coloritems[outindex]);
-    * currentmenu = nextmenu; items = 1; } else {
-    * currentmenu.add(coloritems[outindex]); items++; }    }*/
-
            printtree = new JMenuItem("Print Tree...");
            printtree.addActionListener(this);
 
@@ -684,6 +707,7 @@ public final class DecisionTreeVis extends VisModule {
 
            saveAsPmml = new JMenuItem("Save as PMML...");
            saveAsPmml.addActionListener(this);
+           saveAsPmml.setEnabled(false);
 
            if (!(model instanceof NominalViewableDTModel)) {
                saveAsPmml.setEnabled(false);
@@ -834,15 +858,6 @@ public final class DecisionTreeVis extends VisModule {
            Constrain.setConstraints(toolpanel, buttonpanel, 1, 0, 1, 1,
                    GridBagConstraints.HORIZONTAL,
                    GridBagConstraints.NORTHWEST, 0, 0);
-           /*Constrain.setConstraints(toolpanel, resetbutton, 1, 0, 1, 1,
-           * GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTHWEST, 0, 0);
-           * Constrain.setConstraints(toolpanel, printbutton, 2, 0, 1, 1,
-           * GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTHWEST, 0, 0);
-           * Constrain.setConstraints(toolpanel, zoombutton, 3, 0, 1, 1,
-           * GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTHWEST, 0, 0);
-           * Constrain.setConstraints(toolpanel, searchbutton, 4, 0, 1, 1,
-           * GridBagConstraints.HORIZONTAL, GridBagConstraints.NORTHWEST, 0, 0);
-           */
 
            // Split pane
            brushpanel = new BrushPanel(model);
@@ -913,24 +928,32 @@ public final class DecisionTreeVis extends VisModule {
    }
 
     /**
-     *
+     * Panel to allow someone to input the maximum depth
      */
-   class DepthPanel extends JPanel implements ActionListener {
+   private class DepthPanel extends JPanel implements ActionListener {
+        /** apply button */
       JButton apply;
+        /** cancel button */
       JButton cancel;
+        /** close button */
       JButton close;
 
+        /** depth */
       int depth;
+        /** a frame */
       JD2KFrame depthframe;
+        /** text field */
       JTextField dfield;
 
+        /** label */
       JLabel dlabel;
+        /** the scroll pane holding the tree */
       TreeScrollPane treescrollpane;
 
         /**
          * Constructor
-         * @param frame
-         * @param scrollpane
+         * @param frame the frame
+         * @param scrollpane scollpane holding the tree
          */
       DepthPanel(JD2KFrame frame, TreeScrollPane scrollpane) {
          depthframe = frame;
@@ -1005,30 +1028,42 @@ public final class DecisionTreeVis extends VisModule {
    } // end class DepthPanel
 
     /**
-     *
+     *  Allow someone to change node spacing
      */
-   class SpacingPanel extends JPanel implements ActionListener {
+   private class SpacingPanel extends JPanel implements ActionListener {
+        /** apply button */
       JButton apply;
+        /** cancel button */
       JButton cancel;
+        /** close button */
       JButton close;
+        /** text field for horizontal */
       JTextField hfield;
-
+        /** label */
       JLabel hlabel;
+        /** navigator */
       NavigatorPanel navigatorpanel;
+        /** frame */
       JD2KFrame spacingframe;
+        /** scroll pane holding the tree */
       TreeScrollPane treescrollpane;
+        /** text field for vertical */
       JTextField vfield;
+        /** viewport */
       Viewport viewroot;
+        /** label */
       JLabel vlabel;
 
+        /** horizontal space */
       double xspace;
+        /** vertical space */
       double yspace;
 
         /**
          * Constructor
-         * @param frame
-         * @param scrollpane
-         * @param navigator
+         * @param frame the frame
+         * @param scrollpane scroll pane holding the tree
+         * @param navigator navigator
          */
       SpacingPanel(JD2KFrame frame, TreeScrollPane scrollpane,
                    NavigatorPanel navigator) {
