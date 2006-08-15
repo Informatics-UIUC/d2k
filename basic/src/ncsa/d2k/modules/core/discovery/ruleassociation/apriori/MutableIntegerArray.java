@@ -1,30 +1,66 @@
 package ncsa.d2k.modules.core.discovery.ruleassociation.apriori;
 import java.io.*;
 
+/**
+ *
+ * <p>Title: </p>
+ *
+ * <p>Description: </p>
+ *
+ * <p>Copyright: Copyright (c) 2006</p>
+ *
+ * <p>Company: </p>
+ *
+ * @todo Must review this code. It has many traps for array index out of bounds exceptions.  * Checking for availability of space in the integer array is never performed - must add these checks to the add methods.  * Also some of the add methods don't add but just override.  * Search D2K files to see where these class is used. Maybe use Trove Int Hash Set instead.
+ * @version 1.0
+ */
 final class MutableIntegerArray implements Serializable {
 	final private boolean debug = false;
 
-	/** the integers. */
+	/** the data. */
 	int [] integers = null;
 
 	/** the number of entries occupying the array., */
 	int count;
 
-	MutableIntegerArray (int size) {
+        /**
+         *
+         * Constructs a MutableIntegerArray with <code>size</code> integers.
+         * All set to zero.
+         * @param size int The number of integers in the array.
+         */
+        MutableIntegerArray (int size) {
 		integers = new int [size];
 		count = 0;
 	}
-	MutableIntegerArray (MutableIntegerArray mia) {
+
+        /**
+         * Constructs a MutableIntegerArray by copying data from <code>mia</code>.
+         * Copying only <code>mia.count</code> integers from <code>mia.integers</code> array.
+         * @param mia MutableIntegerArray Copying the data from <coe>mia</code> into this object.
+         */
+        MutableIntegerArray (MutableIntegerArray mia) {
 		count = mia.count;
 		integers = new int [count];
 		System.arraycopy(mia.integers,0,integers,0,count);
 	}
-	MutableIntegerArray (int [] t) {
+
+        /**Constructs a MutableIntegerArray with <code>t</code> as the data integers
+         * and <cod>t.length</codE> as the count.
+         *
+         * @param t int[] The data for this new mutable integr array.
+         */
+        MutableIntegerArray (int [] t) {
 		integers = t;
 		count = t.length;
 	}
 
-	final public String toString () {
+
+        /**
+         * Returns a String representation of the first <codE>count</codE> integers that are in <code>integers</code>
+         * @return String a String representation of this object - the first <codE>count</codE> integers in <code>integers</code> concatenated with a comma separating them.
+         */
+        final public String toString () {
 		String r = "{";
 		for (int i = 0 ; i < count-1; i++)
 			r += Integer.toString (integers[i])+",";
@@ -37,18 +73,53 @@ final class MutableIntegerArray implements Serializable {
 		return r;
 	}
 
+        /**
+         * The resize factor of the integers array. when adding new items to the array
+         * and the array is full - allocates a new array with length <codE>integers.length * resizeFactor</code>
+         */
+        private double resizeFactor = 1.2;
+        /**
+         * The default value for resizing the integers array. Used in case setResizeFactor is called with an invalid number.
+         */
+        public static final double DEFAULT_RESIZE_FACTOR = 1.2;
+
+        /**
+         * Sets the value of the resize factor
+         * @param factor int The value for the resize factor. Must be greater than 1.
+         */
+        public void setResizeFacotr(double factor){
+          if(factor <=1){
+            System.out.println("Resieze Factor must be greater than 1. setting the Resize Factor to the default value: " + DEFAULT_RESIZE_FACTOR);
+            resizeFactor = DEFAULT_RESIZE_FACTOR;
+            return;
+          }
+          resizeFactor = factor;
+        }
+        /**
+         * Returns the value of the resize factor.
+         * @return double Teh value of the resize factor.
+         */
+        public double getResizeFactor(){return resizeFactor;}
+
 	/**
 		Add an integer to the array.
+                Verifies that the array isn't full already. If the array is full allocates a new larger array, according to the resize factor.
 		@param val the value to add.
 	*/
 	final void add (int val) {
-		integers[count++] = val;
+          if(integers.length == count){
+            int[] temp = new int[(int)Math.ceil(integers.length * resizeFactor)];
+            System.arraycopy(integers, 0, temp, 0, count);
+            integers = temp;
+          }
+          integers[count++] = val;
 	}
 
 	/**
 		Add all the elements from the <code>MutableIntegerArray</code>
 		passed in.
 		@param addMe the mutable array to copy into this one.
+
 	*/
 	final void add (MutableIntegerArray addMe) {
 		System.arraycopy (addMe.getArray(), 0, integers, 0, addMe.count);
@@ -148,7 +219,12 @@ done:   for (int i = 0 ; i < this.count ; i++) {
 		System.arraycopy (integers, which, integers, which+1, integers.length - (which+1));
 		count--;
 	}
-	final int [] getPackedArray () {
+
+        /**
+         * Returns an integers array with size <code>count</code>, with the first <code>count</code> items in this array
+         * @return int[ ] an array of size <code>count</code>, with the first <code>count</code> items in this array
+         */
+        final int [] getPackedArray () {
 		if (integers.length != count) {
 			int [] pp = new int [count];
 			System.arraycopy(integers,0,pp,0,count);
@@ -156,12 +232,22 @@ done:   for (int i = 0 ; i < this.count ; i++) {
 		}
 		return integers;
 	}
-	final int [] getArray () {
+
+        /**
+         * Returns the integers array.
+         * @return int[] The integers array
+         */
+        final int [] getArray () {
 		return integers;
 	}
-	final int get (int i) {
+
+        /**
+         * Returns integer indexed <codE>i< /code> in the integers array
+         * @param i int integer indexed <codE>i< /code> in the integers array
+         * @return int
+         */
+        final int get (int i) {
 		return integers[i];
 	}
-	final void clean () {
-	}
+
 }
