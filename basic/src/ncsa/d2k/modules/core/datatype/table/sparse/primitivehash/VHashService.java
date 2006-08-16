@@ -51,7 +51,7 @@ import java.util.Arrays;
 
 
 /**
- * Description of class VHashService.
+ * Collection of utility methods for operating on VHashMaps.
  *
  * @author  suvalala
  * @author  goren
