@@ -57,11 +57,11 @@ public interface VBooleanFunction {
    //~ Methods *****************************************************************
 
    /**
-    * Execute this function with given the value of the element.
+    * Execute this function with given the value.
     *
-    * @param  value Boolean value of the element
+    * @param  value Boolean value input
     *
-    * @return Success/failure flag
+    * @return Boolean value output
     */
    public boolean execute(boolean value);
 }

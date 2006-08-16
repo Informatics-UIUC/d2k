@@ -57,11 +57,13 @@ public interface VBooleanProcedure {
    //~ Methods *****************************************************************
 
    /**
-    * Execute this procedure with given the value of the element.
+    * Execute this procedure. A false return value indicates that
+     * the application executing this procedure should not invoke this
+     * procedure again.
     *
-    * @param  value Boolean value of the element
+    * @param  value Boolean value input
     *
-    * @return Success/failure flag
+    * @return True if additional invocations of the procedure are allowed
     */
    public boolean execute(boolean value);
 
