@@ -50,7 +50,6 @@ package ncsa.d2k.modules.core.datatype.table.sparse.primitivehash;
  * @author  goren
  * @version $Revision$, $Date$
  */
-
 public interface VHashMap {
 
    //~ Methods *****************************************************************
