@@ -48,7 +48,7 @@ package ncsa.d2k.modules.core.datatype.table.sparse.primitivehash;
  * Procedure to be applied to boolean elements of <code>
  * VIntBooleanHashMap</code> instances.
  *
- * @author  auvalala
+ * @author  suvalala
  * @author  goren
  * @version $Revision$, $Date$
  */
