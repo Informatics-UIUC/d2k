@@ -42,10 +42,15 @@ public String getModuleInfo() {
       sb.append("</p><p>This module opens or creates the file indicated by ");
       sb.append("the <i>File Name</i> input port and serializes the Java ");
       sb.append("object from the <i>Java Object</i> input port to ");
-      sb.append("that file.");
+      sb.append("that file.  This module can fire more than once, and all ");
+      sb.append("objects will be serialized to the same file.");
       sb.append("</p><p>The module will exit with an error if the file ");
       sb.append("cannot be written to, or if the object cannot be serialized.");
       sb.append("</p>");
+      sb.append("<p>Trigger Conditions:");
+      sb.append("<p>The first execution the file name and an object to serialize ");
+      sb.append("must be supplied.  Successive executions only require an object ");
+      sb.append("to serialize.  The same output file will be used.");
 
       return sb.toString();
     }
@@ -76,7 +81,7 @@ public String getModuleInfo() {
     /**
  * Returns a description of the input at the specified index.
  *
- * @param inputIndex Index of the input for which a description should be returned.
+ * @param i Index of the input for which a description should be returned.
  *
  * @return <code>String</code> describing the input at the specified index.
  */
@@ -99,7 +104,7 @@ public String getInputInfo (int i) {
     /**
  * Returns the name of the input at the specified index.
  *
- * @param inputIndex Index of the input for which a name should be returned.
+ * @param i Index of the input for which a name should be returned.
  *
  * @return <code>String</code> containing the name of the input at the specified index.
  */
@@ -122,7 +127,7 @@ public String getInputName(int i) {
     /**
  * Returns a description of the output at the specified index.
  *
- * @param outputIndex Index of the output for which a description should be returned.
+ * @param i Index of the output for which a description should be returned.
  *
  * @return <code>String</code> describing the output at the specified index.
  */
@@ -140,7 +145,7 @@ public String getOutputInfo(int i) {
     /**
  * Returns the name of the output at the specified index.
  *
- * @param outputIndex Index of the output for which a name should be returned.
+ * @param i Index of the output for which a name should be returned.
  *
  * @return <code>String</code> containing the name of the output at the specified index.
  */
@@ -154,47 +159,94 @@ public String getOutputName(int i) {
     // Doit //
     //////////
 
+    /** true if this is the first execution */
+    private boolean firstExec;
+    /** object output stream to write to */
+    private ObjectOutputStream objectOutputStream;
+
+    /**
+     * Set firstExec to true and null out the objectOutputStream
+     */
+    public void beginExecution() {
+        firstExec = true;
+        objectOutputStream = null;
+    }
+
+    /**
+     * Flush and close the objectOutputStream.
+     */
+    public void endExecution() {
+        try {
+            objectOutputStream.flush();
+            objectOutputStream.close();
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        objectOutputStream = null;
+    }
+
+    /**
+     * If this is the first execution, return true iff there is an object and
+     * a file name supplied.  Otherwise return true when an object is available
+     * on pipe 0.
+     * @return ready condition
+     */
+    public boolean isReady() {
+        if(firstExec) {
+            return getInputPipeSize(0) > 0 && getInputPipeSize(1) > 0;
+        }
+        return getInputPipeSize(0) > 0;
+    }
+
+
+
     /**
  * Performs the main work of the module.
  */
 public void doit() throws Exception {
         Object object = pullInput(0);
-        String FileName = (String)pullInput(1);
 
-        FileOutputStream file = null;
-        ObjectOutputStream out = null;
+        if(firstExec) {
+            String FileName = (String)pullInput(1);
+
+            FileOutputStream file = null;
+            //ObjectOutputStream out = null;
+
+            try {
+                file = new FileOutputStream(FileName);
+            }
+            catch (FileNotFoundException e) {
+                throw new FileNotFoundException( "Could not open file: " + FileName +
+                                  "\n" + e );
+            }
+            catch (SecurityException e) {
+                throw new SecurityException( "Could not open file: " + FileName +
+                                  "\n" + e );
+            }
+
+
+            try {
+                objectOutputStream = new ObjectOutputStream(file);
+                //out.writeObject(object);
+            }
+            catch (IOException e) {
+                throw new IOException( "Unable to serialize object " +
+                                   "\n" + e );
+            }
+            firstExec = false;
+        }
 
         try {
-           file = new FileOutputStream(FileName);
+            objectOutputStream.writeObject(object);
         }
-        catch (FileNotFoundException e) {
-           throw new FileNotFoundException( "Could not open file: " + FileName +
-                                  "\n" + e );
-        }
-        catch (SecurityException e) {
-           throw new SecurityException( "Could not open file: " + FileName +
-                                  "\n" + e );
-        }
-
-        try {
-            out = new ObjectOutputStream(file);
-            out.writeObject(object);
-        }
-        catch (IOException e) {
-            throw new IOException( "Unable to serialize object " +
+        catch(IOException e) {
+                throw new IOException( "Unable to serialize object " +
                                    "\n" + e );
         }
 
-        out.flush();
-        out.close();
+        //out.flush();
+        //out.close();
     }
 }
-// QA Comments
-// 2/12/03 - Handed off to QA by David Clutter
-// 2/13/03 - Ruth started QA process.  Shortened module common
-//           name; Added some JavaDocs; deleted unused code; added more to
-//           module description; added more user-friendly exceptions.
-// 2/14/03 - checked into basic.  
-// 2/25/03 - removed getPropertyDescriptions() that returned null as not needed
-//           with latest changed to property display.  updated in basic too.
-// END QA Comments
