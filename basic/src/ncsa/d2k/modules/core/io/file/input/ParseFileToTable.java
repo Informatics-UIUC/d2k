@@ -281,9 +281,11 @@ public void doit() throws Exception {
                 if(isNumeric) {
                     //DoubleColumn dc = new DoubleColumn(newCol);
                     Column dc = tf.createColumn(ColumnTypes.DOUBLE);
+                    dc.setNumRows(ti.getNumRows());
                     dc.setLabel(ti.getColumnLabel(i));
 
                     for (int k = 0; k < ti.getNumRows(); k++) {
+                       dc.setDouble(newCol[k], k);
                        if (ti.isValueMissing(k, i))
                           dc.setValueToMissing(true, k);
                        if (ti.isValueEmpty(k, i))
