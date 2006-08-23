@@ -156,7 +156,8 @@ public class InputSerializedObject extends InputModule {
      */
     public void endExecution() {
         try {
-            objectInputStream.close();
+            if(objectInputStream != null)
+                objectInputStream.close();
         }
         catch(IOException ex) {
             ex.printStackTrace();

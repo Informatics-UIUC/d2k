@@ -177,8 +177,10 @@ public String getOutputName(int i) {
      */
     public void endExecution() {
         try {
-            objectOutputStream.flush();
-            objectOutputStream.close();
+            if(objectOutputStream != null) {
+                objectOutputStream.flush();
+                objectOutputStream.close();
+            }
         }
         catch(IOException e) {
             e.printStackTrace();
