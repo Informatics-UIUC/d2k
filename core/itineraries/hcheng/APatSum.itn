@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAARdwgAAAAJAAAACHQAE1BhcnNlIEZpbGUgVG8gVGFibGVzcgAbbmNzYS5kMmsuY29yZS5SZXNv
+dXJjZUVudHJ51S4sIEIDJtICAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtM
+AA9vYmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ADRuY3NhLmQyay5tb2R1
+bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1RhYmxldAAPSW5wdXQgRmlsZSBOYW1l
+c3EAfgAEcHQAMm5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LklucHV0MUZpbGVO
+YW1ldAARQ2hvb3NlIEF0dHJpYnV0ZXNzcQB+AARwdAA6bmNzYS5kMmsubW9kdWxlcy5jb3JlLnRy
+YW5zZm9ybS5hdHRyaWJ1dGUuQ2hvb3NlQXR0cmlidXRlc3QAHENyZWF0ZSBEZWxpbWl0ZWQgRmls
+ZSBQYXJzZXJzcQB+AARwdAA5bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuQ3Jl
+YXRlRGVsaW1pdGVkUGFyc2VydAAeRnJlcXVlbnQgUGF0dGVybiBTdW1tYXJpemF0aW9uc3EAfgAE
+cHQAQG5jc2EuZDJrLm1vZHVsZXMuY29yZS5kaXNjb3ZlcnkucnVsZWFzc29jaWF0aW9uLlBhdFN1
+bW1hcml6YXRpb250AAxhcHJpb3JpX25lc3RzcQB+AARwdAAybmNzYS5kMmsuY29yZS5tb2R1bGVz
+LmFnZW5kYS5OZXN0ZWRJdGluZXJhcnlNb2R1bGV0AAZGYW5PdXRzcQB+AARwdAAibmNzYS5kMmsu
+Y29yZS5tb2R1bGVzLkZhbk91dE1vZHVsZXQAElRhYmxlIFRvIEl0ZW0gU2V0c3NxAH4ABHB0AD9u
+Y3NhLmQyay5tb2R1bGVzLmNvcmUuZGlzY292ZXJ5LnJ1bGVhc3NvY2lhdGlvbi5UYWJsZVRvSXRl
+bVNldHN4" label="APatSum.itn">
+    <annotation><![CDATA[<p>
+      <b>Rule Association Using Apriori</b>
+    </p>
+    <p>
+      Apriori is one of many rule association agorithms. Rule association is 
+      an unsupervised learning approach that seeks to discover signifcant 
+      relationships among attributes in a data set. The visualization of these 
+      relationships are represented at two levels, structural and 
+      quantitative. At the structural level, the model will indicate which 
+      attributes are locally dependent on one another. At the quantitative 
+      level, the model will offer some numeric measure of support and 
+      confidence for these relationships. Rule association has also been 
+      called market basket analysis because of its application to the retail 
+      sales domain.
+    </p>
+    <p>
+      Two of the main quantitative measures are support and confidence. Given 
+      if X, then Y. Support is the percent of the number of records that 
+      contain both X and Y out of the total number of records. Confidence is 
+      the percent of the number of records taht contain both X and Y out of 
+      the number of records that contain X.
+    </p>
+    <p>
+      This itinerary creates a Rule Table by requesting the user to select the 
+      attributes for the antecedent (input) and the consequent (output). The 
+      visualization is a graphical display of the rules generated.
+    </p>
+    <p>
+      <b>Modules with Properties</b>
+    </p>
+    <p>
+      The following modules have properties that may need to be adjusted. The 
+      properties can be changed by double clicking on the given module.
+    </p>
+    <p>
+      1 - <i><b>Input File Name</b></i>:
+    </p>
+    <p>
+      This module selects the data set. The file is identified with the 
+      filename property.
+    </p>
+    <p>
+      2 - <i><b>Create Delimited File Parser</b></i>:
+    </p>
+    <p>
+      This module creates a parser for the specified file. The properties of 
+      the module specify the labels row number, the types row number and the 
+      delimiter.
+    </p>
+    <p>
+      3 - <i><b>Parse File To Table</b></i>:
+    </p>
+    <p>
+      This module loads the data from a file to a Table in memory. The 
+      property of this module indicates whether blanks should be interpreted 
+      as missing values.
+    </p>
+    <p>
+      4 - <i><b>Apriori</b></i>:
+    </p>
+    <p>
+      This module implements the Apriori algorithm to generate frequent 
+      itemsets consisting of items that occur in a sufficient number of 
+      examples to satisfy the minimum support criteria. One of the properties 
+      of this module is the <i>Minimum Support</i> which is the percent of all 
+      examples that must contain a given set of items before an association 
+      rule will be formed containing those items. This value must be greater 
+      than 0 and less than or equal to 100. Another property is <i>Maximum 
+      Items per Rule</i> which is the maximum number of items to include in 
+      any rule. This value cannot be less than 2. Two other properties provide 
+      user feedback: If the <i>Report Module Progress</i> property is true, 
+      then the module will report progress information to the console. If the <i>
+Generate Verbose Output</i> property is true, then the module will write 
+      verbose status information to the console.
+    </p>
+    <p>
+      5 - <i><b>Compute Confidence</b></i>:
+    </p>
+    <p>
+      This module works in conjunction with other modules implementing the 
+      Apriori rule association algorithm to generate association rules 
+      satisfying a minimum confidence threshold. One of the properties for 
+      this modules is <i>Minimum Confidence</i>, which is the percent of the 
+      examples containing a rule antecedent that must also contain the rule 
+      consequent before a potential association rule is accepted. This value 
+      must be greater than 0 and less than or equal to 100. Two other 
+      properties provide user feedback: If the <i>Report Module Progress </i>
+      property is true, then the module will report progress information to 
+      the console. If the<i> Generate Verbose Output</i> property is true, 
+      then the module will write verbose status information to the console.
+    </p>
+    <p>
+      <b>Modules without Properties or User Interfaces</b>
+    </p>
+    <p>
+      1 - <i><b>Table To Item Sets</b></i>:
+    </p>
+    <p>
+      This module extracts items (attribute/value combinations) from a table 
+      for use in mining association rules with the Apriori algorithm.
+    </p>
+    <p>
+      <b>Execution</b>
+    </p>
+    <p>
+      Execute the itinerary by clicking on the &quot;Run&quot; button. As the itinerary 
+      runs, the following windows will open for user input.
+    </p>
+    <p>
+      1 - <i><b>Choose Attributes</b></i>:
+    </p>
+    <p>
+      This user interface prompts the user to identify the input and output 
+      attributes. Use Shift to select a range of attributes. Use Control to 
+      select and/or deselect an attribute. Also the File menu allows different 
+      sorting options. For this itinerary,if we were looking for rules that 
+      implied whether or not a mushroom was edible, we would choose as input 
+      all attributes except class and we would choose class as the output 
+      attribute. This may take a little time to run. To get faster results 
+      choose fewer input attributes or fewer output attributes or increase <i>
+      Minimum Support</i> (property of Apriori module) or <i>Minimum 
+      Confidence </i>(property of Compute Confidence module).
+    </p>
+    <p>
+      2 - <i><b>RuleAssocReport</b></i>:
+    </p>
+    <p>
+      This module displays the association rules in a table form.
+    </p>
+    <p>
+      <b>Results</b>
+    </p>
+    <p>
+      Once execution has completed the status bar will disappear. The pane of 
+      the Generated Visualization Session Pane and the Generated Models 
+      Session Pane will turn red when visualization and model glpyhs have been 
+      created.
+    </p>
+    <p>
+      1 - <i><b>Rule Visualization</b></i>:
+    </p>
+    <p>
+      This module provides a visual representation of the association rules 
+      encapsulated in the Rule Table.
+    </p>]]></annotation>
+    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="141" yloc="179">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"/>
+      <output index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets">
+        <destination alias="apriori_nest" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets">
+        <destination alias="Frequent Pattern Summarization" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAQAAAAE="/>
+    </module>
+    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="309" yloc="32">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Choose Attributes" index="0"/>
+      </output>
+      <property name="useBlanks" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="132" yloc="32">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="labelsRow" value="0"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
+    </module>
+    <module alias="Frequent Pattern Summarization" classname="ncsa.d2k.modules.core.discovery.ruleassociation.PatSummarization" xloc="326" yloc="193">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"/>
+      <input index="1" classname="[[I"/>
+      <output index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="clusterNum" value="3"/>
+    </module>
+    <module alias="Table To Item Sets" classname="ncsa.d2k.modules.core.discovery.ruleassociation.TableToItemSets" xloc="7" yloc="168">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets">
+        <destination alias="FanOut" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="apriori_nest" classname="ncsa.d2k.core.modules.agenda.NestedItineraryModule" xloc="212" yloc="217">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"/>
+      <output index="0" classname="[[I">
+        <destination alias="Frequent Pattern Summarization" index="1"/>
+      </output>
+      <itinerary label="apriori_nest">
+        <module alias="apriori_nest_Apriori" classname="ncsa.d2k.modules.core.discovery.ruleassociation.apriori.Apriori" xloc="67" yloc="47">
+          <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"/>
+          <output index="0" classname="[[I">
+            <destination alias="apriori_nest" index="0"/>
+          </output>
+          <property name="debug" value="false"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+          <property name="showProgress" value="true"/>
+          <property name="maxRuleSize" value="6"/>
+          <property name="minimumSupport" value="18.0"/>
+        </module>
+      </itinerary>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="numberCopies" value="1"/>
+      <property name="allInputs" value="true"/>
+    </module>
+    <module alias="Choose Attributes" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="441" yloc="32">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Table To Item Sets" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="windowName" value="Choose Attributes"/>
+      <property name="selectedInputs" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAJEMXQAAkQydAAC
+RDM="/>
+      <property name="supressGui" value="false"/>
+      <property name="selectedOutputs" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAA="/>
+    </module>
+    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="26" yloc="32">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Create Delimited File Parser" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="fileName" value="C:\R51\NCSA\Maids\data\UCI\try.csv"/>
+      <property name="fileFilterExtension" value=""/>
+    </module>
+  </itinerary>
+</toolkit>
