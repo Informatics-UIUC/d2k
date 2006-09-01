@@ -47,6 +47,7 @@ package ncsa.d2k.modules.core.discovery.cluster.gui.properties;
 import ncsa.d2k.core.modules.CustomModuleEditor;
 import ncsa.d2k.modules.core.discovery.cluster.hac.HAC;
 import ncsa.d2k.modules.core.discovery.cluster.sample.FractionationParams;
+import ncsa.d2k.modules.core.discovery.cluster.sample.FractionationParamSpaceGenerator;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -199,7 +200,8 @@ public class FractionationParams_Props extends JPanel
       m_gbc.gridwidth = 1;
       m_gbc.anchor = GridBagConstraints.EAST;
       m_cmLbl = new JLabel();
-      m_cmLbl.setText("Cluster Method: ");
+      //m_cmLbl.setText("Cluster Method: ");
+      m_cmLbl.setText(FractionationParamSpaceGenerator.CLUSTER_METHOD+": ");
       m_gbl.setConstraints(m_cmLbl, m_gbc);
 
       m_gbc.gridx = 1;
@@ -219,7 +221,8 @@ public class FractionationParams_Props extends JPanel
       m_gbc.insets = new Insets(2, 2, 2, 2);
       m_gbc.anchor = GridBagConstraints.EAST;
       m_numClustLbl = new JLabel();
-      m_numClustLbl.setText("Number of clusters: ");
+      //m_numClustLbl.setText("Number of clusters: ");
+      m_numClustLbl.setText(FractionationParamSpaceGenerator.NUM_CLUSTERS+": ");
       m_numClustLbl.setToolTipText("Enter integer value > 2 specifying " +
                                    "number of clusters desired.");
       m_gbl.setConstraints(m_numClustLbl, m_gbc);
@@ -242,7 +245,8 @@ public class FractionationParams_Props extends JPanel
 
       m_gbc.anchor = GridBagConstraints.EAST;
       m_maxPartLbl = new JLabel();
-      m_maxPartLbl.setText("Max partition size: ");
+      //m_maxPartLbl.setText("Max partition size: ");
+      m_maxPartLbl.setText(FractionationParamSpaceGenerator.FRACT_PART_SZ+": ");
       m_maxPartLbl.setToolTipText("Enter integer value > 0 specifying max " +
                                   "partition size.");
       m_gbl.setConstraints(m_maxPartLbl, m_gbc);
@@ -265,7 +269,8 @@ public class FractionationParams_Props extends JPanel
 
       m_gbc.anchor = GridBagConstraints.EAST;
       m_nthSortLbl = new JLabel();
-      m_nthSortLbl.setText("Sort attribute: ");
+      //m_nthSortLbl.setText("Sort attribute: ");
+      m_nthSortLbl.setText(FractionationParamSpaceGenerator.FRACT_NTH_SORT_TERM+": ");
       m_nthSortLbl.setToolTipText("Enter integer value >= 0 specifying the " +
                                   "index of attribute to sort on.");
       m_gbl.setConstraints(m_nthSortLbl, m_gbc);
@@ -301,7 +306,8 @@ public class FractionationParams_Props extends JPanel
       m_gbc.gridwidth = 2;
       m_gbc.insets = new Insets(2, 2, 2, 2);
       m_distLbl = new JLabel();
-      m_distLbl.setText("Distance Cutoff (% of Max):  " +
+      //m_distLbl.setText("Distance Cutoff (% of Max):  " +
+      m_distLbl.setText(FractionationParamSpaceGenerator.HAC_DISTANCE_THRESHOLD+" (% of Max):  "+
                         Integer.toString((_src.getHacDistanceThreshold() == 0)
                                          ? 1 : _src.getHacDistanceThreshold()));
       m_gbl.setConstraints(m_distLbl, m_gbc);
@@ -327,7 +333,8 @@ public class FractionationParams_Props extends JPanel
       m_gbc.insets = new Insets(10, 2, 2, 2);
       m_gbc.gridwidth = 1;
       m_dmLbl = new JLabel();
-      m_dmLbl.setText("Distance Metric: ");
+      //m_dmLbl.setText("Distance Metric: ");
+      m_dmLbl.setText(FractionationParamSpaceGenerator.DISTANCE_METRIC+": ");
       m_gbl.setConstraints(m_dmLbl, m_gbc);
 
       m_gbc.gridx = 1;
@@ -346,7 +353,8 @@ public class FractionationParams_Props extends JPanel
       m_gbc.insets = new Insets(2, 2, 2, 2);
       m_gbc.anchor = GridBagConstraints.EAST;
       m_maxLbl = new JLabel();
-      m_maxLbl.setText("Num assignments: ");
+      //m_maxLbl.setText("Num assignments: ");
+      m_maxLbl.setText(FractionationParamSpaceGenerator.MAX_ITERATIONS+": ");
 
       // m_numClustLbl.setFont(new Font("Arial", Font.BOLD,10));
       m_maxLbl.setToolTipText("Enter integer value > 0 specifying number " +
@@ -506,7 +514,9 @@ public class FractionationParams_Props extends JPanel
             Integer.toString((m_distSlide.getValue() == 0)
                              ? 1 : m_distSlide.getValue());
          m_distSlide.setToolTipText(disp);
-         m_distLbl.setText("Distance Cutoff (% of Max):  " + disp);
+         //m_distLbl.setText("Distance Cutoff (% of Max):  " + disp);
+         m_distLbl.setText(FractionationParamSpaceGenerator.HAC_DISTANCE_THRESHOLD+
+                 " (% of Max):  "+disp);
       }
    }
 

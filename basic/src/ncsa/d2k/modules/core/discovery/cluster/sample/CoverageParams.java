@@ -190,11 +190,13 @@ public class CoverageParams extends CoverageParamsOPT {
       PropertyDescription[] pds = new PropertyDescription[7];
       pds[0] =
          new PropertyDescription("numClusters",
-                                 "Number of Clusters",
+                                 //"Number of Clusters",
+                                 CoverageParamSpaceGenerator.NUM_CLUSTERS,
                                  "This is the number of clusters you want to form (>= 2).");
       pds[1] =
          new PropertyDescription("clusterMethod",
-                                 "Clustering Method",
+                                 //"Clustering Method",
+                                 CoverageParamSpaceGenerator.CLUSTER_METHOD,
                                  "The method to use for determining the distance between two clusters. " +
                                  "<p>WARDS METHOD: Use a minimum variance approach that sums the squared error " +
                                  "(distance) for every point in the cluster to the cluster centroid.</p>" +
@@ -206,7 +208,8 @@ public class CoverageParams extends CoverageParamsOPT {
                                  "<p>WPGMC: Weighted pair group method using centroids.</p>");
       pds[2] =
          new PropertyDescription("distanceMetric",
-                                 "Distance Metric",
+                                 //"Distance Metric",
+                                 CoverageParamSpaceGenerator.DISTANCE_METRIC,
                                  "This property determine the type of distance function used to calculate " +
                                  "distance between two examples." +
                                  "<p>EUCLIDEAN: \"Straight\" line distance between points.</p>" +
@@ -214,25 +217,29 @@ public class CoverageParams extends CoverageParamsOPT {
                                  "<p>COSINE: 1 minus the cosine of the angle between the norms of the vectors denoted by two points.</p>");
       pds[3] =
          new PropertyDescription("hacDistanceThreshold",
-                                 "HAC Distance Threshold",
+                                 //"HAC Distance Threshold",
+                                 CoverageParamSpaceGenerator.HAC_DISTANCE_THRESHOLD,
                                  "This property specifies the percent of the max distance to use " +
                                  "as a cutoff value to halt clustering ([1...100].  The max distance between examples " +
                                  "is approximated by taking the min and max of each attribute and forming a " +
                                  "min example and a max example -- then finding the distance between the two.");
       pds[4] =
          new PropertyDescription("coverageDistanceThreshold",
-                                 "Coverage Distance Threshold",
+                                 //"Coverage Distance Threshold",
+                                 CoverageParamSpaceGenerator.COV_DIST_THRESH,
                                  "This property specifies the percent of the max distance to use " +
                                  "as a cutoff value to forming new samples ([1...100].  The max distance between examples " +
                                  "is approximated by taking the min and max of each attribute and forming a " +
                                  "min example and a max example -- then finding the distance between the two.");
       pds[5] =
          new PropertyDescription("coverageMaxNumSamples",
-                                 "Coverage Max Num Samples",
+                                 //"Coverage Max Num Samples",
+                                 CoverageParamSpaceGenerator.COV_MAX_NUM_SAMPLES,
                                  "An integer value specifying the maximum number of points to sample.(>0)");
       pds[6] =
          new PropertyDescription("refinementMaxIterations",
-                                 "Number of Assignment Passes",
+                                 //"Number of Assignment Passes",
+                                 CoverageParamSpaceGenerator.MAX_ITERATIONS,
                                  "This property specifies the number of iterations of cluster refinement to perform (> 0).");
 
       return pds;

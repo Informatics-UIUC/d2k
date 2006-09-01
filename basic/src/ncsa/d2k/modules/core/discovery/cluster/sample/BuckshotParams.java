@@ -203,12 +203,14 @@ public class BuckshotParams extends BuckshotParamsOPT {
       PropertyDescription[] pds = new PropertyDescription[7];
       pds[0] =
          new PropertyDescription("numberOfClusters",
-                                 "Number of Clusters",
+                                 //"Number of Clusters",
+                                 BuckshotParamSpaceGenerator.NUM_CLUSTERS,
                                  "This property specifies the number of " +
                                  "clusters to form (>= 2).");
       pds[1] =
          new PropertyDescription("seed",
-                                 "Seed",
+                                 //"Seed",
+                                 BuckshotParamSpaceGenerator.SEED,
                                  "The seed for the random number generator " +
                                  "used to select the random sampling of table "
                                  + "rows. If this value is set to the same " +
@@ -216,13 +218,15 @@ public class BuckshotParams extends BuckshotParamsOPT {
                                  "the exact same.");
       pds[2] =
          new PropertyDescription("useFirst",
-                                 "Use First",
+                                 //"Use First",
+                                BuckshotParamSpaceGenerator.USE_FIRST,
                                  "If this option is selected, the first entries"
                                 + " in the original table will be used as the "
                                 + "sample.");
       pds[3] =
          new PropertyDescription("clusterMethod",
-                                 "Clustering Method",
+                                 //"Clustering Method",
+                                 BuckshotParamSpaceGenerator.CLUSTER_METHOD,
                                  "The method to use for determining the " +
                                  "distance between two clusters. " +
                                  "<p>WARDS METHOD: Use a minimum variance " +
@@ -243,7 +247,8 @@ public class BuckshotParams extends BuckshotParamsOPT {
                                  + "centroids.</p>");
       pds[4] =
          new PropertyDescription("distanceMetric",
-                                 "Distance Metric",
+                                 //"Distance Metric",
+                                 BuckshotParamSpaceGenerator.DISTANCE_METRIC,
                                  "This property determines the type of distance"
                                 + " function used to calculate " +
                                  "distance between two examples." +
@@ -256,7 +261,8 @@ public class BuckshotParams extends BuckshotParamsOPT {
                                  + "by two points.</p>");
       pds[5] =
          new PropertyDescription("distanceThreshold",
-                                 "Distance Threshold",
+                                 //"Distance Threshold",
+                                 BuckshotParamSpaceGenerator.DISTANCE_THRESHOLD,
                                  "This property specifies the percent of the "
                                  + "max distance to use " +
                                  "as a cutoff value to halt clustering ([1..."
@@ -271,7 +277,8 @@ public class BuckshotParams extends BuckshotParamsOPT {
                                  + "selected.");
       pds[6] =
          new PropertyDescription("maxIterations",
-                                 "Number of Assignment Passes",
+                                 //"Max Refinement Iterations",
+                                 BuckshotParamSpaceGenerator.MAX_ITERATIONS,
                                  "This property specifies the number of "
                                  + "iterations of cluster refinement to "
                                  + "perform (> 0).");

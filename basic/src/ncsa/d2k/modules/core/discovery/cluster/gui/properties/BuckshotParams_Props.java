@@ -48,6 +48,7 @@ package ncsa.d2k.modules.core.discovery.cluster.gui.properties;
 import ncsa.d2k.core.modules.CustomModuleEditor;
 import ncsa.d2k.modules.core.discovery.cluster.hac.HAC;
 import ncsa.d2k.modules.core.discovery.cluster.sample.BuckshotParams;
+import ncsa.d2k.modules.core.discovery.cluster.sample.BuckshotParamSpaceGenerator;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -203,7 +204,8 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor,
       m_gbc.gridwidth = 1;
       m_gbc.anchor = GridBagConstraints.EAST;
       m_cmLbl = new JLabel();
-      m_cmLbl.setText("Cluster Method: ");
+      //m_cmLbl.setText("Cluster Method: ");
+       m_cmLbl.setText(BuckshotParamSpaceGenerator.CLUSTER_METHOD+": ");
       m_gbl.setConstraints(m_cmLbl, m_gbc);
 
       m_gbc.gridx = 1;
@@ -221,7 +223,8 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor,
       m_gbc.insets = new Insets(2, 2, 2, 2);
       m_gbc.anchor = GridBagConstraints.EAST;
       m_seedLbl = new JLabel();
-      m_seedLbl.setText("Random seed: ");
+      //m_seedLbl.setText("Random seed: ");
+      m_seedLbl.setText(BuckshotParamSpaceGenerator.SEED+": ");
       m_seedLbl.setToolTipText("Enter integer value >= 0 specifying random" +
                                " seed.");
       m_gbl.setConstraints(m_seedLbl, m_gbc);
@@ -243,7 +246,9 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor,
       m_gbc.gridy++;
       m_gbc.insets = new Insets(2, 2, 2, 2);
       m_gbc.anchor = GridBagConstraints.CENTER;
-      m_useFirst = new JCheckBox("Use First", _src.getUseFirst());
+      //m_useFirst = new JCheckBox("Use First", _src.getUseFirst());
+      m_useFirst = new JCheckBox(BuckshotParamSpaceGenerator.USE_FIRST,
+              _src.getUseFirst());
       m_useFirst.setToolTipText("Use first N rows as samples.");
       m_gbl.setConstraints(m_useFirst, m_gbc);
 
@@ -253,7 +258,8 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor,
       m_gbc.insets = new Insets(2, 2, 2, 2);
       m_gbc.anchor = GridBagConstraints.EAST;
       m_numClustLbl = new JLabel();
-      m_numClustLbl.setText("Number of clusters: ");
+      //m_numClustLbl.setText("Number of clusters: ");
+      m_numClustLbl.setText(BuckshotParamSpaceGenerator.NUM_CLUSTERS+": ");
       m_numClustLbl.setToolTipText("Enter integer value > 2 specifying number" +
                                    " of clusters desired.");
       m_gbl.setConstraints(m_numClustLbl, m_gbc);
@@ -289,7 +295,8 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor,
       m_gbc.gridwidth = 2;
       m_gbc.insets = new Insets(2, 2, 2, 2);
       m_distLbl = new JLabel();
-      m_distLbl.setText("Distance Cutoff (% of Max):  " +
+      //m_distLbl.setText("Distance Cutoff (% of Max):  " +
+      m_distLbl.setText(BuckshotParamSpaceGenerator.DISTANCE_THRESHOLD+" (% of Max):  "+
                         Integer.toString((_src.getDistanceThreshold() == 0)
                                          ? 1 : _src.getDistanceThreshold()));
       m_gbl.setConstraints(m_distLbl, m_gbc);
@@ -314,7 +321,8 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor,
       m_gbc.insets = new Insets(10, 2, 2, 2);
       m_gbc.gridwidth = 1;
       m_dmLbl = new JLabel();
-      m_dmLbl.setText("Distance Metric: ");
+      //m_dmLbl.setText("Distance Metric: ");
+      m_dmLbl.setText(BuckshotParamSpaceGenerator.DISTANCE_METRIC+": ");
       m_gbl.setConstraints(m_dmLbl, m_gbc);
 
       m_gbc.gridx = 1;
@@ -333,7 +341,8 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor,
       m_gbc.insets = new Insets(2, 2, 2, 2);
       m_gbc.anchor = GridBagConstraints.EAST;
       m_maxLbl = new JLabel();
-      m_maxLbl.setText("Num assignments: ");
+      //m_maxLbl.setText("Num assignments: ");
+      m_maxLbl.setText(BuckshotParamSpaceGenerator.MAX_ITERATIONS+": ");
       m_maxLbl.setToolTipText("Enter integer value > 0 specifying number " +
                               "of assignment passes to perform.");
       m_gbl.setConstraints(m_maxLbl, m_gbc);
@@ -401,7 +410,8 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor,
             Integer.toString((m_distSlide.getValue() == 0)
                              ? 1 : m_distSlide.getValue());
          m_distSlide.setToolTipText(disp);
-         m_distLbl.setText("Distance Cutoff (% of Max):  " + disp);
+         //m_distLbl.setText("Distance Cutoff (% of Max):  " + disp);
+         m_distLbl.setText(BuckshotParamSpaceGenerator.DISTANCE_THRESHOLD+" (% of Max):  "+disp);
       }
    }
 

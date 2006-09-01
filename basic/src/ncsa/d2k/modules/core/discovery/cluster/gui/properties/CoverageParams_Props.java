@@ -48,6 +48,7 @@ package ncsa.d2k.modules.core.discovery.cluster.gui.properties;
 import ncsa.d2k.core.modules.CustomModuleEditor;
 import ncsa.d2k.modules.core.discovery.cluster.hac.HAC;
 import ncsa.d2k.modules.core.discovery.cluster.sample.CoverageParams;
+import ncsa.d2k.modules.core.discovery.cluster.sample.CoverageParamSpaceGenerator;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -200,7 +201,8 @@ public class CoverageParams_Props extends JPanel implements CustomModuleEditor,
       m_gbc.gridwidth = 1;
       m_gbc.anchor = GridBagConstraints.EAST;
       m_cmLbl = new JLabel();
-      m_cmLbl.setText("Cluster Method: ");
+      //m_cmLbl.setText("Cluster Method: ");
+      m_cmLbl.setText(CoverageParamSpaceGenerator.CLUSTER_METHOD+": ");
       m_gbl.setConstraints(m_cmLbl, m_gbc);
 
       m_gbc.gridx = 1;
@@ -219,7 +221,8 @@ public class CoverageParams_Props extends JPanel implements CustomModuleEditor,
       m_gbc.insets = new Insets(2, 2, 2, 2);
       m_gbc.anchor = GridBagConstraints.EAST;
       m_maxsampLbl = new JLabel();
-      m_maxsampLbl.setText("Max samples: ");
+      //m_maxsampLbl.setText("Max samples: ");
+      m_maxsampLbl.setText(CoverageParamSpaceGenerator.COV_MAX_NUM_SAMPLES+": ");
       m_maxsampLbl.setToolTipText("Enter integer value > 0 specifying max num samples.");
       m_gbl.setConstraints(m_maxsampLbl, m_gbc);
 
@@ -240,7 +243,8 @@ public class CoverageParams_Props extends JPanel implements CustomModuleEditor,
       m_gbc.insets = new Insets(2, 2, 2, 2);
       m_gbc.anchor = GridBagConstraints.EAST;
       m_numClustLbl = new JLabel();
-      m_numClustLbl.setText("Number of clusters: ");
+      //m_numClustLbl.setText("Number of clusters: ");
+      m_numClustLbl.setText(CoverageParamSpaceGenerator.NUM_CLUSTERS+": ");
       m_numClustLbl.setToolTipText("Enter integer value > 2 specifying number of clusters desired.");
       m_gbl.setConstraints(m_numClustLbl, m_gbc);
 
@@ -273,7 +277,8 @@ public class CoverageParams_Props extends JPanel implements CustomModuleEditor,
       m_gbc.gridwidth = 2;
       m_gbc.insets = new Insets(2, 2, 2, 2);
       m_distLbl = new JLabel();
-      m_distLbl.setText("HAC Dist Cutoff (% of Max):  " +
+      //m_distLbl.setText("HAC Dist Cutoff (% of Max):  " +
+      m_distLbl.setText(CoverageParamSpaceGenerator.HAC_DISTANCE_THRESHOLD+" (% of Max):  "+
                         Integer.toString((_src.getHacDistanceThreshold() == 0)
                                          ? 1 : _src.getHacDistanceThreshold()));
       m_gbl.setConstraints(m_distLbl, m_gbc);
@@ -299,11 +304,12 @@ public class CoverageParams_Props extends JPanel implements CustomModuleEditor,
       m_gbc.gridwidth = 2;
       m_gbc.insets = new Insets(10, 2, 2, 2);
       m_covdistLbl = new JLabel();
-      m_covdistLbl.setText("Sampler Dist Cutoff (% of Max):  " +
-                           Integer.toString((_src.getHacDistanceThreshold() ==
+      //m_covdistLbl.setText("Sampler Dist Cutoff (% of Max):  " +
+      m_covdistLbl.setText(CoverageParamSpaceGenerator.COV_DIST_THRESH+" (% of Max):  "+
+                           Integer.toString((_src.getCoverageDistanceThreshold() ==
                                                 0)
                                             ? 1
-                                            : _src.getHacDistanceThreshold()));
+                                            : _src.getCoverageDistanceThreshold()));
       m_gbl.setConstraints(m_covdistLbl, m_gbc);
 
       m_gbc.gridy++;
@@ -327,7 +333,8 @@ public class CoverageParams_Props extends JPanel implements CustomModuleEditor,
       m_gbc.insets = new Insets(2, 2, 2, 2);
       m_gbc.gridwidth = 1;
       m_dmLbl = new JLabel();
-      m_dmLbl.setText("Distance Metric: ");
+      //m_dmLbl.setText("Distance Metric: ");
+      m_dmLbl.setText(CoverageParamSpaceGenerator.DISTANCE_METRIC+": ");
       m_gbl.setConstraints(m_dmLbl, m_gbc);
 
       m_gbc.gridx = 1;
@@ -346,7 +353,8 @@ public class CoverageParams_Props extends JPanel implements CustomModuleEditor,
       m_gbc.insets = new Insets(2, 2, 2, 2);
       m_gbc.anchor = GridBagConstraints.EAST;
       m_maxLbl = new JLabel();
-      m_maxLbl.setText("Num assignments: ");
+      //m_maxLbl.setText("Num assignments: ");
+      m_maxLbl.setText(CoverageParamSpaceGenerator.MAX_ITERATIONS+": ");
 
       // m_numClustLbl.setFont(new Font("Arial", Font.BOLD,10));
       m_maxLbl.setToolTipText("Enter integer value > 0 specifying number of assignment passes to perform.");
@@ -498,7 +506,9 @@ public class CoverageParams_Props extends JPanel implements CustomModuleEditor,
             Integer.toString((m_distSlide.getValue() == 0)
                              ? 1 : m_distSlide.getValue());
          m_distSlide.setToolTipText(disp);
-         m_distLbl.setText("HAC Dist Cutoff (% of Max):  " + disp);
+         //m_distLbl.setText("HAC Dist Cutoff (% of Max):  " + disp);
+         m_distLbl.setText(CoverageParamSpaceGenerator.HAC_DISTANCE_THRESHOLD+
+                 " (% of Max):  "+disp);
       }
 
       if (e.getSource() == m_covdistSlide) {
@@ -506,7 +516,9 @@ public class CoverageParams_Props extends JPanel implements CustomModuleEditor,
             Integer.toString((m_covdistSlide.getValue() == 0)
                              ? 1 : m_covdistSlide.getValue());
          m_covdistSlide.setToolTipText(disp);
-         m_covdistLbl.setText("Sampler Dist Cutoff (% of Max):  " + disp);
+         //m_covdistLbl.setText("Sampler Dist Cutoff (% of Max):  " + disp);
+         m_covdistLbl.setText(CoverageParamSpaceGenerator.COV_DIST_THRESH
+                 +" (% of Max):  "+disp);
       }
    }
 

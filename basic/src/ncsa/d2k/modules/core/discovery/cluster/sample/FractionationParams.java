@@ -217,11 +217,13 @@ public class FractionationParams extends FractionationParamsOPT {
       PropertyDescription[] pds = new PropertyDescription[7];
       pds[0] =
          new PropertyDescription("numClusters",
-                                 "Number of Clusters",
+                                 //"Number of Clusters",
+                                 FractionationParamSpaceGenerator.NUM_CLUSTERS,
                                  "This is the number of clusters you want to form (>= 2).");
       pds[1] =
          new PropertyDescription("clusterMethod",
-                                 "Clustering Method",
+                                 //"Clustering Method",
+                                 FractionationParamSpaceGenerator.CLUSTER_METHOD,
                                  "The method to use for determining the distance between two clusters. " +
                                  "<p>WARDS METHOD: Use a minimum variance approach that sums the squared error " +
                                  "(distance) for every point in the cluster to the cluster centroid.</p>" +
@@ -233,7 +235,8 @@ public class FractionationParams extends FractionationParamsOPT {
                                  "<p>WPGMC: Weighted pair group method using centroids.</p>");
       pds[2] =
          new PropertyDescription("distanceMetric",
-                                 "Distance Metric",
+                                 //"Distance Metric",
+                                 FractionationParamSpaceGenerator.DISTANCE_METRIC,
                                  "This property determine the type of distance function used to calculate " +
                                  "distance between two examples." +
                                  "<p>EUCLIDEAN: \"Straight\" line distance between points.</p>" +
@@ -241,22 +244,26 @@ public class FractionationParams extends FractionationParamsOPT {
                                  "<p>COSINE: 1 minus the cosine of the angle between the norms of the vectors denoted by two points.</p>");
       pds[3] =
          new PropertyDescription("hacDistanceThreshold",
-                                 "HAC Distance Threshold",
+                                 //"HAC Distance Threshold",
+                                 FractionationParamSpaceGenerator.HAC_DISTANCE_THRESHOLD,
                                  "This property specifies the percent of the max distance to use " +
                                  "as a cutoff value to halt clustering ([1...100].  The max distance between examples " +
                                  "is approximated by taking the min and max of each attribute and forming a " +
                                  "min example and a max example -- then finding the distance between the two.");
       pds[4] =
          new PropertyDescription("partitionSize",
-                                 "Max Partition Size",
+                                 //"Max Partition Size",
+                                 FractionationParamSpaceGenerator.FRACT_PART_SZ,
                                  "The size of partitions to use in the sampling process.");
       pds[5] =
          new PropertyDescription("NthSortTerm",
-                                 "Sort Attribute",
+                                 //"Sort Attribute",
+                                 FractionationParamSpaceGenerator.FRACT_NTH_SORT_TERM,
                                  "The index of for the column denoting the attribute to be used to sort on prior to partitioning.");
       pds[6] =
          new PropertyDescription("refinementMaxIterations",
-                                 "Number of Assignment Passes",
+                                 //"Number of Assignment Passes",
+                                 FractionationParamSpaceGenerator.MAX_ITERATIONS,
                                  "This property specifies the number of iterations of cluster refinement to perform (> 0).");
 
       return pds;
