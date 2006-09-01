@@ -55,18 +55,10 @@ import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 
 
 /**
- * <p>Title:</p>
- *
- * <p>Description:</p>
- *
- * <p>Copyright: Copyright (c) 2004</p>
- *
- * <p>Company:</p>
- *
+ * Utility functions for SVM
  * @author  vered
  * @version 1.0
  */
-
 public class SVMUtils {
 
    //~ Static fields/initializers **********************************************

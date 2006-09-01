@@ -98,9 +98,9 @@ public class ErrorFunctionGenerator extends ComputeModule {
    }
 
    /**
-    * Description of method getErrorFunctionName.
+    * Get the name of the error function
     *
-    * @return Description of return value.
+    * @return name of error function
     */
    public String getErrorFunctionName() { return this.ErrorFunctionName; }
 
@@ -263,9 +263,9 @@ public class ErrorFunctionGenerator extends ComputeModule {
    }
 
    /**
-    * Description of method setErrorFunctionName.
+    * Set the error function name.
     *
-    * @param value Description of parameter value.
+    * @param value error function name
     */
    public void setErrorFunctionName(String value) {
       this.ErrorFunctionName = value;

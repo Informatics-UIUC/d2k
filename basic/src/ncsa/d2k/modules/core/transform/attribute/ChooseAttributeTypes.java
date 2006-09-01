@@ -735,13 +735,21 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
     * @version $Revision$, $Date$
     */
    private class MirrorLayout implements LayoutManager {
-
+      /** buffer space */
       int gap = 1;
-
+      /** left */
       Component leftimage;
+       /** mirror */
       Component mirror;
+       /** right */
       Component rightimage;
 
+       /**
+        * Constructor
+        * @param leftimage left
+        * @param mirror mirror
+        * @param rightimage right
+        */
       public MirrorLayout(Component leftimage, Component mirror,
                           Component rightimage) {
          this.leftimage = leftimage;
@@ -749,70 +757,105 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
          this.rightimage = rightimage;
       }
 
-      public void addLayoutComponent(String name, Component component) { }
+       /**
+        * If the layout manager uses a per-component string,
+        * adds the component <code>comp</code> to the layout,
+        * associating it
+        * with the string specified by <code>name</code>.
+        *
+        * @param name the string to be associated with the component
+        * @param component the component to be added
+        */
+       public void addLayoutComponent(String name, Component component) {
+       }
 
-      public void layoutContainer(Container parent) {
-         Insets insets = parent.getInsets();
-         Dimension dimension = mirror.getPreferredSize();
+       /**
+        * Lays out the specified container.
+        *
+        * @param parent the container to be laid out
+        */
+       public void layoutContainer(Container parent) {
+           Insets insets = parent.getInsets();
+           Dimension dimension = mirror.getPreferredSize();
 
-         int width = parent.getSize().width;
-         int height = parent.getSize().height;
+           int width = parent.getSize().width;
+           int height = parent.getSize().height;
 
-         int imagewidth =
-            (width - insets.left - insets.right - dimension.width) / 2;
-         int imageheight = height - insets.top - insets.bottom;
+           int imagewidth =
+                   (width - insets.left - insets.right - dimension.width) / 2;
+           int imageheight = height - insets.top - insets.bottom;
 
-         mirror.setBounds(insets.left +
-                          (width - insets.left - insets.right) / 2 -
-                          dimension.width / 2 + gap,
-                          height / 2 - dimension.height / 2,
-                          dimension.width, dimension.height);
-         leftimage.setBounds(insets.left, insets.top, imagewidth, imageheight);
-         rightimage.setBounds(insets.left + imagewidth + dimension.width +
-                              2 * gap, insets.top, imagewidth, imageheight);
-      }
+           mirror.setBounds(insets.left +
+                   (width - insets.left - insets.right) / 2 -
+                   dimension.width / 2 + gap,
+                   height / 2 - dimension.height / 2,
+                   dimension.width, dimension.height);
+           leftimage.setBounds(insets.left, insets.top, imagewidth, imageheight);
+           rightimage.setBounds(insets.left + imagewidth + dimension.width +
+                   2 * gap, insets.top, imagewidth, imageheight);
+       }
 
-      public Dimension minimumLayoutSize(Container parent) {
-         Insets insets = parent.getInsets();
+       /**
+        * Calculates the minimum size dimensions for the specified
+        * container, given the components it contains.
+        *
+        * @param parent the component to be laid out
+        * @see #preferredLayoutSize
+        */
+       public Dimension minimumLayoutSize(Container parent) {
+           Insets insets = parent.getInsets();
 
-         int imageminimumwidth =
-            Math.max(leftimage.getMinimumSize().width,
-                     rightimage.getMinimumSize().width);
-         int imageminimumheight =
-            Math.max(leftimage.getMinimumSize().height,
-                     rightimage.getMinimumSize().height);
+           int imageminimumwidth =
+                   Math.max(leftimage.getMinimumSize().width,
+                           rightimage.getMinimumSize().width);
+           int imageminimumheight =
+                   Math.max(leftimage.getMinimumSize().height,
+                           rightimage.getMinimumSize().height);
 
-         int minimumwidth =
-            insets.left + mirror.getMinimumSize().width + 2 * gap +
-            2 * imageminimumwidth + insets.right;
-         int minimumheight =
-            insets.top + mirror.getMinimumSize().height + 2 * gap +
-            2 * imageminimumheight + insets.bottom;
+           int minimumwidth =
+                   insets.left + mirror.getMinimumSize().width + 2 * gap +
+                           2 * imageminimumwidth + insets.right;
+           int minimumheight =
+                   insets.top + mirror.getMinimumSize().height + 2 * gap +
+                           2 * imageminimumheight + insets.bottom;
 
-         return new Dimension(minimumwidth, minimumheight);
-      }
+           return new Dimension(minimumwidth, minimumheight);
+       }
 
-      public Dimension preferredLayoutSize(Container parent) {
-         Insets insets = parent.getInsets();
+       /**
+        * Calculates the preferred size dimensions for the specified
+        * container, given the components it contains.
+        *
+        * @param parent the container to be laid out
+        * @see #minimumLayoutSize
+        */
+       public Dimension preferredLayoutSize(Container parent) {
+           Insets insets = parent.getInsets();
 
-         int imagepreferredwidth =
-            Math.max(leftimage.getPreferredSize().width,
-                     rightimage.getPreferredSize().width);
-         int imagepreferredheight =
-            Math.max(leftimage.getPreferredSize().height,
-                     rightimage.getPreferredSize().height);
+           int imagepreferredwidth =
+                   Math.max(leftimage.getPreferredSize().width,
+                           rightimage.getPreferredSize().width);
+           int imagepreferredheight =
+                   Math.max(leftimage.getPreferredSize().height,
+                           rightimage.getPreferredSize().height);
 
-         int preferredwidth =
-            insets.left + mirror.getPreferredSize().width + 2 * gap +
-            2 * imagepreferredwidth + insets.right;
-         int preferredheight =
-            insets.top + mirror.getPreferredSize().height + 2 * gap +
-            2 * imagepreferredheight + insets.bottom;
+           int preferredwidth =
+                   insets.left + mirror.getPreferredSize().width + 2 * gap +
+                           2 * imagepreferredwidth + insets.right;
+           int preferredheight =
+                   insets.top + mirror.getPreferredSize().height + 2 * gap +
+                           2 * imagepreferredheight + insets.bottom;
 
-         return new Dimension(preferredwidth, preferredheight);
-      }
+           return new Dimension(preferredwidth, preferredheight);
+       }
 
-      public void removeLayoutComponent(Component component) { }
+       /**
+        * Removes the specified component from the layout.
+        *
+        * @param component the component to be removed
+        */
+       public void removeLayoutComponent(Component component) {
+       }
    } // end class MirrorLayout
 
    // headless conversion support

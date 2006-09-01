@@ -352,10 +352,12 @@ public class CreateModelComparisonTable extends ComputeModule {
    public String getModuleInfo() {
       return "<P>Overview: This module creates a Table in which each row holds" +
              " data about the performance of a prediction model, computed acording " +
-             "to the input <i>Prediction Table</I>. At the end of execution it writes the table to a file." +
-             " This Table can then be loaded into a plotting vis module, to visualize precision/recall VS model number.</P>" +
-             "<P>Data Handling: This module can only handle one output feature and this " +
-             "feature should be binary.</P>";
+             "to the input <i>Prediction Table</I>. At the end of execution it "+
+             "writes the table to a file." +
+             " This Table can then be loaded into a plotting vis module, to "+
+             "visualize precision/recall VS model number.</P>" +
+             "<P>Data Handling: This module can only handle one output feature "+
+              "and this feature should be binary.</P>";
    }
 
 

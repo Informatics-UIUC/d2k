@@ -24,12 +24,19 @@ final class NaiveBayesPieChartData extends MutableTableImpl implements Serializa
    /** The total of all the pies for this attribute */
    private int rowTotal;
 
+    /** constant for class column index */
    static final int CLASS = 0;
+    /** constant for tally column index */
    static final int TALLY = 1;
+    /** constant for ratio column index */
    static final int RATIO = 2;
 
    /**
       Constructor
+    @param an attribute name
+    @param bn bin name
+    @param n class names
+    @param t tallies
    */
    NaiveBayesPieChartData(String an, String bn, String []n, int[]t) {
       total = 0;
@@ -76,6 +83,10 @@ final class NaiveBayesPieChartData extends MutableTableImpl implements Serializa
 
    /**
       Constructor only used when creating the evidence.
+    @param an attribute name
+    @param bn bin name
+    @param n class names
+    @param r class ratios
    */
    NaiveBayesPieChartData(String an, String bn, String []n, double[]r) {
       total = 0;
@@ -122,7 +133,11 @@ final class NaiveBayesPieChartData extends MutableTableImpl implements Serializa
       }
    }
 
-   public final void sortByColumn(int c) {
+    /**
+     * Sort this table by column c.
+     * @param c column index
+     */
+   public void sortByColumn(int c) {
   	    super.sortByColumn(c);
       	classLookup = new HashMap();
         int numRows = getNumRows();
@@ -131,14 +146,23 @@ final class NaiveBayesPieChartData extends MutableTableImpl implements Serializa
       	}
    }
 
-   final void printMe() {
+    /**
+     * Print for debugging
+     */
+   void printMe() {
       System.out.println("bn: "+binName+" "+total);
       print();
    }
 
-   private HashMap classLookup;
+    /** maps class name to a row in this table */
+     private HashMap classLookup;
 
-   final double getClass(String c) {
+     /**
+     *  Get the ratio for a class given the class name
+     * @param c class name
+     * @return ratio
+     */
+   double getClass(String c) {
       Integer row = (Integer)classLookup.get(c);
       return getDouble(row.intValue(), RATIO);
    }
@@ -147,7 +171,7 @@ final class NaiveBayesPieChartData extends MutableTableImpl implements Serializa
       Get the total number of tallies in this pie
       @return the total number of tallies
    */
-   final int getTotal() {
+   int getTotal() {
       return total;
    }
 
@@ -157,7 +181,7 @@ final class NaiveBayesPieChartData extends MutableTableImpl implements Serializa
       @param i the row
       @return The class that is in the ith row.
    */
-   final String getClassName(int i) {
+   String getClassName(int i) {
       return getString(i, CLASS);
    }
 
@@ -166,7 +190,7 @@ final class NaiveBayesPieChartData extends MutableTableImpl implements Serializa
       @param i the row to look up
       @return the ith largest tally
    */
-   final int getTally(int i) {
+   int getTally(int i) {
       return getInt(i, TALLY);
    }
 
@@ -175,7 +199,7 @@ final class NaiveBayesPieChartData extends MutableTableImpl implements Serializa
       @param i the row to look up
       @return the ith largest tally
    */
-   final double getRatio(int i) {
+   double getRatio(int i) {
       return getDouble(i, RATIO);
    }
 
@@ -183,7 +207,7 @@ final class NaiveBayesPieChartData extends MutableTableImpl implements Serializa
       Get the attribute name
       @return the attribute that this pie represents
    */
-   final String getAttributeName() {
+   String getAttributeName() {
       return attributeName;
    }
 
@@ -191,7 +215,7 @@ final class NaiveBayesPieChartData extends MutableTableImpl implements Serializa
       Get the name of the pie.
       @return the name of the bin that this pie represents
    */
-   final String getBinName() {
+   String getBinName() {
       return binName;
    }
 
@@ -199,14 +223,15 @@ final class NaiveBayesPieChartData extends MutableTableImpl implements Serializa
       Get the total number of tallies for this attribute.
       @return the total number of tallies in this row
    */
-   final int getRowTotal() {
+   int getRowTotal() {
       return rowTotal;
    }
 
    /**
       Set the total number of tallies for this attribute.
+    @param i the total
    */
-   final void setRowTotal(int i) {
+   void setRowTotal(int i) {
       rowTotal = i;
    }
 }

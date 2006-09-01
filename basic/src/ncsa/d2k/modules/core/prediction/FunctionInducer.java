@@ -63,7 +63,7 @@ public abstract class FunctionInducer extends OrderedReentrantModule
 
    //~ Instance fields *********************************************************
 
-   /** Description of field BiasParameters. */
+   /** bias parameters */
    double[] BiasParameters;
 
    //~ Methods *****************************************************************
@@ -83,9 +83,9 @@ public abstract class FunctionInducer extends OrderedReentrantModule
       throws Exception;
 
    /**
-    * Description of method instantiateBiasFromProperties.
+    * Create a bias space from properties.
     *
-    * @throws Exception Description of exception Exception.
+    * @throws Exception when something goes wrong
     */
    public abstract void instantiateBiasFromProperties() throws Exception;
 
@@ -218,7 +218,8 @@ public abstract class FunctionInducer extends OrderedReentrantModule
     * @return <code>String</code> describing the purpose of the module.
     */
    public String getModuleInfo() {
-      return "FunctionInducer - not a functiona module in itself, it is a base class for MeanOutputInducer.";
+      return "FunctionInducer - not a functiona module in itself, it is a base "+
+       "class for MeanOutputInducer.";
    }
 
    /**

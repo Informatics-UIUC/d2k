@@ -104,7 +104,8 @@ public class PrepareClassAttributeModule
       switch (index) {
 
          case 0:
-            return "An ExampleTable with scalar binary output feature (that contain only zero and one).";
+            return "An ExampleTable with scalar binary output feature (that "+
+             "contain only zero and one).";
 
          default:
             return "No such input";

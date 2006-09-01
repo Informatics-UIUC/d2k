@@ -81,8 +81,8 @@ public final class NavigatorPanel extends JPanel {
    /**
     * Creates a new NavigatorPanel object.
     *
-    * @param model      Description of parameter model.
-    * @param scrollpane Description of parameter scrollpane.
+    * @param model      decision tree model
+    * @param scrollpane scroll pane that holds the visualization
     */
    public NavigatorPanel(ViewableDTModel model, TreeScrollPane scrollpane) {
       navigator = new Navigator(model, scrollpane);
@@ -100,6 +100,9 @@ public final class NavigatorPanel extends JPanel {
 
    //~ Inner Classes ***********************************************************
 
+    /**
+     * The navigator is a smaller view of the decision tree
+     */
    class Navigator extends JPanel implements MouseListener, MouseMotionListener,
                                              ChangeListener {
 
@@ -146,9 +149,13 @@ public final class NavigatorPanel extends JPanel {
       JViewport viewport;
 
       // Offsets of navigator
+        /** x location */
       double x;
+        /** y location */
       double y;
+        /** x location of last mouse press */
       double lastx;
+        /** y location of last mouse press */
       double lasty;
 
        /** scale in x direction */
@@ -158,8 +165,8 @@ public final class NavigatorPanel extends JPanel {
 
        /**
         * Constructor
-        * @param model
-        * @param scrollpane
+        * @param model decision tree model
+        * @param scrollpane tree scroll pane
         */
       public Navigator(ViewableDTModel model, TreeScrollPane scrollpane) {
          dmodel = model;
@@ -198,7 +205,8 @@ public final class NavigatorPanel extends JPanel {
       }
 
        /**
-        * build the tree
+        * Build the view.  Create a UI component for each node in the tree
+        * recursively.
         * @param dnode  decision tree node
         * @param snode  scaled node
         */
@@ -216,11 +224,11 @@ public final class NavigatorPanel extends JPanel {
 
        /**
         * Draw a line from (x1, y1) to (x2, y2)
-        * @param g2
-        * @param x1
-        * @param y1
-        * @param x2
-        * @param y2
+        * @param g2 graphics2D
+        * @param x1 x location 1
+        * @param y1 y location 1
+        * @param x2 x location 2
+        * @param y2 y location 2
         */
       public void drawLine(Graphics2D g2, double x1, double y1, double x2,
                            double y2) {
@@ -309,7 +317,7 @@ public final class NavigatorPanel extends JPanel {
 
        /**
         * find the offets for the tree
-        * @param snode
+        * @param snode scaled node
         */
       public void findTreeOffsets(ScaledNode snode) {
          snode.findOffsets();
@@ -320,30 +328,19 @@ public final class NavigatorPanel extends JPanel {
          }
       }
 
-       /**
-        * If the minimum size has been set to a non-<code>null</code> value
-        * just returns it.  If the UI delegate's <code>getMinimumSize</code>
-        * method returns a non-<code>null</code> value then return that; otherwise
-        * defer to the component's layout manager.
-        *
-        * @return the value of the <code>minimumSize</code> property
-        * @see #setMinimumSize
-        * @see javax.swing.plaf.ComponentUI
+      /**
+        * The minimum size is swidth x sheight.  Large enough to show the
+        * whole navigator.
+        * @return minimum size
         */
        public Dimension getMinimumSize() {
            return getPreferredSize();
        }
 
        /**
-        * If the <code>preferredSize</code> has been set to a
-        * non-<code>null</code> value just returns it.
-        * If the UI delegate's <code>getPreferredSize</code>
-        * method returns a non <code>null</code> value then return that;
-        * otherwise defer to the component's layout manager.
-        *
-        * @return the value of the <code>preferredSize</code> property
-        * @see #setPreferredSize
-        * @see javax.swing.plaf.ComponentUI
+        * The preferred size is swidth x sheight.  Large enough to show the
+        * whole navigator.
+        * @return preferred size
         */
        public Dimension getPreferredSize() {
            return new Dimension((int) swidth, (int) sheight);
@@ -357,15 +354,8 @@ public final class NavigatorPanel extends JPanel {
        }
 
        /**
-        * Invoked when a mouse button is pressed on a component and then
-        * dragged.  <code>MOUSE_DRAGGED</code> events will continue to be
-        * delivered to the component where the drag originated until the
-        * mouse button is released (regardless of whether the mouse position
-        * is within the bounds of the component).
-        * <p/>
-        * Due to platform-dependent Drag&Drop implementations,
-        * <code>MOUSE_DRAGGED</code> events may not be delivered during a native
-        * Drag&Drop operation.
+        * Scale the view when the mouse is dragged
+        * @event mouse event
         */
        public void mouseDragged(MouseEvent event) {
            int x1 = event.getX();
@@ -439,6 +429,10 @@ public final class NavigatorPanel extends JPanel {
        public void mouseReleased(MouseEvent event) {
        }
 
+        /**
+         * Paint to an offscreen buffer
+         * @param g2 graphics2D object
+         */
       public void paintBuffer(Graphics2D g2) {
          g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                              RenderingHints.VALUE_ANTIALIAS_ON);
@@ -495,7 +489,7 @@ public final class NavigatorPanel extends JPanel {
        }
 
        /**
-        *
+        *  Rebuild the tree view
         */
       public void rebuildTree() {
          sroot = new ScaledNode(dmodel, droot, null);

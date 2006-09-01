@@ -1,725 +1,1031 @@
+/* 
+ * $Header$
+ *
+ * ===================================================================
+ *
+ * D2K-Workflow
+ * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
+ * ILLINOIS. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License v2.0
+ * as published by the Free Software Foundation and with the required
+ * interpretation regarding derivative works as described below.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License v2.0 for more details.
+ * 
+ * This program and the accompanying materials are made available
+ * under the terms of the GNU General Public License v2.0 (GPL v2.0)
+ * which accompanies this distribution and is available at
+ * http://www.gnu.org/copyleft/gpl.html (or via mail from the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.), with the special and mandatory
+ * interpretation that software only using the documented public
+ * Application Program Interfaces (APIs) of D2K-Workflow are not
+ * considered derivative works under the terms of the GPL v2.0.
+ * Specifically, software only calling the D2K-Workflow Itinerary
+ * execution and workflow module APIs are not derivative works.
+ * Further, the incorporation of published APIs of other
+ * independently developed components into D2K Workflow code
+ * allowing it to use those separately developed components does not
+ * make those components a derivative work of D2K-Workflow.
+ * (Examples of such independently developed components include for
+ * example, external databases or metadata and provenance stores).
+ * 
+ * Note: A non-GPL commercially licensed version of contributions
+ * from the UNIVERSITY OF ILLINOIS may be available from the
+ * designated commercial licensee RiverGlass, Inc. located at
+ * (www.riverglassinc.com)
+ * ===================================================================
+ *
+ */
 package ncsa.d2k.modules.core.prediction.decisiontree.widgets;
 
 import ncsa.d2k.core.gui.JD2KFrame;
-import ncsa.d2k.core.modules.*;
-//import ncsa.d2k.infrastructure.views.*;
-import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.modules.core.prediction.decisiontree.NominalViewableDTModel;
 import ncsa.gui.Constrain;
-import ncsa.gui.JOutlinePanel;
+
+import javax.swing.*;
 
 import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import java.util.*;
-import ncsa.d2k.modules.core.prediction.decisiontree.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import ncsa.d2k.modules.core.datatype.table.basic.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
+
+/**
+ * Panel to input search parameters
+ *
+ * @author  $Author$
+ * @version $Revision$, $Date$
+ */
 public class SearchPanel extends JPanel implements ActionListener {
 
-  private static final String GREATER_THAN = ">";
-  private static final String LESS_THAN = "<";
-  private static final String GREATER_THAN_EQUAL_TO = ">=";
-  private static final String LESS_THAN_EQUAL_TO = "<=";
-  private static final String NOT_EQUAL_TO = "!=";
-  private static final String EQUAL_TO = "==";
+   //~ Static fields/initializers **********************************************
 
-  private static final String AND = "&&";
-  private static final String OR = "||";
-
-  // Population
-  JComboBox populationoutputs;
-  JComboBox populationoperators;
-  JTextField populationvalue;
-  JButton populationadd;
-
-  // Percent
-  JComboBox percentoutputs;
-  JComboBox percentoperators;
-  JTextField percentvalue;
-  JButton percentadd;
-
-  // Purity
-  JComboBox purityoperators;
-  JTextField purityvalue;
-  JButton purityadd;
+   /** constant for > */
+   static private final String GREATER_THAN = ">";
 
-  // Split
-  boolean scalar;
-  JComboBox splitinputs;
-  JComboBox splitoperators;
-  JComboBox splitvaluebox;
-  JTextField splitvaluefield;
-  JButton splitadd;
+   /** constant for < */
+   static private final String LESS_THAN = "<";
 
-  JComboBox operators;
+   /** constant for >= */
+   static private final String GREATER_THAN_EQUAL_TO = ">=";
 
-  JButton replace;
-  JButton remove;
+   /** constant for <= */
+   static private final String LESS_THAN_EQUAL_TO = "<=";
 
-  JButton close;
-  JButton search;
-  JButton clear;
+   /** constant for != */
+   static private final String NOT_EQUAL_TO = "!=";
 
-  ArrayList searchlist;
-  Viewport nodeindex;
-  int searchindex;
+   /** constant for == */
+   static private final String EQUAL_TO = "==";
 
-  JLabel resultlabel;
+   /** constant for && */
+   static private final String AND = "&&";
 
-  JButton next;
-  JButton previous;
+   /** constant for || */
+   static private final String OR = "||";
 
-  JPanel searchpanel;
-  JD2KFrame frame;
+   //~ Instance fields *********************************************************
 
-  JList conditionlist;
-  DefaultListModel listmodel;
+   /** clear button */
+   private JButton clear;
 
-  TreeScrollPane treescrollpane;
+   /** close button */
+   private JButton close;
 
-  NominalViewableDTModel model;
-
-  public SearchPanel(TreeScrollPane scrollpane, JD2KFrame parent) {
-    treescrollpane = scrollpane;
-    frame = parent;
-
-    model = (NominalViewableDTModel) treescrollpane.getViewableModel();
-    String[] outputs = model.getUniqueOutputValues();
-    String[] inputs = model.getInputs();
-
-    searchlist = new ArrayList();
-
-    // Population search
-    populationoutputs = new JComboBox(outputs);
-
-    populationoperators = new JComboBox();
-    populationoperators.addItem(GREATER_THAN);
-    populationoperators.addItem(LESS_THAN);
-    populationoperators.addItem(GREATER_THAN_EQUAL_TO);
-    populationoperators.addItem(LESS_THAN_EQUAL_TO);
-    populationoperators.addItem(EQUAL_TO);
-    populationoperators.addItem(NOT_EQUAL_TO);
-
-    populationvalue = new JTextField(5);
-
-    populationadd = new JButton("Add");
-    populationadd.addActionListener(this);
-
-    // Percent search
-    percentoutputs = new JComboBox(outputs);
-
-    percentoperators = new JComboBox();
-    percentoperators.addItem(GREATER_THAN);
-    percentoperators.addItem(LESS_THAN);
-    percentoperators.addItem(GREATER_THAN_EQUAL_TO);
-    percentoperators.addItem(LESS_THAN_EQUAL_TO);
-    percentoperators.addItem(EQUAL_TO);
-    percentoperators.addItem(NOT_EQUAL_TO);
-
-    percentvalue = new JTextField(5);
-
-    percentadd = new JButton("Add");
-    percentadd.addActionListener(this);
-
-    // Purity search
-    purityoperators = new JComboBox();
-    purityoperators.addItem(GREATER_THAN);
-    purityoperators.addItem(LESS_THAN);
-    purityoperators.addItem(GREATER_THAN_EQUAL_TO);
-    purityoperators.addItem(LESS_THAN_EQUAL_TO);
-    purityoperators.addItem(EQUAL_TO);
-    purityoperators.addItem(NOT_EQUAL_TO);
-
-    purityvalue = new JTextField(5);
-
-    purityadd = new JButton("Add");
-    purityadd.addActionListener(this);
-
-    // Split attributes
-    splitinputs = new JComboBox(inputs);
-    splitinputs.addActionListener(this);
-
-    splitoperators = new JComboBox();
-
-    int index = splitinputs.getSelectedIndex();
-
-    if (model.scalarInput(index)) {
-      scalar = true;
-
-      splitoperators.addItem(GREATER_THAN);
-      splitoperators.addItem(LESS_THAN);
-      splitoperators.addItem(GREATER_THAN_EQUAL_TO);
-      splitoperators.addItem(LESS_THAN_EQUAL_TO);
-      splitoperators.addItem(EQUAL_TO);
-      splitoperators.addItem(NOT_EQUAL_TO);
-
-      splitvaluefield = new JTextField(5);
-    }
-    else {
-      scalar = false;
-
-      splitoperators.addItem(EQUAL_TO);
-      splitoperators.addItem(NOT_EQUAL_TO);
-
-      splitvaluebox = new JComboBox(model.getUniqueInputValues(index));
-    }
-
-    splitadd = new JButton("Add");
-    splitadd.addActionListener(this);
-
-    // Search panel
-    searchpanel = new JPanel();
-    searchpanel.setLayout(new GridBagLayout());
-
-    // Population
-    Constrain.setConstraints(searchpanel, new JLabel("Population:"), 0, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 1, 0, new Insets(5, 5, 5, 5));
-    Constrain.setConstraints(searchpanel, populationoutputs, 1, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-    Constrain.setConstraints(searchpanel, populationoperators, 2, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-    Constrain.setConstraints(searchpanel, populationvalue, 3, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-    Constrain.setConstraints(searchpanel, populationadd, 4, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-
-    // Percent
-    Constrain.setConstraints(searchpanel, new JLabel("Percent:"), 0, 1, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 1, 0, new Insets(5, 5, 5, 5));
-    Constrain.setConstraints(searchpanel, percentoutputs, 1, 1, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-    Constrain.setConstraints(searchpanel, percentoperators, 2, 1, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-    Constrain.setConstraints(searchpanel, percentvalue, 3, 1, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-    Constrain.setConstraints(searchpanel, percentadd, 4, 1, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-
-    // Purity
-    Constrain.setConstraints(searchpanel, new JLabel("Purity:"), 0, 2, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 1, 0, new Insets(5, 5, 5, 5));
-    Constrain.setConstraints(searchpanel, purityoperators, 2, 2, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-    Constrain.setConstraints(searchpanel, purityvalue, 3, 2, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-    Constrain.setConstraints(searchpanel, purityadd, 4, 2, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-
-    // Split
-    Constrain.setConstraints(searchpanel, new JLabel("Split:"), 0, 3, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 1, 1, new Insets(5, 5, 5, 5));
-    Constrain.setConstraints(searchpanel, splitinputs, 1, 3, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-    Constrain.setConstraints(searchpanel, splitoperators, 2, 3, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-
-    if (scalar)
-      Constrain.setConstraints(searchpanel, splitvaluefield, 3, 3, 1, 1, GridBagConstraints.HORIZONTAL,
-                               GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-    else
-      Constrain.setConstraints(searchpanel, splitvaluebox, 3, 3, 1, 1, GridBagConstraints.HORIZONTAL,
-                               GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-
-    Constrain.setConstraints(searchpanel, splitadd, 4, 3, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
-
-    JScrollPane searchscroll = new JScrollPane(searchpanel);
-    searchscroll.setMinimumSize(searchscroll.getPreferredSize());
-
-    // Conditions
-    conditionlist = new JList();
-    listmodel = new DefaultListModel();
-    JLabel conditionlabel = new JLabel("Current Conditions");
-    conditionlist.setModel(listmodel);
-
-    JScrollPane conditionscroll = new JScrollPane(conditionlist);
-    JViewport viewport = new JViewport();
-    viewport.setView(conditionlabel);
-    conditionscroll.setColumnHeader(viewport);
-
-    // Conditions panel
-    JPanel conditionpanel = new JPanel();
-    conditionpanel.setLayout(new BorderLayout());
-    conditionpanel.add(conditionscroll, BorderLayout.CENTER);
-
-    remove = new JButton("Remove");
-    remove.addActionListener(this);
-
-    operators = new JComboBox();
-    operators.addItem(AND);
-    operators.addItem(OR);
-
-    replace = new JButton("Replace");
-    replace.addActionListener(this);
-
-    JPanel conditionbuttons = new JPanel();
-    conditionbuttons.setLayout(new GridBagLayout());
-
-    Constrain.setConstraints(conditionbuttons, remove, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(2, 2, 2, 2));
-    Constrain.setConstraints(conditionbuttons, new JPanel(), 1, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 1, 1, new Insets(2, 2, 2, 2));
-    Constrain.setConstraints(conditionbuttons, operators, 2, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(2, 2, 2, 2));
-    Constrain.setConstraints(conditionbuttons, replace, 3, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(2, 2, 2, 2));
-
-    conditionpanel.add(conditionbuttons, BorderLayout.SOUTH);
-
-    JSplitPane splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, searchscroll, conditionpanel);
-
-    // Button panel
-    JPanel buttonpanel = new JPanel();
-    buttonpanel.setLayout(new GridBagLayout());
-
-    close = new JButton("Close");
-    close.addActionListener(this);
-
-    search = new JButton("Search");
-    search.addActionListener(this);
-
-    clear = new JButton("Clear");
-    clear.addActionListener(this);
-
-    Constrain.setConstraints(buttonpanel, new JPanel(), 0, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 1, 1, new Insets(2, 2, 2, 2));
-    Constrain.setConstraints(buttonpanel, search, 1, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(2, 2, 2, 2));
-    Constrain.setConstraints(buttonpanel, clear, 2, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(2, 2, 2, 2));
-    Constrain.setConstraints(buttonpanel, close, 3, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(2, 2, 2, 2));
-
-    // Result panel
-    JPanel resultpanel = new JPanel();
-    resultpanel.setLayout(new GridBagLayout());
-
-    resultlabel = new JLabel("Search Results: ");
-
-    next = new JButton("Next");
-    next.addActionListener(this);
-
-    previous = new JButton("Previous");
-    previous.addActionListener(this);
-
-    Constrain.setConstraints(resultpanel, resultlabel, 3, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.WEST, 1, 1, new Insets(2, 2, 2, 2));
-    Constrain.setConstraints(resultpanel, next, 4, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(2, 2, 2, 2));
-    Constrain.setConstraints(resultpanel, previous, 5, 0, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(2, 2, 2, 2));
-
-    setLayout(new GridBagLayout());
-    Constrain.setConstraints(this, splitpane, 0, 0, 1, 1, GridBagConstraints.BOTH,
-                             GridBagConstraints.NORTHWEST, 1, 1, new Insets(2, 2, 2, 2));
-    Constrain.setConstraints(this, buttonpanel, 0, 1, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(2, 2, 2, 2));
-    Constrain.setConstraints(this, new JSeparator(SwingConstants.HORIZONTAL), 0, 2, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(2, 2, 2, 2));
-    Constrain.setConstraints(this, resultpanel, 0, 3, 1, 1, GridBagConstraints.HORIZONTAL,
-                             GridBagConstraints.NORTHWEST, 0, 0, new Insets(2, 2, 2, 2));
-  }
-
-  public void actionPerformed(ActionEvent event) {
-    Object source = event.getSource();
-
-    if (source==populationadd) {
-      String attribute = (String) populationoutputs.getSelectedItem();
-      String operator = (String) populationoperators.getSelectedItem();
-      String svalue = populationvalue.getText();
-      double dvalue = 0;
-
-      try {
-        dvalue = Double.parseDouble(svalue);
-      }
-      catch (Exception exception) {
-        exception.printStackTrace();
-      }
-
-      PopulationCondition condition = new PopulationCondition(attribute, operator, dvalue);
-      listmodel.addElement(condition);
-
-      populationvalue.setText("");
-    }
-
-    else if (source==percentadd) {
-      String attribute = (String) percentoutputs.getSelectedItem();
-      String operator = (String) percentoperators.getSelectedItem();
-      String svalue = percentvalue.getText();
-      double dvalue = 0;
-
-      try {
-        dvalue = Double.parseDouble(svalue);
-      }
-      catch (Exception exception) {
-      }
-
-      PercentCondition condition = new PercentCondition(attribute, operator, dvalue);
-      listmodel.addElement(condition);
-
-      percentvalue.setText("");
-    }
-
-    else if (source==purityadd) {
-      String operator = (String) purityoperators.getSelectedItem();
-      String svalue = purityvalue.getText();
-      double dvalue = 0;
-
-      try {
-        dvalue = Double.parseDouble(svalue);
-      }
-      catch (Exception exception) {
-      }
-
-      PurityCondition condition = new PurityCondition(operator, dvalue);
-      listmodel.addElement(condition);
-
-      purityvalue.setText("");
-    }
-
-    else if (source==splitinputs) {
+   /** list of the conditions that the filter must satisfy */
+   private JList conditionlist;
+
+   /** the frame */
+   private JD2KFrame frame;
+
+   /** list model */
+   private DefaultListModel listmodel;
+
+   /** decision tree model */
+   private NominalViewableDTModel model;
+
+   /** next button */
+   private JButton next;
+
+   /** viewport for a node. */
+   private Viewport nodeindex;
+
+   /** combo box holding operators for expression building */
+   private JComboBox operators;
+
+   /** percent add button */
+   private JButton percentadd;
+
+   /** combo box for percent operators. */
+   private JComboBox percentoperators;
+
+   /** Percent. */
+   private JComboBox percentoutputs;
+
+   /** text field for percent value */
+   private JTextField percentvalue;
+
+   /** population add button */
+   private JButton populationadd;
+
+   /** population operators combo box */
+   private JComboBox populationoperators;
+
+   /** population outputs combo box */
+   private JComboBox populationoutputs;
+
+   /** population value combo box */
+   private JTextField populationvalue;
+
+   /** previous button */
+   private JButton previous;
+
+   /** purity add button */
+   private JButton purityadd;
+
+   /** purity operators combo box */
+   private JComboBox purityoperators;
+
+   /** purity value text field */
+   private JTextField purityvalue;
+
+   /** remove button */
+   private JButton remove;
+
+   /** replace button */
+   private JButton replace;
+
+   /** result label */
+   private JLabel resultlabel;
+
+   /** true if an input is scalar */
+   private boolean scalar;
+
+   /** search button */
+   private JButton search;
+
+   /** current index into searchList */
+   private int searchindex;
+
+   /** list of viewports (nodes) */
+   private ArrayList searchlist;
+
+   /** panel  */
+   private JPanel searchpanel;
+
+   /** split add button */
+   private JButton splitadd;
+
+   /** combo box for split inputs */
+   private JComboBox splitinputs;
+
+   /** combo box for split operators */
+   private JComboBox splitoperators;
+
+   /** combo box for split values */
+   private JComboBox splitvaluebox;
+
+   /** text field to enter split value */
+   private JTextField splitvaluefield;
+
+   /** the treescrollpane holds the main view */
+   private TreeScrollPane treescrollpane;
+
+   //~ Constructors ************************************************************
+
+   /**
+    * Creates a new SearchPanel object.
+    *
+    * @param scrollpane holds the main view of the decision tree
+    * @param parent     frame that holds this component
+    */
+   public SearchPanel(TreeScrollPane scrollpane, JD2KFrame parent) {
+      treescrollpane = scrollpane;
+      frame = parent;
+
+      model = (NominalViewableDTModel) treescrollpane.getViewableModel();
+
+      String[] outputs = model.getUniqueOutputValues();
+      String[] inputs = model.getInputs();
+
+      searchlist = new ArrayList();
+
+      // Population search
+      populationoutputs = new JComboBox(outputs);
+
+      populationoperators = new JComboBox();
+      populationoperators.addItem(GREATER_THAN);
+      populationoperators.addItem(LESS_THAN);
+      populationoperators.addItem(GREATER_THAN_EQUAL_TO);
+      populationoperators.addItem(LESS_THAN_EQUAL_TO);
+      populationoperators.addItem(EQUAL_TO);
+      populationoperators.addItem(NOT_EQUAL_TO);
+
+      populationvalue = new JTextField(5);
+
+      populationadd = new JButton("Add");
+      populationadd.addActionListener(this);
+
+      // Percent search
+      percentoutputs = new JComboBox(outputs);
+
+      percentoperators = new JComboBox();
+      percentoperators.addItem(GREATER_THAN);
+      percentoperators.addItem(LESS_THAN);
+      percentoperators.addItem(GREATER_THAN_EQUAL_TO);
+      percentoperators.addItem(LESS_THAN_EQUAL_TO);
+      percentoperators.addItem(EQUAL_TO);
+      percentoperators.addItem(NOT_EQUAL_TO);
+
+      percentvalue = new JTextField(5);
+
+      percentadd = new JButton("Add");
+      percentadd.addActionListener(this);
+
+      // Purity search
+      purityoperators = new JComboBox();
+      purityoperators.addItem(GREATER_THAN);
+      purityoperators.addItem(LESS_THAN);
+      purityoperators.addItem(GREATER_THAN_EQUAL_TO);
+      purityoperators.addItem(LESS_THAN_EQUAL_TO);
+      purityoperators.addItem(EQUAL_TO);
+      purityoperators.addItem(NOT_EQUAL_TO);
+
+      purityvalue = new JTextField(5);
+
+      purityadd = new JButton("Add");
+      purityadd.addActionListener(this);
+
+      // Split attributes
+      splitinputs = new JComboBox(inputs);
+      splitinputs.addActionListener(this);
+
+      splitoperators = new JComboBox();
+
       int index = splitinputs.getSelectedIndex();
 
-      if (model.scalarInput(index)&&!scalar) {
-        scalar = true;
+      if (model.scalarInput(index)) {
+         scalar = true;
 
-        splitoperators.removeAllItems();
-        splitoperators.addItem(GREATER_THAN);
-        splitoperators.addItem(LESS_THAN);
-        splitoperators.addItem(GREATER_THAN_EQUAL_TO);
-        splitoperators.addItem(LESS_THAN_EQUAL_TO);
-        splitoperators.addItem(EQUAL_TO);
-        splitoperators.addItem(NOT_EQUAL_TO);
+         splitoperators.addItem(GREATER_THAN);
+         splitoperators.addItem(LESS_THAN);
+         splitoperators.addItem(GREATER_THAN_EQUAL_TO);
+         splitoperators.addItem(LESS_THAN_EQUAL_TO);
+         splitoperators.addItem(EQUAL_TO);
+         splitoperators.addItem(NOT_EQUAL_TO);
 
-        splitvaluefield = new JTextField(5);
+         splitvaluefield = new JTextField(5);
+      } else {
+         scalar = false;
 
-        searchpanel.remove(splitvaluebox);
-        Constrain.setConstraints(searchpanel, splitvaluefield, 3, 3, 1, 1, GridBagConstraints.HORIZONTAL,
-                                 GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
+         splitoperators.addItem(EQUAL_TO);
+         splitoperators.addItem(NOT_EQUAL_TO);
 
-        revalidate();
-        repaint();
+         splitvaluebox = new JComboBox(model.getUniqueInputValues(index));
       }
-      else if (!model.scalarInput(index)&&scalar) {
-        scalar = false;
 
-        splitoperators.removeAllItems();
-        splitoperators.addItem(EQUAL_TO);
-        splitoperators.addItem(NOT_EQUAL_TO);
+      splitadd = new JButton("Add");
+      splitadd.addActionListener(this);
 
-        splitvaluebox = new JComboBox(model.getUniqueInputValues(index));
+      // Search panel
+      searchpanel = new JPanel();
+      searchpanel.setLayout(new GridBagLayout());
 
-        searchpanel.remove(splitvaluefield);
-        Constrain.setConstraints(searchpanel, splitvaluebox, 3, 3, 1, 1, GridBagConstraints.HORIZONTAL,
-                                 GridBagConstraints.NORTHWEST, 0, 0, new Insets(5, 5, 5, 5));
+      // Population
+      Constrain.setConstraints(searchpanel, new JLabel("Population:"), 0, 0, 1,
+                               1, GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 1, 0,
+                               new Insets(5, 5, 5, 5));
+      Constrain.setConstraints(searchpanel, populationoutputs, 1, 0, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(5, 5, 5, 5));
+      Constrain.setConstraints(searchpanel, populationoperators, 2, 0, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(5, 5, 5, 5));
+      Constrain.setConstraints(searchpanel, populationvalue, 3, 0, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(5, 5, 5, 5));
+      Constrain.setConstraints(searchpanel, populationadd, 4, 0, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(5, 5, 5, 5));
 
-        revalidate();
-        repaint();
-      }
-    }
+      // Percent
+      Constrain.setConstraints(searchpanel, new JLabel("Percent:"), 0, 1, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 1, 0,
+                               new Insets(5, 5, 5, 5));
+      Constrain.setConstraints(searchpanel, percentoutputs, 1, 1, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(5, 5, 5, 5));
+      Constrain.setConstraints(searchpanel, percentoperators, 2, 1, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(5, 5, 5, 5));
+      Constrain.setConstraints(searchpanel, percentvalue, 3, 1, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(5, 5, 5, 5));
+      Constrain.setConstraints(searchpanel, percentadd, 4, 1, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(5, 5, 5, 5));
 
-    else if (source==splitadd) {
-      String attribute = (String) splitinputs.getSelectedItem();
-      String operator = (String) splitoperators.getSelectedItem();
+      // Purity
+      Constrain.setConstraints(searchpanel, new JLabel("Purity:"), 0, 2, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 1, 0,
+                               new Insets(5, 5, 5, 5));
+      Constrain.setConstraints(searchpanel, purityoperators, 2, 2, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(5, 5, 5, 5));
+      Constrain.setConstraints(searchpanel, purityvalue, 3, 2, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(5, 5, 5, 5));
+      Constrain.setConstraints(searchpanel, purityadd, 4, 2, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(5, 5, 5, 5));
+
+      // Split
+      Constrain.setConstraints(searchpanel, new JLabel("Split:"), 0, 3, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 1, 1,
+                               new Insets(5, 5, 5, 5));
+      Constrain.setConstraints(searchpanel, splitinputs, 1, 3, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(5, 5, 5, 5));
+      Constrain.setConstraints(searchpanel, splitoperators, 2, 3, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(5, 5, 5, 5));
 
       if (scalar) {
-        try {
-          String svalue = splitvaluefield.getText();
-          double dvalue = Double.parseDouble(svalue);
-
-          SplitCondition condition = new SplitCondition(attribute, operator, dvalue);
-          listmodel.addElement(condition);
-
-          splitvaluefield.setText("");
-        }
-        catch (Exception exception) {
-        }
+         Constrain.setConstraints(searchpanel, splitvaluefield, 3, 3, 1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.NORTHWEST, 0, 0,
+                                  new Insets(5, 5, 5, 5));
+      } else {
+         Constrain.setConstraints(searchpanel, splitvaluebox, 3, 3, 1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.NORTHWEST, 0, 0,
+                                  new Insets(5, 5, 5, 5));
       }
-      else {
-        try {
-          String svalue = (String) splitvaluebox.getSelectedItem();
 
-          SplitCondition condition = new SplitCondition(attribute, operator, svalue);
-          listmodel.addElement(condition);
-        }
-        catch (Exception exception) {
-        }
+      Constrain.setConstraints(searchpanel, splitadd, 4, 3, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(5, 5, 5, 5));
+
+      JScrollPane searchscroll = new JScrollPane(searchpanel);
+      searchscroll.setMinimumSize(searchscroll.getPreferredSize());
+
+      // Conditions
+      conditionlist = new JList();
+      listmodel = new DefaultListModel();
+
+      JLabel conditionlabel = new JLabel("Current Conditions");
+      conditionlist.setModel(listmodel);
+
+      JScrollPane conditionscroll = new JScrollPane(conditionlist);
+      JViewport viewport = new JViewport();
+      viewport.setView(conditionlabel);
+      conditionscroll.setColumnHeader(viewport);
+
+      // Conditions panel
+      JPanel conditionpanel = new JPanel();
+      conditionpanel.setLayout(new BorderLayout());
+      conditionpanel.add(conditionscroll, BorderLayout.CENTER);
+
+      remove = new JButton("Remove");
+      remove.addActionListener(this);
+
+      operators = new JComboBox();
+      operators.addItem(AND);
+      operators.addItem(OR);
+
+      replace = new JButton("Replace");
+      replace.addActionListener(this);
+
+      JPanel conditionbuttons = new JPanel();
+      conditionbuttons.setLayout(new GridBagLayout());
+
+      Constrain.setConstraints(conditionbuttons, remove, 0, 0, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(2, 2, 2, 2));
+      Constrain.setConstraints(conditionbuttons, new JPanel(), 1, 0, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 1, 1,
+                               new Insets(2, 2, 2, 2));
+      Constrain.setConstraints(conditionbuttons, operators, 2, 0, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(2, 2, 2, 2));
+      Constrain.setConstraints(conditionbuttons, replace, 3, 0, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(2, 2, 2, 2));
+
+      conditionpanel.add(conditionbuttons, BorderLayout.SOUTH);
+
+      JSplitPane splitpane =
+         new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, searchscroll,
+                        conditionpanel);
+
+      // Button panel
+      JPanel buttonpanel = new JPanel();
+      buttonpanel.setLayout(new GridBagLayout());
+
+      close = new JButton("Close");
+      close.addActionListener(this);
+
+      search = new JButton("Search");
+      search.addActionListener(this);
+
+      clear = new JButton("Clear");
+      clear.addActionListener(this);
+
+      Constrain.setConstraints(buttonpanel, new JPanel(), 0, 0, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 1, 1,
+                               new Insets(2, 2, 2, 2));
+      Constrain.setConstraints(buttonpanel, search, 1, 0, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(2, 2, 2, 2));
+      Constrain.setConstraints(buttonpanel, clear, 2, 0, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(2, 2, 2, 2));
+      Constrain.setConstraints(buttonpanel, close, 3, 0, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(2, 2, 2, 2));
+
+      // Result panel
+      JPanel resultpanel = new JPanel();
+      resultpanel.setLayout(new GridBagLayout());
+
+      resultlabel = new JLabel("Search Results: ");
+
+      next = new JButton("Next");
+      next.addActionListener(this);
+
+      previous = new JButton("Previous");
+      previous.addActionListener(this);
+
+      Constrain.setConstraints(resultpanel, resultlabel, 3, 0, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.WEST, 1, 1,
+                               new Insets(2, 2, 2, 2));
+      Constrain.setConstraints(resultpanel, next, 4, 0, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(2, 2, 2, 2));
+      Constrain.setConstraints(resultpanel, previous, 5, 0, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(2, 2, 2, 2));
+
+      setLayout(new GridBagLayout());
+      Constrain.setConstraints(this, splitpane, 0, 0, 1, 1,
+                               GridBagConstraints.BOTH,
+                               GridBagConstraints.NORTHWEST, 1, 1,
+                               new Insets(2, 2, 2, 2));
+      Constrain.setConstraints(this, buttonpanel, 0, 1, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(2, 2, 2, 2));
+      Constrain.setConstraints(this, new JSeparator(SwingConstants.HORIZONTAL),
+                               0, 2, 1, 1, GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(2, 2, 2, 2));
+      Constrain.setConstraints(this, resultpanel, 0, 3, 1, 1,
+                               GridBagConstraints.HORIZONTAL,
+                               GridBagConstraints.NORTHWEST, 0, 0,
+                               new Insets(2, 2, 2, 2));
+   }
+
+   //~ Methods *****************************************************************
+
+   /**
+    * Recursively search tree.
+    *
+    * @param condition the condition
+    * @param node      viewport that represents a node
+    */
+   void searchTree(Condition condition, Viewport node) {
+      boolean evaluation;
+
+      if (node.isLeaf()) {
+         evaluation = condition.evaluate(condition, node);
+         node.setSearch(evaluation);
+
+         if (evaluation) {
+            searchlist.add(node);
+         }
+
+         return;
       }
-    }
 
-    else if (source==remove) {
-      int selected = conditionlist.getSelectedIndex();
-
-      if (selected!=-1)
-        listmodel.remove(selected);
-    }
-
-    else if (source==replace) {
-      String operator = (String) operators.getSelectedItem();
-
-      int[] indices = conditionlist.getSelectedIndices();
-      if (indices.length<2)
-        return;
-
-      Condition first = (Condition) listmodel.getElementAt(indices[0]);
-      Condition second = (Condition) listmodel.getElementAt(indices[1]);
-      Condition three = new CompoundCondition(first, second, operator);
-
-      listmodel.removeElementAt(indices[0]);
-      listmodel.removeElementAt(indices[1]-1);
-      listmodel.add(0, three);
-    }
-
-    else if (source==close) {
-      frame.setVisible(false);
-      listmodel.removeAllElements();
-    }
-
-    else if (source==search) {
-      searchlist.clear();
-      searchindex = -1;
-
-      Object[] conditions = listmodel.toArray();
-
-      if (conditions.length==1) {
-        Condition condition = (Condition) conditions[0];
-        searchTree(condition, treescrollpane.getViewRoot());
-
-        resultlabel.setText("Search Results: "+searchlist.size()+" nodes");
-        repaint();
-        treescrollpane.repaint();
+      for (int index = 0; index < node.getNumChildren(); index++) {
+         Viewport child = node.getChild(index);
+         searchTree(condition, child);
       }
-    }
 
-    else if (source==clear) {
-      searchlist.clear();
-      searchindex = -1;
-
-      if (nodeindex!=null)
-        nodeindex.setSearchBackground(false);
-
-      resultlabel.setText("Search Results: ");
-
-      repaint();
-      treescrollpane.clearSearch();
-      treescrollpane.repaint();
-    }
-
-    else if (source==next) {
-      if (searchlist.size()>0) {
-        searchindex++;
-
-        if (searchindex==searchlist.size())
-          searchindex = 0;
-
-        if (nodeindex!=null)
-          nodeindex.setSearchBackground(false);
-
-        Viewport node = (Viewport) searchlist.get(searchindex);
-
-        nodeindex = node;
-        nodeindex.setSearchBackground(true);
-
-        updateViewport(node);
-      }
-    }
-
-    else if (source==previous) {
-      if (searchlist.size()>0) {
-        searchindex--;
-
-        if (searchindex<0)
-          searchindex = searchlist.size()-1;
-
-        if (nodeindex!=null)
-          nodeindex.setSearchBackground(false);
-
-        Viewport node = (Viewport) searchlist.get(searchindex);
-
-        nodeindex = node;
-        nodeindex.setSearchBackground(true);
-
-        updateViewport(node);
-      }
-    }
-  }
-
-  // Update viewport in tree scroll pane to show node
-  void updateViewport(Viewport node) {
-    double xnode = node.x;
-    double ynode = node.y;
-
-    double nodeheight = node.getViewHeight();
-    double nodewidth = node.getViewWidth();
-
-    double scale = treescrollpane.getScale();
-
-    JViewport viewport = treescrollpane.viewport;
-
-    Dimension dimension = viewport.getExtentSize();
-    double viewportwidth = dimension.getWidth();
-    double viewportheight = dimension.getHeight();
-
-    dimension = viewport.getViewSize();
-    double viewwidth = dimension.getWidth();
-    double viewheight = dimension.getHeight();
-
-    double xviewport = scale*xnode-viewportwidth/2;
-    double yviewport = scale*(ynode+nodeheight/2)-viewportheight/2;
-
-    if (xviewport<0)
-      xviewport = 0;
-    if (xviewport>viewwidth-viewportwidth)
-      xviewport = viewwidth-viewportwidth;
-    if (yviewport<0)
-      yviewport = 0;
-    if (yviewport>viewheight-viewportheight)
-      yviewport = viewheight-viewportheight;
-
-    treescrollpane.scroll((int) xviewport, (int) yviewport);
-  }
-
-  // Recursively search tree
-  void searchTree(Condition condition, Viewport node) {
-    boolean evaluation;
-
-    if (node.isLeaf()) {
       evaluation = condition.evaluate(condition, node);
       node.setSearch(evaluation);
 
-      if (evaluation)
-        searchlist.add(node);
-
-      return;
-    }
-
-    for (int index = 0; index<node.getNumChildren(); index++) {
-      Viewport child = node.getChild(index);
-      searchTree(condition, child);
-    }
-
-    evaluation = condition.evaluate(condition, node);
-    node.setSearch(evaluation);
-
-    if (evaluation)
-      searchlist.add(node);
-  }
-
-  // Encapsulates a search criterion
-  protected class Condition {
-    Condition first, second;
-
-    String attribute;
-    String operator;
-    double value;
-
-    boolean evaluate(Condition condition, Viewport node) {
-      boolean expression;
-
-      if (condition instanceof CompoundCondition) {
-        expression = evaluate(condition.first, node);
-
-        if (condition.operator==AND)
-          expression = expression&&evaluate(condition.second, node);
-        else if (condition.operator==OR)
-          expression = expression||evaluate(condition.second, node);
+      if (evaluation) {
+         searchlist.add(node);
       }
-      else {
-        return node.evaluate(condition);
+   }
+
+   /**
+    * Update viewport in tree scroll pane to show node.
+    *
+    * @param node viewport that represents a node
+    */
+   void updateViewport(Viewport node) {
+      double xnode = node.x;
+      double ynode = node.y;
+
+      double nodeheight = node.getViewHeight();
+      double nodewidth = node.getViewWidth();
+
+      double scale = treescrollpane.getScale();
+
+      JViewport viewport = treescrollpane.viewport;
+
+      Dimension dimension = viewport.getExtentSize();
+      double viewportwidth = dimension.getWidth();
+      double viewportheight = dimension.getHeight();
+
+      dimension = viewport.getViewSize();
+
+      double viewwidth = dimension.getWidth();
+      double viewheight = dimension.getHeight();
+
+      double xviewport = scale * xnode - viewportwidth / 2;
+      double yviewport = scale * (ynode + nodeheight / 2) - viewportheight / 2;
+
+      if (xviewport < 0) {
+         xviewport = 0;
       }
 
-      return expression;
-    }
-  }
-
-  // Combines two conditions to form a boolean expression
-  class CompoundCondition extends Condition {
-    CompoundCondition(Condition first, Condition second, String operator) {
-      this.first = first;
-      this.second = second;
-      this.operator = operator;
-    }
-
-    public String toString() {
-      return toString(this);
-    }
-
-    String toString(Condition condition) {
-      String expression;
-
-      if (condition instanceof CompoundCondition) {
-        expression = "("+toString(condition.first)+" "+condition.operator;
-        expression = expression+" "+toString(condition.second)+")";
+      if (xviewport > viewwidth - viewportwidth) {
+         xviewport = viewwidth - viewportwidth;
       }
-      else
-        return condition.toString();
 
-      return expression;
-    }
-  }
+      if (yviewport < 0) {
+         yviewport = 0;
+      }
 
-  class PopulationCondition extends Condition {
-    PopulationCondition(String attribute, String operator, double value) {
-      this.attribute = attribute;
-      this.operator = operator;
-      this.value = value;
-    }
+      if (yviewport > viewheight - viewportheight) {
+         yviewport = viewheight - viewportheight;
+      }
 
-    public String toString() {
-      return "Population: "+attribute+" "+operator+" "+value;
-    }
-  }
+      treescrollpane.scroll((int) xviewport, (int) yviewport);
+   } // end method updateViewport
 
-  class PercentCondition extends Condition {
-    PercentCondition(String attribute, String operator, double value) {
-      this.attribute = attribute;
-      this.operator = operator;
-      this.value = value;
-    }
 
-    public String toString() {
-      return "Percent: "+attribute+" "+operator+" "+value;
-    }
-  }
+    /**
+     * Invoked when an action occurs.
+     */
+    public void actionPerformed(ActionEvent event) {
+        Object source = event.getSource();
 
-  class PurityCondition extends Condition {
-    PurityCondition(String operator, double value) {
-      this.attribute = "Purity";
-      this.operator = operator;
-      this.value = value;
-    }
+        if (source == populationadd) {
+            String attribute = (String) populationoutputs.getSelectedItem();
+            String operator = (String) populationoperators.getSelectedItem();
+            String svalue = populationvalue.getText();
+            double dvalue = 0;
 
-    public String toString() {
-      return "Purity: "+operator+" "+value;
-    }
-  }
+            try {
+                dvalue = Double.parseDouble(svalue);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
 
-  class SplitCondition extends Condition {
-    String svalue;
-    boolean scalar;
+            PopulationCondition condition =
+                    new PopulationCondition(attribute, operator, dvalue);
+            listmodel.addElement(condition);
 
-    SplitCondition(String attribute, String operator, double value) {
-      this.attribute = attribute;
-      this.operator = operator;
-      this.value = value;
+            populationvalue.setText("");
+        } else if (source == percentadd) {
+            String attribute = (String) percentoutputs.getSelectedItem();
+            String operator = (String) percentoperators.getSelectedItem();
+            String svalue = percentvalue.getText();
+            double dvalue = 0;
 
-      scalar = true;
-    }
+            try {
+                dvalue = Double.parseDouble(svalue);
+            } catch (Exception exception) {
+            }
 
-    SplitCondition(String attribute, String operator, String svalue) {
-      this.attribute = attribute;
-      this.operator = operator;
-      this.svalue = svalue;
+            PercentCondition condition =
+                    new PercentCondition(attribute, operator, dvalue);
+            listmodel.addElement(condition);
 
-      scalar = false;
-    }
+            percentvalue.setText("");
+        } else if (source == purityadd) {
+            String operator = (String) purityoperators.getSelectedItem();
+            String svalue = purityvalue.getText();
+            double dvalue = 0;
 
-    public String toString() {
-      if (scalar)
-        return "Split: "+attribute+" "+operator+" "+value;
-      else
-        return "Split: "+attribute+" "+operator+" "+svalue;
-    }
-  }
-}
+            try {
+                dvalue = Double.parseDouble(svalue);
+            } catch (Exception exception) {
+            }
+
+            PurityCondition condition = new PurityCondition(operator, dvalue);
+            listmodel.addElement(condition);
+
+            purityvalue.setText("");
+        } else if (source == splitinputs) {
+            int index = splitinputs.getSelectedIndex();
+
+            if (model.scalarInput(index) && !scalar) {
+                scalar = true;
+
+                splitoperators.removeAllItems();
+                splitoperators.addItem(GREATER_THAN);
+                splitoperators.addItem(LESS_THAN);
+                splitoperators.addItem(GREATER_THAN_EQUAL_TO);
+                splitoperators.addItem(LESS_THAN_EQUAL_TO);
+                splitoperators.addItem(EQUAL_TO);
+                splitoperators.addItem(NOT_EQUAL_TO);
+
+                splitvaluefield = new JTextField(5);
+
+                searchpanel.remove(splitvaluebox);
+                Constrain.setConstraints(searchpanel, splitvaluefield, 3, 3, 1, 1,
+                        GridBagConstraints.HORIZONTAL,
+                        GridBagConstraints.NORTHWEST, 0, 0,
+                        new Insets(5, 5, 5, 5));
+
+                revalidate();
+                repaint();
+            } else if (!model.scalarInput(index) && scalar) {
+                scalar = false;
+
+                splitoperators.removeAllItems();
+                splitoperators.addItem(EQUAL_TO);
+                splitoperators.addItem(NOT_EQUAL_TO);
+
+                splitvaluebox = new JComboBox(model.getUniqueInputValues(index));
+
+                searchpanel.remove(splitvaluefield);
+                Constrain.setConstraints(searchpanel, splitvaluebox, 3, 3, 1, 1,
+                        GridBagConstraints.HORIZONTAL,
+                        GridBagConstraints.NORTHWEST, 0, 0,
+                        new Insets(5, 5, 5, 5));
+
+                revalidate();
+                repaint();
+            }
+        } else if (source == splitadd) {
+            String attribute = (String) splitinputs.getSelectedItem();
+            String operator = (String) splitoperators.getSelectedItem();
+
+            if (scalar) {
+
+                try {
+                    String svalue = splitvaluefield.getText();
+                    double dvalue = Double.parseDouble(svalue);
+
+                    SplitCondition condition =
+                            new SplitCondition(attribute, operator, dvalue);
+                    listmodel.addElement(condition);
+
+                    splitvaluefield.setText("");
+                } catch (Exception exception) {
+                }
+            } else {
+
+                try {
+                    String svalue = (String) splitvaluebox.getSelectedItem();
+
+                    SplitCondition condition =
+                            new SplitCondition(attribute, operator, svalue);
+                    listmodel.addElement(condition);
+                } catch (Exception exception) {
+                }
+            }
+        } else if (source == remove) {
+            int selected = conditionlist.getSelectedIndex();
+
+            if (selected != -1) {
+                listmodel.remove(selected);
+            }
+        } else if (source == replace) {
+            String operator = (String) operators.getSelectedItem();
+
+            int[] indices = conditionlist.getSelectedIndices();
+
+            if (indices.length < 2) {
+                return;
+            }
+
+            Condition first = (Condition) listmodel.getElementAt(indices[0]);
+            Condition second = (Condition) listmodel.getElementAt(indices[1]);
+            Condition three = new CompoundCondition(first, second, operator);
+
+            listmodel.removeElementAt(indices[0]);
+            listmodel.removeElementAt(indices[1] - 1);
+            listmodel.add(0, three);
+        } else if (source == close) {
+            frame.setVisible(false);
+            listmodel.removeAllElements();
+        } else if (source == search) {
+            searchlist.clear();
+            searchindex = -1;
+
+            Object[] conditions = listmodel.toArray();
+
+            if (conditions.length == 1) {
+                Condition condition = (Condition) conditions[0];
+                searchTree(condition, treescrollpane.getViewRoot());
+
+                resultlabel.setText("Search Results: " + searchlist.size() +
+                        " nodes");
+                repaint();
+                treescrollpane.repaint();
+            }
+        } else if (source == clear) {
+            searchlist.clear();
+            searchindex = -1;
+
+            if (nodeindex != null) {
+                nodeindex.setSearchBackground(false);
+            }
+
+            resultlabel.setText("Search Results: ");
+
+            repaint();
+            treescrollpane.clearSearch();
+            treescrollpane.repaint();
+        } else if (source == next) {
+
+            if (searchlist.size() > 0) {
+                searchindex++;
+
+                if (searchindex == searchlist.size()) {
+                    searchindex = 0;
+                }
+
+                if (nodeindex != null) {
+                    nodeindex.setSearchBackground(false);
+                }
+
+                Viewport node = (Viewport) searchlist.get(searchindex);
+
+                nodeindex = node;
+                nodeindex.setSearchBackground(true);
+
+                updateViewport(node);
+            }
+        } else if (source == previous) {
+
+            if (searchlist.size() > 0) {
+                searchindex--;
+
+                if (searchindex < 0) {
+                    searchindex = searchlist.size() - 1;
+                }
+
+                if (nodeindex != null) {
+                    nodeindex.setSearchBackground(false);
+                }
+
+                Viewport node = (Viewport) searchlist.get(searchindex);
+
+                nodeindex = node;
+                nodeindex.setSearchBackground(true);
+
+                updateViewport(node);
+            }
+        }
+    } // end method actionPerformed
+
+   //~ Inner Classes ***********************************************************
+
+    /**
+     * Combines two conditions to form a boolean expression
+     */
+   class CompoundCondition extends Condition {
+        /**
+         * Constructor
+         * @param first left hand side
+         * @param second right hand side
+         * @param operator the operator that joins LHS and RHS
+         */
+      CompoundCondition(Condition first, Condition second, String operator) {
+         this.first = first;
+         this.second = second;
+         this.operator = operator;
+      }
+
+        /**
+         * Return the condition as a nicely formatted string.
+         * @param condition condtion to format
+         * @return a nicely formatted string describing the condition
+         */
+      String toString(Condition condition) {
+         String expression;
+
+         if (condition instanceof CompoundCondition) {
+            expression =
+               "(" + toString(condition.first) + " " + condition.operator;
+            expression = expression + " " + toString(condition.second) + ")";
+         } else {
+            return condition.toString();
+         }
+
+         return expression;
+      }
+
+        /**
+         * Return the condition as a nicely formatted string.
+         * @return a string representation of the object.
+         */
+        public String toString() {
+            return toString(this); }
+   }
+
+    /**
+     * A Condition that specifies a percent of the examples that must be
+     * satisfied, like yes > 50.0%
+     */
+   class PercentCondition extends Condition {
+       /**
+        * Constructor
+        * @param attribute attribute name
+        * @param operator operator
+        * @param value percent value
+        */
+      PercentCondition(String attribute, String operator, double value) {
+         this.attribute = attribute;
+         this.operator = operator;
+         this.value = value;
+      }
+
+       /**
+        *Return the condition as a nicely formatted string.
+        * @return a string representation of the object.
+        */
+       public String toString() {
+           return "Percent: " + attribute + " " + operator + " " + value;
+       }
+   }
+
+    /**
+     * A Condition that specifies the amount of examples of an attribute that
+     * must be satisfied, like count > 50.
+     */
+   class PopulationCondition extends Condition {
+      PopulationCondition(String attribute, String operator, double value) {
+         this.attribute = attribute;
+         this.operator = operator;
+         this.value = value;
+      }
+
+       /**
+        * Return the condition as a nicely formatted string.
+        * @return a string representation of the object.
+        */
+       public String toString() {
+           return "Population: " + attribute + " " + operator + " " + value;
+       }
+   }
+
+    /**
+     * A Condition that is a measure of entropy
+     */
+   class PurityCondition extends Condition {
+        /**
+         * Constructor
+         * @param operator the operator
+         * @param value the value
+         */
+      PurityCondition(String operator, double value) {
+         this.attribute = "Purity";
+         this.operator = operator;
+         this.value = value;
+      }
+
+       /**
+        * Return the condition as a nicely formatted string.
+        * @return a string representation of the object.
+        */
+       public String toString() {
+           return "Purity: " + operator + " " + value;
+       }
+   }
+
+    /**
+     * A split on the input value used to split a node.
+     */
+   class SplitCondition extends Condition {
+        /** true if the split is a scalar value */
+      boolean scalar;
+        /** used for non-scalar nodes.  this will be the branch label */
+      String svalue;
+
+        /**
+         * Constructor for scalar splits
+         * @param attribute attribute name
+         * @param operator operator
+         * @param value the value to compare to the split value
+         */
+      SplitCondition(String attribute, String operator, double value) {
+         this.attribute = attribute;
+         this.operator = operator;
+         this.value = value;
+
+         scalar = true;
+      }
+
+        /**
+         * Constructor
+         * @param attribute the attribute name
+         * @param operator operator
+         * @param svalue the branch
+         */
+      SplitCondition(String attribute, String operator, String svalue) {
+         this.attribute = attribute;
+         this.operator = operator;
+         this.svalue = svalue;
+
+         scalar = false;
+      }
+
+       /**
+        * Return the condition as a nicely formatted string.
+        * @return a string representation of the object.
+        */
+       public String toString() {
+
+           if (scalar) {
+               return "Split: " + attribute + " " + operator + " " + value;
+           } else {
+               return "Split: " + attribute + " " + operator + " " + svalue;
+           }
+       }
+   } // end class SplitCondition
+
+    /**
+     * Encapsulates a search criterion
+     */
+   protected class Condition {
+
+        /** the attribute name */
+      String attribute;
+        /** LHS */
+      Condition first;
+        /** RHS */
+      Condition second;
+        /** operator that joins the Conditions, either AND or OR */
+      String operator;
+        /** value */
+      double value;
+
+        /**
+         * Evaluate
+         * @param condition condition
+         * @param node node
+         * @return evaluation
+         */
+      boolean evaluate(Condition condition, Viewport node) {
+         boolean expression;
+
+         if (condition instanceof CompoundCondition) {
+            expression = evaluate(condition.first, node);
+
+            if (condition.operator == AND) {
+               expression = expression && evaluate(condition.second, node);
+            } else if (condition.operator == OR) {
+               expression = expression || evaluate(condition.second, node);
+            }
+         } else {
+            return node.evaluate(condition);
+         }
+
+         return expression;
+      }
+   }
+} // end class SearchPanel

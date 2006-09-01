@@ -72,7 +72,7 @@ public class DecisionTreeModel extends Model implements java.io.Serializable,
    /** root of the decision tree */
    DecisionTreeNode decisionTree;
 
-   /** formatting */
+   /** used for formatting print outs */
    DecimalFormat Format = new DecimalFormat();
 
    /** PrintOptions. */
@@ -106,10 +106,10 @@ public class DecisionTreeModel extends Model implements java.io.Serializable,
    }
 
    /**
-    * evaluate
+    * evaluate an example in an example set
     *
     * @param  testExampleSet table of examples
-    * @param  e              Description of parameter e.
+    * @param  e              example index
     *
     * @return Description of return value.
     *

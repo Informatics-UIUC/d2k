@@ -2194,7 +2194,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return true if the difference > improvementRatio, otherwise false.
     */
-
    private boolean isRatioUp(int[] parentClassTallies, int[] currClassTallies) {
 
       int mostCommonVal = 0;
@@ -2302,7 +2301,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     * @return true if all data belong to a single class or dominated by a class,
     *         false otherwise.
     */
-
    private boolean isSingleClass(int[] classTallies) {
 
       int mostCommonVal = 0;
@@ -2355,7 +2353,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return String for a class label
     */
-
    private String mostCommonOutputValue(int[] classTallies) {
 
       int mostCommonVal = 0;
@@ -2387,7 +2384,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return a column list after removing a column
     */
-
    private String[] narrowAttributes(String aColumn, String[] oldColumns) {
 
       String[] newColumns = new String[oldColumns.length - 1];
@@ -2426,7 +2422,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return a subset of the original data
     */
-
    private int[] narrowCategoricalExamples(MutableTableImpl data, int col,
                                            String val, int[] exam) {
 
@@ -2489,7 +2484,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return a subset of the original list of examples
     */
-
    private int[] narrowNumericExamples(MutableTableImpl data, int col,
                                        double splitValue, int[] exam,
    boolean greaterThan) {
@@ -2565,7 +2559,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return the information gain using the aSplitValue
     */
-
    private double numericAttributeInfo(double aSplitValue, String column,
                                        ArrayList[] avcs) {
 
@@ -2615,7 +2608,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return object contains the best column and the best split value
     */
-
    private EntrSplit numericGain(ArrayList aPath, String column,
                                  NodeInfo aNodeInfo) {
 
@@ -2699,7 +2691,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     * @return an object of NodeInfo that includes: avcSets, data, classTallies,
     *         and uniqValues
     */
-
    private NodeInfo partitionDataSet(MutableTableImpl data, int[] examples,
    String[] availCols, ArrayList[] uniqValues) {
 
@@ -3007,7 +2998,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return an reorgnized ArrayList for unique values in each column
     */
-
    private ArrayList[] reorgUniqValues(ArrayList[] uniqValues) {
 
       for (int colIdx = 0; colIdx < meta.getNumColumns(); colIdx++) {
@@ -3085,7 +3075,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return number of repeating
     */
-
    private int repeats(String aString, ArrayList aList) {
 
       int repeat = 0;
@@ -3115,7 +3104,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return the information value of the branches of this attribute
     */
-
    private double splitInfo(String column, ArrayList[] avcs) {
 
       HashMap map = new HashMap();
@@ -3167,7 +3155,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return the count match the column name and column value
     */
-
    private int subTotal(ArrayList[] avcs, String columnLabel,
                         String columnValue) {
 
@@ -3257,7 +3244,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return an String array
     */
-
    private String[] toStringArray(ArrayList ar) {
 
       if (ar.size() > 0) {
@@ -3292,7 +3278,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return updated new AVC sets
     */
-
    private ArrayList[] updAvcSets(ArrayList[] avcSets, String attrName,
                                   double attrValue,
    String classLabel, ArrayList[] uniqValues) {
@@ -3371,7 +3356,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return updated new AVC sets
     */
-
    private ArrayList[] updOneAvc(ArrayList[] avcSets, String attrName,
                                  String newAttrValue, String classLabel) {
 
@@ -3452,7 +3436,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return updated new AVC sets
     */
-
    private ArrayList[] updOneAvc(ArrayList[] avcSets, String attrName,
                                  String lowValue,
    String highValue, String classLabel) {
@@ -3533,7 +3516,6 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     *
     * @return a new ArrayList
     */
-
    protected ArrayList expandSplitValues(ArrayList origArray, String newValue) {
 
       ArrayList newArray = new ArrayList();
@@ -3552,21 +3534,12 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
 
 
    /**
-    * Description of method getFieldNameMapping.
-    *
-    * @return Description of return value.
-    */
-   protected String[] getFieldNameMapping() { return null; }
-
-
-   /**
     * sort the unique value list.
     *
     * @param  al the original ArrayList
     *
     * @return an sorted ArrayList
     */
-
    protected ArrayList sortUniqValues(ArrayList al) {
 
       for (int i = 0; i < al.size(); i++) {
@@ -3597,9 +3570,8 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
    /**
     * build decision tree.
     *
-    * @throws Exception
+    * @throws Exception when something goes wrong
     */
-
    public void doit() throws Exception {
       // Array of ArrayLists to keep distinct values
 
@@ -4180,11 +4152,10 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     * @author  $Author$
     * @version $Revision$, $Date$
     */
-
    private final class ColSplit {
-
+      /** column index */
       int col;
-
+        /** split value */
       double splitValue;
 
    }
@@ -4196,15 +4167,22 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
     * @author  $Author$
     * @version $Revision$, $Date$
     */
-
    private final class EntrSplit {
-
+       /** gain */
       double gain;
-
+       /** split value */
       double splitValue;
 
+       /**
+        * Constructor
+        */
       EntrSplit() { }
 
+       /**
+        * Constructor
+        * @param s split value
+        * @param g gain
+        */
       EntrSplit(double s, double g) {
 
          splitValue = s;
@@ -4215,35 +4193,55 @@ public class NewSQLRainForestOPT extends ReentrantComputeModule {
 
    }
 
-   // object stored in ArrayList avcSets
-
+    /**
+     * Stores an attribute-value-class combination
+     */
    public class AvcSet {
-
+        /** attribute name */
       public String attrName;
 
-      public String classLabel; // class label. We only implete single class
-                                // column
+        /** class label. We only implete single class column */
+      public String classLabel;
 
-      public int count; // count for this avcSet
+        /** count for this avcSet */
+      public int count;
 
-      public String highValue; // high end attribute value
+        /** high end attribute value */
+      public String highValue;
 
-      public String lowValue; // low end attribute value
-
+        /** low end attribute value */
+      public String lowValue;
    }
 
+    /**
+     * Structure to hold node info
+     */
    public class NodeInfo {
 
+        /** avc sets */
       public ArrayList[] avcSets;
 
+        /** class tallies */
       public int[] classTallies;
 
+        /** data */
       public MutableTableImpl data;
 
+        /** unique values */
       public ArrayList[] uniqValues;
 
+        /**
+         * Constructor
+         */
       public NodeInfo() { }
 
+        /**
+         * Constructor
+         * @param avcSets avc sets
+         * @param classTallies class tallies
+         * @param data data
+         * @param uniqValues unique values
+         */
       public NodeInfo(ArrayList[] avcSets, int[] classTallies,
                       MutableTableImpl data, ArrayList[] uniqValues) {
 

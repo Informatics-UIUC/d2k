@@ -158,10 +158,12 @@ public class ApplyFunctionInducerWithBoosting extends OrderedReentrantModule {
 
             if (examples.getLabel() != null) {
                System.out.println("(" + examples.getLabel() + ")" +
-                                  ErrorFunction.getErrorFunctionName(ErrorFunction.errorFunctionIndex) +
+                                  ErrorFunction.getErrorFunctionName(
+                                          ErrorFunction.errorFunctionIndex) +
                                   " = " + utility[0]);
             } else {
-               System.out.println(ErrorFunction.getErrorFunctionName(ErrorFunction.errorFunctionIndex) +
+               System.out.println(ErrorFunction.getErrorFunctionName(
+                       ErrorFunction.errorFunctionIndex) +
                                   " = " + utility[0]);
             }
          }

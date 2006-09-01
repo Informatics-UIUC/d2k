@@ -124,7 +124,7 @@ public final class RectangleBorder extends AbstractBorder {
 
 
     /**
-     * This default implementation does no painting.
+     * Paint the border around the specified component.
      *
      * @param c      the component for which this border is being painted
      * @param g      the paint graphics

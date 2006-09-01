@@ -52,7 +52,7 @@ import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 
 /**
  * This module applies a function inducer module to the given example table
- * using the given error function to produce a model.
+ * using the given error function to produce a Model.
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -63,14 +63,14 @@ public class ApplyFunctionInducer extends OrderedReentrantModule {
 
 
     /**
-     * Performs the main work of the module.
+     * Performs the main work of the module.  Apply a function inducer to a set
+     * of examples to produce a Model.
      *
      * @throws Exception if a problem occurs while performing the work of the module
      */
     public void doit() throws Exception {
 
         ExampleTable exampleSet = null;
-        // System.out.println("APPLYFUNCTION INDUCER: Entered doit");
 
         FunctionInducerOpt functionInducer =
                 (FunctionInducerOpt) this.pullInput(0);
@@ -196,7 +196,8 @@ public class ApplyFunctionInducer extends OrderedReentrantModule {
       switch (i) {
 
          case 0:
-            return "The model generated from the example table and the error function";
+            return "The model generated from the example table and the error "+
+                    "function";
 
          default:
             return "No such output";

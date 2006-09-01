@@ -54,7 +54,8 @@ import java.util.HashMap;
 
 
 /**
- * A DecisionTree is made up of DecisionTreeNodes.
+ * A DecisionTree is made up of DecisionTreeNodes.  Nodes have a parent and
+ * possibly children.
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -66,7 +67,7 @@ public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
    /** Use serialVersionUID for interoperability. */
    static private final long serialVersionUID = -298541104562979279L;
 
-   /** constant for unknown. */
+   /** constant for Unknown. */
    static protected final String UNKNOWN = "Unknown";
 
    //~ Instance fields *********************************************************
@@ -92,9 +93,6 @@ public abstract class DecisionTreeNode implements ViewableDTNode, Serializable {
 
    /** number of training examples to pass through this node. */
    protected int numTrainingExamples;
-
-   /** The tallies for the records that pass through this node. */
-   // protected HashMap outputValueTallies;
 
    /** output index map. */
    protected HashMap outputIndexLookup;

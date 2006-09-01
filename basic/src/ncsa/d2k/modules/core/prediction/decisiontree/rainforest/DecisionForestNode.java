@@ -290,9 +290,9 @@ public abstract class DecisionForestNode implements ViewableDTNode,
    }
 
    /**
-    * Description of method getChildWithMostTrainingExamples.
+    * Get the child of this node with the most training examples
     *
-    * @return Description of return value.
+    * @return child node with most training examples
     */
    public DecisionForestNode getChildWithMostTrainingExamples() {
       int numTE = Integer.MIN_VALUE;
@@ -347,16 +347,16 @@ public abstract class DecisionForestNode implements ViewableDTNode,
    public int getNumChildren() { return children.size(); }
 
    /**
-    * Description of method getNumCorrect.
+    * Number of correct predictions
     *
-    * @return Description of return value.
+    * @return number of correct predictions
     */
    public int getNumCorrect() { return numCorrect; }
 
    /**
-    * Description of method getNumIncorrect.
+    * Number incorrect predictions
     *
-    * @return Description of return value.
+    * @return number incorrect predictions
     */
    public int getNumIncorrect() { return numIncorrect; }
 
@@ -413,9 +413,9 @@ public abstract class DecisionForestNode implements ViewableDTNode,
    }
 
    /**
-    * Description of method getTraining.
+    * Return true if in training phase and building tree
     *
-    * @return Description of return value.
+    * @return true if in training phase
     */
    public boolean getTraining() { return training; }
 

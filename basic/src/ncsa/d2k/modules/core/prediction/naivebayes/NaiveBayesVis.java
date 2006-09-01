@@ -16,7 +16,6 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
 
-//import javax.help.*;
 
 /**
  * An evidence visualization for a NaiveBayesModel.
@@ -24,84 +23,156 @@ import ncsa.gui.*;
 public final class NaiveBayesVis
     extends VisModule {
 
-  public String getInputInfo(int i) {
-    switch (i) {
-      case 0:
-        return "A NaiveBayesModel to visualize.";
-      default:
-        return "No such input";
+    /**
+     * Returns a description of the input at the specified index.
+     *
+     * @param i Index of the input for which a description should be returned.
+     * @return <code>String</code> describing the input at the specified index.
+     */
+    public String getInputInfo(int i) {
+        switch (i) {
+            case 0:
+                return "A NaiveBayesModel to visualize.";
+            default:
+                return "No such input";
+        }
     }
-  }
 
-  public String getInputName(int i) {
-    switch (i) {
-      case 0:
-        return "Naive Bayes Model";
-      default:
-        return "NO SUCH INPUT!";
+    /**
+     * Returns the name of the input at the specified index.
+     *
+     * @param i Index of the input for which a name should be returned.
+     * @return <code>String</code> containing the name of the input at the specified index.
+     */
+    public String getInputName(int i) {
+        switch (i) {
+            case 0:
+                return "Naive Bayes Model";
+            default:
+                return "NO SUCH INPUT!";
+        }
     }
-  }
 
-  public String getOutputInfo(int i) {
-    switch (i) {
-      default:
-        return "No such output";
+    /**
+     * Returns a description of the output at the specified index.
+     *
+     * @param i Index of the output for which a description should be returned.
+     * @return <code>String</code> describing the output at the specified index.
+     */
+    public String getOutputInfo(int i) {
+        switch (i) {
+            default:
+                return "No such output";
+        }
     }
-  }
 
-  public String getOutputName(int i) {
-    switch (i) {
-      default:
-        return "NO SUCH OUTPUT!";
+    /**
+     * Returns the name of the output at the specified index.
+     *
+     * @param i Index of the output for which a description should be returned.
+     * @return <code>String</code> containing the name of the output at the specified index.
+     */
+    public String getOutputName(int i) {
+        switch (i) {
+            default:
+                return "NO SUCH OUTPUT!";
+        }
     }
-  }
 
-  public String getModuleInfo() {
-    return "<p>Overview: An evidence visualization for a NaiveBayesModel. "+
-        "<p>Detailed Description: This evidence visualization shows pie charts "+
-        "that represent the different bins used.  The slices of the pie chart "+
-        "represent the ratios of the output classes for that particular bin. "+
-        "Selecting a chart in the evidence section will update the conclusion "+
-        "pie chart.  The conclusion shows the probability that each output has "+
-        "for classification given all the selected evidence charts."+
-        "<p>Data Type Restrictions: none"+
-        "<p>Data Handling:  This module does not destroy or modify the "+
-        "input data."+
-        "<p>Scalability: This module keeps data structures to represent the evidence "+
-        "charts.  The amount of memory required is proportional to the number of "+
-        "bins used in the discretization process.";
-  }
+    /**
+     * Describes the purpose of the module.
+     *
+     * @return <code>String</code> describing the purpose of the module.
+     */
+    public String getModuleInfo() {
+        return "<p>Overview: An evidence visualization for a NaiveBayesModel. " +
+                "<p>Detailed Description: This evidence visualization shows pie charts " +
+                "that represent the different bins used.  The slices of the pie chart " +
+                "represent the ratios of the output classes for that particular bin. " +
+                "Selecting a chart in the evidence section will update the conclusion " +
+                "pie chart.  The conclusion shows the probability that each output has " +
+                "for classification given all the selected evidence charts." +
+                "<p>Data Type Restrictions: none" +
+                "<p>Data Handling:  This module does not destroy or modify the " +
+                "input data." +
+                "<p>Scalability: This module keeps data structures to represent the evidence " +
+                "charts.  The amount of memory required is proportional to the number of " +
+                "bins used in the discretization process.";
+    }
 
-  public String getModuleName() {
-    return "Naive Bayes Vis";
-  }
+    /**
+     * Returns the name of the module that is appropriate for end-user consumption.
+     *
+     * @return The name of the module.
+     */
+    public String getModuleName() {
+        return "Naive Bayes Vis";
+    }
 
-  public String[] getInputTypes() {
-    String[] types = {
-        "ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"};
-    return types;
-  }
+    /**
+     * Returns an array of <code>String</code> objects each containing the fully qualified Java data type of the input at
+     * the corresponding index.
+     *
+     * @return An array of <code>String</code> objects each containing the fully qualified Java data type of the input at
+     *         the corresponding index.
+     */
+    public String[] getInputTypes() {
+        String[] types = {
+                "ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"};
+        return types;
+    }
 
-  public String[] getOutputTypes() {
-    String[] types = {};
-    return types;
-  }
+    /**
+     * Returns an array of <code>String</code> objects each containing the fully qualified Java data type of the output at
+     * the corresponding index.
+     *
+     * @return An array of <code>String</code> objects each containing the fully qualified Java data type of the output at
+     *         the corresponding index.
+     */
+    public String[] getOutputTypes() {
+        String[] types = {};
+        return types;
+    }
 
 
+    /**
+     * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the
+     * module.
+     *
+     * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+     */
     public PropertyDescription[] getPropertiesDescriptions() {
-   return new PropertyDescription[0]; // so that "windowName" property
-   // is invisible
+        return new PropertyDescription[0]; // so that "windowName" property
+        // is invisible
     }
 
-  public String[] getFieldNameMapping() {
-    return null;
-  }
+    /**
+     * The list of strings returned by this method allows the module to map the
+     * results returned from the pier to the position dependent outputs. The
+     * order in which the names appear in the string array is the order in which
+     * to assign them to the outputs.
+     *
+     * @return a string array containing the names associated with the outputs
+     *         in the order the results should appear in the outputs.
+     */
+    public String[] getFieldNameMapping() {
+        return null;
+    }
 
-  public UserView createUserView() {
-    return new NBView();
-  }
+    /**
+     * Create a new instance of a UserView object that provides the user
+     * interface for this user interaction module.
+     *
+     * @return a new instance of a UserView providing the interface for this
+     *         module.
+     */
+    public UserView createUserView() {
+        return new NBView();
+    }
 
-  // color generation
+    /**
+     * color wheel
+     */
   private static final Color[] colors = {
       new Color(71, 74, 98),
       new Color(191, 191, 115), new Color(111, 142, 116),
@@ -110,51 +181,82 @@ public final class NaiveBayesVis
       new Color(203, 84, 84), new Color(217, 183, 170),
       new Color(140, 54, 57), new Color(203, 136, 76)};
 
+    /** yellowish color */
   private static final Color yellowish = new Color(255, 255, 240);
+    /** grayish color */
   private static final Color grayish = new Color(236, 235, 222);
+    /** dark background color */
   private static final Color darkBg = new Color(219, 217, 206);
+    /** message color */
   private static final Color messageColor = new Color(64, 64, 64);
+    /** label foreground color */
   private static final Color labelFg = new Color(96, 100, 86);
+    /** header label color */
   private static final Color headerLabelColor = new Color(0, 0, 0);
 
+    /** constant for ATTRIBUTES */
   private static final String ATT = "ATTRIBUTES";
+    /** constant for EVIDENCE */
   private static final String EVI = "EVIDENCE";
+    /** constant for CONCLUSION */
   private static final String CONC = "CONCLUSION";
+    /** constant for newline character */
   private static final String NEW_LINE = "\n";
+    /** constant for space character */
   private static final String SPACE = " ";
+    /** constant for Total : */
   private static final String TOTAL = "  Total : ";
+    /** constant for = */
   private static final String EQUALS = "=";
+    /** constant for : */
   private static final String COLON = " : ";
+    /** constant for % */
   private static final String PERCENT_SIGN = "%";
+    /** constant for ( */
   private static final String OPEN_PAREN = " (";
+    /** constant for ) */
   private static final String CLOSE_PAREN = ")";
+    /** constant for % error */
   private static final String ERR = "% error";
+    /** constant for More.. */
   private static final String MORE = "More..";
 
+    /** label font */
   private static final Font labelFont = new Font("Helvetica", Font.PLAIN, 11);
+    /** max menu items */
   private static final int MAX_MENU_ITEMS = 15;
+    /** preferred grid size */
   private static final int PREF_GRID = 50;
+    /** preferred header size */
   private static final int PREF_HEAD = 100;
+    /** maximum length string to describe error */
   private static final String MAX_ATTRIBUTE_ERROR = "100.00% error";
 
+    /** zoom icon location */
   private static final String zoomicon = File.separator + "images" +
       File.separator + "zoom.gif";
+    /** refresh icon location */
   private static final String refreshicon = File.separator + "images" +
       File.separator + "home.gif";
+    /** print icon location */
   private static final String printicon = File.separator + "images" +
       File.separator + "printit.gif";
 
+    /** button size */
   private static final Dimension buttonsize = new Dimension(25, 25);
 
   /**
-     Sort an array of Strings.
+   * Sort an array of Strings.  Makes a copy and returns a new, sorted array.
+   * The original is not modified.
+   * @param names unsorted array
+   * @return copy of names, in sorted order
    */
-  private static final String[] sortNames(String[] names) {
+  private static String[] sortNames(String[] names) {
     String[] copy = new String[names.length];
     for (int i = 0; i < copy.length; i++) {
       copy[i] = names[i];
     }
-    java.util.List l = Arrays.asList(copy);
+    /*java.util.List l = Arrays.asList(copy);
     Collections.sort(l);
     String[] retVal = new String[l.size()];
     Iterator i = l.iterator();
@@ -162,8 +264,10 @@ public final class NaiveBayesVis
     while (i.hasNext()) {
       retVal[idx] = (String) i.next();
       idx++;
-    }
-    return retVal;
+    } */
+    Arrays.sort(copy);
+
+    return copy;
   }
 
   /**
@@ -172,730 +276,797 @@ public final class NaiveBayesVis
   private final class NBView
       extends JUserPane
       implements ActionListener, Printable {
+      /** the model */
     private transient NaiveBayesModel model;
+      /** legend displays the colors */
     private transient Legend legend;
 
+      /** preferred size for the grid */
     private transient Dimension preferredGrid;
+      /** preferred size for the header */
     private transient Dimension preferredHeader;
 
+      /** number format */
     private transient NumberFormat nf;
 
+      /** true if zoom in */
     private transient boolean zoomin = false;
 
-    // menu stuff
+    /** menu bar */
     private transient JMenuBar menuBar;
+      /** check box to display items as pie charts */
     private transient JCheckBoxMenuItem miPieChart;
+      /** check box to display items as bar charts */
     private transient JCheckBoxMenuItem miBarChart;
+      /** check box to sort attributes by the best predictor */
     private transient JCheckBoxMenuItem miAttrBest;
+      /** check box to sort attributes in alpha order */
     private transient JCheckBoxMenuItem miAttrAlpha;
+      /** check box to sort grid by total evidence */
     private transient JCheckBoxMenuItem miEviTot;
+      /** check box to sort grid by alpha order (bin name) */
     private transient JCheckBoxMenuItem miEviAlpha;
+      /** check box to show predictor values for attributes */
     private transient JCheckBoxMenuItem miShowPredVal;
+      /** print menu item */
     private transient JMenuItem miPrint;
+      /** menu items to select colors for class names */
     private transient ColorMenuItem[] colorItems;
+      /** menu items for attributes */
     private transient AttributeMenuItem[] attributeItems;
+      /** checkbox to dipslay percentages */
     private transient JCheckBoxMenuItem miPercentage;
+      /** help menu item */
     private transient JMenuItem helpItem;
+      /** save as pmml menu item */
     private transient JMenuItem saveAsPmml;
 
+      /** zoom button */
     private transient JToggleButton zoom;
+      /** print button */
     private transient JButton printButton;
+      /** refresh view */
     private transient JButton refreshView;
 
+      /** the longest attribute name, needed to determine string length */
     private transient String longest_attribute_name;
+      /** the longest bin name, needed to determine string length */
     private transient String longest_bin_name;
 
-    // constants used in drawing
+    /** width of grid */
     private transient int gridwidth;
+    /** height of grid */
     private transient int gridheight;
+    /** 10% of gridwidth */
     private transient float grid1;
+    /** 75% of gridwidth */
     private transient float grid75;
-    private transient float grid125;
+    /** 25% of gridwidth */
     private transient float grid25;
+    /** 5% of gridwidth */
     private transient float grid05;
+    /** 50% of gridwidth */
     private transient float grid5;
+    /** 85% of gridwidth */
     private transient float grid85;
-    private transient float grid8;
+    /** 15% of gridwidth */
     private transient float grid15;
+    /** 20% of gridwidth */
     private transient float grid2;
+    /** 60% of gridwidth */
     private transient float grid6;
-    private transient float grid7;
+
+    /** padding is 3% of gridwidth */
     private transient float padding;
 
-    // the components that make up the vis
+    /** grid panel presents the pie charts/bar charts */
     private transient GridPanel gp;
+    /** header panel */
     private transient HeaderPanel hp;
+      /** composite panel shows a large pie chart that shows probablilties given
+       * the evidence selected
+       */
     private transient CompositePanel cp;
+    /** message area shows details on the selected piece of evidence */
     private transient MessageArea ma;
 
-    // the selected item in each row
+    /** the selected item in each row */
     private transient int[] selected;
 
+    /** number of rows in the grid */
     private transient int numRows = 0;
+    /** number of columns in the grid */
     private transient int numCols = 0;
 
-    // map class names to a color
+    /** map class names to a color */
     private transient HashMap color_map;
 
-    // the names of the classes
+    /** the names of the classes */
     private transient String[] class_names;
-    // the names of the attributes
+    /** the names of the attributes */
     private transient String[] attribute_names;
+    /** the names of the attributes in ranked order */
     private transient String[] all_ranked_attribute_names;
+    /** the names of the attributes in alpha order */
     private transient String[] all_alpha_attribute_names;
-    // the data for the pie charts
+    /** the data for the pie charts */
     private transient NaiveBayesPieChartData[][] row_data;
+    /** predictor values for the attributes */
     private transient double[] predictor_values;
+    /** y location of last mouse press */
     private transient int mouse_pos_y;
 
+      /** help window */
     private transient HelpWindow helpWindow;
 
-    /*private void writeObject(ObjectOutputStream out) throws IOException {
-      out.defaultWriteObject();
-      System.out.println("WRITE NBV!");
-           }
-           private void readObject(ObjectInputStream in) throws Exception {
-        in.defaultReadObject();
-        System.out.println("READ NBV!"+this);
-           }*/
 
-    /**
-     * Print this component.
-     */
-    public int print(Graphics g, PageFormat pf, int pi) throws PrinterException {
+      /**
+       * Prints the page at the specified index into the specified
+       * {@link java.awt.Graphics} context in the specified
+       * format.  A <code>PrinterJob</code> calls the
+       * <code>Printable</code> interface to request that a page be
+       * rendered into the context specified by
+       * <code>graphics</code>.  The format of the page to be drawn is
+       * specified by <code>pageFormat</code>.  The zero based index
+       * of the requested page is specified by <code>pageIndex</code>.
+       * If the requested page does not exist then this method returns
+       * NO_SUCH_PAGE; otherwise PAGE_EXISTS is returned.
+       * The <code>Graphics</code> class or subclass implements the
+       * {@link java.awt.print.PrinterGraphics} interface to provide additional
+       * information.  If the <code>Printable</code> object
+       * aborts the print job then it throws a {@link java.awt.print.PrinterException}.
+       *
+       * @param g   the context into which the page is drawn
+       * @param pf the size and orientation of the page being drawn
+       * @param pi  the zero based index of the page to be drawn
+       * @return PAGE_EXISTS if the page is rendered successfully
+       *         or NO_SUCH_PAGE if <code>pageIndex</code> specifies a
+       *         non-existent page.
+       * @throws java.awt.print.PrinterException
+       *          thrown when the print job is terminated.
+       */
+      public int print(Graphics g, PageFormat pf, int pi) throws PrinterException {
 
-      double pageHeight = pf.getImageableHeight();
-      double pageWidth = pf.getImageableWidth();
+          double pageHeight = pf.getImageableHeight();
+          double pageWidth = pf.getImageableWidth();
 
-      double cWidth = getWidth();
-      double cHeight = getHeight();
+          double cWidth = getWidth();
+          double cHeight = getHeight();
 
-      double scale = 1;
-      if (cWidth >= pageWidth) {
-        scale = pageWidth / cWidth;
-      }
-      if (cHeight >= pageHeight) {
-        scale = Math.min(scale, pageHeight / cHeight);
-
-      }
-      double cWidthOnPage = cWidth * scale;
-      double cHeightOnPage = cHeight * scale;
-
-      if (pi >= 1) {
-        return Printable.NO_SUCH_PAGE;
-      }
-
-      Graphics2D g2 = (Graphics2D) g;
-      g2.translate(pf.getImageableX(), pf.getImageableY());
-      g2.scale(scale, scale);
-      print(g2);
-      return Printable.PAGE_EXISTS;
-    }
-
-    public void initView(ViewModule m) {
-      menuBar = new JMenuBar();
-      nf = NumberFormat.getInstance();
-      nf.setMaximumFractionDigits(2);
-      helpWindow = new HelpWindow();
-    }
-
-    public void setInput(Object o, int i) throws Exception {
-      model = (NaiveBayesModel) o;
-      if(!model.isReadyForVisualization())
-     throw new Exception("NaiveBayesModel has to be processed by PrepareForVisualization module before entering NaiveBayesVisualization");
-      all_ranked_attribute_names = model.getAttributeNames();
-      //for(int j = 0; j < all_ranked_attribute_names.length; j++)
-      //	  System.out.println("Ranked attr" + all_ranked_attribute_names[j]);
-      all_alpha_attribute_names = sortNames(all_ranked_attribute_names);
-      class_names = model.getClassNames();
-      color_map = new HashMap();
-      // map each class to a color
-      for (int j = 0; j < class_names.length; j++) {
-        color_map.put(class_names[j], colors[j % colors.length]);
-
-        // when first displayed, we show all attributes by default
-      }
-      attribute_names = all_ranked_attribute_names;
-      numRows = attribute_names.length;
-      //System.out.println("numRows "  + numRows);
-      selected = new int[attribute_names.length];
-      row_data = new NaiveBayesPieChartData[attribute_names.length][];
-      predictor_values = new double[attribute_names.length];
-      int longest = 0;
-      longest_bin_name = "";
-      longest_attribute_name = "";
-      
-      // get the row data
-      for (int j = 0; j < attribute_names.length; j++) {
-        row_data[j] = model.getData(attribute_names[j]);
-   //	System.out.println("row_data[" +j+ "] " + row_data[j]);
-        predictor_values[j] = model.getPredictionValue(attribute_names[j]);
-        selected[j] = -1;
-        if (attribute_names[j].length() > longest) {
-          longest_attribute_name = attribute_names[j];
-          longest = attribute_names[j].length();
-        }
-        if (row_data[j].length > numCols) {
-          numCols = row_data[j].length;
-        }
-        for (int k = 0; k < row_data[j].length; k++) {
-          if (row_data[j][k].getBinName().length() > longest_bin_name.length()) {
-            longest_bin_name = row_data[j][k].getBinName();
+          double scale = 1;
+          if (cWidth >= pageWidth) {
+              scale = pageWidth / cWidth;
           }
-        }
-      }
-      if (longest_attribute_name.length() < MAX_ATTRIBUTE_ERROR.length()) {
-        longest_attribute_name = MAX_ATTRIBUTE_ERROR;
+          if (cHeight >= pageHeight) {
+              scale = Math.min(scale, pageHeight / cHeight);
 
-        // make the grid
-      }
-      gp = new GridPanel();
-      int sq;
-      if (numCols > numRows) {
-        sq = PREF_GRID * numCols;
-      }
-      else {
-        sq = PREF_GRID * numRows;
-      }
-      preferredGrid = new Dimension(sq, sq);
-      gp.setPreferredSize(preferredGrid);
-      // make the header
-      hp = new HeaderPanel();
-      preferredHeader = new Dimension(PREF_HEAD, sq);
-      hp.setPreferredSize(preferredHeader);
-
-      // make the message area
-      if (class_names.length < 4) {
-        ma = new MessageArea(class_names.length);
-      }
-      else {
-        ma = new MessageArea(4);
-
-        // make the legend
-      }
-      legend = new Legend();
-
-      JScrollPane jsp = new JScrollPane(gp);
-      jsp.setViewportBorder(new SPBorder());
-      jsp.getViewport().setBackground(yellowish);
-      jsp.setPreferredSize(new Dimension(500, 400));
-      JViewport jv = new JViewport();
-      jv.setView(hp);
-      jsp.setRowHeader(jv);
-      JLabel att = new AALabel(ATT);
-      att.setBorder(new EmptyBorder(10, 3, 10, 0));
-      JLabel evi = new AALabel(EVI);
-      evi.setBorder(new EmptyBorder(10, 3, 10, 0));
-      jsp.setCorner(ScrollPaneConstants.UPPER_LEFT_CORNER, att);
-
-      JViewport jv1 = new JViewport();
-      jv1.setView(evi);
-      jsp.setColumnHeader(jv1);
-
-      cp = new CompositePanel();
-      cp.setPreferredSize(new Dimension(250, 250));
-      JScrollPane jp1 = new JScrollPane(cp);
-      jp1.setViewportBorder(new SPBorder2());
-      JScrollPane jp2 = new SameSizeSP(ma, ma.getPreferredSize());
-      JScrollPane jp3 = new SameSizeSP(legend, ma.getPreferredSize());
-      JViewport jch = new JViewport();
-      JPanel cnr = new JPanel();
-      cnr.setBackground(yellowish);
-      jp3.setCorner(ScrollPaneConstants.UPPER_RIGHT_CORNER, cnr);
-      jp2.setMaximumSize(ma.getPreferredSize());
-      jp3.setMaximumSize(ma.getPreferredSize());
-      JPanel pq = new JPanel();
-      JPanel pq1 = new JPanel();
-      pq1.setLayout(new GridLayout(2, 1));
-      pq1.add(jp3);
-      pq1.add(jp2);
-      pq.setLayout(new BorderLayout());
-      pq.add(jp1, BorderLayout.CENTER);
-      pq.add(pq1, BorderLayout.SOUTH);
-      JViewport jv2 = new JViewport();
-      JLabel clLabel = new AALabel(CONC);
-      clLabel.setBorder(new EmptyBorder(10, 3, 10, 0));
-      JPanel clp = new JPanel();
-      JPanel bp = new JPanel();
-      bp.setLayout(new GridLayout(1, 3));
-      Image im = getImage(refreshicon);
-      ImageIcon ri = null;
-      if (im != null) {
-        ri = new ImageIcon(im);
-      }
-      if (ri != null) {
-        refreshView = new JButton(ri);
-      }
-      else {
-        refreshView = new JButton("R");
-      }
-      refreshView.addActionListener(this);
-      refreshView.setToolTipText("Reset View");
-
-      im = getImage(printicon);
-      ImageIcon pi = null;
-      if (im != null) {
-        pi = new ImageIcon(im);
-      }
-      if (pi != null) {
-        printButton = new JButton(pi);
-      }
-      else {
-        printButton = new JButton("P");
-      }
-      printButton.addActionListener(this);
-      printButton.setToolTipText("Print");
-
-      im = getImage(zoomicon);
-      ImageIcon zi = null;
-      if (im != null) {
-        zi = new ImageIcon(getImage(zoomicon));
-      }
-      if (zi != null) {
-        zoom = new JToggleButton(zi);
-      }
-      else {
-        zoom = new JToggleButton("Z");
-
-      }
-      zoom.addActionListener(this);
-      zoom.setToolTipText("Zoom");
-
-      if (ri != null && zi != null && pi != null) {
-        zoom.setMaximumSize(buttonsize);
-        zoom.setPreferredSize(buttonsize);
-        printButton.setMaximumSize(buttonsize);
-        printButton.setPreferredSize(buttonsize);
-        refreshView.setMaximumSize(buttonsize);
-        refreshView.setPreferredSize(buttonsize);
-      }
-
-      bp.add(refreshView);
-      bp.add(printButton);
-      bp.add(zoom);
-
-      clp.setLayout(new BorderLayout());
-      clp.add(clLabel, BorderLayout.CENTER);
-      JPanel bq = new JPanel();
-      bq.setLayout(new BoxLayout(bq, BoxLayout.Y_AXIS));
-      bq.add(Box.createGlue());
-      bq.add(bp);
-      bq.add(Box.createGlue());
-      clp.add(bq, BorderLayout.EAST);
-      jv2.setView(clp);
-
-      jp1.setColumnHeader(jv2);
-
-      pq.setBorder(new EmptyBorder(3, 3, 3, 3));
-      JPanel bg = new JPanel();
-      bg.setLayout(new BorderLayout());
-      bg.add(jsp, BorderLayout.CENTER);
-      bg.setBorder(new EmptyBorder(3, 3, 3, 3));
-      JPanel p1 = new JPanel();
-      p1.setLayout(new BorderLayout());
-      p1.add(bg, BorderLayout.CENTER);
-      p1.add(pq, BorderLayout.EAST);
-
-      setLayout(new BorderLayout());
-      add(p1, BorderLayout.CENTER);
-
-      // setup the menus
-      JMenu m1 = new JMenu("Options");
-      JMenu m2 = new JMenu("Views");
-      m2.add(miPieChart = new JCheckBoxMenuItem("Pie Charts", true));
-      m2.add(miBarChart = new JCheckBoxMenuItem("Bar Charts", false));
-      m1.add(m2);
-      menuBar.add(m1);
-      miPieChart.addActionListener(this);
-      miBarChart.addActionListener(this);
-
-      JMenu m3 = new JMenu("Sort Attributes By");
-      m3.add(miAttrBest = new JCheckBoxMenuItem("Best Predictor", true));
-      m3.add(miAttrAlpha = new JCheckBoxMenuItem("Alphabetical Order", false));
-      miAttrBest.addActionListener(this);
-      miAttrAlpha.addActionListener(this);
-
-      JMenu m4 = new JMenu("Sort Evidence By");
-      m4.add(miEviTot = new JCheckBoxMenuItem("Bin Weights", true));
-      m4.add(miEviAlpha = new JCheckBoxMenuItem("Alphabetical Order", false));
-      miEviTot.addActionListener(this);
-      miEviAlpha.addActionListener(this);
-
-      JMenu m5 = new JMenu("Show Attributes");
-      attributeItems = new AttributeMenuItem[attribute_names.length];
-      JMenu curMenu = m5;
-      int numItems = 0;
-      for (int j = 0; j < attributeItems.length; j++) {
-        attributeItems[j] = new AttributeMenuItem(attribute_names[j]);
-        attributeItems[j].addActionListener(this);
-        if (numItems == MAX_MENU_ITEMS) {
-          JMenu nextMenu = new JMenu(MORE);
-          curMenu.insert(nextMenu, 0);
-          nextMenu.add(attributeItems[j]);
-          curMenu = nextMenu;
-          numItems = 1;
-        }
-        else {
-          curMenu.add(attributeItems[j]);
-          numItems++;
-        }
-      }
-
-      JMenu m6 = new JMenu("Set Colors");
-      colorItems = new ColorMenuItem[class_names.length];
-      curMenu = m6;
-      numItems = 0;
-      for (int j = 0; j < colorItems.length; j++) {
-        colorItems[j] = new ColorMenuItem(class_names[j]);
-        colorItems[j].addActionListener(this);
-        if (numItems == MAX_MENU_ITEMS) {
-          JMenu nextMenu = new JMenu(MORE);
-          curMenu.insert(nextMenu, 0);
-          //curMenu.add(nextMenu);
-          nextMenu.add(colorItems[j]);
-          curMenu = nextMenu;
-          numItems = 1;
-        }
-        else {
-          curMenu.add(colorItems[j]);
-          numItems++;
-        }
-      }
-
-      m1.add(m3);
-      m1.add(m4);
-      m1.add(m5);
-      m1.add(m6);
-      m1.addSeparator();
-      m1.add(miShowPredVal =
-             new JCheckBoxMenuItem("Show Predictor Values",
-                                   false));
-      miShowPredVal.addActionListener(this);
-      m1.add(miPercentage =
-             new JCheckBoxMenuItem("Show Bin Weight Percentage",
-                                   false));
-      miPercentage.addActionListener(this);
-      m1.addSeparator();
-      m1.add(miPrint = new JMenuItem("Print.."));
-      miPrint.addActionListener(this);
-      m1.add(saveAsPmml = new JMenuItem("Save as PMML..."));
-      saveAsPmml.setEnabled(false);
-      saveAsPmml.addActionListener(this);
-
-      JMenu helpMenu = new JMenu("Help");
-      helpItem = new JMenuItem("About Naive Bayes Vis..");
-      helpMenu.add(helpItem);
-      helpItem.addActionListener(this);
-
-    //  HelpSet hs = new HelpSet(getClass().getClassLoader(), url);
-    /*HelpSet hs = getHelpSet("help/nbvis");
-    if(hs != null) {
-      HelpBroker helpbroker = hs.createHelpBroker();
-      ActionListener listener = new CSH.DisplayHelpFromSource(helpbroker);
-      helpItem.addActionListener(listener);
-    }
-    else
-      helpItem.setEnabled(false);
-     */
-
-      menuBar.add(helpMenu);
-    }
-
-    public Object getMenu() {
-      return menuBar;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-      Object src = e.getSource();
-      // show pie charts (the default)
-      if (src == miPieChart) {
-        miPieChart.setState(true);
-        miBarChart.setState(false);
-        repaint();
-      }
-
-      // show bar charts
-      else if (src == miBarChart) {
-        miPieChart.setState(false);
-        miBarChart.setState(true);
-        repaint();
-      }
-
-      // sort the attributes by best predictor
-      else if (src == miAttrBest) {
-        miAttrBest.setState(true);
-        miAttrAlpha.setState(false);
-        model.clearEvidence();
-        for (int i = 0; i < selected.length; i++) {
-          selected[i] = -1;
-
-        }
-        HashMap toShow = new HashMap();
-        for (int i = 0; i < attributeItems.length; i++) {
-          if (attributeItems[i].getState()) {
-            toShow.put(attributeItems[i].getText(),
-                       attributeItems[i].getText());
           }
-        }
+          double cWidthOnPage = cWidth * scale;
+          double cHeightOnPage = cHeight * scale;
 
-        LinkedList ll = new LinkedList();
-        for (int i = 0; i < all_ranked_attribute_names.length; i++) {
-          if (toShow.containsKey(all_ranked_attribute_names[i])) {
-            ll.add(all_ranked_attribute_names[i]);
+          if (pi >= 1) {
+              return Printable.NO_SUCH_PAGE;
           }
-        }
-        attribute_names = new String[ll.size()];
-        numRows = attribute_names.length;
-        Iterator ii = ll.iterator();
-        int idx = 0;
-        while (ii.hasNext()) {
-          attribute_names[idx] = (String) ii.next();
-          idx++;
-        }
 
-        row_data = new NaiveBayesPieChartData[attribute_names.length][];
-        predictor_values = new double[attribute_names.length];
-        numCols = 0;
-        for (int i = 0; i < attribute_names.length; i++) {
-          row_data[i] = model.getData(attribute_names[i]);
-          predictor_values[i] = model.getPredictionValue(attribute_names[i]);
-          if (row_data[i].length > numCols) {
-            numCols = row_data[i].length;
-          }
-        }
-        repaint();
+          Graphics2D g2 = (Graphics2D) g;
+          g2.translate(pf.getImageableX(), pf.getImageableY());
+          g2.scale(scale, scale);
+          print(g2);
+          return Printable.PAGE_EXISTS;
       }
 
-      // sort the attributes alphabetically
-      else if (src == miAttrAlpha) {
-        miAttrBest.setState(false);
-        miAttrAlpha.setState(true);
-        model.clearEvidence();
-        for (int i = 0; i < selected.length; i++) {
-          selected[i] = -1;
-
-        }
-        HashMap toShow = new HashMap();
-        for (int i = 0; i < attributeItems.length; i++) {
-          if (attributeItems[i].getState()) {
-            toShow.put(attributeItems[i].getText(),
-                       attributeItems[i].getText());
-          }
-        }
-
-        LinkedList ll = new LinkedList();
-        for (int i = 0; i < all_alpha_attribute_names.length; i++) {
-          if (toShow.containsKey(all_alpha_attribute_names[i])) {
-            ll.add(all_alpha_attribute_names[i]);
-          }
-        }
-        attribute_names = new String[ll.size()];
-        numRows = attribute_names.length;
-        Iterator ii = ll.iterator();
-        int idx = 0;
-        while (ii.hasNext()) {
-          attribute_names[idx] = (String) ii.next();
-          idx++;
-        }
-
-        row_data = new NaiveBayesPieChartData[attribute_names.length][];
-        predictor_values = new double[attribute_names.length];
-        numCols = 0;
-        for (int i = 0; i < attribute_names.length; i++) {
-          row_data[i] = model.getData(attribute_names[i]);
-          predictor_values[i] = model.getPredictionValue(attribute_names[i]);
-          if (row_data[i].length > numCols) {
-            numCols = row_data[i].length;
-          }
-        }
-        repaint();
+      /**
+       * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+       *
+       * @param m The module this view is associated with.
+       */
+      public void initView(ViewModule m) {
+          menuBar = new JMenuBar();
+          nf = NumberFormat.getInstance();
+          nf.setMaximumFractionDigits(2);
+          helpWindow = new HelpWindow();
       }
 
-      // change the color associated with a class
-      else if (src instanceof ColorMenuItem) {
-        ColorMenuItem mi = (ColorMenuItem) src;
-        Color oldColor = getColor(mi.getText());
-        StringBuffer sb = new StringBuffer("Choose ");
-        sb.append(mi.getText());
-        sb.append(" Color");
-        Color newColor = JColorChooser.showDialog(this, sb.toString(), oldColor);
-        if (newColor != null) {
-          color_map.put(mi.getText(), newColor);
-          repaint();
-        }
-      }
+      /**
+       * Called to pass the inputs received by the module to the view.  Set up
+       * the UI when the model is received.
+       *
+       * @param o The object that has been input.
+       * @param i The index of the module input that been received.
+       * @throws Exception when something goes wrong
+       */
+      public void setInput(Object o, int i) throws Exception {
+          model = (NaiveBayesModel) o;
+          if (!model.isReadyForVisualization())
+              throw new Exception("NaiveBayesModel has to be processed by PrepareForVisualization module before entering NaiveBayesVisualization");
+          all_ranked_attribute_names = model.getAttributeNames();
+          //for(int j = 0; j < all_ranked_attribute_names.length; j++)
+          //	  System.out.println("Ranked attr" + all_ranked_attribute_names[j]);
+          all_alpha_attribute_names = sortNames(all_ranked_attribute_names);
+          class_names = model.getClassNames();
+          color_map = new HashMap();
+          // map each class to a color
+          for (int j = 0; j < class_names.length; j++) {
+              color_map.put(class_names[j], colors[j % colors.length]);
 
-      // show or hide attributes
-      else if (src instanceof AttributeMenuItem) {
-        model.clearEvidence();
-        for (int i = 0; i < selected.length; i++) {
-          selected[i] = -1;
-        }
-        AttributeMenuItem mi = (AttributeMenuItem) src;
-
-        HashMap toShow = new HashMap();
-        for (int i = 0; i < attributeItems.length; i++) {
-          if (attributeItems[i].getState()) {
-            toShow.put(attributeItems[i].getText(),
-                       attributeItems[i].getText());
+              // when first displayed, we show all attributes by default
           }
-        }
-
-        // sort by the best predictor
-        if (miAttrBest.getState()) {
-          LinkedList ll = new LinkedList();
-          for (int i = 0; i < all_ranked_attribute_names.length; i++) {
-            if (toShow.containsKey(all_ranked_attribute_names[i])) {
-              ll.add(all_ranked_attribute_names[i]);
-            }
-          }
-          attribute_names = new String[ll.size()];
-          Iterator ii = ll.iterator();
-          int idx = 0;
-          while (ii.hasNext()) {
-            attribute_names[idx] = (String) ii.next();
-            idx++;
-          }
-        }
-        // sort in alphabetical order
-        else {
-          LinkedList ll = new LinkedList();
-          for (int i = 0; i < all_alpha_attribute_names.length; i++) {
-            if (toShow.containsKey(all_alpha_attribute_names[i])) {
-              ll.add(all_alpha_attribute_names[i]);
-            }
-          }
-          attribute_names = new String[ll.size()];
+          attribute_names = all_ranked_attribute_names;
           numRows = attribute_names.length;
-          Iterator ii = ll.iterator();
-          int idx = 0;
-          while (ii.hasNext()) {
-            attribute_names[idx] = (String) ii.next();
-            idx++;
+          //System.out.println("numRows "  + numRows);
+          selected = new int[attribute_names.length];
+          row_data = new NaiveBayesPieChartData[attribute_names.length][];
+          predictor_values = new double[attribute_names.length];
+          int longest = 0;
+          longest_bin_name = "";
+          longest_attribute_name = "";
+
+          // get the row data
+          for (int j = 0; j < attribute_names.length; j++) {
+              row_data[j] = model.getData(attribute_names[j]);
+              //	System.out.println("row_data[" +j+ "] " + row_data[j]);
+              predictor_values[j] = model.getPredictionValue(attribute_names[j]);
+              selected[j] = -1;
+              if (attribute_names[j].length() > longest) {
+                  longest_attribute_name = attribute_names[j];
+                  longest = attribute_names[j].length();
+              }
+              if (row_data[j].length > numCols) {
+                  numCols = row_data[j].length;
+              }
+              for (int k = 0; k < row_data[j].length; k++) {
+                  if (row_data[j][k].getBinName().length() > longest_bin_name.length())
+                  {
+                      longest_bin_name = row_data[j][k].getBinName();
+                  }
+              }
           }
-        }
+          if (longest_attribute_name.length() < MAX_ATTRIBUTE_ERROR.length()) {
+              longest_attribute_name = MAX_ATTRIBUTE_ERROR;
 
-        row_data = new NaiveBayesPieChartData[attribute_names.length][];
-        predictor_values = new double[attribute_names.length];
-        numCols = 0;
-        for (int i = 0; i < attribute_names.length; i++) {
-          row_data[i] = model.getData(attribute_names[i]);
-          predictor_values[i] = model.getPredictionValue(attribute_names[i]);
-          if (row_data[i].length > numCols) {
-            numCols = row_data[i].length;
+              // make the grid
           }
-        }
-        setPreferredSize(getPreferredSize());
-        repaint();
-      }
-
-      // sort the evidence by the bin totals (the default)
-      else if (src == miEviTot) {
-        miEviTot.setState(true);
-        miEviAlpha.setState(false);
-        model.clearEvidence();
-
-        // call on model to resort
-        model.sortChartDataByRank();
-        for (int i = 0; i < attribute_names.length; i++) {
-          row_data[i] = model.getData(attribute_names[i]);
-        }
-        for (int i = 0; i < selected.length; i++) {
-          selected[i] = -1;
-
-        }
-        repaint();
-      }
-
-      // sort the evidence alphabetically by bin name
-      else if (src == miEviAlpha) {
-        miEviTot.setState(false);
-        miEviAlpha.setState(true);
-
-        model.clearEvidence();
-        // call on model to resort
-        model.sortChartDataAlphabetically();
-        for (int i = 0; i < attribute_names.length; i++) {
-          row_data[i] = model.getData(attribute_names[i]);
-        }
-        for (int i = 0; i < selected.length; i++) {
-          selected[i] = -1;
-
-        }
-        repaint();
-      }
-      // show the bin weights as percentages
-      else if (src == miPercentage) {
-        repaint();
-
-        // show the predictor values
-      }
-      else if (src == miShowPredVal) {
-        hp.repaint();
-
-        // print
-      }
-      else if (src == miPrint || src == printButton) {
-        PrinterJob pj = PrinterJob.getPrinterJob();
-        pj.setPrintable(this);
-        if (pj.printDialog()) {
-          try {
-            pj.print();
+          gp = new GridPanel();
+          int sq;
+          if (numCols > numRows) {
+              sq = PREF_GRID * numCols;
+          } else {
+              sq = PREF_GRID * numRows;
           }
-          catch (Exception ex) {
-            ex.printStackTrace();
+          preferredGrid = new Dimension(sq, sq);
+          gp.setPreferredSize(preferredGrid);
+          // make the header
+          hp = new HeaderPanel();
+          preferredHeader = new Dimension(PREF_HEAD, sq);
+          hp.setPreferredSize(preferredHeader);
+
+          // make the message area
+          if (class_names.length < 4) {
+              ma = new MessageArea(class_names.length);
+          } else {
+              ma = new MessageArea(4);
+
+              // make the legend
           }
-        }
-      }
-      // zoom
-      else if (src == zoom) {
-        if (zoomin) {
-          zoomin = false;
-        }
-        else {
-          zoomin = true;
-        }
-      }
-      // reset the view to the initial size
-      else if (src == refreshView) {
-        gp.setPreferredSize(preferredGrid);
-        hp.setPreferredSize(preferredHeader);
-        gp.revalidate();
-        hp.revalidate();
-      }
-      else if (src == helpItem) {
-        helpWindow.setVisible(true);
+          legend = new Legend();
 
+          JScrollPane jsp = new JScrollPane(gp);
+          jsp.setViewportBorder(new SPBorder());
+          jsp.getViewport().setBackground(yellowish);
+          jsp.setPreferredSize(new Dimension(500, 400));
+          JViewport jv = new JViewport();
+          jv.setView(hp);
+          jsp.setRowHeader(jv);
+          JLabel att = new AALabel(ATT);
+          att.setBorder(new EmptyBorder(10, 3, 10, 0));
+          JLabel evi = new AALabel(EVI);
+          evi.setBorder(new EmptyBorder(10, 3, 10, 0));
+          jsp.setCorner(ScrollPaneConstants.UPPER_LEFT_CORNER, att);
 
+          JViewport jv1 = new JViewport();
+          jv1.setView(evi);
+          jsp.setColumnHeader(jv1);
 
-      }
-      else if(src == saveAsPmml) {
-        JFileChooser jfc = new JFileChooser();
-
-        int returnVal = jfc.showSaveDialog(null);
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
-          try {
-            // get the selected file
-            File newFile = jfc.getSelectedFile();
-
-            //WriteNaiveBayesPMML.writePMML(model, newFile.getAbsolutePath());
+          cp = new CompositePanel();
+          cp.setPreferredSize(new Dimension(250, 250));
+          JScrollPane jp1 = new JScrollPane(cp);
+          jp1.setViewportBorder(new SPBorder2());
+          JScrollPane jp2 = new SameSizeSP(ma, ma.getPreferredSize());
+          JScrollPane jp3 = new SameSizeSP(legend, ma.getPreferredSize());
+          JViewport jch = new JViewport();
+          JPanel cnr = new JPanel();
+          cnr.setBackground(yellowish);
+          jp3.setCorner(ScrollPaneConstants.UPPER_RIGHT_CORNER, cnr);
+          jp2.setMaximumSize(ma.getPreferredSize());
+          jp3.setMaximumSize(ma.getPreferredSize());
+          JPanel pq = new JPanel();
+          JPanel pq1 = new JPanel();
+          pq1.setLayout(new GridLayout(2, 1));
+          pq1.add(jp3);
+          pq1.add(jp2);
+          pq.setLayout(new BorderLayout());
+          pq.add(jp1, BorderLayout.CENTER);
+          pq.add(pq1, BorderLayout.SOUTH);
+          JViewport jv2 = new JViewport();
+          JLabel clLabel = new AALabel(CONC);
+          clLabel.setBorder(new EmptyBorder(10, 3, 10, 0));
+          JPanel clp = new JPanel();
+          JPanel bp = new JPanel();
+          bp.setLayout(new GridLayout(1, 3));
+          Image im = getImage(refreshicon);
+          ImageIcon ri = null;
+          if (im != null) {
+              ri = new ImageIcon(im);
           }
-          catch(Exception ex) {
-              ncsa.d2k.core.gui.ErrorDialog.showDialog(ex, "Error Writing PMML");
+          if (ri != null) {
+              refreshView = new JButton(ri);
+          } else {
+              refreshView = new JButton("R");
           }
-        }
+          refreshView.addActionListener(this);
+          refreshView.setToolTipText("Reset View");
+
+          im = getImage(printicon);
+          ImageIcon pi = null;
+          if (im != null) {
+              pi = new ImageIcon(im);
+          }
+          if (pi != null) {
+              printButton = new JButton(pi);
+          } else {
+              printButton = new JButton("P");
+          }
+          printButton.addActionListener(this);
+          printButton.setToolTipText("Print");
+
+          im = getImage(zoomicon);
+          ImageIcon zi = null;
+          if (im != null) {
+              zi = new ImageIcon(getImage(zoomicon));
+          }
+          if (zi != null) {
+              zoom = new JToggleButton(zi);
+          } else {
+              zoom = new JToggleButton("Z");
+
+          }
+          zoom.addActionListener(this);
+          zoom.setToolTipText("Zoom");
+
+          if (ri != null && zi != null && pi != null) {
+              zoom.setMaximumSize(buttonsize);
+              zoom.setPreferredSize(buttonsize);
+              printButton.setMaximumSize(buttonsize);
+              printButton.setPreferredSize(buttonsize);
+              refreshView.setMaximumSize(buttonsize);
+              refreshView.setPreferredSize(buttonsize);
+          }
+
+          bp.add(refreshView);
+          bp.add(printButton);
+          bp.add(zoom);
+
+          clp.setLayout(new BorderLayout());
+          clp.add(clLabel, BorderLayout.CENTER);
+          JPanel bq = new JPanel();
+          bq.setLayout(new BoxLayout(bq, BoxLayout.Y_AXIS));
+          bq.add(Box.createGlue());
+          bq.add(bp);
+          bq.add(Box.createGlue());
+          clp.add(bq, BorderLayout.EAST);
+          jv2.setView(clp);
+
+          jp1.setColumnHeader(jv2);
+
+          pq.setBorder(new EmptyBorder(3, 3, 3, 3));
+          JPanel bg = new JPanel();
+          bg.setLayout(new BorderLayout());
+          bg.add(jsp, BorderLayout.CENTER);
+          bg.setBorder(new EmptyBorder(3, 3, 3, 3));
+          JPanel p1 = new JPanel();
+          p1.setLayout(new BorderLayout());
+          p1.add(bg, BorderLayout.CENTER);
+          p1.add(pq, BorderLayout.EAST);
+
+          setLayout(new BorderLayout());
+          add(p1, BorderLayout.CENTER);
+
+          // setup the menus
+          JMenu m1 = new JMenu("Options");
+          JMenu m2 = new JMenu("Views");
+          m2.add(miPieChart = new JCheckBoxMenuItem("Pie Charts", true));
+          m2.add(miBarChart = new JCheckBoxMenuItem("Bar Charts", false));
+          m1.add(m2);
+          menuBar.add(m1);
+          miPieChart.addActionListener(this);
+          miBarChart.addActionListener(this);
+
+          JMenu m3 = new JMenu("Sort Attributes By");
+          m3.add(miAttrBest = new JCheckBoxMenuItem("Best Predictor", true));
+          m3.add(miAttrAlpha = new JCheckBoxMenuItem("Alphabetical Order", false));
+          miAttrBest.addActionListener(this);
+          miAttrAlpha.addActionListener(this);
+
+          JMenu m4 = new JMenu("Sort Evidence By");
+          m4.add(miEviTot = new JCheckBoxMenuItem("Bin Weights", true));
+          m4.add(miEviAlpha = new JCheckBoxMenuItem("Alphabetical Order", false));
+          miEviTot.addActionListener(this);
+          miEviAlpha.addActionListener(this);
+
+          JMenu m5 = new JMenu("Show Attributes");
+          attributeItems = new AttributeMenuItem[attribute_names.length];
+          JMenu curMenu = m5;
+          int numItems = 0;
+          for (int j = 0; j < attributeItems.length; j++) {
+              attributeItems[j] = new AttributeMenuItem(attribute_names[j]);
+              attributeItems[j].addActionListener(this);
+              if (numItems == MAX_MENU_ITEMS) {
+                  JMenu nextMenu = new JMenu(MORE);
+                  curMenu.insert(nextMenu, 0);
+                  nextMenu.add(attributeItems[j]);
+                  curMenu = nextMenu;
+                  numItems = 1;
+              } else {
+                  curMenu.add(attributeItems[j]);
+                  numItems++;
+              }
+          }
+
+          JMenu m6 = new JMenu("Set Colors");
+          colorItems = new ColorMenuItem[class_names.length];
+          curMenu = m6;
+          numItems = 0;
+          for (int j = 0; j < colorItems.length; j++) {
+              colorItems[j] = new ColorMenuItem(class_names[j]);
+              colorItems[j].addActionListener(this);
+              if (numItems == MAX_MENU_ITEMS) {
+                  JMenu nextMenu = new JMenu(MORE);
+                  curMenu.insert(nextMenu, 0);
+                  //curMenu.add(nextMenu);
+                  nextMenu.add(colorItems[j]);
+                  curMenu = nextMenu;
+                  numItems = 1;
+              } else {
+                  curMenu.add(colorItems[j]);
+                  numItems++;
+              }
+          }
+
+          m1.add(m3);
+          m1.add(m4);
+          m1.add(m5);
+          m1.add(m6);
+          m1.addSeparator();
+          m1.add(miShowPredVal =
+                  new JCheckBoxMenuItem("Show Predictor Values",
+                          false));
+          miShowPredVal.addActionListener(this);
+          m1.add(miPercentage =
+                  new JCheckBoxMenuItem("Show Bin Weight Percentage",
+                          false));
+          miPercentage.addActionListener(this);
+          m1.addSeparator();
+          m1.add(miPrint = new JMenuItem("Print.."));
+          miPrint.addActionListener(this);
+          m1.add(saveAsPmml = new JMenuItem("Save as PMML..."));
+          saveAsPmml.setEnabled(false);
+          saveAsPmml.addActionListener(this);
+
+          JMenu helpMenu = new JMenu("Help");
+          helpItem = new JMenuItem("About Naive Bayes Vis..");
+          helpMenu.add(helpItem);
+          helpItem.addActionListener(this);
+
+          menuBar.add(helpMenu);
       }
 
+      /**
+       * Supplies the menu bar to be added to the frame that holds this view.
+       *
+       * @return a menubar specific to this component.
+       */
+      public Object getMenu() {
+          return menuBar;
+      }
 
-    }
+      /**
+       * Invoked when an action occurs.
+       */
+      public void actionPerformed(ActionEvent e) {
+          Object src = e.getSource();
+          // show pie charts (the default)
+          if (src == miPieChart) {
+              miPieChart.setState(true);
+              miBarChart.setState(false);
+              repaint();
+          }
 
-    private final Color getColor(String s) {
+          // show bar charts
+          else if (src == miBarChart) {
+              miPieChart.setState(false);
+              miBarChart.setState(true);
+              repaint();
+          }
+
+          // sort the attributes by best predictor
+          else if (src == miAttrBest) {
+              miAttrBest.setState(true);
+              miAttrAlpha.setState(false);
+              model.clearEvidence();
+              for (int i = 0; i < selected.length; i++) {
+                  selected[i] = -1;
+
+              }
+              HashMap toShow = new HashMap();
+              for (int i = 0; i < attributeItems.length; i++) {
+                  if (attributeItems[i].getState()) {
+                      toShow.put(attributeItems[i].getText(),
+                              attributeItems[i].getText());
+                  }
+              }
+
+              LinkedList ll = new LinkedList();
+              for (int i = 0; i < all_ranked_attribute_names.length; i++) {
+                  if (toShow.containsKey(all_ranked_attribute_names[i])) {
+                      ll.add(all_ranked_attribute_names[i]);
+                  }
+              }
+              attribute_names = new String[ll.size()];
+              numRows = attribute_names.length;
+              Iterator ii = ll.iterator();
+              int idx = 0;
+              while (ii.hasNext()) {
+                  attribute_names[idx] = (String) ii.next();
+                  idx++;
+              }
+
+              row_data = new NaiveBayesPieChartData[attribute_names.length][];
+              predictor_values = new double[attribute_names.length];
+              numCols = 0;
+              for (int i = 0; i < attribute_names.length; i++) {
+                  row_data[i] = model.getData(attribute_names[i]);
+                  predictor_values[i] = model.getPredictionValue(attribute_names[i]);
+                  if (row_data[i].length > numCols) {
+                      numCols = row_data[i].length;
+                  }
+              }
+              repaint();
+          }
+
+          // sort the attributes alphabetically
+          else if (src == miAttrAlpha) {
+              miAttrBest.setState(false);
+              miAttrAlpha.setState(true);
+              model.clearEvidence();
+              for (int i = 0; i < selected.length; i++) {
+                  selected[i] = -1;
+
+              }
+              HashMap toShow = new HashMap();
+              for (int i = 0; i < attributeItems.length; i++) {
+                  if (attributeItems[i].getState()) {
+                      toShow.put(attributeItems[i].getText(),
+                              attributeItems[i].getText());
+                  }
+              }
+
+              LinkedList ll = new LinkedList();
+              for (int i = 0; i < all_alpha_attribute_names.length; i++) {
+                  if (toShow.containsKey(all_alpha_attribute_names[i])) {
+                      ll.add(all_alpha_attribute_names[i]);
+                  }
+              }
+              attribute_names = new String[ll.size()];
+              numRows = attribute_names.length;
+              Iterator ii = ll.iterator();
+              int idx = 0;
+              while (ii.hasNext()) {
+                  attribute_names[idx] = (String) ii.next();
+                  idx++;
+              }
+
+              row_data = new NaiveBayesPieChartData[attribute_names.length][];
+              predictor_values = new double[attribute_names.length];
+              numCols = 0;
+              for (int i = 0; i < attribute_names.length; i++) {
+                  row_data[i] = model.getData(attribute_names[i]);
+                  predictor_values[i] = model.getPredictionValue(attribute_names[i]);
+                  if (row_data[i].length > numCols) {
+                      numCols = row_data[i].length;
+                  }
+              }
+              repaint();
+          }
+
+          // change the color associated with a class
+          else if (src instanceof ColorMenuItem) {
+              ColorMenuItem mi = (ColorMenuItem) src;
+              Color oldColor = getColor(mi.getText());
+              StringBuffer sb = new StringBuffer("Choose ");
+              sb.append(mi.getText());
+              sb.append(" Color");
+              Color newColor = JColorChooser.showDialog(this, sb.toString(), oldColor);
+              if (newColor != null) {
+                  color_map.put(mi.getText(), newColor);
+                  repaint();
+              }
+          }
+
+          // show or hide attributes
+          else if (src instanceof AttributeMenuItem) {
+              model.clearEvidence();
+              for (int i = 0; i < selected.length; i++) {
+                  selected[i] = -1;
+              }
+              AttributeMenuItem mi = (AttributeMenuItem) src;
+
+              HashMap toShow = new HashMap();
+              for (int i = 0; i < attributeItems.length; i++) {
+                  if (attributeItems[i].getState()) {
+                      toShow.put(attributeItems[i].getText(),
+                              attributeItems[i].getText());
+                  }
+              }
+
+              // sort by the best predictor
+              if (miAttrBest.getState()) {
+                  LinkedList ll = new LinkedList();
+                  for (int i = 0; i < all_ranked_attribute_names.length; i++) {
+                      if (toShow.containsKey(all_ranked_attribute_names[i])) {
+                          ll.add(all_ranked_attribute_names[i]);
+                      }
+                  }
+                  attribute_names = new String[ll.size()];
+                  Iterator ii = ll.iterator();
+                  int idx = 0;
+                  while (ii.hasNext()) {
+                      attribute_names[idx] = (String) ii.next();
+                      idx++;
+                  }
+              }
+              // sort in alphabetical order
+              else {
+                  LinkedList ll = new LinkedList();
+                  for (int i = 0; i < all_alpha_attribute_names.length; i++) {
+                      if (toShow.containsKey(all_alpha_attribute_names[i])) {
+                          ll.add(all_alpha_attribute_names[i]);
+                      }
+                  }
+                  attribute_names = new String[ll.size()];
+                  numRows = attribute_names.length;
+                  Iterator ii = ll.iterator();
+                  int idx = 0;
+                  while (ii.hasNext()) {
+                      attribute_names[idx] = (String) ii.next();
+                      idx++;
+                  }
+              }
+
+              row_data = new NaiveBayesPieChartData[attribute_names.length][];
+              predictor_values = new double[attribute_names.length];
+              numCols = 0;
+              for (int i = 0; i < attribute_names.length; i++) {
+                  row_data[i] = model.getData(attribute_names[i]);
+                  predictor_values[i] = model.getPredictionValue(attribute_names[i]);
+                  if (row_data[i].length > numCols) {
+                      numCols = row_data[i].length;
+                  }
+              }
+              setPreferredSize(getPreferredSize());
+              repaint();
+          }
+
+          // sort the evidence by the bin totals (the default)
+          else if (src == miEviTot) {
+              miEviTot.setState(true);
+              miEviAlpha.setState(false);
+              model.clearEvidence();
+
+              // call on model to resort
+              model.sortChartDataByRank();
+              for (int i = 0; i < attribute_names.length; i++) {
+                  row_data[i] = model.getData(attribute_names[i]);
+              }
+              for (int i = 0; i < selected.length; i++) {
+                  selected[i] = -1;
+
+              }
+              repaint();
+          }
+
+          // sort the evidence alphabetically by bin name
+          else if (src == miEviAlpha) {
+              miEviTot.setState(false);
+              miEviAlpha.setState(true);
+
+              model.clearEvidence();
+              // call on model to resort
+              model.sortChartDataAlphabetically();
+              for (int i = 0; i < attribute_names.length; i++) {
+                  row_data[i] = model.getData(attribute_names[i]);
+              }
+              for (int i = 0; i < selected.length; i++) {
+                  selected[i] = -1;
+
+              }
+              repaint();
+          }
+          // show the bin weights as percentages
+          else if (src == miPercentage) {
+              repaint();
+
+              // show the predictor values
+          } else if (src == miShowPredVal) {
+              hp.repaint();
+
+              // print
+          } else if (src == miPrint || src == printButton) {
+              PrinterJob pj = PrinterJob.getPrinterJob();
+              pj.setPrintable(this);
+              if (pj.printDialog()) {
+                  try {
+                      pj.print();
+                  }
+                  catch (Exception ex) {
+                      ex.printStackTrace();
+                  }
+              }
+          }
+          // zoom
+          else if (src == zoom) {
+              if (zoomin) {
+                  zoomin = false;
+              } else {
+                  zoomin = true;
+              }
+          }
+          // reset the view to the initial size
+          else if (src == refreshView) {
+              gp.setPreferredSize(preferredGrid);
+              hp.setPreferredSize(preferredHeader);
+              gp.revalidate();
+              hp.revalidate();
+          } else if (src == helpItem) {
+              helpWindow.setVisible(true);
+
+
+          } else if (src == saveAsPmml) {
+              JFileChooser jfc = new JFileChooser();
+
+              int returnVal = jfc.showSaveDialog(null);
+              if (returnVal == JFileChooser.APPROVE_OPTION) {
+                  try {
+                      // get the selected file
+                      File newFile = jfc.getSelectedFile();
+
+                      //WriteNaiveBayesPMML.writePMML(model, newFile.getAbsolutePath());
+                  }
+                  catch (Exception ex) {
+                      ncsa.d2k.core.gui.ErrorDialog.showDialog(ex, "Error Writing PMML");
+                  }
+              }
+          }
+
+
+      }
+
+      /**
+       * Lookup the color for a class name
+       * @param s class name
+       * @return color associated with this class
+       */
+    private Color getColor(String s) {
       return (Color) color_map.get(s);
     }
 
     /**
        Scales a graphics context's font so that a given
        string will fit within a given horizontal pixel width.
+     @param g2 graphics context
+     @param str string
+     @param spaceH max horizontal space
+     @param spaceV max vertical space
+     @return FontMetrics that will size str to fit in the given space
      */
     private final FontMetrics scaleFont(Graphics2D g2, String str, int spaceH,
                                         int spaceV) {
@@ -932,12 +1103,19 @@ public final class NaiveBayesVis
         implements MouseListener,
         MouseMotionListener {
 
+        /**
+         * Constructor
+         */
       GridPanel() {
         addMouseListener(this);
         addMouseMotionListener(this);
         setBackground(yellowish);
       }
 
+        /**
+         * Paint all the pie charts/bar charts
+         * @param g graphics context
+         */
       public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
@@ -989,46 +1167,57 @@ public final class NaiveBayesVis
         }
       }
 
-      public void setBounds(int x, int y, int w, int h) {
-        if (numCols != 0)
-          gridwidth = w / numCols;
-        else
-          gridwidth = 0;
-          
-        if (numRows != 0)
-          gridheight = w / numRows;
-        else
-          gridheight = 0;
+        /**
+         * Moves and resizes this component. The new location of the top-left
+         * corner is specified by <code>x</code> and <code>y</code>, and the
+         * new size is specified by <code>width</code> and <code>height</code>.
+         *
+         * @param x      the new <i>x</i>-coordinate of this component
+         * @param y      the new <i>y</i>-coordinate of this component
+         * @param w  the new <code>width</code> of this component
+         * @param h the new <code>height</code> of this
+         *               component
+         */
+        public void setBounds(int x, int y, int w, int h) {
+            if (numCols != 0)
+                gridwidth = w / numCols;
+            else
+                gridwidth = 0;
 
-        // make gridwidth equal to gridheight
-        if (gridwidth < gridheight) {
-          gridheight = gridwidth;
-        }
-        else {
-          gridwidth = gridheight;
+            if (numRows != 0)
+                gridheight = w / numRows;
+            else
+                gridheight = 0;
 
-          // cache these calculations for later
+            // make gridwidth equal to gridheight
+            if (gridwidth < gridheight) {
+                gridheight = gridwidth;
+            } else {
+                gridwidth = gridheight;
+
+                // cache these calculations for later
+            }
+            grid1 = (float) (.1f * gridwidth);
+            grid75 = (float) (.75f * gridwidth);
+            grid05 = (float) (.05f * gridwidth);
+            grid5 = (float) (.5f * gridwidth);
+            grid85 = (float) (.85f * gridwidth);
+            grid15 = (float) (.15f * gridwidth);
+            grid2 = (float) (.2f * gridwidth);
+            grid6 = (float) (.6f * gridwidth);
+            grid25 = (float) (.25f * gridwidth);
+            padding = (float) (.03 * gridwidth);
+            super.setBounds(x, y, w, h);
         }
-        grid1 = (float) (.1f * gridwidth);
-        grid75 = (float) (.75f * gridwidth);
-        grid125 = (float) (.125f * gridwidth);
-        grid05 = (float) (.05f * gridwidth);
-        grid5 = (float) (.5f * gridwidth);
-        grid85 = (float) (.85f * gridwidth);
-        grid15 = (float) (.15f * gridwidth);
-        grid2 = (float) (.2f * gridwidth);
-        grid6 = (float) (.6f * gridwidth);
-        grid8 = (float) (.8f * gridwidth);
-        grid25 = (float) (.25f * gridwidth);
-        grid7 = (float) (.7 * gridwidth);
-        padding = (float) (.03 * gridwidth);
-        super.setBounds(x, y, w, h);
-      }
 
       /**
          Draw the weight bar above a pie/bar chart.
+       @param g2 graphics context
+       @param x x location
+       @param y y location
+       @param weight the weight amount
        */
-      private final void drawWeightBar(Graphics2D g2, int x, int y,
+      private void drawWeightBar(Graphics2D g2, int x, int y,
                                        double weight) {
         g2.setPaint(Color.black);
         g2.draw(new Rectangle2D.Double(x + (int) grid25, y + (int) grid1,
@@ -1045,9 +1234,13 @@ public final class NaiveBayesVis
       }
 
       /**
-       * Draw the bin weight as a percentage
+       * Draw the bin weight as a percentage.
+       * @param g2 graphics context
+       * @param x x location
+       * @param y y location
+       * @param w the weight
        */
-      private final void drawWeightPercentage(Graphics2D g2, int x, int y,
+      private void drawWeightPercentage(Graphics2D g2, int x, int y,
                                               double w) {
         // draw text
         g2.setPaint(Color.black);
@@ -1062,8 +1255,11 @@ public final class NaiveBayesVis
 
       /**
        * Draw a bar chart for a bin
+       * @param g2 graphics context
+       * @param x x location
+       * @param y y location
        */
-      private final void drawBarChart(Graphics2D g2, int x, int y,
+      private void drawBarChart(Graphics2D g2, int x, int y,
                                       NaiveBayesPieChartData data,
                                       boolean selected) {
 
@@ -1115,8 +1311,13 @@ public final class NaiveBayesVis
 
       /**
        * Draw a bin as a pie chart
+       * @param g2 graphics context
+       * @param x x location
+       * @param y y location
+       * @param data table containing the data to draw
+       * @param selected true if the pie chart should be highlighted
        */
-      private final void drawPieChart(Graphics2D g2, int x, int y,
+      private void drawPieChart(Graphics2D g2, int x, int y,
                                       NaiveBayesPieChartData data,
                                       boolean selected) {
 
@@ -1163,8 +1364,12 @@ public final class NaiveBayesVis
 
       /**
        * Draw the name of a bin
+       * @param g2 graphics context
+       * @param x x location
+       * @param y y location
+       * @param n name to draw
        */
-      private final void drawName(Graphics2D g2, int x, int y, String n) {
+      private void drawName(Graphics2D g2, int x, int y, String n) {
         // draw text
         g2.setPaint(Color.black);
         FontMetrics metrics = g2.getFontMetrics();
@@ -1175,6 +1380,7 @@ public final class NaiveBayesVis
 
       /**
          Zoom in or out when the mouse is pressed
+       @param e mouse event
        */
       public void mousePressed(MouseEvent e) {
         mouse_pos_y = e.getY();
@@ -1204,6 +1410,7 @@ public final class NaiveBayesVis
 
       /**
        * Update the selected item when the mouse is clicked
+       * @param e mouse event
        */
       public void mouseClicked(MouseEvent e) {
         if (zoomin) {
@@ -1256,14 +1463,27 @@ public final class NaiveBayesVis
         }
       }
 
+        /**
+         * Do nothing special here
+         * @param e mouse event
+         */
       public void mouseReleased(MouseEvent e) {}
 
+        /**
+         * Do nothing special here
+         * @param e mouse event
+         */
       public void mouseEntered(MouseEvent e) {}
 
+        /**
+         * Do nothing special here
+         * @param e mouse event
+         */
       public void mouseExited(MouseEvent e) {}
 
       /**
        * Change the size when the mouse is dragged
+       * @param e mouse event
        */
       public void mouseDragged(MouseEvent e) {
         if (e.isMetaDown() && gridwidth > 50) {
@@ -1299,6 +1519,7 @@ public final class NaiveBayesVis
 
       /**
        * Update the brushing info when the mouse is moved
+       * @param e mouse event
        */
       public void mouseMoved(MouseEvent e) {
         int cx = e.getX(), cy = e.getY();
@@ -1335,15 +1556,27 @@ public final class NaiveBayesVis
      */
     private final class CompositePanel
         extends JPanel {
+
+        /**
+         * Constructor
+         */
       CompositePanel() {
         setBackground(yellowish);
       }
 
+        /** 5% of the width */
       float sq05;
+        /** 10% of the width */
       float sq1;
+        /** 80% of the width */
       float sq8;
+        /** 70% of the width */
       float sq7;
 
+        /**
+         * Paint the composite as a big pie chart or bar chart.
+         * @param g graphics context
+         */
       public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
@@ -1371,11 +1604,14 @@ public final class NaiveBayesVis
 
       /**
        * Draw the composite as a pie chart
+       * @param g2 graphics context
+       * @param x x location
+       * @param y y location
+       * @param data the data for the composite view
        */
-      private final void drawPieChart(Graphics2D g2, int x, int y,
+      private void drawPieChart(Graphics2D g2, int x, int y,
                                       NaiveBayesPieChartData data) {
 
-        //System.out.println("DRAW.");
         // draw chart
         int angle = 0;
         for (int count = class_names.length - 1; count >= 0; count--) {
@@ -1400,8 +1636,12 @@ public final class NaiveBayesVis
 
       /**
        * Draw the composite as a bar chart
+       * @param g2 graphics context
+       * @param x x location
+       * @param y y location
+       * @param data the data for the composite view
        */
-      private final void drawBarChart(Graphics2D g2, int x, int y,
+      private void drawBarChart(Graphics2D g2, int x, int y,
                                       NaiveBayesPieChartData data) {
 
         g2.setPaint(Color.black);
@@ -1431,27 +1671,48 @@ public final class NaiveBayesVis
         }
       }
 
-      public void setBounds(int x, int y, int w, int h) {
-        sq1 = (float) (.1 * w);
-        sq8 = (float) (.8 * w);
-        sq7 = (float) (.7 * w);
-        sq05 = (float) (.05 * w);
-        super.setBounds(x, y, w, h);
-      }
+        /**
+         * Moves and resizes this component. The new location of the top-left
+         * corner is specified by <code>x</code> and <code>y</code>, and the
+         * new size is specified by <code>width</code> and <code>height</code>.
+         *
+         * @param x      the new <i>x</i>-coordinate of this component
+         * @param y      the new <i>y</i>-coordinate of this component
+         * @param w  the new <code>width</code> of this component
+         * @param h the new <code>height</code> of this
+         *               component
+         */
+        public void setBounds(int x, int y, int w, int h) {
+            sq1 = (float) (.1 * w);
+            sq8 = (float) (.8 * w);
+            sq7 = (float) (.7 * w);
+            sq05 = (float) (.05 * w);
+            super.setBounds(x, y, w, h);
+        }
     }
 
     /**
-       Show the attribute names
+       Show the attribute names along the left hand side
      */
     private final class HeaderPanel
         extends JPanel {
+        /** number format */
       NumberFormat nfmt;
+
+        /**
+         * Constructor
+         */
       HeaderPanel() {
         setBackground(darkBg);
         nfmt = NumberFormat.getInstance();
         nfmt.setMaximumFractionDigits(2);
       }
 
+        /**
+         * Paint the attribute names and their predictor values, if the checkbox
+         * is checked
+         * @param g graphics context
+         */
       public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
@@ -1486,7 +1747,7 @@ public final class NaiveBayesVis
     }
 
     /**
-     * Keep track of the colors.
+     * Keep track of the colors with color menu item.
      */
     private final class ColorMenuItem
         extends JMenuItem {
@@ -1496,7 +1757,7 @@ public final class NaiveBayesVis
     }
 
     /**
-     * Keep track of the attributes to show
+     * Keep track of the attributes to show with attribute menu item.
      */
     private final class AttributeMenuItem
         extends JCheckBoxMenuItem {
@@ -1511,6 +1772,10 @@ public final class NaiveBayesVis
      */
     private final class Legend
         extends JPanel {
+
+        /**
+         * Constructor.  Lay out all the components.
+         */
       Legend() {
         setLayout(new GridBagLayout());
 
@@ -1545,8 +1810,9 @@ public final class NaiveBayesVis
 
       /**
        * Update all the items in the legend
+       * @param ev_data current evidence
        */
-      private final void updateLegend(NaiveBayesPieChartData ev_data) {
+      private void updateLegend(NaiveBayesPieChartData ev_data) {
         if (ev_data == null) {
           ev_data = model.getCurrentEvidence();
 
@@ -1580,6 +1846,10 @@ public final class NaiveBayesVis
         extends JTextArea
         implements java.io.Serializable {
 
+        /**
+         * Constructor
+         * @param numRow number of rows to display
+         */
       MessageArea(int numRow) {
         super(numRow + 3, 0);
         setBackground(yellowish);
@@ -1588,6 +1858,10 @@ public final class NaiveBayesVis
         setFont(labelFont);
       }
 
+        /**
+         * Make all text anti-aliased for beauty
+         * @param g graphics context
+         */
       public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -1595,6 +1869,11 @@ public final class NaiveBayesVis
         super.paintComponent(g2);
       }
 
+        /**
+         * Update
+         * @param row row index of selected bin
+         * @param col column index of selected bin
+         */
       public void update(int row, int col) {
         setEditable(true);
 
@@ -1629,7 +1908,9 @@ public final class NaiveBayesVis
       }
     }
 
+     /** JLabels to hold the names of the classes */
     JLabel[] class_labels;
+      /** ColorComponents that are associated with the class_labels */
     ColorComponent[] color_comps;
 
     /**
@@ -1638,23 +1919,41 @@ public final class NaiveBayesVis
      */
     private final class ColorComponent
         extends JComponent {
+        /** dimension (it is a square) */
       private final int DIM = 12;
+        /** background color */
       Color bkgrd;
 
+        /**
+         * Constructor
+         * @param c color
+         */
       ColorComponent(Color c) {
         super();
         setOpaque(true);
         bkgrd = c;
       }
 
+        /**
+         * The preferred size is 12x12
+         * @return preferred size
+         */
       public Dimension getPreferredSize() {
         return new Dimension(DIM, DIM);
       }
 
+        /**
+         * The minimum size is 12x12
+         * @return minimum size
+         */
       public Dimension getMinimumSize() {
         return new Dimension(DIM, DIM);
       }
 
+        /**
+         * Fill with the color and then draw a one pixel black border
+         * @param g graphics context
+         */
       public void paint(Graphics g) {
         g.setColor(bkgrd);
         g.fillRect(0, 0, DIM - 1, DIM - 1);
@@ -1662,30 +1961,54 @@ public final class NaiveBayesVis
         g.drawRect(0, 0, DIM - 1, DIM - 1);
       }
 
+        /**
+         * Set the color
+         * @param c new color
+         */
       void setBkgrd(Color c) {
         bkgrd = c;
       }
     }
 
     /**
-     * A scroll pane that never changes its size.
+     * A scroll pane that never changes its size.  The preferred, maximum, and
+     * minimum sizes are all the same.
      */
     private final class SameSizeSP
         extends JScrollPane {
+        /** preferred size */
       Dimension p;
+
+        /**
+         * Constructor
+         * @param view Component to show in the scroll pane
+         * @param pref preferred size
+         */
       SameSizeSP(Component view, Dimension pref) {
         super(view);
         p = pref;
       }
 
+        /**
+         * Return preferred size
+         * @return preferred size
+         */
       public Dimension getPreferredSize() {
         return p;
       }
 
+        /**
+         * Return minimum size
+         * @return minimum size
+         */
       public Dimension getMinimumSize() {
         return p;
       }
 
+        /**
+         * Return maximum size
+         * @return maximum size
+         */
       public Dimension getMaximumSize() {
         return p;
       }
@@ -1696,6 +2019,11 @@ public final class NaiveBayesVis
      */
     private final class AALabel
         extends JLabel {
+
+        /**
+         * Constructor
+         * @param s string to display
+         */
       AALabel(String s) {
         super(s);
         setBackground(darkBg);
@@ -1703,10 +2031,19 @@ public final class NaiveBayesVis
         setForeground(labelFg);
       }
 
+        /**
+         * Constructor
+         * @param s string to display
+         * @param i alignment
+         */
       AALabel(String s, int i) {
         super(s, i);
       }
 
+        /**
+         * Draw text anti-aliased.
+         * @param g graphics context
+         */
       public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -1720,19 +2057,35 @@ public final class NaiveBayesVis
      */
     private final class SPBorder
         extends LineBorder {
+
+        /**
+         * Constructor
+         */
       SPBorder() {
         super(Color.black);
       }
 
-      public void paintBorder(Component c, Graphics g, int x,
-                              int y, int width, int height) {
 
-        Color oldColor = g.getColor();
-        g.setColor(lineColor);
-        g.drawLine(x, y, x + width, y);
-        g.drawLine(x, y, x, y + height);
-        g.setColor(oldColor);
-      }
+        /**
+         * Paints the border for the specified component with the
+         * specified position and size.
+         *
+         * @param c      the component for which this border is being painted
+         * @param g      the paint graphics
+         * @param x      the x position of the painted border
+         * @param y      the y position of the painted border
+         * @param width  the width of the painted border
+         * @param height the height of the painted border
+         */
+        public void paintBorder(Component c, Graphics g, int x,
+                                int y, int width, int height) {
+
+            Color oldColor = g.getColor();
+            g.setColor(lineColor);
+            g.drawLine(x, y, x + width, y);
+            g.drawLine(x, y, x, y + height);
+            g.setColor(oldColor);
+        }
     }
 
     /**
@@ -1740,25 +2093,41 @@ public final class NaiveBayesVis
      */
     private final class SPBorder2
         extends LineBorder {
+        /**
+         * Constructor
+         */
       SPBorder2() {
         super(Color.black);
       }
 
-      public void paintBorder(Component c, Graphics g, int x,
-                              int y, int width, int height) {
+        /**
+         * Paints the border for the specified component with the
+         * specified position and size.
+         *
+         * @param c      the component for which this border is being painted
+         * @param g      the paint graphics
+         * @param x      the x position of the painted border
+         * @param y      the y position of the painted border
+         * @param width  the width of the painted border
+         * @param height the height of the painted border
+         */
+        public void paintBorder(Component c, Graphics g, int x,
+                                int y, int width, int height) {
 
-        Color oldColor = g.getColor();
-        g.setColor(lineColor);
-        g.drawLine(x, y, x + width, y);
-        g.setColor(oldColor);
-      }
+            Color oldColor = g.getColor();
+            g.setColor(lineColor);
+            g.drawLine(x, y, x + width, y);
+            g.setColor(oldColor);
+        }
     }
   }
 
   /**
-   * Format the number as a percentage
+   * Format the number as a percentage with a max of 2 fraction digits
+   * @param doub the percentage
+   * @return String with the percentage and a percent sign
    */
-  private final static String percentage(double doub) {
+  private static String percentage(double doub) {
     doub *= 100;
 
     NumberFormat nf = NumberFormat.getInstance();
@@ -1769,8 +2138,15 @@ public final class NaiveBayesVis
     return sb.toString();
   }
 
+    /**
+     * A window to hold help text
+     */
   private final class HelpWindow
       extends JD2KFrame {
+
+        /**
+         * Constructor
+         */
     HelpWindow() {
       super("About Naive Bayes Vis");
       JEditorPane jep = new JEditorPane("text/html", getHelpString());
@@ -1780,44 +2156,11 @@ public final class NaiveBayesVis
     }
   }
 
-  private static final String getHelpString() {
-/*    StringBuffer sb = new StringBuffer("<html>");
-    sb.append("<h2>NaiveBayesVis</h2>");
-    sb.append("NaiveBayesVis provides an evidence visualization for a ");
-    sb.append("NaiveBayesModel.  Evidence items can be selected by clicking ");
-    sb.append(
-        "on an item and the conclusion will update its predictions.  The ");
-    sb.append("predictions are shown in the conclusion graph and in the ");
-    sb.append("Legend.<br><br>");
-    sb.append("The evidence can be zoomed or scaled.  To scale the ");
-    sb.append("evidence, right-click the mouse and drag toward the northwest ");
-    sb.append("or southwest corners.");
-    sb.append("<h3>Menu Options</h3>");
-    sb.append("<ul><li>Views: Display the evidence and composite as either");
-    sb.append(" pie charts or bar charts.");
-    sb.append("<li>Sort Attributes By: Sort the attributes by either the");
-    sb.append(" best predictor or alphabetical order. The best predictor is");
-    sb.append(" the attribute that induces the largest error when omitted.");
-    sb.append("<li>Sort Evidence By: Sort the evidence by the number of ");
-    sb.append(" items in its category or in alphabetical order.");
-    sb.append("<li>Show Attributes: Select which attributes to display.");
-    sb.append("<li>Set Colors: Select the colors for the outputs.");
-    sb.append("<li>Show Predictor Values: Display the error induced when ");
-    sb.append("the attribute was ommited from a prediction calculation.");
-    sb.append("<li>Show Bin Weight Percentage: Show the weights assigned to ");
-    sb.append("each evidence item as a percentage or display a bar with its ");
-    sb.append("weight relative to all other items in its row.");
-    sb.append("<li>Print: Print this visualization.");
-    sb.append("</ul>");
-    sb.append("<h3>Toolbar Buttons</h3>");
-    sb.append("<ul><li>Reset View: Reset the evidence to the default size.");
-    sb.append("<li>Print: Print this visualization.");
-    sb.append("<li>Zoom: When this button is pressed, left-click the ");
-    sb.append("evidence to zoom in, or right-click the evidence to zoom out.");
-    sb.append("</ul>");
-    sb.append("</html>");
-    return sb.toString();
+    /**
+     * Return a string with useful info for the help window.
+     * @return help window text
      */
+  private static final String getHelpString() {
 
    StringBuffer sb = new StringBuffer("<html><h1>Naive Bayes Vis Help</h1>");
 sb.append("<p>Overview: Naive Bayes Vis provides an interactive evidence ");

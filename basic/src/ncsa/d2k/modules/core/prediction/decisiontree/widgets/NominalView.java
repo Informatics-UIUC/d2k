@@ -1,4 +1,4 @@
-/* 
+/*
  * $Header$
  *
  * ===================================================================
@@ -6,17 +6,17 @@
  * D2K-Workflow
  * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
  * ILLINOIS. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License v2.0
  * as published by the Free Software Foundation and with the required
  * interpretation regarding derivative works as described below.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License v2.0 for more details.
- * 
+ *
  * This program and the accompanying materials are made available
  * under the terms of the GNU General Public License v2.0 (GPL v2.0)
  * which accompanies this distribution and is available at
@@ -34,7 +34,7 @@
  * make those components a derivative work of D2K-Workflow.
  * (Examples of such independently developed components include for
  * example, external databases or metadata and provenance stores).
- * 
+ *
  * Note: A non-GPL commercially licensed version of contributions
  * from the UNIVERSITY OF ILLINOIS may be available from the
  * designated commercial licensee RiverGlass, Inc. located at
@@ -58,7 +58,8 @@ import java.text.NumberFormat;
 
 
 /**
- * Description of class NominalView.
+ * NominalView handles the drawing of a nominal node in a decision tree
+ * visualization.
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -67,120 +68,94 @@ public class NominalView implements View {
 
    //~ Static fields/initializers **********************************************
 
-   /** constant for greater than. */
-   static private final String GREATER_THAN = ">";
-
-   /** constant for less than. */
-   static private final String LESS_THAN = "<";
-
-   /** constant for greater than or equal to. */
-   static private final String GREATER_THAN_EQUAL_TO = ">=";
-
-   /** constant for less than or equal to. */
-   static private final String LESS_THAN_EQUAL_TO = "<=";
-
-   /** constant for not equal to. */
-   static private final String NOT_EQUAL_TO = "!=";
-
-   /** constant for equal to. */
-   static private final String EQUAL_TO = "==";
-
-   /** graphics. */
-   static JFrame graphics;
+   /**
+    * A GUI component with a native peer that can be used to compute font
+    * metrics.
+    */
+   static private JFrame graphics;
 
    //~ Instance fields *********************************************************
 
-   /** space between bars */
-   double barspace = 5;
+   /** space between bars. */
+   private double barspace = 5;
 
    /** width of bars. */
-   double barwidth = 16;
-
-   /** branch label. */
-   String branchlabel;
+   private double barwidth = 16;
 
    /** height. */
-   double height = 45;
+   private double height = 45;
 
    /** left inset. */
-   double leftinset = 5;
+   private double leftinset = 5;
 
    /** Decision tree model. */
-   NominalViewableDTModel model;
+   private NominalViewableDTModel model;
 
    /** node. */
-   NominalViewableDTNode node;
+   private NominalViewableDTNode node;
 
    /** number format. */
-   NumberFormat numberformat;
+   private NumberFormat numberformat;
 
    /** unique outputs. */
-   String[] outputs;
+   private String[] outputs;
 
    /** output space. */
-   double outputspace = 10;
+   private double outputspace = 10;
 
    /** output width. */
-   double outputwidth = 80;
+   private double outputwidth = 80;
 
    /** percent width. */
-   double percentwidth;
+   private double percentwidth;
 
    /** right inset. */
-   double rightinset = 5;
+   private double rightinset = 5;
 
    /** sample size. */
-   double samplesize = 10;
+   private double samplesize = 10;
 
    /** sample space. */
-   double samplespace = 8;
+   private double samplespace = 8;
 
    /** scale size. */
-   double scalesize = 100;
+   private double scalesize = 100;
 
    /** scheme defines the colors used. */
-   DecisionTreeScheme scheme;
-
-   /** search space. */
-   double searchspace = 4;
+   private DecisionTreeScheme scheme;
 
    /** tallies. */
-   int[] tallies;
+   private int[] tallies;
 
-   /** space between tally  */
-   double tallyspace = 10;
+   /** space between tally. */
+   private double tallyspace = 10;
 
    /** with of tally area. */
-   double tallywidth;
-
-   /** height of tally area. */
-   double theight;
+   private double tallywidth;
 
    /** tickmark. */
-   double tickmark = 3;
+   private double tickmark = 3;
 
    /** tside. */
-   double tside = 8;
+   private double tside = 8;
 
    /** tspace. */
-   double tspace = 10;
+   private double tspace = 10;
 
    /** values. */
-   double[] values;
+   private double[] values;
 
    /** width. */
-   double width;
-
-   /** xincrement. */
-   double xincrement;
-    /** yincrement. */
-   double yincrement;
+   private double width;
 
    /** ygrid. */
-   double ygrid = 5;
+   private double ygrid = 5;
+
+   /** yincrement. */
+   private double yincrement;
 
    /** yscale. */
-   double yscale;
+   private double yscale;
 
    //~ Constructors ************************************************************
 
@@ -201,9 +176,31 @@ public class NominalView implements View {
    //~ Methods *****************************************************************
 
    /**
-    * Description of method drawBrush.
+    * Compute the values, which corresponds to the height of the bars.
+    */
+   private void findValues() {
+      outputs = model.getUniqueOutputValues();
+
+      values = new double[outputs.length];
+      tallies = new int[outputs.length];
+
+      for (int index = 0; index < values.length; index++) {
+
+         try {
+            tallies[index] = node.getOutputTally(outputs[index]);
+            values[index] =
+               100 * (double) tallies[index] / (double) node.getTotal();
+         } catch (Exception exception) {
+            exception.printStackTrace();
+         }
+      }
+   }
+
+   /**
+    * When the mouse brushes over this node, draw the total and percentages of
+    * each class for this node.
     *
-    * @param g2 Description of parameter g2.
+    * @param g2 graphics context
     */
    public void drawBrush(Graphics2D g2) {
       FontMetrics metrics = graphics.getGraphics().getFontMetrics();
@@ -244,9 +241,9 @@ public class NominalView implements View {
    } // end method drawBrush
 
    /**
-    * Description of method drawView.
+    * Draw this node to the specified graphics context.
     *
-    * @param g2 Description of parameter g2.
+    * @param g2 graphics context
     */
    public void drawView(Graphics2D g2) {
       double x1;
@@ -281,35 +278,15 @@ public class NominalView implements View {
    } // end method drawView
 
    /**
-    * get expanded conponent
+    * Get expanded conponent. This component shows the contents of the node in
+    * more detail.
     *
     * @return expanded component
     */
    public JComponent expand() { return new NominalExpanded(); }
 
    /**
-    * compute the values, which corresponds to the height of the bars.
-    */
-   public void findValues() {
-      outputs = model.getUniqueOutputValues();
-
-      values = new double[outputs.length];
-      tallies = new int[outputs.length];
-
-      for (int index = 0; index < values.length; index++) {
-
-         try {
-            tallies[index] = node.getOutputTally(outputs[index]);
-            values[index] =
-               100 * (double) tallies[index] / (double) node.getTotal();
-         } catch (Exception exception) {
-            exception.printStackTrace();
-         }
-      }
-   }
-
-   /**
-    * get the height of the brushable area that contains bar chart
+    * Get the height of the brushable area that contains bar chart.
     *
     * @return height of brushable area
     */
@@ -329,7 +306,7 @@ public class NominalView implements View {
    }
 
    /**
-    * get the width of the brushable area that contains bar chart
+    * Get the width of the brushable area that contains bar chart.
     *
     * @return width of brushable area
     */
@@ -363,14 +340,14 @@ public class NominalView implements View {
    } // end method getBrushWidth
 
    /**
-    * get the height of this component
+    * Get the height of this component.
     *
     * @return height
     */
    public double getHeight() { return height; }
 
    /**
-    * get the width of this component
+    * Get the width of this component.
     *
     * @return width
     */
@@ -399,86 +376,185 @@ public class NominalView implements View {
 
    //~ Inner Classes ***********************************************************
 
-   class NominalExpanded extends JPanel {
+   /**
+    * Expanded view for a nominal node.
+    *
+    * @author  $Author$
+    * @version $Revision$, $Date$
+    */
+   private class NominalExpanded extends JPanel {
 
+       /** constant for Split: */
       static private final String SPLIT = "Split: ";
+
+       /** constant for Leaf: */
       static private final String LEAF = "Leaf: ";
+
+       /** axis space */
       double axisspace = 4;
+
+       /** space between bars */
       double barspace = 20;
+
+       /** width of a bar */
       double barwidth = 80;
+
+       /** bottom inset */
       double bottom = 15;
+
+       /** data bottom inset */
       double databottom = 10;
-      double dataleft = 10;
-      double dataright = 10;
-      int datasize;
-      double datatop = 10;
-      double datawidth;
+
+       /** data height */
       double dataheight;
+
+       /** data left inset */
+      double dataleft = 10;
+
+       /** data right inset */
+      double dataright = 10;
+
+       /** the number of bars (equal to number of outputs) */
+      int datasize;
+       /** data top inset */
+      double datatop = 10;
+
+       /** width of data area */
+      double datawidth;
+
+       /** maximum width of percetage (100.0%) when painted to screen */
       double dpercentwidth;
+
+       /** graph bottom inset */
       double graphbottom = 30;
-      double graphleft = 30;
-      double graphright = 30;
-      double graphtop = 30;
-      double graphwidth;
+
+       /** height of graph */
       double graphheight;
+
+       /** graph left inset */
+      double graphleft = 30;
+
+       /** graph right inset */
+      double graphright = 30;
+
+       /** graph top inset */
+      double graphtop = 30;
+
+       /** width of graph */
+      double graphwidth;
+
+       /** height of graph */
       double gridheight = 300;
 
+       /** stroke size for grid */
       float gridstroke = .1f;
-      double gridwidth;
-      int largeascent;
-      int smallascent;
 
+       /** width of grid */
+      double gridwidth;
+
+       /** ascent for large font */
+      int largeascent;
+
+       /** FontMetrics for large font */
       FontMetrics largemetrics;
-      FontMetrics smallmetrics;
+
+       /** large tick size */
       double largetick = 10;
+
+       /** left inset */
       double left = 15;
 
+       /** used for formatting numbers */
       NumberFormat numberformat;
 
+       /** output names */
       String[] outputs;
+
+       /** buffer space between labels */
       double outputspace = 10;
+
+       /** width to draw output labels */
       double outputwidth = 80;
+
+       /** labels of all branches from the root to this node */
       String[] path;
+       /** buffer space for drawing path */
       double pathbottom = 10;
-      int pathindex;
-      double pathleading = 2;
-      double pathleft = 10;
-      double pathright = 15;
-      double pathtop = 6;
-      double pathwidth;
+       /** height of area for drawing path */
       double pathheight;
+       /** index into path array */
+      int pathindex;
+        /** buffer space for drawing path */
+      double pathleading = 2;
+       /** left inset for path */
+      double pathleft = 10;
+       /** right inset for path */
+      double pathright = 15;
+       /** top inset for path */
+      double pathtop = 6;
+       /** width of path area */
+      double pathwidth;
+        /** space needed to draw percent */
       double percentspace = 8;
+       /** width of percent in pixels */
       double percentwidth;
+       /** right inset */
       double right = 15;
 
+       /** width of rectangle used for sample */
       double samplesize = 10;
+       /** buffer space */
       double samplespace = 8;
 
+       /** scheme holds the colors for decision tree vis */
       DecisionTreeScheme scheme;
+       /** ascent for small font */
+      int smallascent;
+       /** font metrics for small font */
+      FontMetrics smallmetrics;
+       /** small tick size */
       double smalltick = 4;
+       /** tallies */
       int[] tallies;
+       /** buffer space for tally area */
       double tallyspace = 10;
 
+       /** width of tally area */
       double tallywidth;
+       /** space between ticks */
       double tickspace = 8;
+       /** top inset */
       double top = 15;
+       /** holds the percentages */
       double[] values;
 
+       /** x location where the data area is painted */
       double xdata;
-      double ydata;
 
+       /** x location where the graph is painted */
       double xgraph;
-      double ygraph;
+       /** buffer space in x direction for graph */
       double xgraphspace = 15;
-
+        /** x location to draw label */
       double xlabel;
-      double ylabel;
-
+        /** x location for path area */
       double xpath;
-      double ypath;
+       /** y location for data area */
+      double ydata;
+       /** y location for graph */
+      double ygraph;
+       /** y location for label */
+      double ylabel;
+       /** buffer space in y direction for label */
       double ylabelspace = 15;
+       /** y location for path area */
+      double ypath;
+       /** buffer space in y direction for path */
       double ypathspace = 15;
 
+       /**
+        * Constructor
+        */
       NominalExpanded() {
          outputs = model.getUniqueOutputValues();
          values = new double[outputs.length];
@@ -537,6 +613,10 @@ public class NominalView implements View {
          setBackground(scheme.expandedbackgroundcolor);
       }
 
+       /**
+        * Draw everything
+        * @param g2 graphics context
+        */
       void drawData(Graphics2D g2) {
 
          // Background
@@ -574,6 +654,10 @@ public class NominalView implements View {
          }
       } // end method drawData
 
+       /**
+        * Draw the graph
+        * @param g2 graphics context
+        */
       void drawGraph(Graphics2D g2) {
 
          // Background
@@ -653,6 +737,10 @@ public class NominalView implements View {
          }
       } // end method drawGraph
 
+       /**
+        * draw the label
+        * @param g2 graphics context
+        */
       void drawLabel(Graphics2D g2) {
          StringBuffer label;
 
@@ -669,6 +757,10 @@ public class NominalView implements View {
          g2.drawString(label.toString(), (int) xlabel, (int) ylabel);
       }
 
+       /**
+        * Draw the items in the path
+        * @param g2 graphics context
+        */
       void drawLabelPath(Graphics2D g2) {
 
          // Background
@@ -688,6 +780,11 @@ public class NominalView implements View {
          }
       }
 
+       /**
+        * Find the path for the given node.  The path is the path from the root
+        * to this node.
+        * @param node a node in the decision tree
+        */
       void findPath(ViewableDTNode node) {
          ViewableDTNode parent = node.getViewableParent();
 
@@ -707,100 +804,146 @@ public class NominalView implements View {
          findPath(parent);
       }
 
-      public Dimension getMinimumSize() { return getPreferredSize(); }
+       /**
+        * If the minimum size has been set to a non-<code>null</code> value
+        * just returns it.  If the UI delegate's <code>getMinimumSize</code>
+        * method returns a non-<code>null</code> value then return that; otherwise
+        * defer to the component's layout manager.
+        *
+        * @return the value of the <code>minimumSize</code> property
+        * @see #setMinimumSize
+        * @see javax.swing.plaf.ComponentUI
+        */
+       public Dimension getMinimumSize() {
+           return getPreferredSize();
+       }
 
-      public Dimension getPreferredSize() {
+       /**
+        * If the <code>preferredSize</code> has been set to a
+        * non-<code>null</code> value just returns it.
+        * If the UI delegate's <code>getPreferredSize</code>
+        * method returns a non <code>null</code> value then return that;
+        * otherwise defer to the component's layout manager.
+        *
+        * @return the value of the <code>preferredSize</code> property
+        * @see #setPreferredSize
+        * @see javax.swing.plaf.ComponentUI
+        */
+       public Dimension getPreferredSize() {
 
-         // Label bounds
-         xlabel = left;
-         ylabel = top + largeascent;
+           // Label bounds
+           xlabel = left;
+           ylabel = top + largeascent;
 
-         // Path bounds
-         xpath = xlabel;
-         ypath = ylabel + ylabelspace;
+           // Path bounds
+           xpath = xlabel;
+           ypath = ylabel + ylabelspace;
 
-         StringBuffer sb = new StringBuffer();
+           StringBuffer sb = new StringBuffer();
 
-         if (node.getNumChildren() != 0) {
-            sb.append(SPLIT);
-         } else {
-            sb.append(LEAF);
-         }
+           if (node.getNumChildren() != 0) {
+               sb.append(SPLIT);
+           } else {
+               sb.append(LEAF);
+           }
 
-         sb.append(node.getLabel());
-         pathwidth = largemetrics.stringWidth(sb.toString());
+           sb.append(node.getLabel());
+           pathwidth = largemetrics.stringWidth(sb.toString());
 
-         for (int index = 0; index < path.length; index++) {
-            int twidth = smallmetrics.stringWidth(path[index]);
+           for (int index = 0; index < path.length; index++) {
+               int twidth = smallmetrics.stringWidth(path[index]);
 
-            if (twidth > pathwidth) {
-               pathwidth = twidth;
-            }
-         }
+               if (twidth > pathwidth) {
+                   pathwidth = twidth;
+               }
+           }
 
-         if (path.length > 0) {
-            pathwidth += pathleft + pathright;
-            pathheight =
-               pathtop + path.length * smallascent +
-               (path.length - 1) * pathleading + pathbottom;
-         }
+           if (path.length > 0) {
+               pathwidth += pathleft + pathright;
+               pathheight =
+                       pathtop + path.length * smallascent +
+                               (path.length - 1) * pathleading + pathbottom;
+           }
 
-         // Data bounds
-         xdata = xpath;
-         ydata = ypath + pathheight + ypathspace;
+           // Data bounds
+           xdata = xpath;
+           ydata = ypath + pathheight + ypathspace;
 
-         datawidth =
-            dataleft + samplesize + samplespace + outputwidth +
-            outputspace +
-            tallywidth + tallyspace + dpercentwidth + dataright;
-         dataheight =
-            datatop + datasize * samplesize +
-            (datasize - 1) * samplespace +
-            databottom;
+           datawidth =
+                   dataleft + samplesize + samplespace + outputwidth +
+                           outputspace +
+                           tallywidth + tallyspace + dpercentwidth + dataright;
+           dataheight =
+                   datatop + datasize * samplesize +
+                           (datasize - 1) * samplespace +
+                           databottom;
 
-         if (pathwidth > datawidth) {
-            datawidth = pathwidth;
-         } else {
-            pathwidth = datawidth;
-         }
+           if (pathwidth > datawidth) {
+               datawidth = pathwidth;
+           } else {
+               pathwidth = datawidth;
+           }
 
-         // Graph bounds
-         ygraph = top;
-         xgraph = xpath + pathwidth + xgraphspace;
+           // Graph bounds
+           ygraph = top;
+           xgraph = xpath + pathwidth + xgraphspace;
 
-         graphheight = graphtop + gridheight + graphbottom;
+           graphheight = graphtop + gridheight + graphbottom;
 
-         gridwidth = barwidth * datasize + barspace * (datasize + 1);
-         graphwidth =
-            graphleft + percentwidth + percentspace + largetick + tickspace +
-            gridwidth + graphright;
+           gridwidth = barwidth * datasize + barspace * (datasize + 1);
+           graphwidth =
+                   graphleft + percentwidth + percentspace + largetick + tickspace +
+                           gridwidth + graphright;
 
-         double width = left + pathwidth + xgraphspace + graphwidth + right;
+           double width = left + pathwidth + xgraphspace + graphwidth + right;
 
-         double pdheight = ydata + dataheight + bottom;
-         double gheight = top + graphheight + bottom;
-         double height;
+           double pdheight = ydata + dataheight + bottom;
+           double gheight = top + graphheight + bottom;
+           double height;
 
-         if (pdheight > gheight) {
-            height = pdheight;
-         } else {
-            height = gheight;
-         }
+           if (pdheight > gheight) {
+               height = pdheight;
+           } else {
+               height = gheight;
+           }
 
-         return new Dimension((int) width, (int) height);
-      } // end method getPreferredSize
+           return new Dimension((int) width, (int) height);
+       } // end method getPreferredSize
 
-      public void paintComponent(Graphics g) {
-         super.paintComponent(g);
+       /**
+        * Calls the UI delegate's paint method, if the UI delegate
+        * is non-<code>null</code>.  We pass the delegate a copy of the
+        * <code>Graphics</code> object to protect the rest of the
+        * paint code from irrevocable changes
+        * (for example, <code>Graphics.translate</code>).
+        * <p/>
+        * If you override this in a subclass you should not make permanent
+        * changes to the passed in <code>Graphics</code>. For example, you
+        * should not alter the clip <code>Rectangle</code> or modify the
+        * transform. If you need to do these operations you may find it
+        * easier to create a new <code>Graphics</code> from the passed in
+        * <code>Graphics</code> and manipulate it. Further, if you do not
+        * invoker super's implementation you must honor the opaque property,
+        * that is
+        * if this component is opaque, you must completely fill in the background
+        * in a non-opaque color. If you do not honor the opaque property you
+        * will likely see visual artifacts.
+        *
+        * @param g the <code>Graphics</code> object to protect
+        * @see #paint
+        * @see javax.swing.plaf.ComponentUI
+        */
+       public void paintComponent(Graphics g) {
+           super.paintComponent(g);
 
-         Graphics2D g2 = (Graphics2D) g;
-         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                             RenderingHints.VALUE_ANTIALIAS_ON);
+           Graphics2D g2 = (Graphics2D) g;
+           g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                   RenderingHints.VALUE_ANTIALIAS_ON);
 
-         drawLabel(g2);
-         drawLabelPath(g2);
-         drawData(g2);
-         drawGraph(g2);
-      }
+           drawLabel(g2);
+           drawLabelPath(g2);
+           drawData(g2);
+           drawGraph(g2);
+       }
    } // end class NominalExpanded
 } // end class NominalView

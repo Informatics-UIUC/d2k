@@ -136,8 +136,8 @@ public class GetDefaultParamPoint extends ncsa.d2k.core.modules.DataPrepModule {
     * @return <code>String</code> describing the purpose of the module.
     */
    public String getModuleInfo() {
-      return "<p>Overview: Given a <i>ParameterSpace</i> that defines a default <i> ParameterPoint</i>," +
-             " this module will produce that default.</p>";
+      return "<p>Overview: Given a <i>ParameterSpace</i> that defines a "+
+       "default <i> ParameterPoint</i>, this module will produce that default.</p>";
    }
 
 

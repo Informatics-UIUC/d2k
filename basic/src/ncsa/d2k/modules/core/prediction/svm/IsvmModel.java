@@ -85,13 +85,13 @@ public class IsvmModel extends PredictionModelModule
    //~ Instance fields *********************************************************
 
 
-   /** Description of field model. */
+   /** model */
    protected Isvm model;
 
-   /** Description of field nu. */
+   /** nu parameter. */
    protected double nu;
 
-   /** Description of field numAttributes. */
+   /** number of attributes */
    protected int numAttributes;
 
    //~ Constructors ************************************************************
@@ -113,10 +113,9 @@ public class IsvmModel extends PredictionModelModule
    /**
     * Make predictions on a set of examples.
     *
-    * @param  pt Description of parameter $param.name$.
+    * @param  pt table containing examples to predict
     *
-    * @throws Exception
-    * @throws java.lang.Exception Description of exception java.lang.Exception.
+    * @throws java.lang.Exception when something goes wrong
     */
    protected void makePredictions(PredictionTable pt)
       throws java.lang.Exception {
@@ -181,9 +180,9 @@ public class IsvmModel extends PredictionModelModule
    }
 
    /**
-    * Description of method getModel.
+    * Get the model that was built.
     *
-    * @return Description of return value.
+    * @return model
     */
    public Isvm getModel() { return model; }
 
@@ -242,11 +241,6 @@ public class IsvmModel extends PredictionModelModule
       model = new Isvm(numAttributes);
       model.init();
    }
-
-
-/*  public void doit() throws Exception {
- *       ExampleTable et = (ExampleTable)pullInput(0);
- * this.setTrainingTable(et);      this.predict(et);      pushOutput(et,0);  }*/
 
    /**
     * debugging purposes.

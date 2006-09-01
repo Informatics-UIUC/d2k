@@ -106,10 +106,8 @@ import java.util.Random;
 public class BackPropModel extends PredictionModelModule
 	implements Serializable{
 
-	//////////////////////
-	//d2k Props
-	////////////////////
 
+    /** true if debugging info should be generated */
 	boolean debug=false;
 
 	/////////////////////////
@@ -119,20 +117,132 @@ public class BackPropModel extends PredictionModelModule
 	/* the total number of parameters this NN takes*/
 	public final static int NUM_PARAMS=13;
 
-	/*indices to refer to the params by in the ParameterPoint object*/
+	/**
+     * The weighted sum of the input weights and inputs to every perceptron
+     * are fed through the activation function to ensure that the output
+     * is between 0 and 1 (or -1 and 1, depending on which function). These
+     * functions also must have a few other properties to ensure the back
+     * propagation function is able to work.
+     * <ul>
+     * <li><u>Elliot</u> - 0 -
+     * From a paper by D.L. Elliot. ElliotAct(x)=|x/(1-x)|. This can be
+     * computed much faster than Sigmoid or Tanh and usually gives good results.
+     * <li><u>FastSigmoid</u> - 1 - A linear approximation of the Sigmoid
+     * function, which makes it faster but less accurate.
+     * <li><u>FastTanh</u> - 2 - A linear approximation of Tanh, similar
+     * issues as FastSigmoid.
+     * <li><u>Sigmoid</u> - 3 - The function multi-layered perceptron neural
+     * networks were first developed with. Normally neural nets that use them
+     * are fairly accurate, but the function evaluation requires calculating
+     * an exponential, which is computationally expensive (read \"slow\").
+     * <li><u>Tanh</u> - 4 - Another expensive, accurate function. </ul>
+	*/
 	public final static int ACTIVATION_FUNCTION=0;
-	public final static int UPDATE_FUNCTION=1;
-	public final static int EPOCHS=2;
-	public final static int SEED=3;
-	public final static int WEIGHT_INIT_RANGE=4;
-	public final static int LEARNING_RATE_FUNCTION=5;
-	public final static int INITIAL_LEARNING_RATE=6;
-	public final static int FINAL_LEARNING_RATE=7;
-	public final static int HIDDEN_LAYERS=8;
-	public final static int NODES_IN_LAYER_01=9;
-	public final static int NODES_IN_LAYER_02=10;
-	public final static int NODES_IN_LAYER_03=11;
-	public final static int NODES_IN_LAYER_04=12;
+
+    /**
+     * This function defines the order the examples are trained on and when
+     * the update of the activation weights occurs.
+     * <ul>
+     * <li><u>Incremental BackProp</u> - 0 - The activation weights are
+     * updated after every training example is passed through, and the
+     * examples are passed through in the order given in the training data. \
+     * This is slower than Batch BackProp.
+     * <li><u>Batch BackProp</u> - 1 - Weights are updated after every epoch
+     * (complete pass through all examples), examples are iterated over in
+     * order. This is less expensive than Incremental BackProp. In practice, it
+     * usually provides better results, as well.
+     * </ul>
+     */
+    public final static int UPDATE_FUNCTION=1;
+
+    /**
+     * 	The number of passes through the training data set (iterations)
+     * that the training function will do.
+     */
+    public final static int EPOCHS=2;
+
+    /**
+     * 	A seed to the random weight initialization. This can't really be
+     * optimized but trying different values for any parameter setting is a
+     * good idea as back propagation is capable of finding only the locally
+     * optimum set of weights.
+     */
+    public final static int SEED=3;
+
+    /**
+     * The activation weights will be randomly initiallized to values between
+     * zero and this value. This is particularly useful if the inputs in the
+     * data set (independent variables) are not scaled to a standard range.
+     */
+    public final static int WEIGHT_INIT_RANGE=4;
+
+    /**
+     *  The learning rate indicates how much of an adjustment to the weights
+     * will be done during every update.
+     * Learning acceleration refers to changing the learning rate as the
+     * training process proceeds. This can be based on the epoch or the time,
+     * and can be any kind of monotonically decreasing function. The purpose of
+     * altering the learning rate is to make large adjustments initially when
+     * the weights are still near-random and then smaller as the network
+     * approaches an optimal solution (think of it as a hill climbing algorithm
+     * that takes big steps when it's far from the optimum and takes smaller
+     * steps at it approaches the optimum for better accuracy). Currently only
+     * Linear by Epoch is implemented, but the infrastructure is such that
+     * other methods can easily be added.
+     * <ul>
+     * <li><u>Linear by Epoch</u> - 0 - Starts at the Initial Learning Rate and
+     * decreases it the same amount every epoch, such that the final epoch
+     * uses a learning rate of Final Learning Rate.
+     * </ul>
+     */
+    public final static int LEARNING_RATE_FUNCTION=5;
+
+    /**
+     *  The learning rate of the first epoch.
+     */
+    public final static int INITIAL_LEARNING_RATE=6;
+
+    /**
+     * The learning rate of the last epoch.
+     */
+    public final static int FINAL_LEARNING_RATE=7;
+
+    /**
+     * 	This is the number of layers of perceptrons between the input nodes and
+     * the output nodes. Currently restricted to be between one and four. This
+     * restriction is only in place because a more sophisticated parameter
+     * selection interface is not in place. The actual algorithm can handle any
+     * number of hidden layers.
+     */
+    public final static int HIDDEN_LAYERS=8;
+
+    /**
+     * The number of nodes in first layer. This can be any positive integer,
+     * although in practice values greater than 20 usually cause the model
+     * building process to run longer than is practical.
+     */
+    public final static int NODES_IN_LAYER_01=9;
+
+    /**
+     * The number of nodes in second layer. This can be any positive integer,
+     * although in practice values greater than 20 usually cause the model
+     * building process to run longer than is practical.
+     */
+    public final static int NODES_IN_LAYER_02=10;
+
+    /**
+     * The number of nodes in third layer. This can be any positive integer,
+     * although in practice values greater than 20 usually cause the model
+     * building process to run longer than is practical.
+     */
+    public final static int NODES_IN_LAYER_03=11;
+
+    /**
+     * The number of nodes in fourth layer. This can be any positive integer,
+     * although in practice values greater than 20 usually cause the model
+     * building process to run longer than is practical.
+     */
+    public final static int NODES_IN_LAYER_04=12;
 
 	/** weights [i][j][k] for connections between nodes.
 		where 	i=the layer of the 'to' node
@@ -144,7 +254,6 @@ public class BackPropModel extends PredictionModelModule
 	   present so that indexing is constant between weights, sums, activations,
 	   etc.  NaN is used so no one accidentally uses them later on without
 	   there being something obviously wrong
-
 	**/
 	public double[][][] weights;
 
@@ -190,23 +299,36 @@ public class BackPropModel extends PredictionModelModule
 	/**controls the scaling/unscaling of the inputs and outputs*/
 	ScalingTransformation scaler;
 
-	public final double bias=-1.0;
+    /** bias */
+    public final double bias=-1.0;
 
-	public final boolean trainingSuccess;
+    /** true if this model was succesfully trained.  to be successful, all
+     * inputs and outputs must be scalar
+     */
+    public final boolean trainingSuccess;
 
-	/** these define the ranges to scale the outputs to in
-		<code>transform</code>
+	/** lower bound to scale the outputs to in <code>transform</code>
 	*/
 	final double lowerTanh=-.9;
-	final double upperTanh=.9;
-	final double lowerSig=.1;
-	final double upperSig=.9;
+
+	/** upper bound to scale the outputs to in <code>transform</code>
+	*/
+    final double upperTanh=.9;
+
+	/** lower bound to scale the outputs to in <code>transform</code>
+	*/
+    final double lowerSig=.1;
+
+	/** upper bound to scale the outputs to in <code>transform</code>
+	*/
+    final double upperSig=.9;
 
 	/**
 		These may be different than the input features in the training
 		table, if the inputs in the training table are invalid
 		*/
 	protected int[] inputFeatures;
+
     /** the number of inputs */
     protected int numInputs;
 
@@ -218,14 +340,10 @@ public class BackPropModel extends PredictionModelModule
     /** the number of outputs */
     protected int numOutputs;
 
-
-	/////////////////////
-	//work methods
-	////////////////////
-
     /**
      * Pull in the ExampleTable, pass it to the predict() method,
      * and push out the PredictionTable returned by predict();
+     * @throws Exception when something goes wrong
      */
     public void doit() throws Exception {
         if (debug) {
@@ -235,12 +353,11 @@ public class BackPropModel extends PredictionModelModule
 	}
 
 
-	/*************************************************
-	  Builds a BackPropModel with the given parameters.
-
-	  @param et= the data set to train on
-	  @param prms= a table with the parameters to use
-	*******/
+	/**
+     * Builds a BackPropModel with the given parameters.
+     * @param et the data set to train on
+     * @param prms a table with the parameters to use
+	 */
 	public BackPropModel(ExampleTable et, ParameterPoint prms){
 		super(et);
 		int i,j,k;
@@ -340,7 +457,6 @@ public class BackPropModel extends PredictionModelModule
 
 
 	/***
-     * compute
      * the main function to calculate the output(s) given an input vector.
      * @param e the row index in the table 'data' to use as input
      * @param results [e][out] the output 'out' will be put in row 'e' of this table
@@ -625,7 +741,9 @@ public class BackPropModel extends PredictionModelModule
 
 	/**
      *  Called if the data verification process removed either all input or
-     * all output columns.
+     * all output columns.  Will print warning message
+     * @param inout should be 0 if all input columns removed, any other value to
+     * signify that all output columns were removed
 	*/
 	private void alertFailure(int inout){
 		String io;
@@ -782,7 +900,7 @@ public class BackPropModel extends PredictionModelModule
     /**
      * Make predictions on a prediction table
      *
-     * @param pt
+     * @param pt table to store predictions
      */
     public void makePredictions(PredictionTable pt) {
         //make predictions for the test examples
@@ -857,42 +975,62 @@ public class BackPropModel extends PredictionModelModule
 		}
 	}
 
-	/////////////////////////////////////////////////////////////////
-	//getters for the internal data - the updateFunctions need these
-	/////////////////////////////////////////////////////////////////
-
-	public double[][][] getWeights(){
+    /**
+     * Get the weigths
+     * @return weights
+     */
+    public double[][][] getWeights(){
 		return weights;
 	}
 
-	public double[][] getSums(){
+    /**
+     * Get the sums
+     * @return sums
+     */
+    public double[][] getSums(){
 		return sums;
 	}
 
-	public double[][] getActivations(){
+    /**
+     * Get the activations
+     * @return activations
+     */
+    public double[][] getActivations(){
 		return activations;
 	}
 
-	public double[][] getDeltas(){
+    /**
+     * Get the deltas
+     * @return deltas
+     */
+    public double[][] getDeltas(){
 		return deltas;
 	}
 
-	public ExampleTable getData(){
+    /**
+     * Get the training data
+     * @return training data
+     */
+    public ExampleTable getData(){
 		return data;
 	}
 
-	public NNactivation getActivationFunction(){
+    /**
+     * Get the activation function
+     * @return activation function
+     */
+    public NNactivation getActivationFunction(){
 		return act;
 	}
 
-	public NNlearn getLearnFunction(){
+    /**
+     * Get the learning function
+     * @return learning function
+     */
+    public NNlearn getLearnFunction(){
 		return learnFn;
 	}
 
-
-	///////////////////////////////////////////////////////////
-	///D2K info methods
-	///////////////////////////////////////////////////////////
 
     /**
      * Describe the function of this module.
@@ -946,8 +1084,11 @@ public class BackPropModel extends PredictionModelModule
         return "Back Propagation Neural Net";
     }
 
-	/** formats the parameters used to build this model into html for
-	use by the module doc*/
+	/**
+     * formats the parameters used to build this model into html for use by the
+     * module doc
+     * @return nicely formatted html
+     **/
 	private String getModelInfoHtml(){
 		StringBuffer sb=new StringBuffer();
 		sb.append("<ul>");
@@ -988,13 +1129,19 @@ public class BackPropModel extends PredictionModelModule
 	}
 
 
-	////////////////////////////////
-	//D2K Property get/set methods
-	///////////////////////////////
+    /**
+     * Set debug
+     * @param b new debug
+     */
 	public void setDebug(boolean b){
 		debug=b;
 	}
-	public boolean getDebug(){
+
+    /**
+     * Get debug
+     * @return debug
+     */
+    public boolean getDebug(){
 		return debug;
 	}
 
@@ -1003,206 +1150,261 @@ public class BackPropModel extends PredictionModelModule
 	////////////////////////////////////////////////////////////////////
 
 /**
-
-	NNactivation
-
-	This is the base class for classes that compute activation functions and
-	their derivatives when given the weighted sum (or other combination
-	function).  The class system is used for the benefit of being able to
-	easily interchange them in the Genetic Algorithm approach (or any other
-	optimizer) to parameter optimization of a neural net
+ * This is the base class for classes that compute activation functions and
+ * their derivatives when given the weighted sum (or other combination
+ * function).  The class system is used for the benefit of being able to
+ * easily interchange them in the Genetic Algorithm approach (or any other
+ * optimizer) to parameter optimization of a neural net
 */
-
 abstract public class NNactivation implements Serializable{
 
-  /** Constructor - never does anything */
+  /**
+   * Constructor - never does anything
+   **/
   public NNactivation(){
   }
 
-  /** computes the activation of the number its given
-  @param - double
-	*/
+  /**
+   * computes the activation of the number its given
+   * @param x number
+    */
   abstract public double activationOf(double x);
 
-  /** computes the derivative function value of the number
-  @param - double
+  /**
+   * computes the derivative function value of the number
+   * @param y number
   */
   abstract public double derivativeOf(double y);
 
-  /** gives the name of the activation function
-  */
+  /**
+   * gives the name of the activation function
+   */
   abstract public String getName();
 
 }
 
-/** ElliotAct
-
- This activation is a function proposed by some
-   guy named D.L. Elliot, the paper is at
-   ftp://ftp.isr.umd.edu/pub/TechReports/1993/TR_93-8.pdf
+/**
+ * This activation is a function proposed by some guy named D.L. Elliot, the
+ * paper is at ftp://ftp.isr.umd.edu/pub/TechReports/1993/TR_93-8.pdf
 */
-
-
 public class ElliotAct extends NNactivation implements Serializable{
-  public double activationOf(double x){
-	double z;
-	if(x>0){
-	  z=(x/(1+x));
-	}
-	else{
-	z=(x/(1-x));
-	}
-  return z;
+    /**
+     * computes the activation of the number its given
+     *
+     * @param x number
+     */
+    public double activationOf(double x) {
+        double z;
+        if (x > 0) {
+            z = (x / (1 + x));
+        } else {
+            z = (x / (1 - x));
+        }
+        return z;
 
-  }
-  public double derivativeOf(double y){
+    }
 
-	double x = activationOf(y);
-	double m;
-	if(x>0)
-	  m=1-x;
-	else
-	  m=1+x;
-	return m*m;
-  }
-  public String getName(){
-	return "Elliot's Proposed Activation";
-	}
+    /**
+     * computes the derivative function value of the number
+     *
+     * @param y number
+     */
+    public double derivativeOf(double y) {
+
+        double x = activationOf(y);
+        double m;
+        if (x > 0)
+            m = 1 - x;
+        else
+            m = 1 + x;
+        return m * m;
+    }
+
+    /**
+     * gives the name of the activation function
+     */
+    public String getName() {
+        return "Elliot's Proposed Activation";
+    }
 }
 
-/**  FastSigmoidAct
-
-	Sigmoid approximation using linear functions
+/**
+ * Sigmoid approximation using linear functions
 */
 public class FastSigmoidAct extends NNactivation implements Serializable{
 
-  public double activationOf(double y){
-	double x=y/4.1;
-	if (x>1)
-		return 1;
-	if(x<-1)
-		return 0;
-	if(x<0)
-		return (.5+ x*(1+x/2));
-	return (.5+  x*(1-x/2));
-  }
+    /**
+     * computes the activation of the number its given
+     *
+     * @param y number
+     */
+    public double activationOf(double y) {
+        double x = y / 4.1;
+        if (x > 1)
+            return 1;
+        if (x < -1)
+            return 0;
+        if (x < 0)
+            return (.5 + x * (1 + x / 2));
+        return (.5 + x * (1 - x / 2));
+    }
 
-  public String getName(){
-	return "Fast Sigmoid";
-	}
+    /**
+     * gives the name of the activation function
+     */
+    public String getName() {
+        return "Fast Sigmoid";
+    }
 
-  public double derivativeOf(double y){
-	double x = activationOf(y);
-	return x*(1-x);
-  }
+    /**
+     * computes the derivative function value of the number
+     *
+     * @param y number
+     */
+    public double derivativeOf(double y) {
+        double x = activationOf(y);
+        return x * (1 - x);
+    }
 }
 
-/**FastTanhAct
-
-	Activation class that uses tanh(x) approximation for faster computation
+/**
+ * Activation class that uses tanh(x) approximation for faster computation
 */
-
 public class FastTanhAct extends NNactivation implements Serializable{
-  public double activationOf(double x){
-	if(x>1.92033)
-		return .96016;
-	if(x<=-1.92033)
-		return -.96016;
-	if(x>0)
-		return (.96016-.26037*(x-1.92033)*(x-1.92033));
-	return ( -.96016 + .26037*(x+1.92033)*(x+1.92033));
-  }
+    /**
+     * computes the activation of the number its given
+     *
+     * @param x number
+     */
+    public double activationOf(double x) {
+        if (x > 1.92033)
+            return .96016;
+        if (x <= -1.92033)
+            return -.96016;
+        if (x > 0)
+            return (.96016 - .26037 * (x - 1.92033) * (x - 1.92033));
+        return (-.96016 + .26037 * (x + 1.92033) * (x + 1.92033));
+    }
 
-	public String getName(){
-	return "Fast Tanh";
-	}
-  public double derivativeOf(double y){
+    /**
+     * gives the name of the activation function
+     */
+    public String getName() {
+        return "Fast Tanh";
+    }
 
-	double x = activationOf(y);
-	double z= (1-x*x);
-	return z;
-  }
+    /**
+     * computes the derivative function value of the number
+     *
+     * @param y number
+     */
+    public double derivativeOf(double y) {
+
+        double x = activationOf(y);
+        double z = (1 - x * x);
+        return z;
+    }
 }
 
-/** SigmoidAct
-
-	 This is an activation that uses the standard sigmoid of f(x)=1/(1+e^-x)
+/**
+ * This is an activation that uses the standard sigmoid of f(x)=1/(1+e^-x)
 */
 public class SigmoidAct extends NNactivation{
 
-  public double activationOf(double x){
-	return (1/(1+Math.exp(-x)));
-  }
+    /**
+     * computes the activation of the number its given
+     *
+     * @param x number
+     */
+    public double activationOf(double x) {
+        return (1 / (1 + Math.exp(-x)));
+    }
 
-  public double derivativeOf(double y){
-	double x = activationOf(y);
-	return (x*(1-x));
-  }
+    /**
+     * computes the derivative function value of the number
+     *
+     * @param y number
+     */
+    public double derivativeOf(double y) {
+        double x = activationOf(y);
+        return (x * (1 - x));
+    }
 
-  public String getName(){
-	return "Standard Sigmoid";
-	}
+    /**
+     * gives the name of the activation function
+     */
+    public String getName() {
+        return "Standard Sigmoid";
+    }
 
 }
 
-/** TanhAct
-
-	Activation class that uses tanh(x)
+/**
+ * Activation class that uses tanh(x)
 */
-
 public class TanhAct extends NNactivation{
 
-  public double activationOf(double x){
-	double z= (2/(1+Math.exp(-2*x)))-1;
-	return z;
-  }
+    /**
+     * computes the activation of the number its given
+     *
+     * @param x number
+     */
+    public double activationOf(double x) {
+        double z = (2 / (1 + Math.exp(-2 * x))) - 1;
+        return z;
+    }
 
-   public String getName(){
-	return "Tanh";
-	}
+    /**
+     * gives the name of the activation function
+     */
+    public String getName() {
+        return "Tanh";
+    }
 
-  public double derivativeOf(double y){
+    /**
+     * computes the derivative function value of the number
+     *
+     * @param y number
+     */
+    public double derivativeOf(double y) {
 
-	double x = activationOf(y);
-	double z= (1-x*x);
-	return z;
-  }
+        double x = activationOf(y);
+        double z = (1 - x * x);
+        return z;
+    }
 }
-/////////////////////////////////////////////////////////////////////
-///////////////Learning Rate Accelaration Functions////////////////
-/////////////////////////////////////////////////////////////////////
+
 /**
-
-	NNlearn
-
-	This is the abstract class for learning rate control functions (for learning
-	acceleration).  The two typical implementations will likely be those based
-	on iterations and time.
+ * This is the abstract class for learning rate control functions (for learning
+ * acceleration).  The two typical implementations will likely be those based
+ * on iterations and time.
 */
 abstract public class NNlearn implements Serializable{
 /**
 	The initial learning rate
 */
-
 	protected final double initAlpha;
+
 /**
 	The final learning rate (at last learning iteration)
 */
-
 	protected final double finalAlpha;
 
 /**
 	The number of epochs for learning
 */
 	public final int totalEpochs;
+
 /**
 	the maximum time allowed for learning
 */
 	protected double maxTime;
+
 /**
 	the range of values the learning rate can take on
 */
 	protected final double rangeAlpha;
+
 /***
 	Constructor for using epochs as limit.
 
@@ -1210,7 +1412,6 @@ abstract public class NNlearn implements Serializable{
 	@param fA final learning rate
 	@param e the number of epochs
 */
-
 	public NNlearn(double iA, double fA, int e){
 
 		initAlpha=iA;
@@ -1237,83 +1438,101 @@ abstract public class NNlearn implements Serializable{
 /**
 	tells the learning algorithm if it should stop iterating based on
 	whether the number of epochs is reached or time is up
+    @return true if learning should continue
 */
-
 	abstract public boolean continueLearning();
 
 
 /**
 	tells this learning accelerator that the current epoch is finished
 	and a new learning rate should be computed, returns the new learning rate
+ @return new learning rate
 */
 	abstract public double newLearningRate();
 
 /**
 	returns a string of info about the function
+ @return name of function
 */
-
 	abstract public String getName();
 }
 
 /******************************************************************
-	Linear
-		the learning rate changes over time in a linear fashion
-		from initAlpha at epoch one to initAlpha at the final epoch.
+ * Linear
+ * the learning rate changes over time in a linear fashion
+ * from initAlpha at epoch one to initAlpha at the final epoch.
 */
-
 public class Linear extends NNlearn implements Serializable{
 
-	private int currentEpoch=0;
+    /** current epoch */
+    private int currentEpoch=0;
 
-	public Linear(double iA, double fA, int e){
+    /**
+     * Constructor
+     * @param iA init alpha
+     * @param fA final alpha
+     * @param e  total epochs
+     */
+    public Linear(double iA, double fA, int e){
 		super(iA, fA, e);
 	}
 
-	public boolean continueLearning(){
-		if (currentEpoch==totalEpochs){
-			return false;
-		}
-		return true;
-	}
 
-	public double newLearningRate (){
-		currentEpoch++;
-		return (initAlpha+(currentEpoch/totalEpochs)*rangeAlpha);
-	}
-	public String getName(){
-		return ("Linear based on epoch");
-		/*: initAlpha="+initAlpha+" finalAlpha="
-		+finalAlpha+" epochs="+totalEpochs);*/
-	}
+    /**
+     * tells the learning algorithm if it should stop iterating based on
+     * whether the number of epochs is reached or time is up
+     *
+     * @return true if learning should continue
+     */
+    public boolean continueLearning() {
+        if (currentEpoch == totalEpochs) {
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * tells this learning accelerator that the current epoch is finished
+     * and a new learning rate should be computed, returns the new learning rate
+     *
+     * @return new learning rate
+     */
+    public double newLearningRate() {
+        currentEpoch++;
+        return (initAlpha + (currentEpoch / totalEpochs) * rangeAlpha);
+    }
+
+
+    /**
+     * returns a string of info about the function
+     *
+     * @return name of function
+     */
+    public String getName() {
+        return ("Linear based on epoch");
+    }
 }
 
-////////////////////////////////////////////////////////////////////////////
-/////////////////////////Update Functions//////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-/*******
-	NNupdate-
 
-	This is the abstract class for updating or creation functions
-	for a NN
+/**
+ * This is the abstract class for updating or creation functions for a NN
 */
-
 abstract public class NNupdate implements Serializable{
 
-	//protected final double[][][] weights;
-	//protected final double[][] sums;
-	//protected final double[][] activations;
-	//protected final double[][] deltas;
-	//protected final TrainTable data;
-	//protected final NNactivation act;
-	//protected final NNlearn learnFn;
-
+    /** model */
 	protected final BackPropModel model;
+
 	/* to put calculated outputs in as the computeFn determines them
 	*/
 	protected double[][] computedResults;
 
 
-	public NNupdate(BackPropModel mod){
+    /**
+     * Constructor
+     * @param mod model
+     */
+    public NNupdate(BackPropModel mod){
 
 		model=mod;
 		/*
@@ -1336,20 +1555,24 @@ abstract public class NNupdate implements Serializable{
 
 	}
 
-	abstract public void create();
+    /**
+     * Create
+     */
+    abstract public void create();
 
-	abstract public String getName();
+    /**
+     * returns a string of info about the function
+     *
+     * @return name of function
+     */
+    abstract public String getName();
 }
 
 
-/************************************************************************
-	StandardIncrementalBP
-
-		Creates a neural net. Updates the weights after every example is
-		presented to it using a regular backprop gradient descent method
-*/
-
-
+/**
+ * Creates a neural net. Updates the weights after every example is
+ * presented to it using a regular backprop gradient descent method
+ */
 public class StandardIncrementalBP extends NNupdate implements Serializable{
 
 	protected double alpha;
@@ -1359,24 +1582,18 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 	}
 
 
-	public void create() {
-		//System.out.println("table num rows:"+data.getNumRows());
-		//System.out.println(" o.f. numrows:"
-		//	+((TrainTableImpl)data).getColumn(outputFeatures[0]).
-		//		getNumRows());
+    /**
+     * Create
+     */
+    public void create() {
+        while (learnFn.continueLearning()) {
+            alpha = learnFn.newLearningRate();
 
-
-
-		while(learnFn.continueLearning()){
-			alpha=learnFn.newLearningRate();
-
-			for(int d=0;d<data.getNumRows(); d++){
-				runExample(d);
-			}
-		}
-
-
-	}
+            for (int d = 0; d < data.getNumRows(); d++) {
+                runExample(d);
+            }
+        }
+    }
 
 	/**
 		after runExample calculates the weight change, this will add it onto
@@ -1389,14 +1606,11 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 		@param j the 'to' node
 		@param l the layer of the 'to' node
 	*/
-
 	public void useWeightUpdate(double dw, int i, int j, int l){
 		weights[l][j][i]+=dw;
 	}
 
 	/**
-		runExample
-
 		feeds an example (input vector) through the NN and updates the
 		weights based on the error
 		@param g the example index in the table 'data'
@@ -1516,22 +1730,31 @@ public class StandardIncrementalBP extends NNupdate implements Serializable{
 		}
 	}
 
-	public String getName(){
-		return("Standard Incremental Back Prop");
-	}
+    /**
+     * returns a string of info about the function
+     *
+     * @return name of function
+     */
+    public String getName() {
+        return ("Standard Incremental Back Prop");
+    }
 }
-/***********************************************************
-	  Standard Batch BP
-
-		Creates a neural net. calculates all weight updates for
-		an iteration, then updates the weights
-**/
-
+/**
+ * Creates a neural net. calculates all weight updates for an iteration,
+ * then updates the weights
+ **/
 public class StandardBatchBP extends StandardIncrementalBP{
 
-	private double[][][] runningUpdates;
+    /**
+     * running updates
+     */
+    private double[][][] runningUpdates;
 
-	public  StandardBatchBP(BackPropModel mod){
+    /**
+     * Constructor
+     * @param mod model
+     */
+    public  StandardBatchBP(BackPropModel mod){
 		super(mod);
 		runningUpdates=new double[weights.length][][];
 		for(int k=0;k<weights.length;k++){
@@ -1543,7 +1766,10 @@ public class StandardBatchBP extends StandardIncrementalBP{
 		wipeUpdates();
 	}
 
-	public void create(){
+    /**
+     * Create
+     */
+    public void create(){
 		while(learnFn.continueLearning()){
 			alpha=learnFn.newLearningRate();
 
@@ -1574,7 +1800,6 @@ public class StandardBatchBP extends StandardIncrementalBP{
 	/**
 		set all the running weight tallies to zero
 	*/
-
 	public void wipeUpdates(){
 		int i,j,k;
 		int l1,l2,l3;
@@ -1594,7 +1819,6 @@ public class StandardBatchBP extends StandardIncrementalBP{
 		updates the weights in the model with the weight changes in the
 		running tally.
 	*/
-
 	public void batchUpdate(){
 		int i,j,k,l1,l2,l3;
 		l1=runningUpdates.length;
@@ -1609,9 +1833,14 @@ public class StandardBatchBP extends StandardIncrementalBP{
 		}
 	}
 
-	public String getName(){
-		return ("Standard Batch Back Prop");
-	}
+    /**
+     * returns a string of info about the function
+     *
+     * @return name of function
+     */
+    public String getName() {
+        return ("Standard Batch Back Prop");
+    }
 }
 }
 

@@ -1,86 +1,204 @@
+/*
+ * $Header$
+ *
+ * ===================================================================
+ *
+ * D2K-Workflow
+ * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
+ * ILLINOIS. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License v2.0
+ * as published by the Free Software Foundation and with the required
+ * interpretation regarding derivative works as described below.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License v2.0 for more details.
+ *
+ * This program and the accompanying materials are made available
+ * under the terms of the GNU General Public License v2.0 (GPL v2.0)
+ * which accompanies this distribution and is available at
+ * http://www.gnu.org/copyleft/gpl.html (or via mail from the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.), with the special and mandatory
+ * interpretation that software only using the documented public
+ * Application Program Interfaces (APIs) of D2K-Workflow are not
+ * considered derivative works under the terms of the GPL v2.0.
+ * Specifically, software only calling the D2K-Workflow Itinerary
+ * execution and workflow module APIs are not derivative works.
+ * Further, the incorporation of published APIs of other
+ * independently developed components into D2K Workflow code
+ * allowing it to use those separately developed components does not
+ * make those components a derivative work of D2K-Workflow.
+ * (Examples of such independently developed components include for
+ * example, external databases or metadata and provenance stores).
+ *
+ * Note: A non-GPL commercially licensed version of contributions
+ * from the UNIVERSITY OF ILLINOIS may be available from the
+ * designated commercial licensee RiverGlass, Inc. located at
+ * (www.riverglassinc.com)
+ * ===================================================================
+ *
+ */
 package ncsa.d2k.modules.core.transform.table;
 
-import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.*;
-import java.util.*;
+import ncsa.d2k.core.modules.DataPrepModule;
+import ncsa.d2k.modules.core.datatype.table.MutableTable;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+
+
+/**
+ * Remove any rows with missing values from the table.
+ *
+ * @author  $Author$
+ * @version $Revision$, $Date$
+ */
 public class RemoveRowsWithMissingValues extends DataPrepModule {
 
-  public String[] getInputTypes() {
-    String[] in = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-    return in;
-  }
+   //~ Methods *****************************************************************
 
-  public String[] getOutputTypes() {
-    String[] out = {"ncsa.d2k.modules.core.datatype.table.MutableTable"};
-    return out;
-  }
+   /**
+    * Performs the main work of the module.
+    *
+    * @throws Exception if a problem occurs while performing the work of the
+    *                   module
+    */
+   public void doit() throws Exception {
+      MutableTable mt = (MutableTable) pullInput(0);
 
-  public String getInputInfo(int i) {
-    return "A Table.";
-  }
+      HashSet toRemove = new HashSet();
+      int numCols = mt.getNumColumns();
+      int numRows = mt.getNumRows();
 
-  public String getInputName(int i) {
-    return "Table";
-  }
+      for (int i = 0; i < numRows; i++) {
 
-  public String getOutputInfo(int i) {
-    return "The input table, with all rows that contain missing values removed.";
-  }
+         for (int j = 0; j < numCols; j++) {
 
-  public String getOutputName(int i) {
-    return "Table";
-  }
-
-  public String getModuleInfo() {
-    String s = "<p>Overview: Remove any rows with missing values from the table.";
-    s += "<p>Detailed Description: Any rows in <i>Table</i> with missing values ";
-    s += "will be removed from <i>Table</i>.";
-    s += "<p>Data Handling: This module will remove rows from <i>Table</i>.";
-    s += "No additional memory is needed.";
-    return s;
-  }
-
-  public String getModuleName() {
-    return "Remove Rows With Missing Values";
-  }
-
-  public void doit() {
-    MutableTable mt = (MutableTable)pullInput(0);
-
-    HashSet toRemove = new HashSet();
-    int numCols = mt.getNumColumns();
-    int numRows = mt.getNumRows();
-
-    for(int i = 0; i < numRows; i++) {
-      for(int j = 0; j < numCols; j++) {
-        if(mt.isValueMissing(i, j)) {
-          toRemove.add(new Integer(i));
-        }
+            if (mt.isValueMissing(i, j)) {
+               toRemove.add(new Integer(i));
+            }
+         }
       }
-    }
 
-    //int[] idx = new int[toRemove.size()];
-    /*Iterator iter = toRemove.iterator();
-        while(iter.hasNext()) {
-      int i = ((Integer)iter.next()).intValue();
-            mt.removeRow(i);
-    } */
+      // int[] idx = new int[toRemove.size()];
+      /*Iterator iter = toRemove.iterator();
+       * while(iter.hasNext()) { int i = ((Integer)iter.next()).intValue();
+       * mt.removeRow(i);} */
 
-    List toRemoveList = new LinkedList(toRemove);
-    Collections.sort(toRemoveList);
-    int ctr = 0;
-    ListIterator listIter = toRemoveList.listIterator();
-    while(listIter.hasNext()) {
-      Integer val = (Integer)listIter.next();
-      mt.removeRow(val.intValue()-ctr);
-      ctr++;
-    }
+      List toRemoveList = new LinkedList(toRemove);
+      Collections.sort(toRemoveList);
 
-    //mt.removeRowsByIndex(idx);
-    pushOutput(mt,0);
+      int ctr = 0;
+      ListIterator listIter = toRemoveList.listIterator();
 
-  }
+      while (listIter.hasNext()) {
+         Integer val = (Integer) listIter.next();
+         mt.removeRow(val.intValue() - ctr);
+         ctr++;
+      }
+
+      // mt.removeRowsByIndex(idx);
+      pushOutput(mt, 0);
+
+   } // end method doit
+
+   /**
+    * Returns a description of the input at the specified index.
+    *
+    * @param  i Index of the input for which a description should be returned.
+    *
+    * @return <code>String</code> describing the input at the specified index.
+    */
+   public String getInputInfo(int i) { return "A Table."; }
+
+   /**
+    * Returns the name of the input at the specified index.
+    *
+    * @param  i Index of the input for which a name should be returned.
+    *
+    * @return <code>String</code> containing the name of the input at the
+    *         specified index.
+    */
+   public String getInputName(int i) { return "Table"; }
+
+   /**
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the input at the corresponding index.
+    *
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the input at the corresponding index.
+    */
+   public String[] getInputTypes() {
+      String[] in = { "ncsa.d2k.modules.core.datatype.table.MutableTable" };
+
+      return in;
+   }
+
+   /**
+    * Describes the purpose of the module.
+    *
+    * @return <code>String</code> describing the purpose of the module.
+    */
+   public String getModuleInfo() {
+      String s =
+         "<p>Overview: Remove any rows with missing values from the table.";
+      s +=
+         "<p>Detailed Description: Any rows in <i>Table</i> with missing values ";
+      s += "will be removed from <i>Table</i>.";
+      s += "<p>Data Handling: This module will remove rows from <i>Table</i>.";
+      s += "No additional memory is needed.";
+
+      return s;
+   }
+
+   /**
+    * Returns the name of the module that is appropriate for end-user
+    * consumption.
+    *
+    * @return The name of the module.
+    */
+   public String getModuleName() { return "Remove Rows With Missing Values"; }
+
+   /**
+    * Returns a description of the output at the specified index.
+    *
+    * @param  i Index of the output for which a description should be returned.
+    *
+    * @return <code>String</code> describing the output at the specified index.
+    */
+   public String getOutputInfo(int i) {
+      return "The input table, with all rows that contain missing values removed.";
+   }
+
+   /**
+    * Returns the name of the output at the specified index.
+    *
+    * @param  i Index of the output for which a description should be returned.
+    *
+    * @return <code>String</code> containing the name of the output at the
+    *         specified index.
+    */
+   public String getOutputName(int i) { return "Table"; }
+
+   /**
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the output at the corresponding index.
+    *
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the output at the corresponding index.
+    */
+   public String[] getOutputTypes() {
+      String[] out = { "ncsa.d2k.modules.core.datatype.table.MutableTable" };
+
+      return out;
+   }
 
 
-}
+} // end class RemoveRowsWithMissingValues

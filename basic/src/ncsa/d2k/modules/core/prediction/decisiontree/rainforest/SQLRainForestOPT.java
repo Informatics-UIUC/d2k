@@ -164,10 +164,10 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
    /** class label column. */
    protected String classColName;
 
-   /** Description of field con. */
+   /** connection. */
    protected Connection con;
 
-   /** Description of field cw. */
+   /** connection wrapper */
    protected ConnectionWrapper cw;
 
    /**
@@ -2505,17 +2505,6 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
    }
 
    /**
-    * The list of strings returned by this method allows the module to map the
-    * results returned from the pier to the position dependent outputs. The
-    * order in which the names appear in the string array is the order in which
-    * to assign them to the outputs.
-    *
-    * @return a string array containing the names associated with the outputs in
-    *         the order the results should appear in the outputs.
-    */
-   protected String[] getFieldNameMapping() { return null; }
-
-   /**
     * sort the unique value list.
     *
     * @param  al the original ArrayList
@@ -2544,7 +2533,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
    /**
     * build decision tree.
     *
-    * @throws Exception
+    * @throws Exception when something goes wrong
     */
    public void doit() throws Exception {
 
@@ -2971,7 +2960,9 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     * @version $Revision$, $Date$
     */
    private final class ColSplit {
+       /** column index */
       int col;
+        /** split value */
       double splitValue;
    }
 
@@ -2982,11 +2973,21 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     * @version $Revision$, $Date$
     */
    private final class EntrSplit {
+       /** gain */
       double gain;
+        /** split value */
       double splitValue;
 
+       /**
+        * Constructor
+        */
       EntrSplit() { }
 
+       /**
+        * Constructor
+        * @param s split value
+        * @param g gain
+        */
       EntrSplit(double s, double g) {
          splitValue = s;
          gain = g;
@@ -2995,12 +2996,16 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
 
    // object stored in ArrayList avcSets
    public class AvcSet {
+       /** attribute name */
       public String attrName;
-      public String classLabel; // class label. We only implete single class
-                                // column
-      public int count; // count for this avcSet
-      public String highValue; // high end attribute value
-      public String lowValue; // low end attribute value
+       /** class label. We only implete single class column */
+      public String classLabel;
+       /** count for this avcSet */
+      public int count;
+       /** high end attribute value */
+      public String highValue;
+       /** low end attribute value */
+      public String lowValue;
    }
 
    /**
@@ -3010,13 +3015,27 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     * @version $Revision$, $Date$
     */
    public class NodeInfo {
+       /** avc sets */
       public ArrayList[] avcSets;
+       /** class tallies */
       public int[] classTallies;
+       /** data */
       public MutableTableImpl data;
+       /** unique values */
       public ArrayList[] uniqValues;
 
+        /**
+         * Constructor
+         */
       public NodeInfo() { }
 
+        /**
+         * Constructor
+         * @param avcSets avc sets
+         * @param classTallies class tallies
+         * @param data data
+         * @param uniqValues unique values
+         */
       public NodeInfo(ArrayList[] avcSets, int[] classTallies,
                       MutableTableImpl data, ArrayList[] uniqValues) {
          this.avcSets = avcSets;

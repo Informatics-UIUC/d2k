@@ -285,9 +285,9 @@ public class Normalize extends HeadlessUIModule {
    public String getModuleName() { return "Normalize Values"; }
 
    /**
-    * Description of method getNumericLabels.
+    * Get lables of the attributes to normalize
     *
-    * @return Description of return value.
+    * @return labels of attributes to normalize
     */
    public Object[] getNumericLabels() { return numericLabels; }
 
@@ -338,9 +338,9 @@ public class Normalize extends HeadlessUIModule {
                                              }; }
 
    /**
-    * Description of method setNumericLabels.
+    * Set lables of the attributes to normalize
     *
-    * @param labels Description of parameter labels.
+    * @param labels lables of the attributes to normalize
     */
    public void setNumericLabels(Object[] labels) {
       numericLabels = new String[labels.length];

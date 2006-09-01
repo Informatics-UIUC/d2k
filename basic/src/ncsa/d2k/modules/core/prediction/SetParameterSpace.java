@@ -115,7 +115,7 @@ public class SetParameterSpace extends JPanel implements CustomModuleEditor {
     * @return a string indicating why the properties could not be set, or null
     *         if successfully set.
     *
-    * @throws Exception Description of exception Exception.
+    * @throws Exception when something goes wrong
     */
    public boolean updateModule() throws Exception {
       double[] min = new double[count];
@@ -385,7 +385,7 @@ class ParameterEditor extends JPanel implements java.io.Serializable {
    }
 
    /**
-    * Restore everything to it's factory setting.
+    * Restore everything to its factory setting.
     */
    void restoreFactorySettings() {
       minText.setText(Double.toString(defaultMin));

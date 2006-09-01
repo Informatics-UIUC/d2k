@@ -116,14 +116,16 @@ public class SVMParamSpaceGenerator extends AbstractParamSpaceGenerator {
                                     .PROPS_NAMES[SVMParameters.SVM_TYPE],
                                     SVMParameters
                                     .PROPS_NAMES[SVMParameters.SVM_TYPE],
-                                    "Type of the SVM. (0 = C-SVC, 1 = nu-SVC, 2 = One-Class SVM, 3 = epsilon-SVR, 4 = nu-SVR)");
+                                    "Type of the SVM. (0 = C-SVC, 1 = nu-SVC, "+
+                                    "2 = One-Class SVM, 3 = epsilon-SVR, 4 = nu-SVR)");
 
       pds[SVMParameters.KERNEL_TYPE] =
          new PropertyDescription(SVMParameters
                                     .PROPS_NAMES[SVMParameters.KERNEL_TYPE],
                                     SVMParameters
                                     .PROPS_NAMES[SVMParameters.KERNEL_TYPE],
-                                    "Type of the SVM.  (0 = Linear, 1 = Polynomial, 2 = Radial Basis, 3 = Sigmoid)");
+                                    "Type of the SVM.  (0 = Linear, 1 = "+
+                                    "Polynomial, 2 = Radial Basis, 3 = Sigmoid)");
 
 
       pds[SVMParameters.SHRINKING] =

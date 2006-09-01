@@ -155,9 +155,6 @@ public class DecisionTreeNode implements java.io.Serializable,
       }
    }
 
-   // Following methods were added so that "internals" could
-   // be accessed by a class not in the package.
-
    /**
     * Get a child of this node.
     *
@@ -213,9 +210,9 @@ public class DecisionTreeNode implements java.io.Serializable,
    public String getLabel() { return "Node " + index; }
 
    /**
-    * Description of method getMaximumValues.
+    * Get the maximum output values.
     *
-    * @return Description of return value.
+    * @return maximum output values
     */
    public double[] getMaximumValues() { return root.outputMaxs; }
 

@@ -48,7 +48,9 @@ import java.awt.*;
 
 
 /**
- * Colors and fonts used.
+ * Colors and fonts used in DecisionTreeVis.  A circular array is used to obtain
+ * colors for the bar charts.  Call getNextColor() to get the next color in
+ * the array.
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -57,99 +59,99 @@ public final class DecisionTreeScheme {
 
    //~ Static fields/initializers **********************************************
 
-   /** Search. */
+   /** Search color */
    static public final Color searchcolor = new Color(156, 0, 0);
 
-   /** Background. */
+   /** Background color */
    static public final Color backgroundcolor = new Color(219, 217, 203);
 
-   /** Text. */
+   /** Text font */
    static public final Font textfont = new Font("Sans Serif", Font.PLAIN, 12);
 
-   /** text color. */
+   /** text color */
    static public final Color textcolor = new Color(0, 0, 0);
 
-   /** tree background color. */
+   /** tree background color */
    static public final Color treebackgroundcolor = new Color(255, 255, 255);
 
-   /**  tree line level color. */
+   /**  tree line level color */
    static public final Color treelinelevelcolor = new Color(219, 217, 214);
 
-   /** tree circle stroke color. */
+   /** tree circle stroke color */
    static public final Color treecirclestrokecolor = new Color(100, 98, 87);
 
-   /** tree circle background color. */
+   /** tree circle background color */
    static public final Color treecirclebackgroundcolor =
       new Color(252, 252, 252);
 
-   /** tree line color. */
+   /** tree line color */
    static public final Color treelinecolor = new Color(100, 98, 87);
 
-   /** View nodes. */
+   /** View nodes */
    static public final Color viewbackgroundcolor = new Color(233, 232, 231);
 
-   /** view tick color. */
+   /** view tick color */
    static public final Color viewtickcolor = new Color(164, 164, 164);
 
-   /** view triangle color. */
+   /** view triangle color */
    static public final Color viewtrianglecolor = new Color(76, 76, 76);
 
-   /** view roll color. */
+   /** view roll color */
    static public final Color viewrollcolor = new Color(197, 195, 184);
 
-   /** view search color. */
+   /** view search color */
    static public final Color viewsearchcolor = new Color(177, 72, 69);
 
-   /** view search background color. */
+   /** view search background color */
    static public final Color viewsearchbackgroundcolor =
       new Color(207, 215, 224);
 
-   /** Scaled nodes. */
+   /** Scaled nodes */
    static public final Color scaledviewbackgroundcolor = new Color(76, 76, 76);
 
-   /** scaled view bar color. */
+   /** scaled view bar color */
    static public final Color scaledviewbarcolor = new Color(219, 217, 206);
 
-   /** Expanded graphs. */
+   /** Expanded graphs */
    static public final Font expandedfont =
       new Font("Sans Serif", Font.PLAIN, 18);
 
-   /** expanded font color. */
+   /** expanded font color */
    static public final Color expandedfontcolor = new Color(51, 51, 51);
 
-   /** expanded background color. */
+   /** expanded background color */
    static public final Color expandedbackgroundcolor = new Color(219, 217, 206);
 
-   /** expanded border background color. */
+   /** expanded border background color */
    static public final Color expandedborderbackgroundcolor =
       new Color(252, 255, 255);
 
-   /** expanded graph grid color. */
+   /** expanded graph grid color */
    static public final Color expandedgraphgridcolor = new Color(0, 0, 0);
 
-   /** Navigator. */
+   /** viewer color */
    static public final Color viewercolor = new Color(0, 0, 0);
 
-   /** Border. */
+   /** Border background color */
    static public final Color borderbackgroundcolor = new Color(233, 232, 230);
 
-   /** border upper bevel color. */
+   /** border upper bevel color */
    static public final Color borderupperbevelcolor = new Color(127, 127, 127);
 
-   /** border lower bevel color. */
+   /** border lower bevel color */
    static public final Color borderlowerbevelcolor = new Color(10, 10, 10);
 
-   /** border highlight color. */
+   /** border highlight color */
    static public final Color borderhighlightcolor = new Color(242, 242, 242);
 
-   /** border shadow color. */
+   /** border shadow color */
    static public final Color bordershadowcolor = new Color(127, 127, 127);
 
-   /** Components. */
+   /** component button font */
    static public final Font componentbuttonfont =
       new Font("Sans Serif", Font.PLAIN, 10);
 
-   /** component label font. */
+   /** component label font */
    static public final Font componentlabelfont =
       new Font("Sans Serif", Font.PLAIN, 12);
 
@@ -166,7 +168,7 @@ public final class DecisionTreeScheme {
    /**
     * Creates a new DecisionTreeScheme object.
     *
-    * @param size size
+    * @param size number of colors
     */
    public DecisionTreeScheme(int size) { barcolors.setColors(size); }
 
@@ -175,7 +177,7 @@ public final class DecisionTreeScheme {
    /**
     * Get the BarColors
     *
-    * @return BarColors
+    * @return BarColors the BarColors
     */
    public BarColors getBarColors() { return barcolors; }
 

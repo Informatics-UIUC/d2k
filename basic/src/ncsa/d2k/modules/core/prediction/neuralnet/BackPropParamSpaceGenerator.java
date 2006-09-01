@@ -6,10 +6,16 @@ import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import ncsa.d2k.modules.core.prediction.*;
 import ncsa.d2k.core.modules.PropertyDescription;
 
+/**
+ * Generates the parameter space for a Back Propagation Neural Net.
+ */
 public class BackPropParamSpaceGenerator extends AbstractParamSpaceGenerator
 	implements java.io.Serializable{
-	static final String [] func_names = new String [BackPropModel.NUM_PARAMS];
-	static {
+
+    /** names of the parameters, ordered by the constant index in BackPropModel */
+    static final String [] func_names = new String [BackPropModel.NUM_PARAMS];
+
+    static {
 		func_names[BackPropModel.ACTIVATION_FUNCTION] = "Activation Function";
 		func_names[BackPropModel.UPDATE_FUNCTION] = "Training Method";
 		func_names[BackPropModel.EPOCHS] = "Epochs";
@@ -25,148 +31,154 @@ public class BackPropParamSpaceGenerator extends AbstractParamSpaceGenerator
 		func_names[BackPropModel.NODES_IN_LAYER_04] = "Nodes In Layer 4";
 	}
 
-	/**
-	 * Return a list of the property descriptions.
-	 * @return a list of the property descriptions.
-	 */
-	public PropertyDescription [] getPropertiesDescriptions () {
-		PropertyDescription [] pds = new PropertyDescription [13];
-		pds[BackPropModel.ACTIVATION_FUNCTION] = new PropertyDescription ("activation",
-			func_names[BackPropModel.ACTIVATION_FUNCTION],
-			"The weighted sum of the input weights and inputs to every perceptron "+
-			"are fed through the activation function to ensure that the output "+
-			"is between 0 and 1 (or -1 and 1, depending on which function). These "+
-			"functions also must have a few other properties to ensure the back "+
-			"propagation function is able to work. "+
-			"<ul>"+
-			"	<li><u>Elliot</u> - 0 - "+
-			"	From a paper by D.L. Elliot. ElliotAct(x)=|x/(1-x)|. This can be "+
-			"	computed much faster than Sigmoid or Tanh and usually gives good "+
-			"	results."+
-			"	<li><u>FastSigmoid</u> - 1 - A linear approximation of the Sigmoid "+
-			"	function, which makes it faster but less accurate. "+
-			"	<li><u>FastTanh</u> - 2 - A linear approximation of Tanh, similar "+
-			"	issues as FastSigmoid. "+
-			"	<li><u>Sigmoid</u> - 3 - The function multi-layered perceptron "+
-			"	neural "+
-			"	networks were first developed with. Normally neural nets that use "+
-			"	them are fairly accurate, but the function evaluation requires "+
-			"	calculating an exponential, which is computationally expensive "+
-			"	(read \"slow\"). "+
-			"	<li><u>Tanh</u> - 4 - Another expensive, accurate function. "+
-			"</ul>");
 
-		pds[BackPropModel.UPDATE_FUNCTION] = new PropertyDescription (
-			"trainingMethod",
-			func_names[BackPropModel.UPDATE_FUNCTION],
-			"This function defines the order the examples "+
-			"are trained on and when the update of the activation weights occurs. "+
-			"<ul>"+
-			"	<li><u>Incremental BackProp</u> - 0 - The activation weights are "+
-			"	updated after every training example is passed through, and the "+
-			"	examples are passed through in the order given in the training "+
-			"	data. This is slower than Batch BackProp. "+
-			"	<li><u>Batch BackProp</u> - 1 - Weights are updated after every epoch "+
-			"	(complete pass through all examples), examples are iterated over in "+
-			"	order. This is less expensive "+
-			"	than Incremental BackProp. In practice, it usually provides better "+
-			"	results, as well."+
-			"</ul>");
+    /**
+     * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the
+     * module.
+     *
+     * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
+     */
+    public PropertyDescription [] getPropertiesDescriptions() {
+        PropertyDescription [] pds = new PropertyDescription [13];
+        pds[BackPropModel.ACTIVATION_FUNCTION] = new PropertyDescription("activation",
+                func_names[BackPropModel.ACTIVATION_FUNCTION],
+                "The weighted sum of the input weights and inputs to every perceptron " +
+                        "are fed through the activation function to ensure that the output " +
+                        "is between 0 and 1 (or -1 and 1, depending on which function). These " +
+                        "functions also must have a few other properties to ensure the back " +
+                        "propagation function is able to work. " +
+                        "<ul>" +
+                        "	<li><u>Elliot</u> - 0 - " +
+                        "	From a paper by D.L. Elliot. ElliotAct(x)=|x/(1-x)|. This can be " +
+                        "	computed much faster than Sigmoid or Tanh and usually gives good " +
+                        "	results." +
+                        "	<li><u>FastSigmoid</u> - 1 - A linear approximation of the Sigmoid " +
+                        "	function, which makes it faster but less accurate. " +
+                        "	<li><u>FastTanh</u> - 2 - A linear approximation of Tanh, similar " +
+                        "	issues as FastSigmoid. " +
+                        "	<li><u>Sigmoid</u> - 3 - The function multi-layered perceptron " +
+                        "	neural " +
+                        "	networks were first developed with. Normally neural nets that use " +
+                        "	them are fairly accurate, but the function evaluation requires " +
+                        "	calculating an exponential, which is computationally expensive " +
+                        "	(read \"slow\"). " +
+                        "	<li><u>Tanh</u> - 4 - Another expensive, accurate function. " +
+                        "</ul>");
 
-		pds[BackPropModel.EPOCHS] = new PropertyDescription (
-			"epochs",
-			func_names[BackPropModel.EPOCHS],
-			"The number of passes through the training data set "+
-			"(iterations) that the training function will do.");
+        pds[BackPropModel.UPDATE_FUNCTION] = new PropertyDescription(
+                "trainingMethod",
+                func_names[BackPropModel.UPDATE_FUNCTION],
+                "This function defines the order the examples " +
+                        "are trained on and when the update of the activation weights occurs. " +
+                        "<ul>" +
+                        "	<li><u>Incremental BackProp</u> - 0 - The activation weights are " +
+                        "	updated after every training example is passed through, and the " +
+                        "	examples are passed through in the order given in the training " +
+                        "	data. This is slower than Batch BackProp. " +
+                        "	<li><u>Batch BackProp</u> - 1 - Weights are updated after every epoch " +
+                        "	(complete pass through all examples), examples are iterated over in " +
+                        "	order. This is less expensive " +
+                        "	than Incremental BackProp. In practice, it usually provides better " +
+                        "	results, as well." +
+                        "</ul>");
+
+        pds[BackPropModel.EPOCHS] = new PropertyDescription(
+                "epochs",
+                func_names[BackPropModel.EPOCHS],
+                "The number of passes through the training data set " +
+                        "(iterations) that the training function will do.");
 
 
-		pds[BackPropModel.SEED] = new PropertyDescription (
-			"seed",
-			func_names[BackPropModel.SEED],
-			"A seed to the random weight initialization. This can't "+
-			"really be optimized but trying different values for any parameter setting "+
-			"is a good idea as back propagation is capable of finding only the locally "+
-			"optimum set of weights.");
-		pds[BackPropModel.WEIGHT_INIT_RANGE] = new PropertyDescription (
-			"weightInitRange",
-			func_names[BackPropModel.WEIGHT_INIT_RANGE],
-			"The activation weights will be "+
-			"randomly initiallized to values between zero and this value. This is "+
-			"particularly useful if the inputs in the data set (independent variables) "+
-			"are not scaled to a standard range.");
+        pds[BackPropModel.SEED] = new PropertyDescription(
+                "seed",
+                func_names[BackPropModel.SEED],
+                "A seed to the random weight initialization. This can't " +
+                        "really be optimized but trying different values for any parameter setting " +
+                        "is a good idea as back propagation is capable of finding only the locally " +
+                        "optimum set of weights.");
+        pds[BackPropModel.WEIGHT_INIT_RANGE] = new PropertyDescription(
+                "weightInitRange",
+                func_names[BackPropModel.WEIGHT_INIT_RANGE],
+                "The activation weights will be " +
+                        "randomly initiallized to values between zero and this value. This is " +
+                        "particularly useful if the inputs in the data set (independent variables) " +
+                        "are not scaled to a standard range.");
 
-		pds[BackPropModel.LEARNING_RATE_FUNCTION] = new PropertyDescription (
-			"lacc",
-			func_names[BackPropModel.LEARNING_RATE_FUNCTION],
-			"The learning rate indicates how much of an adjustment to the weights will be done during "+
-			"every update. "+
-			"Learning acceleration refers to changing "+
-			"	the learning rate as the training process proceeds. This can be based on "+
-			"	the epoch or the time, and can be any kind of monotonically decreasing "+
-			"	function. The purpose of altering the learning rate is to make large "+
-			"	adjustments initially when the weights are still near-random and then "+
-			"	smaller as the network approaches an optimal solution (think of it as a "+
-			"	hill climbing algorithm that takes big steps when it's far from the "+
-			"	optimum and takes smaller steps at it approaches the optimum for better "+
-			"	accuracy). Currently only Linear by Epoch is implemented, but the "+
-			"	infrastructure is such that other methods can easily be added."+
-			"	<ul>"+
-			"		<li><u>Linear by Epoch</u> - 0 - Starts at the Initial Learning Rate "+
-			"		and "+
-			"		decreases it the same amount every epoch, such that the final epoch "+
-			"		uses a learning rate of Final Learning Rate."+
-			"	</ul>");
+        pds[BackPropModel.LEARNING_RATE_FUNCTION] = new PropertyDescription(
+                "lacc",
+                func_names[BackPropModel.LEARNING_RATE_FUNCTION],
+                "The learning rate indicates how much of an adjustment to the weights will be done during " +
+                        "every update. " +
+                        "Learning acceleration refers to changing " +
+                        "	the learning rate as the training process proceeds. This can be based on " +
+                        "	the epoch or the time, and can be any kind of monotonically decreasing " +
+                        "	function. The purpose of altering the learning rate is to make large " +
+                        "	adjustments initially when the weights are still near-random and then " +
+                        "	smaller as the network approaches an optimal solution (think of it as a " +
+                        "	hill climbing algorithm that takes big steps when it's far from the " +
+                        "	optimum and takes smaller steps at it approaches the optimum for better " +
+                        "	accuracy). Currently only Linear by Epoch is implemented, but the " +
+                        "	infrastructure is such that other methods can easily be added." +
+                        "	<ul>" +
+                        "		<li><u>Linear by Epoch</u> - 0 - Starts at the Initial Learning Rate " +
+                        "		and " +
+                        "		decreases it the same amount every epoch, such that the final epoch " +
+                        "		uses a learning rate of Final Learning Rate." +
+                        "	</ul>");
 
-		pds[BackPropModel.INITIAL_LEARNING_RATE] = new PropertyDescription (
-			"initLRate",
-			func_names[BackPropModel.INITIAL_LEARNING_RATE],
-			"The learning rate of the first epoch.");
+        pds[BackPropModel.INITIAL_LEARNING_RATE] = new PropertyDescription(
+                "initLRate",
+                func_names[BackPropModel.INITIAL_LEARNING_RATE],
+                "The learning rate of the first epoch.");
 
-		pds[BackPropModel.FINAL_LEARNING_RATE] = new PropertyDescription (
-			"finalLRate",
-			func_names[BackPropModel.FINAL_LEARNING_RATE],
-			"The learning rate of the last epoch.");
+        pds[BackPropModel.FINAL_LEARNING_RATE] = new PropertyDescription(
+                "finalLRate",
+                func_names[BackPropModel.FINAL_LEARNING_RATE],
+                "The learning rate of the last epoch.");
 
-		pds[BackPropModel.HIDDEN_LAYERS] = new PropertyDescription (
-			"hiddenLayers",
-			func_names[BackPropModel.HIDDEN_LAYERS],
-			"This is the number of layers of "+
-			"perceptrons between the input nodes and the output nodes. Currently "+
-			"restricted to be between one and four. This restriction is only in place "+
-			"because a more sophisticated parameter selection interface is not in place "+
-			". The actual algorithm can handle any number of hidden layers.");
+        pds[BackPropModel.HIDDEN_LAYERS] = new PropertyDescription(
+                "hiddenLayers",
+                func_names[BackPropModel.HIDDEN_LAYERS],
+                "This is the number of layers of " +
+                        "perceptrons between the input nodes and the output nodes. Currently " +
+                        "restricted to be between one and four. This restriction is only in place " +
+                        "because a more sophisticated parameter selection interface is not in place " +
+                        ". The actual algorithm can handle any number of hidden layers.");
 
-		pds[BackPropModel.NODES_IN_LAYER_01] = new PropertyDescription (
-			"nodesPerLayer1",
-			func_names[BackPropModel.NODES_IN_LAYER_01],
-		   "The number of nodes in first layer. This can be any positive integer, although in practice "+
-		   "values greater than 20 usually cause the model building process to run "+
-		   "longer than is practical.");
+        pds[BackPropModel.NODES_IN_LAYER_01] = new PropertyDescription(
+                "nodesPerLayer1",
+                func_names[BackPropModel.NODES_IN_LAYER_01],
+                "The number of nodes in first layer. This can be any positive integer, although in practice " +
+                        "values greater than 20 usually cause the model building process to run " +
+                        "longer than is practical.");
 
-		pds[BackPropModel.NODES_IN_LAYER_02] = new PropertyDescription (
-			"nodesPerLayer2",
-			func_names[BackPropModel.NODES_IN_LAYER_02],
-			"The number of nodes in second layer. This can be any positive integer, although in practice "+
-			"values greater than 20 usually cause the model building process to run "+
-			"longer than is practical.");
+        pds[BackPropModel.NODES_IN_LAYER_02] = new PropertyDescription(
+                "nodesPerLayer2",
+                func_names[BackPropModel.NODES_IN_LAYER_02],
+                "The number of nodes in second layer. This can be any positive integer, although in practice " +
+                        "values greater than 20 usually cause the model building process to run " +
+                        "longer than is practical.");
 
-		pds[BackPropModel.NODES_IN_LAYER_03] = new PropertyDescription (
-			"nodesPerLayer3",
-			func_names[BackPropModel.NODES_IN_LAYER_03],
-			"The number of nodes in third layer. This can be any positive integer, although in practice "+
-			"values greater than 20 usually cause the model building process to run "+
-			"longer than is practical.");
+        pds[BackPropModel.NODES_IN_LAYER_03] = new PropertyDescription(
+                "nodesPerLayer3",
+                func_names[BackPropModel.NODES_IN_LAYER_03],
+                "The number of nodes in third layer. This can be any positive integer, although in practice " +
+                        "values greater than 20 usually cause the model building process to run " +
+                        "longer than is practical.");
 
-		pds[BackPropModel.NODES_IN_LAYER_04] = new PropertyDescription (
-			"nodesPerLayer4",
-			func_names[BackPropModel.NODES_IN_LAYER_04],
-			"The number of nodes in fourth layer. This can be any positive integer, although in practice "+
-			"values greater than 20 usually cause the model building process to run "+
-			"longer than is practical.");
-		return pds;
+        pds[BackPropModel.NODES_IN_LAYER_04] = new PropertyDescription(
+                "nodesPerLayer4",
+                func_names[BackPropModel.NODES_IN_LAYER_04],
+                "The number of nodes in fourth layer. This can be any positive integer, although in practice " +
+                        "values greater than 20 usually cause the model building process to run " +
+                        "longer than is practical.");
+        return pds;
 	}
 
-	public static final String PARAM_DESCRIPTION=
+    /**
+     * Description of the parameter space
+     */
+    public static final String PARAM_DESCRIPTION=
 "	The following are the parameters of the BackProp Neural Network. Parameter"+
 "	names are in bold, options are underlined. Numbers following the option "+
 "	indicate the index that refers to that option in the parameter object."+
@@ -366,55 +378,59 @@ public class BackPropParamSpaceGenerator extends AbstractParamSpaceGenerator
 	}
 
 
-	/**
-	 * returns the information about the module.
-	 * @return the information about the module.
-	 */
-	public String getModuleInfo() {
-		return
-		"Generates the parameter space for a Back Propagation Neural Net.";
-		/*return
-		"Generates the parameter space for a Back Propagation Neural Net, "+
-		"which can be used to optimize that parameters of the neural net for"+
-		" a particular data set. The minimum, maximum, and resolution of the"+
-		" following parameters can be modified via this modules properties."+
-		" Here is a brief description of the parameters:"+
-		PARAM_DESCRIPTION;*/
+    /**
+     * Describes the purpose of the module.
+     *
+     * @return <code>String</code> describing the purpose of the module.
+     */
+    public String getModuleInfo() {
+        return
+                "Generates the parameter space for a Back Propagation Neural Net.";
+    }
+
+
+    /**
+     * Returns the name of the module that is appropriate for end-user
+     * consumption.
+     *
+     * @return The name of the module.
+     */
+    public String getModuleName() {
+        return "Neural Net Parameter Space Generator";
+    }
+
+
+    /**
+     * Returns a description of the output at the specified index.
+     *
+     * @param index Index of the output for which a description should be
+     *              returned.
+     * @return <code>String</code> describing the output at the specified index.
+     */
+    public String getOutputInfo(int index) {
+        switch (index) {
+            case 0:
+                return "This is the parameter space that will be searched";
+            default:
+                return "No such output";
+        }
 	}
 
-	/**
-	 * Return the human readable name of the module.
-	 * @return the human readable name of the module.
-	 */
-	public String getModuleName() {
-		return "Neural Net Parameter Space Generator";
-	}
 
-
-	/**
-	 * returns information about the output at the given index.
-	 * @return information about the output at the given index.
-	 */
-	public String getOutputInfo(int index) {
-		switch (index) {
-			case 0:
-				return "This is the parameter space that will be searched";
-			default: return "No such output";
-		}
-	}
-
-	/**
-	 * returns information about the output at the given index.
-	 * @return information about the output at the given index.
-	 */
-	public String getOutputName(int index) {
-		switch(index) {
-			case 0:
-				return "Parameter Space";
-			default: return "NO SUCH OUTPUT!";
-		}
+    /**
+     * Returns the name of the output at the specified index.
+     *
+     * @param index Index of the output for which a description should be
+     *              returned.
+     * @return <code>String</code> containing the name of the output at the
+     *         specified index.
+     */
+    public String getOutputName(int index) {
+        switch (index) {
+            case 0:
+                return "Parameter Space";
+            default:
+                return "NO SUCH OUTPUT!";
+        }
 	}
 }
-
-
-

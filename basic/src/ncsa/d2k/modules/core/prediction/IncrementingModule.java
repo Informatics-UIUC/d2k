@@ -55,7 +55,8 @@ import ncsa.d2k.modules.core.datatype.table.ExampleTable;
  * @author  vered goren
  * @version 1.0
  *
- * <p>receives a model and a data set and updates the model with the new data. outputs the incremented model.</p>
+ * <p>receives a model and a data set and updates the model with the new data.
+ * outputs the incremented model.</p>
  *
  * @todo    after this module is done, move to a suitable package
  *          ncsa.d2k.modules.core.prediction
@@ -65,7 +66,6 @@ import ncsa.d2k.modules.core.datatype.table.ExampleTable;
  *          now this module makes a deep copy of the input model before updating
  *          it.
  */
-
 public class IncrementingModule extends ModelProducerModule {
 
    //~ Instance fields *********************************************************

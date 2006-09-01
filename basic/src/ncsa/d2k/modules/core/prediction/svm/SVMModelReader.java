@@ -167,7 +167,8 @@ public class SVMModelReader extends ModelProducerModule {
     * @return <code>String</code> describing the purpose of the module.
     */
    public String getModuleInfo() {
-      return "<p>Overview: Given a native libSVM model file, produces a D2K SVM prediction model.</p>";
+      return "<p>Overview: Given a native libSVM model file, produces a "+
+              "D2K SVM prediction model.</p>";
    }
 
 

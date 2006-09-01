@@ -72,7 +72,8 @@ public class CatchModel extends ModelSelectorModule {
 
 
    /**
-    * Performs the main work of the module.
+    * Performs the main work of the module.  Pull in a ModelModule and save
+    * a reference to it.
     *
     * @throws Exception if a problem occurs while performing the work of the
     *                   module
@@ -101,7 +102,8 @@ public class CatchModel extends ModelSelectorModule {
       switch (i) {
 
          case 0:
-            return "The Prediction Model to catch and make available in the Generated Models session panel.";
+            return "The Prediction Model to catch and make available in the "+
+                    "Generated Models session panel.";
 
          default:
             return "No such input";
@@ -163,19 +165,27 @@ public class CatchModel extends ModelSelectorModule {
     */
    public String getModuleInfo() {
       StringBuffer sb = new StringBuffer("<p>Overview: ");
-      sb.append("This module takes a predictive model as input and \"catches\" it in the <i>Generated Models</i> ");
+      sb.append("This module takes a predictive model as input and \"catches\" ");
+      sb.append("it in the <i>Generated Models</i> ");
       sb.append("session pane.  ");
-      sb.append("From there, it may be permanently saved by the user for reuse in another session. ");
+      sb.append("From there, it may be permanently saved by the user for reuse ");
+      sb.append("in another session. ");
 
       sb.append("</p><p>Description: ");
-      sb.append("D2K itineraries are often used to generate models that predict the value of one or more ");
-      sb.append("target (output) attributes based on the values of one or more input attributes. ");
-      sb.append("These predictive models can be saved and applied at a later time to other datasets ");
-      sb.append("with the same input attributes, generating predictions of the target attribute values ");
+      sb.append("D2K itineraries are often used to generate models that predict ");
+      sb.append("the value of one or more ");
+      sb.append("target (output) attributes based on the values of one or more ");
+      sb.append("input attributes. ");
+      sb.append("These predictive models can be saved and applied at a later ");
+      sb.append("time to other datasets ");
+      sb.append("with the same input attributes, generating predictions of ");
+      sb.append("the target attribute values ");
       sb.append("for each of the examples in the dataset. ");
 
-      sb.append("</p><p>This module can be used to capture a predictive model that has been generated ");
-      sb.append("to the <i>Generated Models</i> session pane.  From there it can be saved permanently ");
+      sb.append("</p><p>This module can be used to capture a predictive ");
+      sb.append("model that has been generated ");
+      sb.append("to the <i>Generated Models</i> session pane.  From there ");
+      sb.append("it can be saved permanently ");
       sb.append("and reloaded in another D2K session. ");
 
       return sb.toString();

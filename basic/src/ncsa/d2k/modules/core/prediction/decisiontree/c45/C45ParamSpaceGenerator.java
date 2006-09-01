@@ -62,7 +62,7 @@ public class C45ParamSpaceGenerator extends AbstractParamSpaceGenerator {
 
    //~ Static fields/initializers **********************************************
 
-   /** Description of field MIN_RATIO. */
+   /** constant for Minimum leaf ratio. */
    static public final String MIN_RATIO = "Minimum leaf ratio";
 
    //~ Methods *****************************************************************
@@ -109,8 +109,10 @@ public class C45ParamSpaceGenerator extends AbstractParamSpaceGenerator {
 
       pds[0] =
          new PropertyDescription(MIN_RATIO, MIN_RATIO,
-                                 "The minimum ratio of records in a leaf to the total number of records in the tree. " +
-                                 "The tree construction is terminated when this ratio is reached.");
+                                 "The minimum ratio of records in a leaf to "+
+                                 "the total number of records in the tree. " +
+                                 "The tree construction is terminated when "+
+                                 "this ratio is reached.");
 
       return pds;
    }

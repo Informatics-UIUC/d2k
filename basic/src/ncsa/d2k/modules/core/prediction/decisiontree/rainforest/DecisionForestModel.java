@@ -76,16 +76,16 @@ public class DecisionForestModel extends PredictionModelModule
 
    //~ Instance fields *********************************************************
 
-   /** Description of field classNames. */
+   /** names of unique classes */
    private String[] classNames;
 
-   /** Description of field inputColumnLabels. */
+   /** labels of input columns */
    private String[] inputColumnLabels;
 
    /** The number of examples in the data set. */
    private int numExamples;
 
-   /** Description of field outputColumnLabels. */
+   /** labels of output columns */
    private String[] outputColumnLabels;
 
    /** The root of the decision tree. */

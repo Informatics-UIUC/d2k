@@ -72,7 +72,6 @@ public class ApplyFunctionInducerWithBagging extends OrderedReentrantModule {
    /** This determins the number of subsamples that will be taken to produce the models. */
    private int NumSubSampleExamples = 100;
 
-
    /** randomized instances. */
    private int[] RandomizedIndices = null;
 
@@ -158,7 +157,8 @@ public class ApplyFunctionInducerWithBagging extends OrderedReentrantModule {
          String ExampleSetClass = Examples.getClass().toString();
 
          if (
-             ExampleSetClass.equals("class ncsa.d2k.modules.projects.dtcheng.datatype.ContinuousDoubleExampleTable")) {
+             ExampleSetClass.equals(
+                     "class ncsa.d2k.modules.projects.dtcheng.datatype.ContinuousDoubleExampleTable")) {
             CurrentTrainExamples =
                (ExampleTable) Examples.getSubset(SubSampleExampleIndicies);
          } else {
@@ -260,23 +260,24 @@ public class ApplyFunctionInducerWithBagging extends OrderedReentrantModule {
     */
    public String getModuleInfo() {
       return "<p>" +
-             "Overview: This module applies a function inducer module to the given " +
-             "example table using the given error function and with boosting to " +
-             "produce a ensemble of models." +
+             "Overview: This module applies a function inducer module to the "+
+              "given example table using the given error function and with " +
+              "boosting to produce a ensemble of models." +
              "</p>" +
              "<p>" +
-             "Detailed Description: This module will generate several models using the " +
-             "given function inducer and error function. The resulting models are then " +
-             "combined into an ensemble model that can be used to provide a possibly " +
-             "more accurate prediction. The &quot;Number Subsamples&quot; determines how many " +
-             "times the data is subsampled. The &quot;Number Final Models&quot; determines how " +
-             "many models will exist in the final ensemble model. Random set can be " +
-             "set to some non-negative value to set the output of the random number " +
-             "generator to the same sequence of values for each invocation." +
-             "</p>" +
+             "Detailed Description: This module will generate several models "+
+             "using the given function inducer and error function. The "+
+             "resulting models are then combined into an ensemble model that "+
+             "can be used to provide a possibly more accurate prediction. "+
+             "The &quot;Number Subsamples&quot; determines how many times the "+
+             "data is subsampled. The &quot;Number Final Models&quot; "+
+             "determines how many models will exist in the final ensemble "+
+             "model. Random set can be set to some non-negative value to set "+
+             "the output of the random number generator to the same sequence "+
+             "of values for each invocation.</p>" +
              "<p>References:<A name=\"Breiman:1994:bagging\"></A>Leo Breiman. " +
              "<A href=\"http://www.work.caltech.edu/cs156/01/papers/bagging.ps.gz\">" +
-             "     Bagging predictors</A>. Technical Report 421, Department of Statistics, " +
+             "Bagging predictors</A>. Technical Report 421, Department of Statistics, " +
              "University of California at Berkeley, September 1994." +
              "		</p>";
    }
@@ -376,15 +377,18 @@ public class ApplyFunctionInducerWithBagging extends OrderedReentrantModule {
       pds[0] =
          new PropertyDescription("numSubSampleExamples",
                                  "Number Subsamples",
-                                 "This determins the number of subsamples that will be taken to produce the models.");
+                                 "This determins the number of subsamples that "+
+                                         "will be taken to produce the models.");
       pds[1] =
          new PropertyDescription("numberOfModelsInEnsemble",
                                  "Number Final Models",
-                                 "This is the number of models that will be included in the final ensemble.");
+                                 "This is the number of models that will be "+
+                                         "included in the final ensemble.");
       pds[2] =
          new PropertyDescription("randomSeed",
                                  "Random Seed",
-                                 "If not -1, will generate the same sequence of values at each run.");
+                                 "If not -1, will generate the same sequence "+
+                                         "of values at each run.");
 
       return pds;
    }

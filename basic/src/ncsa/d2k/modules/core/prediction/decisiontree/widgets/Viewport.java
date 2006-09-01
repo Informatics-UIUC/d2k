@@ -1,556 +1,926 @@
+/* 
+ * $Header$
+ *
+ * ===================================================================
+ *
+ * D2K-Workflow
+ * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
+ * ILLINOIS. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License v2.0
+ * as published by the Free Software Foundation and with the required
+ * interpretation regarding derivative works as described below.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License v2.0 for more details.
+ * 
+ * This program and the accompanying materials are made available
+ * under the terms of the GNU General Public License v2.0 (GPL v2.0)
+ * which accompanies this distribution and is available at
+ * http://www.gnu.org/copyleft/gpl.html (or via mail from the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301, USA.), with the special and mandatory
+ * interpretation that software only using the documented public
+ * Application Program Interfaces (APIs) of D2K-Workflow are not
+ * considered derivative works under the terms of the GPL v2.0.
+ * Specifically, software only calling the D2K-Workflow Itinerary
+ * execution and workflow module APIs are not derivative works.
+ * Further, the incorporation of published APIs of other
+ * independently developed components into D2K Workflow code
+ * allowing it to use those separately developed components does not
+ * make those components a derivative work of D2K-Workflow.
+ * (Examples of such independently developed components include for
+ * example, external databases or metadata and provenance stores).
+ * 
+ * Note: A non-GPL commercially licensed version of contributions
+ * from the UNIVERSITY OF ILLINOIS may be available from the
+ * designated commercial licensee RiverGlass, Inc. located at
+ * (www.riverglassinc.com)
+ * ===================================================================
+ *
+ */
 package ncsa.d2k.modules.core.prediction.decisiontree.widgets;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-import java.util.*;
+import ncsa.d2k.modules.core.prediction.decisiontree.CategoricalViewableDTNode;
+import ncsa.d2k.modules.core.prediction.decisiontree.NominalViewableDTModel;
+import ncsa.d2k.modules.core.prediction.decisiontree.NominalViewableDTNode;
+import ncsa.d2k.modules.core.prediction.decisiontree.NumericViewableDTNode;
+import ncsa.d2k.modules.core.prediction.decisiontree.ScalarViewableDTNode;
+import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel;
+import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTNode;
+
 import javax.swing.*;
-import java.awt.image.*;
 
-import ncsa.d2k.modules.core.prediction.decisiontree.*;
+import java.awt.*;
+import java.awt.geom.GeneralPath;
+import java.util.ArrayList;
 
+
+/**
+ * Viewport handles the drawing of a ViewableDTNode.
+ *
+ * @author  $Author$
+ * @version $Revision$, $Date$
+ */
 public class Viewport {
 
-  private static final String GREATER_THAN = ">";
-  private static final String LESS_THAN = "<";
-  private static final String GREATER_THAN_EQUAL_TO = ">=";
-  private static final String LESS_THAN_EQUAL_TO = "<=";
-  private static final String NOT_EQUAL_TO = "!=";
-  private static final String EQUAL_TO = "==";
+   //~ Static fields/initializers **********************************************
 
-  // Decision tree model
-  ViewableDTModel model;
-  ViewableDTNode node;
-  Viewport parent;
-  ArrayList children;
+   /** constant for > */
+   static private final String GREATER_THAN = ">";
 
-  View view;
+   /** constant for < */
+   static private final String LESS_THAN = "<";
 
-  boolean collapsed = false;
+   /** constant for >= */
+   static private final String GREATER_THAN_EQUAL_TO = ">=";
 
-  boolean search = false;
+   /** constant for <= */
+   static private final String LESS_THAN_EQUAL_TO = "<=";
 
-  // X is midpoint of node, y is top left of bar graph
-  double x, y;
+   /** constant for != */
+   static private final String NOT_EQUAL_TO = "!=";
 
-  // Space between nodes
-  public static double xspace = 20;
-  public static double yspace = 80;
+   /** constant for == */
+   static private final String EQUAL_TO = "==";
 
-  double width = 45;
+   /** horizontal space between nodes. */
+   static public double xspace = 20;
 
-  double height = 40;
+   /** vertical space between nodes */
+   static public double yspace = 80;
 
-  boolean first = true;
+   /** component with a native peer to use for font metrics. */
+   static JFrame graphics;
 
-  String label;
+   //~ Instance fields *********************************************************
 
-  double tside = 8;
-  double tspace = 10;
-  double theight;
+   /** a list of the viewports for the child nodes */
+   protected ArrayList children;
 
-  static JFrame graphics;
+   /** true if the view is collapsed */
+   protected boolean collapsed = false;
 
-  DecisionTreeScheme scheme;
+   /** used in setView to denote the first call to setView */
+   protected boolean first = true;
 
-  public Viewport(ViewableDTModel model, ViewableDTNode node, Viewport parent, String label) {
-    this.model = model;
-    this.node = node;
-    this.parent = parent;
-    this.label = label;
+   /** height */
+   protected double height = 40;
 
-    children = new ArrayList(node.getNumChildren());
+   /** label */
+   protected String label;
 
-    scheme = new DecisionTreeScheme();
+   /** Decision tree model. */
+   protected ViewableDTModel model;
 
-    if (node instanceof ScalarViewableDTNode) {
-      ScalarView view = new ScalarView();
-      view.setData(model, node);
-      setView(view);
-    }
+   /** node for this viewport */
+   protected ViewableDTNode node;
 
-    else if (node instanceof NominalViewableDTNode) {
-      NominalView view = new NominalView();
-      view.setData(model, node);
-      setView(view);
-    }
+   /** viewport for the parent nodes */
+   protected Viewport parent;
 
-    if (graphics == null) {
-      graphics = new JFrame();
-      graphics.addNotify();
-      graphics.setFont(DecisionTreeScheme.textfont);
-    }
-  }
+   /** scheme keeps the colors for the decision tree */
+   protected DecisionTreeScheme scheme;
 
-  public Viewport(ViewableDTModel model, ViewableDTNode node) {
-    this(model, node, null, null);
-  }
+   /** true if in search mode */
+   protected boolean search = false;
 
-  public void addChild(Viewport viewport) {
-    children.add(viewport);
-  }
+   /** theight, used within draw method only */
+   protected double theight;
 
-  public View getView() {
-    return view;
-  }
+   /** tside. */
+   protected double tside = 8;
 
-  public void setView(View view) {
-    this.view = view;
+   /** tspace. */
+   protected double tspace = 10;
 
-    width = view.getWidth();
+   /** the View to draw in this Viewport */
+   protected View view;
 
-    double viewheight = view.getHeight();
+   /** width */
+   protected double width = 45;
 
-    if (first) {
-      height = viewheight;
-      first = false;
-    }
-    else if (viewheight > height)
-      height = viewheight;
-  }
+   /** x is midpoint of node */
+   protected double x;
+   /** y is top left of bar graph. */
+   protected double y;
 
-  public double getViewWidth() {
-    return view.getWidth();
-  }
+   //~ Constructors ************************************************************
 
-  public double getViewHeight() {
-    return view.getHeight();
-  }
+   /**
+    * Creates a new Viewport object.
+    *
+    * @param model decision tree model
+    * @param node  node to draw
+    */
+   public Viewport(ViewableDTModel model, ViewableDTNode node) {
+      this(model, node, null, null);
+   }
 
-  public Viewport getChild(int index) {
-    return (Viewport) children.get(index);
-  }
+   /**
+    * Creates a new Viewport object.
+    *
+    * @param model  decision tree model
+    * @param node   node to draw
+    * @param parent Viewport containing parent
+    * @param label  branch label
+    */
+   public Viewport(ViewableDTModel model, ViewableDTNode node, Viewport parent,
+                   String label) {
+      this.model = model;
+      this.node = node;
+      this.parent = parent;
+      this.label = label;
 
-  public int getNumChildren() {
-    return children.size();
-  }
+      children = new ArrayList(node.getNumChildren());
 
-  public boolean isLeaf() {
-    if (children.size() == 0)
-      return true;
+      scheme = new DecisionTreeScheme();
 
-    return false;
-  }
-
-  public int getDepth() {
-    if (parent == null)
-      return 0;
-
-    return parent.getDepth() + 1;
-  }
-
-  public String getLabel() {
-    return node.getLabel();
-  }
-
-  public String getBranchLabel(int index) {
-    return node.getBranchLabel(index);
-  }
-
-  // Width for finding offset
-  public double getWidth() {
-    FontMetrics metrics = graphics.getGraphics().getFontMetrics();
-
-    double swidth1, swidth2;
-
-    if (label != null)
-      swidth1 = 2*metrics.stringWidth(label);
-    else
-      swidth1 = 0;
-
-    if (view != null)
-      swidth2 = xspace + view.getWidth() + xspace;
-    else
-      swidth2 = xspace + width + xspace;
-
-    if (swidth1 > swidth2)
-      return swidth1;
-    else
-      return swidth2;
-  }
-
-  public double findSubtreeWidth() {
-    if (isLeaf())
-      return getWidth();
-
-    double subtreewidth = 0;
-
-    for (int index = 0; index < getNumChildren(); index++) {
-      Viewport viewport = getChild(index);
-      subtreewidth += viewport.findSubtreeWidth();
-    }
-
-    return subtreewidth;
-  }
-
-  // Width from midpoint to leftmost child node
-  public double findLeftSubtreeWidth() {
-    if (isLeaf())
-      return getWidth()/2;
-
-    int children = getNumChildren();
-
-    if (children%2 == 0) {
-      int middle = children/2;
-      return findIntervalWidth(0, middle-1);
-    }
-    else {
-      int middle = children/2 + 1;
-      Viewport viewport = getChild(middle-1);
-      return findIntervalWidth(0, middle-2) + viewport.findLeftSubtreeWidth();
-    }
-  }
-
-  // Width from midpoint to rightmost child node
-  public double findRightSubtreeWidth() {
-    if (isLeaf())
-      return getWidth()/2;
-
-    int children = getNumChildren();
-
-    if (children%2 == 0) {
-      int middle = children/2;
-      return findIntervalWidth(middle, children-1);
-    }
-    else {
-      int middle = children/2 + 1;
-      Viewport viewport = getChild(middle-1);
-      return findIntervalWidth(middle, children-1) + viewport.findRightSubtreeWidth();
-    }
-  }
-
-  // Determines offsets of children
-  public void findOffsets() {
-    int children = getNumChildren();
-
-    if (children%2 == 0) {
-      int middle = children/2;
-
-      for (int index = 0; index < children; index++) {
-        Viewport viewport = getChild(index);
-
-        if (index <= middle-1)
-          viewport.x = x - findIntervalWidth(index+1, middle-1) - viewport.findRightSubtreeWidth();
-        else
-          viewport.x = x + findIntervalWidth(middle, index-1) + viewport.findLeftSubtreeWidth();
-
-        viewport.y = y + height + yspace;
+      if (node instanceof ScalarViewableDTNode) {
+         ScalarView view = new ScalarView();
+         view.setData(model, node);
+         setView(view);
+      } else if (node instanceof NominalViewableDTNode) {
+         NominalView view = new NominalView();
+         view.setData(model, node);
+         setView(view);
       }
-    }
-    else {
-      int middle = children/2 + 1;
-      Viewport middleviewport = getChild(middle-1);
 
-      for (int index = 0; index < children; index++) {
-        Viewport viewport = getChild(index);
-
-        if (index < middle-1) {
-          if (index == middle-2)
-            viewport.x = x - middleviewport.findLeftSubtreeWidth() - viewport.findRightSubtreeWidth();
-          else
-            viewport.x = x - middleviewport.findLeftSubtreeWidth() - findIntervalWidth(index+1, middle-2) - viewport.findRightSubtreeWidth();
-        }
-        else if (index == middle-1)
-          viewport.x = x;
-        else {
-          if (index == middle)
-            viewport.x = x + middleviewport.findRightSubtreeWidth() + viewport.findLeftSubtreeWidth();
-          else
-            viewport.x = x + middleviewport.findRightSubtreeWidth() + findIntervalWidth(middle, index-1) + viewport.findLeftSubtreeWidth();
-        }
-
-        viewport.y = y + height + yspace;
+      if (graphics == null) {
+         graphics = new JFrame();
+         graphics.addNotify();
+         graphics.setFont(DecisionTreeScheme.textfont);
       }
-    }
-  }
+   }
 
-  public double findIntervalWidth(int start, int end) {
-    double intervalwidth = 0;
+   //~ Methods *****************************************************************
 
-    for (; start <= end; start++) {
-      Viewport viewport = getChild(start);
-      intervalwidth += viewport.findSubtreeWidth();
-    }
+   /**
+    * Evaluate double values based on operator.
+    *
+    * @param  dvalue   left hand side
+    * @param  value    right hand side
+    * @param  operator the operator, should be one of the static constants
+    * defined in this class
+    *
+    * @return result of the evaluation.  false
+    * will be returned when the operator was not recognized
+    */
+   boolean evaluate(double dvalue, double value, String operator) {
 
-    return intervalwidth;
-  }
-
-  // Find branch index of parent corresponding to node
-  public int findBranchIndex() {
-    if (parent == null)
-      return -1;
-
-    for (int index = 0; index < parent.getNumChildren(); index++) {
-      Viewport node = parent.getChild(index);
-
-      if (node == this)
-        return index;
-    }
-
-    return -1;
-  }
-
-  public void toggle() {
-    if (collapsed)
-      collapsed = false;
-    else
-      collapsed = true;
-  }
-
-  public boolean isVisible() {
-    Viewport viewport = this;
-    while (viewport.parent != null) {
-      if (viewport.parent.collapsed)
-        return false;
-      viewport = viewport.parent;
-    }
-
-    return true;
-  }
-
-  public void setSearchBackground(boolean value) {
-  }
-
-  // Determine if given point falls in bounds of node
-  public int test(int x1, int y1, double scale) {
-    if (x1 >= scale*(x - width/2) && x1 <= scale*(x + width/2))
-      return 1;
-
-    if (x1 >= scale*(x + width/2) && x1 <= scale*(x + width/2 + tspace + tside + tspace)) {
-      if (y1 >= scale*(y + height - tside - tspace) && y1 <= scale*(y + height))
-        return 2;
-    }
-
-    return -1;
-  }
-
-  public void draw(Graphics2D g2) {
-    if (view != null) {
-      g2.translate((double) (x-width/2), (double) y);
-      view.drawView(g2);
-      g2.translate((double) (-x+width/2), (double) -y);
-    }
-    else {
-      g2.setColor(scheme.viewbackgroundcolor);
-      g2.setStroke(new BasicStroke(2));
-      g2.drawRect((int) (x-width/2), (int) y, (int) width, (int) height);
-    }
-
-    // Triangle
-    if (isLeaf())
-      return;
-
-    theight = .866025*tside;
-
-    double x1, y1;
-    double ycomponent = tside/2;
-    double xcomponent = .577350*ycomponent;
-    double xcenter, ycenter;
-
-    if (collapsed) {
-      xcenter = x + width/2 + tspace + xcomponent;
-      ycenter = y + height - ycomponent;
-
-      int xpoints[] = {(int) (xcenter-xcomponent), (int) (xcenter+theight-xcomponent), (int) (xcenter-xcomponent)};
-      int ypoints[] = {(int) (ycenter-ycomponent), (int) ycenter, (int) (ycenter+ycomponent)};
-
-      GeneralPath triangle = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
-      triangle.moveTo((int) (xcenter-xcomponent), (int) (ycenter-ycomponent));
-      for (int index = 1; index < xpoints.length; index++) {
-        triangle.lineTo(xpoints[index], ypoints[index]);
+      if (operator == GREATER_THAN) {
+         return value < dvalue;
+      } else if (operator == GREATER_THAN_EQUAL_TO) {
+         return value <= dvalue;
+      } else if (operator == LESS_THAN) {
+         return value > dvalue;
+      } else if (operator == LESS_THAN_EQUAL_TO) {
+         return value >= dvalue;
+      } else if (operator == EQUAL_TO) {
+         return value == dvalue;
+      } else if (operator == NOT_EQUAL_TO) {
+         return value != dvalue;
       }
-      triangle.closePath();
 
-      g2.setColor(scheme.viewtrianglecolor);
-      g2.fill(triangle);
-    }
-    else {
-      xcenter = x + width/2 + tspace + xcomponent;
-      ycenter = y + height - ycomponent;
+      return false;
+   }
 
-      int xpoints[] = {(int) (xcenter-ycomponent), (int) (xcenter+ycomponent), (int) (xcenter)};
-      int ypoints[] = {(int) (ycenter-xcomponent), (int) (ycenter-xcomponent), (int) (ycenter+ycomponent)};
+   /**
+    * Evaluate string values based on operator.
+    *
+    * @param  svalue   left hand side
+    * @param  value    right hand side
+    * @param  operator operator, should be EQUAL_TO or NOT_EQUAL_TO
+    *
+    * @return result of the evaluation.  false will
+    * also be returned when the operator is not recognized
+    */
+   boolean evaluate(String svalue, String value, String operator) {
 
-      GeneralPath triangle = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
-      triangle.moveTo((int) (xcenter-ycomponent), (int) (ycenter-xcomponent));
-      for (int index = 1; index < xpoints.length; index++) {
-        triangle.lineTo(xpoints[index], ypoints[index]);
+      if (operator == EQUAL_TO) {
+         return value.equals(svalue);
+      } else if (operator == NOT_EQUAL_TO) {
+         return !value.equals(svalue);
       }
-      triangle.closePath();
 
-      g2.setColor(DecisionTreeScheme.viewtrianglecolor);
-      g2.fill(triangle);
-    }
-  }
+      return false;
+   }
 
-  public boolean getSearch() {
-    return search;
-  }
+   /**
+    * Evaluate double values based on operator.
+    *
+    * @param  index
+    * @param  dvalue   left hand side
+    * @param  value    right hand side
+    * @param  operator the operator, should be one of the static constants
+    * defined in this class
+    *
+    * @return result of the evaluation
+    */
+   boolean evaluate(int index, double dvalue, double value, String operator) {
 
-  public void setSearch(boolean value) {
-    search = value;
-  }
+      if (index == 0) {
 
-  public double findPurity() {
-    if (model instanceof NominalViewableDTModel) {
-      double sum = 0;
-      double numerator = 0;
-      double base = Math.log(2.0);
+         if (operator == GREATER_THAN) {
+            return value < dvalue;
+         } else if (operator == GREATER_THAN_EQUAL_TO) {
+            return value < dvalue;
+         } else if (operator == LESS_THAN) {
+            return value >= dvalue;
+         } else if (operator == LESS_THAN_EQUAL_TO) {
+            return value >= dvalue;
+         } else if (operator == EQUAL_TO) {
+            return false;
+         } else if (operator == NOT_EQUAL_TO) {
+            return value != dvalue;
+         }
+      } else {
+         return evaluate(dvalue, value, operator);
+      }
+
+      return false;
+   }
+
+   /**
+    * Evaluate nominal split condition.
+    *
+    * @param  condition the condition
+    *
+    * @return result of the evaluation
+    */
+   boolean evaluateNominal(SearchPanel.SplitCondition condition) {
+
+      if (parent == null) {
+         return false;
+      }
+
+      if (!(parent.node instanceof CategoricalViewableDTNode)) {
+         return false;
+      }
+
+      CategoricalViewableDTNode categoricalparent =
+         (CategoricalViewableDTNode) parent.node;
+
+      String attribute = categoricalparent.getSplitAttribute();
+
+      if (!attribute.equals(condition.attribute)) {
+         return false;
+      }
+
+      String[] splitvalues = categoricalparent.getSplitValues();
+      int index = findBranchIndex();
+      String splitvalue = splitvalues[index];
+
+      return evaluate(splitvalue, condition.svalue, condition.operator);
+   }
+
+   /**
+    * Evaluate scalar split condition.  The value is compared to the split value.
+    *
+    * @param  condition the condtion
+    *
+    * @return result of the evaluation
+    */
+   boolean evaluateScalar(SearchPanel.SplitCondition condition) {
+
+      if (parent == null) {
+         return false;
+      }
+
+      if (!(parent.node instanceof NumericViewableDTNode)) {
+         return false;
+      }
+
+      NumericViewableDTNode numericparent = (NumericViewableDTNode) parent.node;
+
+      String attribute = numericparent.getSplitAttribute();
+
+      if (!attribute.equals(condition.attribute)) {
+         return false;
+      }
+
+      double splitvalue = numericparent.getSplitValue();
+      int index = findBranchIndex();
+
+      return evaluate(index, splitvalue, condition.value, condition.operator);
+   }
+
+   /**
+    * Determine type of condition and call specific evaluate function.
+    *
+    * @param  condition the condition.
+    *
+    * @return result of the evaluation
+    */
+   protected boolean evaluate(SearchPanel.Condition condition) {
 
       try {
-        String[] outputs = ((NominalViewableDTModel) model).getUniqueOutputValues();
-        for (int index = 0; index < outputs.length; index++) {
-          double tally = ((NominalViewableDTNode) node).getOutputTally(outputs[index]);
-          numerator += -1.0*tally*Math.log(tally)/base;
-          sum += tally;
-        }
-        numerator += sum*Math.log(sum)/base;
+
+         if (node instanceof NominalViewableDTNode) {
+
+            if (condition instanceof SearchPanel.PopulationCondition) {
+               int population =
+                  ((NominalViewableDTNode) node).getOutputTally(condition.attribute);
+
+               return evaluate(population, condition.value, condition.operator);
+            } else if (condition instanceof SearchPanel.PercentCondition) {
+               double percent =
+                  100 *
+                     (double) ((NominalViewableDTNode) node).getOutputTally(condition.attribute) /
+                     (double) node.getTotal();
+
+               return evaluate(percent, condition.value, condition.operator);
+            }
+         } else if (condition instanceof SearchPanel.PurityCondition) {
+            double purity = findPurity();
+
+            return evaluate(purity, condition.value, condition.operator);
+         } else if (condition instanceof SearchPanel.SplitCondition) {
+            SearchPanel.SplitCondition splitcondition =
+               (SearchPanel.SplitCondition) condition;
+
+            if (splitcondition.scalar) {
+               return evaluateScalar(splitcondition);
+            } else {
+               return evaluateNominal(splitcondition);
+            }
+         }
       } catch (Exception exception) {
-        System.out.println(exception);
-      }
-      return numerator/sum;
-    }
+         exception.printStackTrace();
 
-    return 0;
-  }
-
-  // Determine type of condition and call specific evaluate function
-  protected boolean evaluate(SearchPanel.Condition condition) {
-    try {
-      if (node instanceof NominalViewableDTNode) {
-        if (condition instanceof SearchPanel.PopulationCondition) {
-          int population = ((NominalViewableDTNode) node).getOutputTally(condition.attribute);
-          return evaluate(population, condition.value, condition.operator);
-        }
-
-        else if (condition instanceof SearchPanel.PercentCondition) {
-          double percent = 100*(double) ((NominalViewableDTNode) node).getOutputTally(condition.attribute)/(double) node.getTotal();
-          return evaluate(percent, condition.value, condition.operator);
-        }
+         return false;
       }
 
-      else if (condition instanceof SearchPanel.PurityCondition) {
-        double purity = findPurity();
-        return evaluate(purity, condition.value, condition.operator);
+      return false;
+   } // end method evaluate
+
+   /**
+    * Add a Viewport child to this Viewport
+    *
+    * @param viewport new child viewport
+    */
+   public void addChild(Viewport viewport) { children.add(viewport); }
+
+   /**
+    * Draw this viewport
+    *
+    * @param g2 graphics context
+    */
+   public void draw(Graphics2D g2) {
+
+      if (view != null) {
+         g2.translate((double) (x - width / 2), (double) y);
+         view.drawView(g2);
+         g2.translate((double) (-x + width / 2), (double) -y);
+      } else {
+         g2.setColor(scheme.viewbackgroundcolor);
+         g2.setStroke(new BasicStroke(2));
+         g2.drawRect((int) (x - width / 2), (int) y, (int) width, (int) height);
       }
 
-      else if (condition instanceof SearchPanel.SplitCondition) {
-        SearchPanel.SplitCondition splitcondition = (SearchPanel.SplitCondition) condition;
-
-        if (splitcondition.scalar)
-          return evaluateScalar(splitcondition);
-        else
-          return evaluateNominal(splitcondition);
+      // Triangle
+      if (isLeaf()) {
+         return;
       }
-    } catch (Exception exception) {
-      exception.printStackTrace();
+
+      theight = .866025 * tside;
+
+      double x1;
+      double y1;
+      double ycomponent = tside / 2;
+      double xcomponent = .577350 * ycomponent;
+      double xcenter;
+      double ycenter;
+
+      if (collapsed) {
+         xcenter = x + width / 2 + tspace + xcomponent;
+         ycenter = y + height - ycomponent;
+
+         int[] xpoints =
+         {
+            (int) (xcenter - xcomponent),
+            (int) (xcenter + theight - xcomponent), (int) (xcenter - xcomponent)
+         };
+         int[] ypoints =
+         {
+            (int) (ycenter - ycomponent), (int) ycenter,
+            (int) (ycenter + ycomponent)
+         };
+
+         GeneralPath triangle =
+            new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
+         triangle.moveTo((int) (xcenter - xcomponent),
+                         (int) (ycenter - ycomponent));
+
+         for (int index = 1; index < xpoints.length; index++) {
+            triangle.lineTo(xpoints[index], ypoints[index]);
+         }
+
+         triangle.closePath();
+
+         g2.setColor(scheme.viewtrianglecolor);
+         g2.fill(triangle);
+      } else {
+         xcenter = x + width / 2 + tspace + xcomponent;
+         ycenter = y + height - ycomponent;
+
+         int[] xpoints =
+         {
+            (int) (xcenter - ycomponent), (int) (xcenter + ycomponent),
+            (int) (xcenter)
+         };
+         int[] ypoints =
+         {
+            (int) (ycenter - xcomponent), (int) (ycenter - xcomponent),
+            (int) (ycenter + ycomponent)
+         };
+
+         GeneralPath triangle =
+            new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
+         triangle.moveTo((int) (xcenter - ycomponent),
+                         (int) (ycenter - xcomponent));
+
+         for (int index = 1; index < xpoints.length; index++) {
+            triangle.lineTo(xpoints[index], ypoints[index]);
+         }
+
+         triangle.closePath();
+
+         g2.setColor(DecisionTreeScheme.viewtrianglecolor);
+         g2.fill(triangle);
+      } // end if
+   } // end method draw
+
+   /**
+    * Find branch index of parent corresponding to node.
+    *
+    * @return branch index
+    */
+   public int findBranchIndex() {
+
+      if (parent == null) {
+         return -1;
+      }
+
+      for (int index = 0; index < parent.getNumChildren(); index++) {
+         Viewport node = parent.getChild(index);
+
+         if (node == this) {
+            return index;
+         }
+      }
+
+      return -1;
+   }
+
+   /**
+    * Find the width needed to draw the subtrees rooted at all children
+    * between start and end.
+    *
+    * @param  start start child index
+    * @param  end   end child index
+    *
+    * @return Description of return value.
+    */
+   public double findIntervalWidth(int start, int end) {
+      double intervalwidth = 0;
+
+      for (; start <= end; start++) {
+         Viewport viewport = getChild(start);
+         intervalwidth += viewport.findSubtreeWidth();
+      }
+
+      return intervalwidth;
+   }
+
+   /**
+    * Width from midpoint to leftmost child node.
+    *
+    * @return width from midpoint to leftmost child node
+    */
+   public double findLeftSubtreeWidth() {
+
+      if (isLeaf()) {
+         return getWidth() / 2;
+      }
+
+      int children = getNumChildren();
+
+      if (children % 2 == 0) {
+         int middle = children / 2;
+
+         return findIntervalWidth(0, middle - 1);
+      } else {
+         int middle = children / 2 + 1;
+         Viewport viewport = getChild(middle - 1);
+
+         return findIntervalWidth(0, middle - 2) +
+                viewport.findLeftSubtreeWidth();
+      }
+   }
+
+   /**
+    * Determines offsets of children.
+    */
+   public void findOffsets() {
+      int children = getNumChildren();
+
+      if (children % 2 == 0) {
+         int middle = children / 2;
+
+         for (int index = 0; index < children; index++) {
+            Viewport viewport = getChild(index);
+
+            if (index <= middle - 1) {
+               viewport.x =
+                  x - findIntervalWidth(index + 1, middle - 1) -
+                  viewport.findRightSubtreeWidth();
+            } else {
+               viewport.x =
+                  x + findIntervalWidth(middle, index - 1) +
+                  viewport.findLeftSubtreeWidth();
+            }
+
+            viewport.y = y + height + yspace;
+         }
+      } else {
+         int middle = children / 2 + 1;
+         Viewport middleviewport = getChild(middle - 1);
+
+         for (int index = 0; index < children; index++) {
+            Viewport viewport = getChild(index);
+
+            if (index < middle - 1) {
+
+               if (index == middle - 2) {
+                  viewport.x =
+                     x - middleviewport.findLeftSubtreeWidth() -
+                     viewport.findRightSubtreeWidth();
+               } else {
+                  viewport.x =
+                     x - middleviewport.findLeftSubtreeWidth() -
+                     findIntervalWidth(index + 1, middle - 2) -
+                     viewport.findRightSubtreeWidth();
+               }
+            } else if (index == middle - 1) {
+               viewport.x = x;
+            } else {
+
+               if (index == middle) {
+                  viewport.x =
+                     x + middleviewport.findRightSubtreeWidth() +
+                     viewport.findLeftSubtreeWidth();
+               } else {
+                  viewport.x =
+                     x + middleviewport.findRightSubtreeWidth() +
+                     findIntervalWidth(middle, index - 1) +
+                     viewport.findLeftSubtreeWidth();
+               }
+            }
+
+            viewport.y = y + height + yspace;
+         } // end for
+      } // end if
+   } // end method findOffsets
+
+   /**
+    * Description of method findPurity.
+    *
+    * @return the purity
+    */
+   public double findPurity() {
+
+      if (model instanceof NominalViewableDTModel) {
+         double sum = 0;
+         double numerator = 0;
+         double base = Math.log(2.0);
+
+         try {
+            String[] outputs =
+               ((NominalViewableDTModel) model).getUniqueOutputValues();
+
+            for (int index = 0; index < outputs.length; index++) {
+               double tally =
+                  ((NominalViewableDTNode) node).getOutputTally(outputs[index]);
+               numerator += -1.0 * tally * Math.log(tally) / base;
+               sum += tally;
+            }
+
+            numerator += sum * Math.log(sum) / base;
+         } catch (Exception exception) {
+            System.out.println(exception);
+         }
+
+         return numerator / sum;
+      }
+
+      return 0;
+   } // end method findPurity
+
+   /**
+    * Width from midpoint to rightmost child node.
+    *
+    * @return Width from midpoint to rightmost child node
+    */
+   public double findRightSubtreeWidth() {
+
+      if (isLeaf()) {
+         return getWidth() / 2;
+      }
+
+      int children = getNumChildren();
+
+      if (children % 2 == 0) {
+         int middle = children / 2;
+
+         return findIntervalWidth(middle, children - 1);
+      } else {
+         int middle = children / 2 + 1;
+         Viewport viewport = getChild(middle - 1);
+
+         return findIntervalWidth(middle, children - 1) +
+                viewport.findRightSubtreeWidth();
+      }
+   }
+
+   /**
+    * Width of the subtree rooted at this node.
+    *
+    * @return Width of the subtree rooted at this node
+    */
+   public double findSubtreeWidth() {
+
+      if (isLeaf()) {
+         return getWidth();
+      }
+
+      double subtreewidth = 0;
+
+      for (int index = 0; index < getNumChildren(); index++) {
+         Viewport viewport = getChild(index);
+         subtreewidth += viewport.findSubtreeWidth();
+      }
+
+      return subtreewidth;
+   }
+
+   /**
+    * Get the branch label for the branch from this node to the child at index
+    *
+    * @param  index child index
+    *
+    * @return branch label
+    */
+   public String getBranchLabel(int index) {
+      return node.getBranchLabel(index);
+   }
+
+   /**
+    * Get the Viewport for the child at index.
+    *
+    * @param  index child index
+    *
+    * @return Viewport
+    */
+   public Viewport getChild(int index) {
+      return (Viewport) children.get(index);
+   }
+
+   /**
+    * Get the depth of this node.
+    *
+    * @return depth of this node.
+    */
+   public int getDepth() {
+
+      if (parent == null) {
+         return 0;
+      }
+
+      return parent.getDepth() + 1;
+   }
+
+   /**
+    * Get the label of this node.
+    *
+    * @return label
+    */
+   public String getLabel() { return node.getLabel(); }
+
+   /**
+    * Get the number of children of this node.
+    *
+    * @return number of children
+    */
+   public int getNumChildren() { return children.size(); }
+
+   /**
+    * Return true if in search
+    *
+    * @return true if node is in search
+    */
+   public boolean getSearch() { return search; }
+
+   /**
+    * Get the View
+    *
+    * @return View
+    */
+   public View getView() { return view; }
+
+   /**
+    * Get the height of the View
+    *
+    * @return height of the View
+    */
+   public double getViewHeight() { return view.getHeight(); }
+
+   /**
+    * Get the width of the View
+    *
+    * @return Width of the View
+    */
+   public double getViewWidth() { return view.getWidth(); }
+
+   /**
+    * Width for finding offset.
+    *
+    * @return Width for finding offset
+    */
+   public double getWidth() {
+      FontMetrics metrics = graphics.getGraphics().getFontMetrics();
+
+      double swidth1;
+      double swidth2;
+
+      if (label != null) {
+         swidth1 = 2 * metrics.stringWidth(label);
+      } else {
+         swidth1 = 0;
+      }
+
+      if (view != null) {
+         swidth2 = xspace + view.getWidth() + xspace;
+      } else {
+         swidth2 = xspace + width + xspace;
+      }
+
+      if (swidth1 > swidth2) {
+         return swidth1;
+      } else {
+         return swidth2;
+      }
+   }
+
+   /**
+    * Return true if this node is a leaf
+    *
+    * @return true if this node is a leaf
+    */
+   public boolean isLeaf() {
+
+      if (children.size() == 0) {
+         return true;
+      }
+
       return false;
-    }
+   }
 
-    return false;
-  }
+   /**
+    * Return true if this Viewport is to be visible
+    *
+    * @return true if this Viewport is to be visible
+    */
+   public boolean isVisible() {
+      Viewport viewport = this;
 
-  // Evaluate double values based on operator
-  boolean evaluate(double dvalue, double value, String operator) {
+      while (viewport.parent != null) {
 
-    if (operator == GREATER_THAN)
-      return value < dvalue;
+         if (viewport.parent.collapsed) {
+            return false;
+         }
 
-    else if (operator == GREATER_THAN_EQUAL_TO)
-      return value <= dvalue;
+         viewport = viewport.parent;
+      }
 
-    else if (operator == LESS_THAN)
-      return value > dvalue;
+      return true;
+   }
 
-    else if (operator == LESS_THAN_EQUAL_TO)
-      return value >= dvalue;
+   /**
+    * Set the search field
+    *
+    * @param value new search
+    */
+   public void setSearch(boolean value) { search = value; }
 
-    else if (operator == EQUAL_TO)
-      return value == dvalue;
+   /**
+    * Set the search background
+    *
+    * @param value new search background
+    */
+   public void setSearchBackground(boolean value) { }
 
-    else if (operator == NOT_EQUAL_TO)
-      return value != dvalue;
+   /**
+    * Set the view
+    *
+    * @param view new View
+    */
+   public void setView(View view) {
+      this.view = view;
 
-    return false;
-  }
+      width = view.getWidth();
 
-  boolean evaluate(int index, double dvalue, double value, String operator) {
-    if (index == 0) {
-      if (operator == GREATER_THAN)
-        return value < dvalue;
+      double viewheight = view.getHeight();
 
-      else if (operator == GREATER_THAN_EQUAL_TO)
-        return value < dvalue;
+      if (first) {
+         height = viewheight;
+         first = false;
+      } else if (viewheight > height) {
+         height = viewheight;
+      }
+   }
 
-      else if (operator == LESS_THAN)
-        return value >= dvalue;
+   /**
+    * Determine if given point falls in bounds of node.
+    *
+    * @param  x1    x location 1
+    * @param  y1    y location 1
+    * @param  scale the scale
+    *
+    * @return Description of return value.
+    */
+   public int test(int x1, int y1, double scale) {
 
-      else if (operator == LESS_THAN_EQUAL_TO)
-        return value >= dvalue;
+      if (x1 >= scale * (x - width / 2) && x1 <= scale * (x + width / 2)) {
+         return 1;
+      }
 
-      else if (operator == EQUAL_TO)
-        return false;
+      if (
+          x1 >= scale * (x + width / 2) &&
+             x1 <= scale * (x + width / 2 + tspace + tside + tspace)) {
 
-      else if (operator == NOT_EQUAL_TO)
-        return value != dvalue;
-    }
-    else
-      return evaluate(dvalue, value, operator);
+         if (
+             y1 >= scale * (y + height - tside - tspace) &&
+                y1 <= scale * (y + height)) {
+            return 2;
+         }
+      }
 
-    return false;
-  }
+      return -1;
+   }
 
-  // Evaluate string values based on operator
-  boolean evaluate(String svalue, String value, String operator) {
-    if (operator == EQUAL_TO)
-      return value.equals(svalue);
+   /**
+    * Toggle the collapsing of the subtree rooted at this node.
+    */
+   public void toggle() {
 
-    else if (operator == NOT_EQUAL_TO)
-      return !value.equals(svalue);
-
-    return false;
-  }
-
-  // Evaluate scalar split condition
-  boolean evaluateScalar(SearchPanel.SplitCondition condition) {
-    if (parent == null)
-      return false;
-
-    if (!(parent.node instanceof NumericViewableDTNode))
-      return false;
-
-    NumericViewableDTNode numericparent = (NumericViewableDTNode) parent.node;
-
-    String attribute = numericparent.getSplitAttribute();
-
-    if (!attribute.equals(condition.attribute))
-      return false;
-
-    double splitvalue = numericparent.getSplitValue();
-    int index = findBranchIndex();
-
-    return evaluate(index, splitvalue, condition.value, condition.operator);
-  }
-
-  // Evaluate nominal split condition
-  boolean evaluateNominal(SearchPanel.SplitCondition condition) {
-    if (parent == null)
-      return false;
-
-    if (!(parent.node instanceof CategoricalViewableDTNode))
-      return false;
-
-    CategoricalViewableDTNode categoricalparent = (CategoricalViewableDTNode) parent.node;
-
-    String attribute = categoricalparent.getSplitAttribute();
-
-    if (!attribute.equals(condition.attribute))
-      return false;
-
-    String[] splitvalues = categoricalparent.getSplitValues();
-    int index = findBranchIndex();
-    String splitvalue = splitvalues[index];
-
-    return evaluate(splitvalue, condition.svalue, condition.operator);
-  }
-}
+      if (collapsed) {
+         collapsed = false;
+      } else {
+         collapsed = true;
+      }
+   }
+} // end class Viewport

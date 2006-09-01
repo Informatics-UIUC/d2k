@@ -296,66 +296,87 @@ public class DecisionTreeParamSpaceGenerator
       pds[i++] =
          new PropertyDescription("minDecompositionPopulation",
                                  "Minimum examples per leaf",
-                                 "Prevents the generation of splits that result in leaf nodes with " +
+                                 "Prevents the generation of splits that "+
+                                 "result in leaf nodes with " +
                                  "less than the specified number of examples.  ");
 
       pds[i++] =
          new PropertyDescription("maxTreeDepth",
                                  "Maximum depth of tree",
-                                 "Prevents the generation of splits that result in trees with " +
+                                 "Prevents the generation of splits that "+
+                                 "result in trees with " +
                                  "more than the specified number depth.  ");
 
       pds[i++] =
          new PropertyDescription("minErrorReduction",
                                  "Minimum split error reduction",
-                                 "The units of this error reduction are relative to the error function passed to the " +
+                                 "The units of this error reduction are "+
+                                 "relative to the error function passed to the " +
                                  "decision tree inducer.  " +
-                                 "A split will not occur unless the error is reduced by at least the amount specified.");
+                                 "A split will not occur unless the error "+
+                                 "is reduced by at least the amount specified.");
 
       pds[i++] =
          new PropertyDescription("useOneHalfSplit",
                                  "Generate splits only at 1/2",
                                  "This works fine for boolean and continuous values.  " +
-                                 "If used as the sole decomposition strategy, it forces the system to only split on a variable once.  ");
+                                 "If used as the sole decomposition strategy, "+
+                                 "it forces the system to only split on a variable once.  ");
 
       pds[i++] =
          new PropertyDescription("useMeanBasedSplit",
                                  "Generate mean splits",
-                                 "The mean of each attribute value is calculated in the given node and used to generate " +
-                                 "splits for that node.  One or more split methods (mean, midpoint, and median) can be use simultaneously.  ");
+                                 "The mean of each attribute value is "+
+                                 "calculated in the given node and used to generate " +
+                                 "splits for that node.  One or more split "+
+                                 "methods (mean, midpoint, and median) can be "+
+                                 "use simultaneously.  ");
 
       pds[i++] =
          new PropertyDescription("useMidPointBasedSplit",
                                  "Generate midpoint splits",
-                                 "The min and max values of each attribute at each node in the tree are used to generate splits for that node.  " +
-                                 "The split occurs at the midpoint between the min and max values.  " +
-                                 "One or more split methods (mean, midpoint, and median) can be use simultaneously.  ");
+                                 "The min and max values of each attribute "+
+                                 "at each node in the tree are used to "+
+                                 "generate splits for that node.  " +
+                                 "The split occurs at the midpoint between "+
+                                 "the min and max values.  " +
+                                 "One or more split methods (mean, midpoint, "+
+                                 "and median) can be use simultaneously.  ");
 
       pds[i++] =
          new PropertyDescription("usePopulationBasedSplit",
                                  "Generate median splits",
-                                 "The median of each attribute value is calculated in the given node and used to generate " +
-                                 "splits for that node.  This requires sorting of all the examples in a node and therefore " +
+                                 "The median of each attribute value is "+
+                                 "calculated in the given node and used to generate " +
+                                 "splits for that node.  This requires "+
+                                 "sorting of all the examples in a node and therefore " +
                                  "scales at n log n in time complexity.  " +
-                                 "One or more split methods (mean, midpoint, and median) can be use simultaneously.  ");
+                                 "One or more split methods (mean, midpoint, "+
+                                 "and median) can be use simultaneously.  ");
 
       pds[i++] =
          new PropertyDescription("saveNodeExamples",
                                  "Save examples at each node",
-                                 "In order to compute and print statistics of the node you must save the examples at the node " +
-                                 "which increases the space and time complexity of the algorithm by a linear factor.  ");
+                                 "In order to compute and print statistics of "+
+                                 "the node you must save the examples at the node " +
+                                 "which increases the space and time "+
+                                 "complexity of the algorithm by a linear factor.  ");
 
       pds[i++] =
          new PropertyDescription("useMeanNodeModels",
                                  "Use the mean averaging for models",
-                                 "This results in a simple decision tree with constant functions at the leaves.  " +
-                                 "UseMeanNodeModels and UseLinearNodeModels are mutually exclusive.  ");
+                                 "This results in a simple decision tree with "+
+                                 "constant functions at the leaves.  " +
+                                 "UseMeanNodeModels and UseLinearNodeModels "+
+                                 "are mutually exclusive.  ");
 
       pds[i++] =
          new PropertyDescription("useLinearNodeModels",
                                  "Use multiple regression for models",
-                                 "This results in a decision tree with linear functions of the input attributes at the leaves.  " +
-                                 "UseLinearNodeModels and UseMeanNodeModels are mutually exclusive.  ");
+                                 "This results in a decision tree with linear "+
+                                 "functions of the input attributes at the leaves.  " +
+                                 "UseLinearNodeModels and UseMeanNodeModels are "+
+                                 "mutually exclusive.  ");
 
       return pds;
    } // end method getPropertiesDescriptions

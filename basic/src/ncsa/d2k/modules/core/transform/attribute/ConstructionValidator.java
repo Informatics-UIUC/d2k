@@ -62,36 +62,36 @@ class ConstructionValidator {
    //~ Static fields/initializers **********************************************
 
    /** what can we expect when parsing. */
-   static public final int BEGIN = 0; // left, open, nothing
+   static public final int BEGIN = 0;
 
-   /** Description of field LEFT_OPEN_NOTHING. */
+   /** constant for left, open, nothing */
    static public final int LEFT_OPEN_NOTHING = 0;
 
-   /** Description of field AFTER_OPEN. */
-   static public final int AFTER_OPEN = 1; // left, open, close
+   /** constant for after open */
+   static public final int AFTER_OPEN = 1;
 
-   /** Description of field LEFT_OPEN_CLOSE. */
+   /** constant for left, open, close */
    static public final int LEFT_OPEN_CLOSE = 1;
 
-   /** Description of field AFTER_CLOSE. */
-   static public final int AFTER_CLOSE = 2; // operator, close, nothing
+   /** constant for after close */
+   static public final int AFTER_CLOSE = 2;
 
-   /** Description of field AFTER_RIGHT. */
-   static public final int AFTER_RIGHT = 2; // operator, close, nothing
+   /** constant for after right */
+   static public final int AFTER_RIGHT = 2;
 
-   /** Description of field OPERATOR_CLOSE_NOTHING. */
+   /** constant for operator, close, nothing */
    static public final int OPERATOR_CLOSE_NOTHING = 2;
 
-   /** Description of field AFTER_LEFT. */
+   /** constant for after left */
    static public final int AFTER_LEFT = 3; // operator
 
-   /** Description of field OPERATOR. */
+   /** constant for operator. */
    static public final int OPERATOR = 3;
 
-   /** Description of field AFTER_OPERATOR. */
+   /** constant for after operator */
    static public final int AFTER_OPERATOR = 4; // right
 
-   /** Description of field RIGHT. */
+   /** constant for right */
    static public final int RIGHT = 4;
 
    //~ Instance fields *********************************************************

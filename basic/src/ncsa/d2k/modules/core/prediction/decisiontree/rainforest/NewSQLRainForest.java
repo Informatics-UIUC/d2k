@@ -3513,15 +3513,6 @@ public class NewSQLRainForest extends SQLRainForestOPT {
 
    }
 
-
-   /**
-    * Description of method getFieldNameMapping.
-    *
-    * @return Description of return value.
-    */
-   protected String[] getFieldNameMapping() { return null; }
-
-
    /**
     * sort the unique value list.
     *
@@ -4143,9 +4134,9 @@ public class NewSQLRainForest extends SQLRainForestOPT {
     * @version $Revision$, $Date$
     */
    private final class ColSplit {
-
+      /** column index */
       int col;
-
+       /** split value */
       double splitValue;
 
    }
@@ -4158,13 +4149,21 @@ public class NewSQLRainForest extends SQLRainForestOPT {
     * @version $Revision$, $Date$
     */
    private final class EntrSplit {
-
+      /** gain */
       double gain;
-
+     /** split value */
       double splitValue;
 
+       /**
+        * Constructor
+        */
       EntrSplit() { }
 
+       /**
+        * Constructor
+        * @param s split value
+        * @param g gain
+        */
       EntrSplit(double s, double g) {
 
          splitValue = s;
@@ -4175,24 +4174,21 @@ public class NewSQLRainForest extends SQLRainForestOPT {
 
    }
 
-   // object stored in ArrayList avcSets
 
     /**
      * Simple structure to hold info about an avc set
      */
    public class AvcSet {
-
+      /** attribute name */
       public String attrName;
-
-      public String classLabel; // class label. We only implete single class
-                                // column
-
-      public int count; // count for this avcSet
-
-      public String highValue; // high end attribute value
-
-      public String lowValue; // low end attribute value
-
+      /** class label. We only implete single class column */
+      public String classLabel;
+      /** count for this avcSet */
+      public int count;
+      /** high end attribute value */
+      public String highValue;
+      /** low end attribute value */
+      public String lowValue; 
    }
 
     /**

@@ -83,13 +83,14 @@ public class TableSorter extends AbstractTableModel
    /** true if sorting in ascending order */
    protected boolean ascending = false;
 
-   /**  */
+   /** number of comparisons made */
    protected int compares;
 
-   /**  */
+   /** used to indirectly access rows.  the original data is unmodified, its
+    * rows are accessed through indexes */
    protected int[] indexes;
 
-   /**  */
+   /** List of column indexes to sort by */
    protected Vector sortingColumns = new Vector();
 
    /** table model */

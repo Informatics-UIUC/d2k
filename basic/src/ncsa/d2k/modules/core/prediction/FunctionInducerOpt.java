@@ -167,9 +167,9 @@ public abstract class FunctionInducerOpt extends OrderedReentrantModule
     } // end method doit
 
    /**
-    * Description of method get_Trace.
+    * Get the value of trace
     *
-    * @return Description of return value.
+    * @return trace
     */
    public boolean get_Trace() { return this._Trace; }
 
@@ -249,8 +249,9 @@ public abstract class FunctionInducerOpt extends OrderedReentrantModule
     * @return <code>String</code> describing the purpose of the module.
     */
    public String getModuleInfo() {
-      return "<p>Overview: Not a functional module in itself, but rather a base class for other inducers " +
-             "like InstanceBasedInducerOpt, MeanOutputInducerOpt, StepwiseLinearInducerOpt,DecisionTreeInducerOpt.</p>";
+      return "<p>Overview: Not a functional module in itself, but rather a "+
+              "base class for other inducers like InstanceBasedInducerOpt, "+
+              "MeanOutputInducerOpt, StepwiseLinearInducerOpt,DecisionTreeInducerOpt.</p>";
    }
 
    /**
@@ -327,9 +328,9 @@ public abstract class FunctionInducerOpt extends OrderedReentrantModule
    }
 
    /**
-    * Description of method set_Trace.
+    * Set the trace property
     *
-    * @param value Description of parameter value.
+    * @param value new trace value
     */
    public void set_Trace(boolean value) { this._Trace = value; }
 } // end class FunctionInducerOpt

@@ -36,140 +36,225 @@ import ncsa.d2k.modules.core.transform.StaticMethods;
  * attribute it, for somewhat reason, adds its sibling attribute. strange.
  */
 public class SQLFilterConstruction extends HeadlessUIModule {
-  JOptionPane msgBoard = new JOptionPane();
+
+    /** name of the table */
   private String tableName = "";
+    /** connection wrapper */
   private ConnectionWrapper cw;
-  // ArrayList for column types
+  /** ArrayList for column types */
   private ArrayList colTypes;
-  // ArrayList for column names
+  /** ArrayList for column names */
   private ArrayList colNames;
-  // ExampleTable to keep the meta data
+  /** ExampleTable to keep the meta data */
   private ExampleTable table;
 
 
-/******************************************************************************/
-/* Module methods                                                             */
-/******************************************************************************/
+    /**
+     * Returns the name of the module that is appropriate for end-user consumption.
+     *
+     * @return The name of the module.
+     */
+    public String getModuleName() {
+        return "SQL Filter Construction";
+    }
 
-   public String getModuleName() {
-      return "SQL Filter Construction";
-   }
+    /**
+     * Describes the purpose of the module.
+     *
+     * @return <code>String</code> describing the purpose of the module.
+     */
+    public String getModuleInfo() {
+        String s = "<p> Overview: ";
+        s += "This module helps the user to construct a filtering expression. </p>";
+        s += "<p> Detailed Description: ";
+        s += "This module allows the user to specify the query condition ";
+        s += "that filters rows from a database table. Details can be found ";
+        s += "in the module's online help. </p>";
 
-   public String getModuleInfo() {
-     String s = "<p> Overview: ";
-     s += "This module helps the user to construct a filtering expression. </p>";
-     s += "<p> Detailed Description: ";
-     s += "This module allows the user to specify the query condition ";
-     s += "that filters rows from a database table. Details can be found ";
-     s += "in the module's online help. </p>";
+        s += "<P><U>NOTE</U>:<br>When running the module in Headless mode (when 'Supress User Interface Display' is set to true):<br>";
+        s += "It is highly recommneded to set the filter using the first GUI of this module, ";
+        s += "and only then run it in a Headless mode.<BR>Should you choose to set the filter manually, ";
+        s += "the query must be in an sql format according to the foloowing:";
+        s += "<UL> <li>'!=' should be replaced with '&gt;&lt;'</li>";
+        s += "<li>'==' should be replaced with '='</li>";
+        s += "<li>'&&' should be replaced with 'and'</li>";
+        s += "<li>'||' should be replaced with 'or'</li>";
+        s += "<li>'null' should be uppercased - 'NULL'</li></ul>";
 
-     s += "<P><U>NOTE</U>:<br>When running the module in Headless mode (when 'Supress User Interface Display' is set to true):<br>";
-     s += "It is highly recommneded to set the filter using the first GUI of this module, ";
-     s += "and only then run it in a Headless mode.<BR>Should you choose to set the filter manually, ";
-     s += "the query must be in an sql format according to the foloowing:";
-     s += "<UL> <li>'!=' should be replaced with '&gt;&lt;'</li>";
-     s += "<li>'==' should be replaced with '='</li>";
-     s += "<li>'&&' should be replaced with 'and'</li>";
-     s += "<li>'||' should be replaced with 'or'</li>";
-     s += "<li>'null' should be uppercased - 'NULL'</li></ul>";
+        s += "<P>Missing Values Handling: When the filter expression is edited via " +
+                "the properties editor and 'Supress User Interface Display' is set to true, " +
+                "if the user whishes to include missing values " +
+                "in the result dataset, each simple condition should be paired with the " +
+                "condition 'ATT_NAME is NULL' using the 'or' operand. For Example: " +
+                "If the basic condition is 'Att1 = value' then the pair should be " +
+                "((Att1 = value) or (Att1 is NULL))'.</P>";
+        s += "<p> Restrictions: ";
+        s += "We currently only support Oracle, SQLServer, DB2 and MySql database.";
 
-     s += "<P>Missing Values Handling: When the filter expression is edited via " +
-         "the properties editor and 'Supress User Interface Display' is set to true, " +
-     "if the user whishes to include missing values " +
-         "in the result dataset, each simple condition should be paired with the " +
-         "condition 'ATT_NAME is NULL' using the 'or' operand. For Example: " +
-         "If the basic condition is 'Att1 = value' then the pair should be " +
-         "((Att1 = value) or (Att1 is NULL))'.</P>";
-     s += "<p> Restrictions: ";
-     s += "We currently only support Oracle, SQLServer, DB2 and MySql database.";
+        return s;
+    }
 
-     return s;
-   }
+    /**
+     * Returns the name of the input at the specified index.
+     *
+     * @param index Index of the input for which a name should be returned.
+     * @return <code>String</code> containing the name of the input at the specified index.
+     */
+    public String getInputName(int index) {
+        if (index == 0)
+            return "Database Connection";
+        else if (index == 1)
+            return "Selected Table";
 
-   public String getInputName(int index) {
-      if (index == 0)
-         return "Database Connection";
-      else if (index == 1)
-         return "Selected Table";
+        return null;
+    }
 
-      return null;
-   }
+    /**
+     * Returns an array of <code>String</code> objects each containing the fully qualified Java data type of the input at
+     * the corresponding index.
+     *
+     * @return An array of <code>String</code> objects each containing the fully qualified Java data type of the input at
+     *         the corresponding index.
+     */
+    public String[] getInputTypes() {
+        String[] types = {"ncsa.d2k.modules.io.input.sql.ConnectionWrapper", "java.lang.String"};
+        return types;
+    }
 
-   public String[] getInputTypes() {
-      String[] types = {"ncsa.d2k.modules.io.input.sql.ConnectionWrapper","java.lang.String"};
-      return types;
-   }
+    /**
+     * Returns a description of the input at the specified index.
+     *
+     * @param index Index of the input for which a description should be returned.
+     * @return <code>String</code> describing the input at the specified index.
+     */
+    public String getInputInfo(int index) {
+        if (index == 0)
+            return "The database connection.";
+        else if (index == 1)
+            return "The database table to be filtered.";
+        return "SQLFilterConstruction has no such input.";
+    }
 
-   public String getInputInfo(int index) {
-      if (index == 0)
-         return "The database connection.";
-      else if (index == 1)
-         return "The database table to be filtered.";
-      return "SQLFilterConstruction has no such input.";
-   }
+    /**
+     * Returns an array of <code>String</code> objects each containing the fully qualified Java data type of the output at
+     * the corresponding index.
+     *
+     * @return An array of <code>String</code> objects each containing the fully qualified Java data type of the output at
+     *         the corresponding index.
+     */
+    public String[] getOutputTypes() {
+        String[] o = {"java.lang.String"};
+        return o;
+    }
 
-   public String[] getOutputTypes() {
-      String[] o = {"java.lang.String"};
-      return o;
-   }
+    /**
+     * Returns the name of the output at the specified index.
+     *
+     * @param index Index of the output for which a description should be returned.
+     * @return <code>String</code> containing the name of the output at the specified index.
+     */
+    public String getOutputName(int index) {
+        if (index == 0)
+            return "Query Condition";
+        return null;
+    }
 
-   public String getOutputName(int index) {
-      if (index == 0)
-         return "Query Condition";
-      return null;
-   }
+    /**
+     * Returns a description of the output at the specified index.
+     *
+     * @param index Index of the output for which a description should be returned.
+     * @return <code>String</code> describing the output at the specified index.
+     */
+    public String getOutputInfo(int index) {
+        if (index == 0)
+            return "The query condition for the search. If the string is blank there will be no where clause, all records will be retrieved.";
+        return "SQLFilterConstruction has no such output.";
+    }
 
-   public String getOutputInfo(int index) {
-      if (index == 0)
-         return "The query condition for the search. If the string is blank there will be no where clause, all records will be retrieved.";
-      return "SQLFilterConstruction has no such output.";
-   }
+    /**
+     * The list of strings returned by this method allows the module to map the
+     * results returned from the pier to the position dependent outputs. The
+     * order in which the names appear in the string array is the order in which
+     * to assign them to the outputs.
+     *
+     * @return a string array containing the names associated with the outputs
+     *         in the order the results should appear in the outputs.
+     */
+    public String[] getFieldNameMapping() {
+        return null;
+    }
 
-   public String[] getFieldNameMapping() { return null; }
+    /**
+     * Create a new instance of a UserView object that provides the user
+     * interface for this user interaction module.
+     *
+     * @return a new instance of a UserView providing the interface for this
+     *         module.
+     */
+    protected UserView createUserView() {
+        return new FilterConstructionGUI();
+    }
 
-   protected UserView createUserView() {
-      return new FilterConstructionGUI();
-   }
-
-/******************************************************************************/
-/* properties                                                                 */
-/******************************************************************************/
-
+    /** last expression. */
    private String _lastExpression = "";
 
+   /**
+    * Get last expression property
+    *
+    * @return last expression property
+    */
    public String getLastExpression() {
       return _lastExpression;
    }
 
+   /**
+    * Set last expression property
+    *
+    * @param value new last expression
+    */
    public void setLastExpression(String value) {
       _lastExpression = value;
    }
 
+  /** If set, rows with missing values will be included in the result table. */
    private boolean _includeMissingValues = true;
+
+   /**
+    * Get include missing values property
+    *
+    * @return missing values property
+    */
    public boolean getIncludeMissingValues() {
 	  return _includeMissingValues;
    }
+
+   /**
+    * Set include missing values property
+    *
+    * @param value true if missing values should be included
+    */
    public void setIncludeMissingValues(boolean value) {
 	  _includeMissingValues = value;
    }
 
-
-   public PropertyDescription[] getPropertiesDescriptions() {
-      PropertyDescription[] pds = new PropertyDescription[3];
-      pds[0] = super.getPropertiesDescriptions()[0];
-      pds[1] = new PropertyDescription("queryCondition", "Query Condition",
-                                       "SQL query condition");
-	  pds[2] = new PropertyDescription("includeMissingValues", "Include Missing Values",
-			"If set, rows with missing values will be included in the result table. " +
+    /**
+     * Get the descriptions of the properties of this module.
+     *
+     * @return the PropertyDescriptor for each property of this module.
+     */
+    public PropertyDescription[] getPropertiesDescriptions() {
+        PropertyDescription[] pds = new PropertyDescription[3];
+        pds[0] = super.getPropertiesDescriptions()[0];
+        pds[1] = new PropertyDescription("queryCondition", "Query Condition",
+                "SQL query condition");
+        pds[2] = new PropertyDescription("includeMissingValues", "Include Missing Values",
+                "If set, rows with missing values will be included in the result table. " +
                         "This property is used when the module runs with GUI.");
-      return pds;
-   }
+        return pds;
+    }
 
-
-   //vered - headless conversion support
-   //moved this method from FilterConstructionGUI into SQLFilterConstruction
-   //so that the doit method can use it as well. (for validation of expression purposes)
-   /** create an ExampleTable object to hold the meta information.
+   /**
+    * create an ExampleTable object to hold the meta information.
   *  @return an object of Example table
   */
  private ExampleTable createMetaTable(String tableName) {
@@ -191,7 +276,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      }
    }
    catch (Exception e) {
-     JOptionPane.showMessageDialog(msgBoard,
+     JOptionPane.showMessageDialog(null,
      "Could not create metadata table.", "Error",
      JOptionPane.ERROR_MESSAGE);
      System.out.println("Error occurred in createMetaTable.");
@@ -225,48 +310,86 @@ public class SQLFilterConstruction extends HeadlessUIModule {
 
    //end headless conversion support
 
-/******************************************************************************/
-/* GUI                                                                        */
-/******************************************************************************/
 
-   private static String scalar = "FilterConstructionINTERNALscalar";
+    /** constant for layout manager */
+   private static transient String scalar = "FilterConstructionINTERNALscalar";
 
+    /**
+     * The View
+     */
    protected class FilterConstructionGUI extends JUserPane
       implements ActionListener, ExpressionListener {
-
+       /** gui for building expressions */
       private ExpressionGUI gui;
+        /** expression */
       private FilterExpression expression;
 
-      private JButton addColumnButton, addScalarButton, addOperationButton,
-                      addBooleanButton, abortButton, addButton, helpButton;
-      private JComboBox columnBox, operationBox, booleanBox;
+      /** add column button */
+      private JButton addColumnButton;
+
+      /** add scalar button */
+      private JButton addScalarButton;
+
+        /** add operation button */
+      private JButton addOperationButton;
+
+         /** add boolean button */
+      private JButton addBooleanButton;
+        /** abort button */
+      private JButton abortButton;
+        /** add button */
+      private JButton addButton;
+        /** help button */
+      private JButton helpButton;
+        /** holds names of columns */
+      private JComboBox columnBox;
+        /** holds operations */
+      private JComboBox operationBox;
+        /** holds booleans */
+      private JComboBox booleanBox;
+      /** text field to enter scalar value */
       private JTextField scalarField;
-
+        /** panel */
       private JPanel comboOrFieldPanel;
+        /** layout manager */
       private CardLayout nominalOrScalarLayout;
-      private HashMap nominalComboBoxLookup; // look up JComboBoxes for nominal
-                                             // columns; key = column #
-      private int nominalShowing = -1; // which nominal combobox is showing?
-                                       // -1 if scalar textfield is showing
-
+      /** look up JComboBoxes for nominal columns; key = column #*/
+      private HashMap nominalComboBoxLookup;
+      /** which nominal combobox is showing?  -1 if scalar textfield is showing
+        */
+      private int nominalShowing = -1;
+        /** the view module that spawned this view */
       private ViewModule mod;
-
+      /** true if it has been initialized */
       private boolean initialized = false;
 
-      public void initView(ViewModule m) {
-         mod = m;
-      }
-
-      public void setInput(Object o, int i) {
-        if (i == 0) {
-          cw = (ConnectionWrapper)o;
+        /**
+         * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
+         *
+         * @param m The module this view is associated with.
+         */
+        public void initView(ViewModule m) {
+            mod = m;
         }
-        else if (i == 1) {
-          tableName = (String)o;
-          initialize();
-        }
-      }
 
+        /**
+         * Called to pass the inputs received by the module to the view.
+         *
+         * @param o The object that has been input.
+         * @param i The index of the module input that been received.
+         */
+        public void setInput(Object o, int i) {
+            if (i == 0) {
+                cw = (ConnectionWrapper) o;
+            } else if (i == 1) {
+                tableName = (String) o;
+                initialize();
+            }
+        }
+
+      /**
+       * Set up the UI.
+       */
       private void initialize() {
          table = createMetaTable(tableName);
          this.removeAll();
@@ -438,76 +561,79 @@ public class SQLFilterConstruction extends HeadlessUIModule {
       }
 
 
-      public void actionPerformed(ActionEvent e) {
+        /**
+         * Invoked when an action occurs.
+         */
+        public void actionPerformed(ActionEvent e) {
 
-         Object src = e.getSource();
+            Object src = e.getSource();
 
-         if (src == columnBox && initialized) {
+            if (src == columnBox && initialized) {
 
-            int index = columnBox.getSelectedIndex();
-            if (table.isColumnNominal(index)) {
+                int index = columnBox.getSelectedIndex();
+                if (table.isColumnNominal(index)) {
 
-               nominalShowing = index;
-               JComboBox nominalCombo = new JComboBox(getUniqueValues(index));
-               if(!nominalComboBoxLookup.containsKey(new Integer(index)))
-               {
-                 comboOrFieldPanel.add(nominalCombo, table.getColumnLabel(index));
-                 nominalComboBoxLookup.put(new Integer(index), nominalCombo);
-               }
-               nominalOrScalarLayout.show(comboOrFieldPanel,
-                  table.getColumnLabel(index));
-            }
-            else {
-               nominalShowing = -1;
-               nominalOrScalarLayout.show(comboOrFieldPanel, scalar);
-            }
+                    nominalShowing = index;
+                    JComboBox nominalCombo = new JComboBox(getUniqueValues(index));
+                    if (!nominalComboBoxLookup.containsKey(new Integer(index)))
+                    {
+                        comboOrFieldPanel.add(nominalCombo, table.getColumnLabel(index));
+                        nominalComboBoxLookup.put(new Integer(index), nominalCombo);
+                    }
+                    nominalOrScalarLayout.show(comboOrFieldPanel,
+                            table.getColumnLabel(index));
+                } else {
+                    nominalShowing = -1;
+                    nominalOrScalarLayout.show(comboOrFieldPanel, scalar);
+                }
 
-         }
+            } else if (src == addColumnButton) {
+                // ANCA added condition related to missing values
+                if (getIncludeMissingValues()) {
+                    gui.getTextArea().insert((String) columnBox.getSelectedItem() +
+                            " is NULL || " +
+                            (String) columnBox.getSelectedItem(),
+                            gui.getTextArea().getCaretPosition());
+                } else {
+                    gui.getTextArea().insert((String) columnBox.getSelectedItem(),
+                            gui.getTextArea().getCaretPosition());
+                }
+                // System.err.println("SQLFilterConstruction::actionPerformed::addColumnButton -- " ); //+ expression.toString);
+            } else if (src == addScalarButton) {
 
-         else if (src == addColumnButton) {
-	     // ANCA added condition related to missing values
-         	if (getIncludeMissingValues()) {
-         		gui.getTextArea().insert((String)columnBox.getSelectedItem() +
-				      " is NULL || " +
-				      (String)columnBox.getSelectedItem(),
-				      gui.getTextArea().getCaretPosition());
-			} else {
-             gui.getTextArea().insert((String)columnBox.getSelectedItem(),
-                gui.getTextArea().getCaretPosition());
-         	}
-	     // System.err.println("SQLFilterConstruction::actionPerformed::addColumnButton -- " ); //+ expression.toString);
-	 }
-         else if (src == addScalarButton) {
+                if (nominalShowing < 0) {
 
-            if (nominalShowing < 0) {
+                    gui.getTextArea().insert(scalarField.getText(),
+                            gui.getTextArea().getCaretPosition());
 
-               gui.getTextArea().insert(scalarField.getText(),
-                                        gui.getTextArea().getCaretPosition());
+                } else {
 
-            }
-            else {
+                    JComboBox combo = (JComboBox) nominalComboBoxLookup.get(
+                            new Integer(nominalShowing));
 
-               JComboBox combo = (JComboBox)nominalComboBoxLookup.get(
-                  new Integer(nominalShowing));
+                    gui.getTextArea().insert(
+                            "'" + combo.getSelectedItem() + "'",
+                            gui.getTextArea().getCaretPosition());
 
-               gui.getTextArea().insert(
-                  "'" + combo.getSelectedItem() + "'",
-                  gui.getTextArea().getCaretPosition());
+                }
 
-            }
+            } else if (src == addOperationButton)
+                gui.getTextArea().insert(" " + operationBox.getSelectedItem() + " ",
+                        gui.getTextArea().getCaretPosition());
+            else if (src == addBooleanButton)
+                gui.getTextArea().insert(" " + booleanBox.getSelectedItem() + " ",
+                        gui.getTextArea().getCaretPosition());
+            else if (src == abortButton)
+                viewCancel();
+        }
 
-         }
-
-         else if (src == addOperationButton)
-            gui.getTextArea().insert(" " + operationBox.getSelectedItem() + " ",
-               gui.getTextArea().getCaretPosition());
-         else if (src == addBooleanButton)
-           gui.getTextArea().insert(" " + booleanBox.getSelectedItem() + " ",
-              gui.getTextArea().getCaretPosition());
-         else if (src == abortButton)
-            viewCancel();
-      }
-
+      /**
+       * Get the unique values from a column.
+       *
+       * @param  columnIndex column index
+       *
+       * @return Vector containing the unique values
+       */
       private Vector getUniqueValues(int columnIndex) {
 
         Vector columnValues = new Vector();
@@ -525,7 +651,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
           return columnValues;
         }
         catch (Exception e){
-          JOptionPane.showMessageDialog(msgBoard,
+          JOptionPane.showMessageDialog(null,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
           System.out.println("Error occurred in getUniqValue (db mode).");
@@ -533,8 +659,13 @@ public class SQLFilterConstruction extends HeadlessUIModule {
         }
       }
 
-      public void expressionChanged(Object evaluation) {
-  // ANCA replaced this code with toSQLString method in FilterExpression
+        /**
+         * Signal the expression has changed.
+         *
+         * @param evaluation new value of the expression.
+         */
+        public void expressionChanged(Object evaluation) {
+            // ANCA replaced this code with toSQLString method in FilterExpression
 //          String queryCondition = gui.getTextArea().getText();
 //          _lastExpression = new String(queryCondition);
 //          // SQL does not support "=="
@@ -551,40 +682,22 @@ public class SQLFilterConstruction extends HeadlessUIModule {
 //          //if(getIncludeMissingValues())
 
 
-	  String queryCondition = expression.toSQLString();
-	  // System.out.println("query condition " + queryCondition);
+            String queryCondition = expression.toSQLString();
+            // System.out.println("query condition " + queryCondition);
 
-          //headless conversion support
-          setQueryCondition(queryCondition);
-          //headless conversion support
+            //headless conversion support
+            setQueryCondition(queryCondition);
+            //headless conversion support
 
-         pushOutput(queryCondition,0);
-         viewDone("Done");
-      }
-
-//       public String replace(String oldString, String oldPattern, String newPattern) {
-//          int index;
-//          String newString;
-//          index = oldString.indexOf(oldPattern);
-//          // matched substring is located in the middle of the string
-//          if (index > 0)
-//            newString = oldString.substring(0,index) + newPattern +
-//                      oldString.substring(index + oldPattern.length(), oldString.length());
-//          // matched substring is located in the begining of the string
-//          else if (index == 0)
-//            newString = newPattern +
-//                      oldString.substring(index + oldPattern.length(), oldString.length());
-//          else
-//            newString = oldString;
-//          return newString;
-//       }
+            pushOutput(queryCondition, 0);
+            viewDone("Done");
+        }
    }
 
-/******************************************************************************/
-/* help facilities                                                            */
-/******************************************************************************/
-
    private class HelpWindow extends JD2KFrame {
+    /**
+     * Constructor
+     */
       public HelpWindow() {
          super ("FilterConstruction Help");
          JEditorPane ep = new JEditorPane("text/html", getHelpString());
@@ -594,6 +707,11 @@ public class SQLFilterConstruction extends HeadlessUIModule {
       }
    }
 
+   /**
+    * Get the help text.
+    *
+    * @return help text
+    */
    private String getHelpString() {
 
       StringBuffer sb = new StringBuffer();
@@ -619,251 +737,81 @@ public class SQLFilterConstruction extends HeadlessUIModule {
 
    }
 
-   //headless conversion support
+   /** the query condition */
    private String queryCondition;
+
+    /**
+     * Get the query condition
+     * @return query condtion
+     */
    public String getQueryCondition(){return queryCondition;}
+
+    /**
+     * Set the query condition
+     * @param str new query condtion
+     */
    public void setQueryCondition(String str){queryCondition = str;}
 
-   public void doit()throws Exception{
-     //pulling input...
-     /*ConnectionWrapper*/ cw = (ConnectionWrapper) pullInput(0);
-     String tableName = (String) pullInput(1);
+    /**
+     * Execute this module using the same filters that were constructed in
+     * the last successful execution.
+     *
+     * @throws Exception when something goes wrong
+     */
+    public void doit() throws Exception {
+        //pulling input...
+        /*ConnectionWrapper*/ cw = (ConnectionWrapper) pullInput(0);
+        String tableName = (String) pullInput(1);
 
-     if(queryCondition == null)
-       throw new Exception (this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
+        if (queryCondition == null)
+            throw new Exception(this.getAlias() + " has not been configured. Before running headless, run with the gui and configure the parameters.");
 
 //     String goodCondition = ""; //this will be pushed out.
 
 //validating
-     //getting tables names in data base
+        //getting tables names in data base
 
-     HashMap tables = StaticMethods.getAvailableTables(cw);
-     //checking that tableName is in the hashmap
-     if(!tables.containsKey(tableName))
-       throw new Exception (getAlias() + ": Table " + tableName + " was not found in the data base!");
+        HashMap tables = StaticMethods.getAvailableTables(cw);
+        //checking that tableName is in the hashmap
+        if (!tables.containsKey(tableName))
+            throw new Exception(getAlias() + ": Table " + tableName + " was not found in the data base!");
 
-     //getting all attributes names.
-     HashMap availableAttributes = StaticMethods.getAvailableAttributes(cw, tableName);
+        //getting all attributes names.
+        HashMap availableAttributes = StaticMethods.getAvailableAttributes(cw, tableName);
 
 
-     if(availableAttributes.size() == 0){
-       //this means either the table was not found in the data base, or that
-       //it has no columns. the query condition will be empty anyway
-       System.out.println(getAlias() + ": Warning - Table " +
-                          tableName +
-                          " has no columns.");
-       //pushOutput(goodCondition, 0);
-     //  pushOutput("", 0);
-    //   return;
-     }
-
+        if (availableAttributes.size() == 0) {
+            //this means either the table was not found in the data base, or that
+            //it has no columns. the query condition will be empty anyway
+            System.out.println(getAlias() + ": Warning - Table " +
+                    tableName +
+                    " has no columns.");
+            //pushOutput(goodCondition, 0);
+            //  pushOutput("", 0);
+            //   return;
+        }
 
 //validting the expression:
-     //creating a metadata table
-     ExampleTable et = this.createMetaTable(tableName);
-     //creating a validator
-      FilterExpression expression = new FilterExpression(et, getIncludeMissingValues());
-      //replacing the special signs of sql (or, and, = with the regular)
-      String cond = replaceSigns(queryCondition);
+        //creating a metadata table
+        ExampleTable et = this.createMetaTable(tableName);
+        //creating a validator
+        FilterExpression expression = new FilterExpression(et, getIncludeMissingValues());
+        //replacing the special signs of sql (or, and, = with the regular)
+        String cond = replaceSigns(queryCondition);
 
 //validating the expression....
         expression.setExpression(cond);
 
 
+        pushOutput(queryCondition, 0);
 
 
-     pushOutput(queryCondition,0);
+    }//doit
 
-
-   }//doit
-
-   //supporting methods int he validation of the expression
-
+   /** readable operators to replace */
    public static final String[] toReplace = {"or", "and", "=", "null"};
+    /** operates to replace the readable operators with */
    public static final String[] replaceWith = {"||", "&&", "==", "NULL"};
-
-   /**
-    * looks for "or" "and" and single '=' int he String <codE>query</codE>
-    * and replaces them with "||" "&&" and "=="
-    * @param query - and SQL query expression
-    * @return - the expression replaced
-    */
-/*   private String replaceSqlSigns(String query){
-     String retVal = "";
-
-
-//vered debug
-  //   System.out.println("\n\noriginal query: " + query);
-     //end debug
-     retVal = replaceSigns(query);
-
-
-     //vered debug
-  //   System.out.println("replaced query: " + retVal);
-     //end debug
-
-
-
-
-     return retVal;
-   }
-*/
-
-   /**
-    * replaces single '=' with a double one in the String <code>str</code>
-    * only if the '=' stands alone (could be part of "!=" or "<=")
-    * @param str - an expression
-    * @return - the expression with double '=' instead of single ones.
-    */
-  /* private String replaceEqualSigns(String str){
-
-     //vered debug
-   //  System.out.println("\n\nreplacing equal signs. original string: " + str);
-     //end debug
-
-     StringTokenizer tok = new StringTokenizer(str, "=", true);
-     String retVal = "";
-
-     while(tok.hasMoreTokens()){
-       String currTok = tok.nextToken();
-
-
-      //vered debug
-  //    System.out.println("current token: " + currTok);
-      //end debug
-
-
-       if(currTok.equals("=")){
-         char ch = retVal.charAt(retVal.length()-1);
-
-         //vered debug
-      //      System.out.println("last character in ret val is: " + ch );
-            //end debug
-
-         switch(ch){
-           case '!':
-           case '<':
-           case '>':
-
-            //vered debug
-      //      System.out.println("doint nothign special");
-            //end debug
-
-             retVal += currTok;
-             break;
-          default:
-
-
-            String next = tok.nextToken();
-            if(next.equals("=")){
-              retVal += "==";
-//vered debug
-        //         System.out.println("discovered a double equal sign");
-
-                 //end debug
-
-
-            }
-            else {
-              retVal += "==" + next;
-
-                 //vered debug
-        //         System.out.println("replacing single eaula with couble one");
-        //         System.out.println("and adding the next token: " + next);
-                 //end debug
-
-            }
-         }//switch
-       }//if this is equal
-
-       else{
-         retVal += currTok;
-         //vered debug
-   //      System.out.println("addign current token");
-                       //end debug
-
-       }
-
-     }//while
-
-     //vered debug
- //    System.out.println("the returned string (by replace equal signs): " + retVal );
-
-                 //end debug
-
-
-     return retVal;
-   }//replaceEqualSigns
-
-   */
-
-   /**
-   * looks for <code>toReplace</code> strings in <code>query</code> and replaces
-   * them with <codE>replaceWith</code>. the replacement will take place only if
-   * <codE>toReplace</codE> is not already a part of a word.
-   * @param query - an sql expression
-   * @return - the expression with the substrings replaced.
-   */
-/*  private String replaceSqlSigns(String query, String toReplace, String replaceWith){
-
-    //vered debug
- //   System.out.println("\n\nreplacing sql signs. original string: " + query);
-//    System.out.println("looking for string: " + toReplace);
- //   System.out.println("the replacing string: " + replaceWith);
-    //end debug
-
-
-    String retVal = "";
-
-    int index  = query.indexOf(toReplace);
-    String str = query;
-
-    while(index != -1){
-      int currIdx = 0;
-
-      //vered - debug
-   //   System.out.println("looking in substring: " + str);
-  //    System.out.println("index of " + toReplace + ": " + index);
-      //end debug
-
-      if(standAlone(str, index, toReplace)){
-
-
-        retVal += str.substring(currIdx, index - 1) + replaceWith;
-
-        //vered - debug
- //   System.out.println("it stands alone");
- //   System.out.println("retVal is now: " + retVal);
-    //end debug
-
-      }
-
-
-      else{
-        retVal += str.substring(currIdx, (index - 1 + toReplace.length()));
-
-        //vered - debug
-//  System.out.println("it does not stand alone");
-//  System.out.println("retVal is now: " + retVal);
-  //end debug
-
-      }
-
-        currIdx += index-currIdx + toReplace.length();
-         str = str.substring(currIdx);
-        index = str.indexOf(toReplace);
-
-    }
-retVal += str;
-    //vered - debug
-
-// System.out.println("returned string by replaceSqlSigns: " + retVal);
- //end debug
-
-    return retVal;
-  }*/
-
-
 
   /**
    * returns true if <doe>lookFor</code> is not a part of a word in <code>str</code>
@@ -903,7 +851,7 @@ retVal += str;
   }
 
   /**
-   * returns true if <codE>ch</codE> is a white space.
+   * returns true if <code>ch</code> is a white space.
    * @param ch - a character to be observed
    * @return - true if ch is a white space. false otherwise.
    */
@@ -920,7 +868,11 @@ retVal += str;
    }//iswhiteSpace
 
 
-
+    /**
+     * Replace or, and, null, =, < with ||, &&, NULL, ==, !=
+     * @param str string to format
+     * @return string with signs replaced
+     */
    private String replaceSigns(String str){
      String retVal = "";
      StringTokenizer tok = new StringTokenizer(str, "=orORandANDullULL<>", true);
@@ -1268,82 +1220,5 @@ retVal += str;
        }//switch
      }//while
      return retVal;
-
-
    }
-
-
-
-
-
-//end of supporting methods int he validation of the expression
-
-
-   //headless conversion support
-
 }
- /**
-  * qa comments:
-  * 01-21-04: vered
-  * bug 201 - ignores include missing values property.
-  *
-  * 01-26-03: vered
-  * bug 201 is fixed. updated module info.
-  *
-  * 02-11-04: vered
-  * added a validation of the expression inside the doit method.
-  * validating is done by FilterExpression, thus it is identical to the one done by
-  * the GUI of this class.
-  * for this reason I added methods that convert the sql condition back to the
-  * regular one that can be parsed by FilterExpression.
-  * for this reason, documentation was added to the module info,
-  *  directing the user how to use the properties editor manually, it at all.
-  */
-
-
-
- /**
-  *
-            private boolean[] getIsScalar(HashMap attMap) {
-              // build an ArrayList to keep the column name.
-              //colNames = new ArrayList();
-              // build an ArrayList to keep the column type.
-              colTypes = new ArrayList();
-              DatabaseMetaData metadata = null;
-
-              try {
-                Connection con = cw.getConnection();
-                metadata = con.getMetaData();
-                ResultSet columns = metadata.getColumns(null,"%",tableName,"%");
-                while (columns.next()) {
-                 // String columnName = columns.getString("COLUMN_NAME");
-                  String columnType = columns.getString("TYPE_NAME").toUpperCase();
-                //  colNames.add(columnName);
-                  colTypes.add(columnType);
-                }
-              }
-              catch (Exception e) {
-
-                System.out.println("Error occurred in getIsScalar.");
-                e.printStackTrace();
-              }
-
-              //Column[] cols = new Column[colNames.size()];
-              boolean[] retVal = new boolean [colTypes.size()];
-              for (int colIdx = 0; colIdx < colTypes.size(); colIdx++) {
-                //cols[colIdx] = new ObjectColumn(1);
-                //cols[colIdx].setLabel(colNames.get(colIdx).toString());
-
-                System.out.println("retrieving type of column index " + colIdx);
-
-
-                if(ColumnTypes.isEqualNumeric(colTypes.get(colIdx).toString()))
-                 retVal[colIdx] = true;
-                else
-                 retVal[colIdx] = false;
-              }
-
-              return retVal;
-            }
-
- */

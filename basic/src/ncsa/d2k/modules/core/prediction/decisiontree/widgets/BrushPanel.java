@@ -80,38 +80,36 @@ public final class BrushPanel extends JPanel {
 
    //~ Methods *****************************************************************
 
-   /**
-    * Get the minimum size
-    *
-    * @return the minimum size
-    */
-   public Dimension getMinimumSize() { return getPreferredSize(); }
 
-   /**
-    * Get the preferred size
-    * @return the preferred size
-    */
-   public Dimension getPreferredSize() {
+    /**
+     * The minimum size is large enough to show the brush panel and the insets
+     * around the brush panel
+     * @return minimum size
+     */
+    public Dimension getMinimumSize() {
+        return getPreferredSize();
+    }
 
-      /*Insets insets = getInsets();
-       *   int pwidth = (int) (insets.left + samplesize + samplespace +
-       * outputwidth + outputspace + tallywidth + tallyspace + percentwidth +
-       * insets.right);  int pheight = (int) (insets.top +
-       * samplesize*(outputs.length) + samplespace*(outputs.length-1) + descent
-       * + insets.bottom);  return new Dimension(pwidth, pheight);*/
 
-      Insets insets = getInsets();
+    /**
+     * The preferred size is large enough to show the brush panel and the insets
+     * around the brush panel
+     * @return preferred size
+     */
+    public Dimension getPreferredSize() {
 
-      double width = insets.left + insets.right;
-      double height = insets.top + insets.bottom;
+        Insets insets = getInsets();
 
-      if (view != null) {
-         width += view.getBrushWidth();
-         height += view.getBrushHeight();
-      }
+        double width = insets.left + insets.right;
+        double height = insets.top + insets.bottom;
 
-      return new Dimension((int) width, (int) height);
-   }
+        if (view != null) {
+            width += view.getBrushWidth();
+            height += view.getBrushHeight();
+        }
+
+        return new Dimension((int) width, (int) height);
+    }
 
 
     /**

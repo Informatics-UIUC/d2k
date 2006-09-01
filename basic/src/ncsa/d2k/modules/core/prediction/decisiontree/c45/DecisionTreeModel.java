@@ -85,13 +85,8 @@ public class DecisionTreeModel extends PredictionModelModule
    /** the output features */
    private int[] outputFeatures;
 
-// private int trainingSetSize;
-
    /** The root of the decision tree. */
    private DecisionTreeNode root;
-
-   /** The table that is passed to the tree to perform predictions. */
-   private transient ExampleTable table;
 
    /** unique values for all inputs */
    private String[][] uniqueInputs;
@@ -367,15 +362,7 @@ public class DecisionTreeModel extends PredictionModelModule
    public String[] getUniqueInputValues(int index) {
       return uniqueInputs[index];
    }
-
-   /**
-    * Get the number of examples from the data set passed to the predict method.
-    *
-    * @return the number of examples.
-    */
-/*      public int getNumExamples() {
- *              return numExamples;     }*/
-
+ 
    /**
     * Get the unique values of the output column.
     *

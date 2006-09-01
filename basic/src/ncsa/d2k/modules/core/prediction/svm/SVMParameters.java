@@ -48,7 +48,7 @@ import ncsa.d2k.core.modules.PropertyDescription;
 
 
 /**
- * Description of class SVMParameters.
+ * Lists all the properties for SVM and can create the PropertyDescriptions.
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -57,7 +57,7 @@ public class SVMParameters {
 
    //~ Static fields/initializers **********************************************
 
-   /** Description of field NUM_PROPS. */
+   /** number of properties */
    static public final int NUM_PROPS = 11;
 
    // parameters (properties) code
@@ -150,7 +150,7 @@ public class SVMParameters {
    /** nu SVR. */
    static public final int NU_SVR = 4;
 
-   /** Description of field SVM_TYPE_NAMES. */
+   /** names of SVM */
    static public final String[] SVM_TYPE_NAMES =
    {
       "C-SVC", "nu-SVC", "One Class SVM",
@@ -170,7 +170,7 @@ public class SVMParameters {
    /** Sigmoid. */
    static public final int SIGMOID = 3;
 
-   /** Description of field KERNEL_TYPE_NAMES. */
+   /** names of kernels */
    static public final String[] KERNEL_TYPE_NAMES =
    {
       "Linear", "Polynomial",

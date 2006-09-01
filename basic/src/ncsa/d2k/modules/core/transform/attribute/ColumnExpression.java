@@ -123,32 +123,54 @@ public class ColumnExpression implements Expression {
     /** string datatype */
    static public final int TYPE_STRING = 7;
 
-   /** pretty names of supported functions. */
+   /** pretty names for log. */
    static private final String LOG = "log";
+    /** pretty names for exponential */
    static private final String EXP = "exp";
+    /** pretty names for natural log. */
    static private final String NAT_LOG = "ln";
+    /** pretty names for absolute value. */
    static private final String ABS = "abs";
+    /** pretty names for sine */
    static private final String SIN = "sin";
+    /** pretty names for arcsine */
    static private final String ASIN = "asin";
+    /** pretty names for cosine */
    static private final String COS = "cos";
+    /** pretty names for arc cosine */
    static private final String ACOS = "acos";
+    /** pretty names for tangent */
    static private final String TAN = "tan";
+    /** pretty names for arctangent */
    static private final String ATAN = "atan";
+    /** pretty names for square root */
    static private final String SQRT = "sqrt";
+    /** pretty names for negation */
    static private final String NEG = "neg";
 
-   /** constants for supported functions. */
+   /** constants for log operation */
    static private final int LOG_OP = 0;
+    /** constants for exponential operation */
    static private final int EXP_OP = 1;
+    /** constants for natural log operation */
    static private final int NAT_LOG_OP = 2;
+    /** constants for absolute value operation */
    static private final int ABS_OP = 3;
+    /** constants for sine operation */
    static private final int SIN_OP = 4;
+    /** constants for arcsine operation */
    static private final int ASIN_OP = 5;
+    /** constants for cosine operation */
    static private final int COS_OP = 6;
+    /** constants for arccosine operation */
    static private final int ACOS_OP = 7;
+    /** constants for tangent operation */
    static private final int TAN_OP = 8;
+    /** constants for arctangent operation */
    static private final int ATAN_OP = 9;
+    /** constants for square root operation */
    static private final int SQRT_OP = 10;
+    /** constants for negation operation */
    static private final int NEG_OP = 11;
 
    //~ Instance fields *********************************************************
@@ -236,12 +258,6 @@ public class ColumnExpression implements Expression {
          this.missingValues[i] = false;
       }
    }
-
-
-// vered - replace this oerder with the one above, from basic3. ?
-   // private static final int[] order = { 0, 0, 2, 2, 1, 4, 3 };
-
-// vered - end merging.
 
    /**
     * Parse an expression and return the root of the evaluation tree.
@@ -891,11 +907,20 @@ public class ColumnExpression implements Expression {
     * @version $Revision$, $Date$
     */
    private abstract class Node {
-
+      /** datatype of value returned from evaluate */
       protected int returnType = 0;
 
+       /**
+        * Evaluate
+        * @return result of evaluation
+        * @throws ExpressionException
+        */
       public abstract Object evaluate() throws ExpressionException;
 
+       /**
+        * Get a nicely formatted description of this Node
+        * @return nicely formatted description of this Node
+        */
       public abstract String toString();
 
    }
@@ -1055,249 +1080,262 @@ public class ColumnExpression implements Expression {
          }
       }
 
-      public Object evaluate() throws ExpressionException {
-         double[] retVal = new double[table.getNumRows()];
-         double[] arg;
+       /**
+        * Evaluate
+        *
+        * @return result of evaluation
+        * @throws ncsa.d2k.modules.core.datatype.ExpressionException when
+        * something goes wrong
+        *
+        */
+       public Object evaluate() throws ExpressionException {
+           double[] retVal = new double[table.getNumRows()];
+           double[] arg;
 
-         // evaluate the argument and copy all of its results into a double
-         // array for simplicity later
-         switch (argument.returnType) {
+           // evaluate the argument and copy all of its results into a double
+           // array for simplicity later
+           switch (argument.returnType) {
 
-            case TYPE_BOOLEAN:
-               throw new ExpressionException("FunctionNode: Functions do not evaluate to boolean values.");
+               case TYPE_BOOLEAN:
+                   throw new ExpressionException("FunctionNode: Functions do not evaluate to boolean values.");
 
-            case TYPE_DOUBLE:
-               arg = (double[]) argument.evaluate();
+               case TYPE_DOUBLE:
+                   arg = (double[]) argument.evaluate();
 
-               break;
+                   break;
 
-            case TYPE_FLOAT:
+               case TYPE_FLOAT:
 
-               float[] ar = (float[]) argument.evaluate();
-               arg = new double[ar.length];
+                   float[] ar = (float[]) argument.evaluate();
+                   arg = new double[ar.length];
 
-               for (int i = 0; i < ar.length; i++) {
-                  arg[i] = ar[i];
-               }
+                   for (int i = 0; i < ar.length; i++) {
+                       arg[i] = ar[i];
+                   }
 
-               break;
+                   break;
 
-            case TYPE_LONG:
+               case TYPE_LONG:
 
-               long[] l = (long[]) argument.evaluate();
-               arg = new double[l.length];
+                   long[] l = (long[]) argument.evaluate();
+                   arg = new double[l.length];
 
-               for (int i = 0; i < l.length; i++) {
-                  arg[i] = l[i];
-               }
+                   for (int i = 0; i < l.length; i++) {
+                       arg[i] = l[i];
+                   }
 
-               break;
+                   break;
 
-            case TYPE_BYTE:
+               case TYPE_BYTE:
 
-               byte[] b = (byte[]) argument.evaluate();
-               arg = new double[b.length];
+                   byte[] b = (byte[]) argument.evaluate();
+                   arg = new double[b.length];
 
-               for (int i = 0; i < b.length; i++) {
-                  arg[i] = b[i];
-               }
+                   for (int i = 0; i < b.length; i++) {
+                       arg[i] = b[i];
+                   }
 
-               break;
+                   break;
 
-            case TYPE_INTEGER:
+               case TYPE_INTEGER:
 
-               int[] ia = (int[]) argument.evaluate();
-               arg = new double[ia.length];
+                   int[] ia = (int[]) argument.evaluate();
+                   arg = new double[ia.length];
 
-               for (int i = 0; i < ia.length; i++) {
-                  arg[i] = ia[i];
-               }
+                   for (int i = 0; i < ia.length; i++) {
+                       arg[i] = ia[i];
+                   }
 
-               break;
+                   break;
 
-            case TYPE_SHORT:
+               case TYPE_SHORT:
 
-               short[] s = (short[]) argument.evaluate();
-               arg = new double[s.length];
+                   short[] s = (short[]) argument.evaluate();
+                   arg = new double[s.length];
 
-               for (int i = 0; i < s.length; i++) {
-                  arg[i] = s[i];
-               }
+                   for (int i = 0; i < s.length; i++) {
+                       arg[i] = s[i];
+                   }
 
-               break;
+                   break;
 
-            default:
-               throw new ExpressionException("FunctionNode: Cannot use return type.");
-         }
+               default:
+                   throw new ExpressionException("FunctionNode: Cannot use return type.");
+           }
 
-         switch (operation) {
+           switch (operation) {
 
-            case LOG_OP:
+               case LOG_OP:
 
-               for (int i = 0; i < arg.length; i++) {
-                  retVal[i] = Math.log(arg[i]) / Math.log(10);
-               }
+                   for (int i = 0; i < arg.length; i++) {
+                       retVal[i] = Math.log(arg[i]) / Math.log(10);
+                   }
 
-               break;
+                   break;
 
-            case SIN_OP:
+               case SIN_OP:
 
-               for (int i = 0; i < arg.length; i++) {
-                  retVal[i] = Math.sin(arg[i]);
-               }
+                   for (int i = 0; i < arg.length; i++) {
+                       retVal[i] = Math.sin(arg[i]);
+                   }
 
-               break;
+                   break;
 
-            case COS_OP:
+               case COS_OP:
 
-               for (int i = 0; i < arg.length; i++) {
-                  retVal[i] = Math.cos(arg[i]);
-               }
+                   for (int i = 0; i < arg.length; i++) {
+                       retVal[i] = Math.cos(arg[i]);
+                   }
 
-               break;
+                   break;
 
-            case TAN_OP:
+               case TAN_OP:
 
-               for (int i = 0; i < arg.length; i++) {
-                  retVal[i] = Math.tan(arg[i]);
-               }
+                   for (int i = 0; i < arg.length; i++) {
+                       retVal[i] = Math.tan(arg[i]);
+                   }
 
-               break;
+                   break;
 
-            case SQRT_OP:
+               case SQRT_OP:
 
-               for (int i = 0; i < arg.length; i++) {
-                  retVal[i] = Math.sqrt(arg[i]);
-               }
+                   for (int i = 0; i < arg.length; i++) {
+                       retVal[i] = Math.sqrt(arg[i]);
+                   }
 
-               break;
+                   break;
 
-            case ABS_OP:
+               case ABS_OP:
 
-               for (int i = 0; i < arg.length; i++) {
-                  retVal[i] = Math.abs(arg[i]);
-               }
+                   for (int i = 0; i < arg.length; i++) {
+                       retVal[i] = Math.abs(arg[i]);
+                   }
 
-               break;
+                   break;
 
-            case EXP_OP:
+               case EXP_OP:
 
-               for (int i = 0; i < arg.length; i++) {
-                  retVal[i] = Math.exp(arg[i]);
-               }
+                   for (int i = 0; i < arg.length; i++) {
+                       retVal[i] = Math.exp(arg[i]);
+                   }
 
-               break;
+                   break;
 
-            case ASIN_OP:
+               case ASIN_OP:
 
-               for (int i = 0; i < arg.length; i++) {
-                  retVal[i] = Math.asin(arg[i]);
-               }
+                   for (int i = 0; i < arg.length; i++) {
+                       retVal[i] = Math.asin(arg[i]);
+                   }
 
-               break;
+                   break;
 
-            case ACOS_OP:
+               case ACOS_OP:
 
-               for (int i = 0; i < arg.length; i++) {
-                  retVal[i] = Math.acos(arg[i]);
-               }
+                   for (int i = 0; i < arg.length; i++) {
+                       retVal[i] = Math.acos(arg[i]);
+                   }
 
-               break;
+                   break;
 
-            case ATAN_OP:
+               case ATAN_OP:
 
-               for (int i = 0; i < arg.length; i++) {
-                  retVal[i] = Math.atan(arg[i]);
-               }
+                   for (int i = 0; i < arg.length; i++) {
+                       retVal[i] = Math.atan(arg[i]);
+                   }
 
-               break;
+                   break;
 
-            case NEG_OP:
+               case NEG_OP:
 
-               for (int i = 0; i < arg.length; i++) {
-                  retVal[i] = arg[i] * -1;
-               }
+                   for (int i = 0; i < arg.length; i++) {
+                       retVal[i] = arg[i] * -1;
+                   }
 
-               break;
+                   break;
 
-            default:
-               throw new ExpressionException("FunctionNode: Function not recognized.");
+               default:
+                   throw new ExpressionException("FunctionNode: Function not recognized.");
 
-         }
+           }
 
-         return retVal;
-      } // end method evaluate
+           return retVal;
+       } // end method evaluate
 
-      public String toString() {
-         StringBuffer sb = new StringBuffer();
+       /**
+        * Get a nicely formatted description of this Node
+        *
+        * @return nicely formatted description of this Node
+        */
+       public String toString() {
+           StringBuffer sb = new StringBuffer();
 
-         switch (operation) {
+           switch (operation) {
 
-            case LOG_OP:
-               sb.append(LOG);
+               case LOG_OP:
+                   sb.append(LOG);
 
-               break;
+                   break;
 
-            case SIN_OP:
-               sb.append(SIN);
+               case SIN_OP:
+                   sb.append(SIN);
 
-               break;
+                   break;
 
-            case COS_OP:
-               sb.append(COS);
+               case COS_OP:
+                   sb.append(COS);
 
-               break;
+                   break;
 
-            case TAN_OP:
-               sb.append(TAN);
+               case TAN_OP:
+                   sb.append(TAN);
 
-               break;
+                   break;
 
-            case SQRT_OP:
-               sb.append(SQRT);
+               case SQRT_OP:
+                   sb.append(SQRT);
 
-               break;
+                   break;
 
-            case ABS_OP:
-               sb.append(ABS);
+               case ABS_OP:
+                   sb.append(ABS);
 
-               break;
+                   break;
 
-            case EXP_OP:
-               sb.append(EXP);
+               case EXP_OP:
+                   sb.append(EXP);
 
-               break;
+                   break;
 
-            case ASIN_OP:
-               sb.append(ASIN);
+               case ASIN_OP:
+                   sb.append(ASIN);
 
-               break;
+                   break;
 
-            case ACOS_OP:
-               sb.append(ACOS);
+               case ACOS_OP:
+                   sb.append(ACOS);
 
-               break;
+                   break;
 
-            case ATAN_OP:
-               sb.append(ATAN);
+               case ATAN_OP:
+                   sb.append(ATAN);
 
-               break;
+                   break;
 
-            case NEG_OP:
-               sb.append(NEG);
+               case NEG_OP:
+                   sb.append(NEG);
 
-               break;
-               /*        case POW_OP:
-                *        sb.append(POW);       break;
-                */
-         }
+                   break;
+                   /*        case POW_OP:
+                   *        sb.append(POW);       break;
+                   */
+           }
 
-         sb.append('(');
-         sb.append(argument.toString());
-         sb.append(')');
+           sb.append('(');
+           sb.append(argument.toString());
+           sb.append(')');
 
-         return sb.toString();
-      } // end method toString
+           return sb.toString();
+       } // end method toString
    } // FunctionNode
 
    /**
@@ -1308,8 +1346,9 @@ public class ColumnExpression implements Expression {
     */
    private class OperationNode extends Node {
 
-      /** children. */
+      /** left child */
       private Node left;
+       /** right child */
       private Node right;
 
       /** type of operation. */
@@ -1562,2022 +1601,2026 @@ public class ColumnExpression implements Expression {
 
       }
 
-      ////////////////////////////////////////////////////////////////////////////////
-      // The big one. Operation evaluation is the main chunk of this class.
-      // //
-      ////////////////////////////////////////////////////////////////////////////////
-      public Object evaluate() throws ExpressionException {
 
-         int numRows = table.getNumRows();
-         Object[] output = new Object[numRows];
+       /**
+        * Evaluate
+        *
+        * @return result of evaluation
+        * @throws ncsa.d2k.modules.core.datatype.ExpressionException when
+        * something goes wrong
+        */
+       public Object evaluate() throws ExpressionException {
 
-         switch (left.returnType) {
+           int numRows = table.getNumRows();
+           Object[] output = new Object[numRows];
 
-            case TYPE_BOOLEAN:
+           switch (left.returnType) {
 
-               switch (right.returnType) {
+               case TYPE_BOOLEAN:
 
-                  case TYPE_BOOLEAN:
+                   switch (right.returnType) {
 
-                     boolean[] b = new boolean[table.getNumRows()];
-                     boolean[] bL = (boolean[]) left.evaluate();
-                     boolean[] bR = (boolean[]) right.evaluate();
+                       case TYPE_BOOLEAN:
 
-                     switch (type) {
+                           boolean[] b = new boolean[table.getNumRows()];
+                           boolean[] bL = (boolean[]) left.evaluate();
+                           boolean[] bR = (boolean[]) right.evaluate();
 
-                        case AND:
+                           switch (type) {
 
-                           for (int i = 0; i < b.length; i++) {
-                              b[i] = bL[i] && bR[i];
+                               case AND:
+
+                                   for (int i = 0; i < b.length; i++) {
+                                       b[i] = bL[i] && bR[i];
+                                   }
+
+                                   break;
+
+                               case OR:
+
+                                   for (int i = 0; i < b.length; i++) {
+                                       b[i] = bL[i] || bR[i];
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) b;
 
-                        case OR:
-
-                           for (int i = 0; i < b.length; i++) {
-                              b[i] = bL[i] || bR[i];
-                           }
-
-                           break;
-
-                        default:
+                       default:
                            throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
 
-                     return (Object) b;
+                   }
 
-                  default:
-                     throw new ExpressionException("ColumnExpression: Illegal expression.");
+               case TYPE_BYTE:
 
-               }
+                   switch (right.returnType) {
 
-            case TYPE_BYTE:
-
-               switch (right.returnType) {
-
-                  case TYPE_BOOLEAN:
-                     throw new ExpressionException("ColumnExpression: Illegal expression.");
-
-                  case TYPE_BYTE:
-
-                     byte[] b = new byte[table.getNumRows()];
-                     byte[] bL = (byte[]) left.evaluate();
-                     byte[] bR = (byte[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < b.length; i++) {
-                              b[i] = (byte) (bL[i] + bR[i]);
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < b.length; i++) {
-                              b[i] = (byte) (bL[i] - bR[i]);
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < b.length; i++) {
-                              b[i] = (byte) (bL[i] * bR[i]);
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < b.length; i++) {
-                              b[i] = (byte) (bL[i] / bR[i]);
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < b.length; i++) {
-                              b[i] = (byte) (bL[i] % bR[i]);
-                           }
-
-                           break;
-
-                        case POW:
-
-                           for (int i = 0; i < b.length; i++) {
-                              b[i] = (byte) Math.pow(bL[i], bR[i]);
-                           }
-
-                           break;
-
-
-                        default:
+                       case TYPE_BOOLEAN:
                            throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
 
-                     return (Object) b;
+                       case TYPE_BYTE:
 
-                  case TYPE_DOUBLE:
+                           byte[] b = new byte[table.getNumRows()];
+                           byte[] bL = (byte[]) left.evaluate();
+                           byte[] bR = (byte[]) right.evaluate();
 
-                     double[] d = new double[table.getNumRows()];
-                     bL = (byte[]) left.evaluate();
+                           switch (type) {
 
-                     double[] dR = (double[]) right.evaluate();
+                               case ADDITION:
 
-                     switch (type) {
+                                   for (int i = 0; i < b.length; i++) {
+                                       b[i] = (byte) (bL[i] + bR[i]);
+                                   }
 
-                        case ADDITION:
+                                   break;
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) bL[i] + dR[i];
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < b.length; i++) {
+                                       b[i] = (byte) (bL[i] - bR[i]);
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < b.length; i++) {
+                                       b[i] = (byte) (bL[i] * bR[i]);
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < b.length; i++) {
+                                       b[i] = (byte) (bL[i] / bR[i]);
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < b.length; i++) {
+                                       b[i] = (byte) (bL[i] % bR[i]);
+                                   }
+
+                                   break;
+
+                               case POW:
+
+                                   for (int i = 0; i < b.length; i++) {
+                                       b[i] = (byte) Math.pow(bL[i], bR[i]);
+                                   }
+
+                                   break;
+
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) b;
 
-                        case SUBTRACTION:
+                       case TYPE_DOUBLE:
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) bL[i] - dR[i];
+                           double[] d = new double[table.getNumRows()];
+                           bL = (byte[]) left.evaluate();
+
+                           double[] dR = (double[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) bL[i] + dR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) bL[i] - dR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) bL[i] * dR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) bL[i] / dR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) bL[i] % dR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = Math.pow(bL[i], dR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) d;
 
-                        case MULTIPLICATION:
+                       case TYPE_FLOAT:
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) bL[i] * dR[i];
+                           float[] f = new float[table.getNumRows()];
+                           bL = (byte[]) left.evaluate();
+
+                           float[] fR = (float[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) bL[i] + fR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) bL[i] - fR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) bL[i] * fR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) bL[i] / fR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) bL[i] % fR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) Math.pow(bL[i], fR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) f;
 
-                        case DIVISION:
+                       case TYPE_INTEGER:
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) bL[i] / dR[i];
+                           int[] I = new int[table.getNumRows()];
+                           bL = (byte[]) left.evaluate();
+
+                           int[] iR = (int[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = (int) bL[i] + iR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = (int) bL[i] - iR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = (int) bL[i] * iR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = (int) bL[i] / iR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = (int) bL[i] % iR[i];
+                                   }
+
+                                   break;
+
+                               case POW:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = (int) Math.pow(bL[i], iR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) I;
 
-                        case MODULUS:
+                       case TYPE_LONG:
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) bL[i] % dR[i];
+                           long[] l = new long[table.getNumRows()];
+                           bL = (byte[]) left.evaluate();
+
+                           long[] lR = (long[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) bL[i] + lR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) bL[i] - lR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) bL[i] * lR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) bL[i] / lR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) bL[i] % lR[i];
+                                   }
+
+                                   break;
+
+                               case POW:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) Math.pow(bL[i], lR[i]);
+                                   }
+
+                                   break;
+
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) l;
+
+                       case TYPE_SHORT:
+
+                           short[] s = new short[table.getNumRows()];
+                           bL = (byte[]) left.evaluate();
+
+                           short[] sR = (short[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) ((short) bL[i] + sR[i]);
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) ((short) bL[i] - sR[i]);
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) ((short) bL[i] * sR[i]);
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) ((short) bL[i] / sR[i]);
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) ((short) bL[i] % sR[i]);
+                                   }
+
+                                   break;
 
 
-                        case POW:
+                               case POW:
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = Math.pow(bL[i], dR[i]);
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) Math.pow(bL[i], sR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) s;
 
-                        default:
+                       default:
                            throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
 
-                     return (Object) d;
+                   }
 
-                  case TYPE_FLOAT:
+               case TYPE_DOUBLE:
 
-                     float[] f = new float[table.getNumRows()];
-                     bL = (byte[]) left.evaluate();
+                   switch (right.returnType) {
 
-                     float[] fR = (float[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) bL[i] + fR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) bL[i] - fR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) bL[i] * fR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) bL[i] / fR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) bL[i] % fR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) Math.pow(bL[i], fR[i]);
-                           }
-
-                           break;
-
-                        default:
+                       case TYPE_BOOLEAN:
                            throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
 
-                     return (Object) f;
+                       case TYPE_BYTE:
 
-                  case TYPE_INTEGER:
+                           double[] d = new double[table.getNumRows()];
+                           double[] dL = (double[]) left.evaluate();
+                           byte[] bR = (byte[]) right.evaluate();
 
-                     int[] I = new int[table.getNumRows()];
-                     bL = (byte[]) left.evaluate();
+                           switch (type) {
 
-                     int[] iR = (int[]) right.evaluate();
+                               case ADDITION:
 
-                     switch (type) {
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] + (double) bR[i];
+                                   }
 
-                        case ADDITION:
+                                   break;
 
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = (int) bL[i] + iR[i];
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] - (double) bR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] * (double) bR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] / (double) bR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] % (double) bR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = Math.pow(dL[i], bR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal Expression.");
                            }
 
-                           break;
+                           return (Object) d;
 
-                        case SUBTRACTION:
+                       case TYPE_DOUBLE:
+                           d = new double[table.getNumRows()];
+                           dL = (double[]) left.evaluate();
 
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = (int) bL[i] - iR[i];
+                           double[] dR = (double[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] + dR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] - dR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] * dR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] / dR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] % dR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = Math.pow(dL[i], dR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) d;
 
-                        case MULTIPLICATION:
+                       case TYPE_FLOAT:
+                           d = new double[table.getNumRows()];
+                           dL = (double[]) left.evaluate();
 
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = (int) bL[i] * iR[i];
+                           float[] fR = (float[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] + (double) fR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] - (double) fR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] * (double) fR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] / (double) fR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] % (double) fR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = Math.pow(dL[i], fR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) d;
 
-                        case DIVISION:
+                       case TYPE_INTEGER:
+                           d = new double[table.getNumRows()];
+                           dL = (double[]) left.evaluate();
 
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = (int) bL[i] / iR[i];
+                           int[] iR = (int[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] + (double) iR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] - (double) iR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] * (double) iR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] / (double) iR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] % (double) iR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = Math.pow(dL[i], iR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) d;
 
-                        case MODULUS:
+                       case TYPE_LONG:
+                           d = new double[table.getNumRows()];
+                           dL = (double[]) left.evaluate();
 
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = (int) bL[i] % iR[i];
+                           long[] lR = (long[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] + (double) lR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] - (double) lR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] * (double) lR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] / (double) lR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] % (double) lR[i];
+                                   }
+
+                                   break;
+
+                               case POW:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = Math.pow(dL[i], lR[i]);
+                                   }
+
+                                   break;
+
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) d;
 
-                        case POW:
+                       case TYPE_SHORT:
+                           d = new double[table.getNumRows()];
+                           dL = (double[]) left.evaluate();
 
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = (int) Math.pow(bL[i], iR[i]);
+                           short[] sR = (short[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] + (double) sR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] - (double) sR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] * (double) sR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] / (double) sR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = dL[i] % (double) sR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = Math.pow(dL[i], sR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) d;
 
-                        default:
+                       default:
                            throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
 
-                     return (Object) I;
+                   }
 
-                  case TYPE_LONG:
+               case TYPE_FLOAT:
 
-                     long[] l = new long[table.getNumRows()];
-                     bL = (byte[]) left.evaluate();
+                   switch (right.returnType) {
 
-                     long[] lR = (long[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) bL[i] + lR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) bL[i] - lR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) bL[i] * lR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) bL[i] / lR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) bL[i] % lR[i];
-                           }
-
-                           break;
-
-                        case POW:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) Math.pow(bL[i], lR[i]);
-                           }
-
-                           break;
-
-
-                        default:
+                       case TYPE_BOOLEAN:
                            throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
 
-                     return (Object) l;
+                       case TYPE_BYTE:
 
-                  case TYPE_SHORT:
+                           float[] f = new float[table.getNumRows()];
+                           float[] fL = (float[]) left.evaluate();
+                           byte[] bR = (byte[]) right.evaluate();
 
-                     short[] s = new short[table.getNumRows()];
-                     bL = (byte[]) left.evaluate();
+                           switch (type) {
 
-                     short[] sR = (short[]) right.evaluate();
+                               case ADDITION:
 
-                     switch (type) {
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] + (float) bR[i];
+                                   }
 
-                        case ADDITION:
+                                   break;
 
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) ((short) bL[i] + sR[i]);
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] - (float) bR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] * (float) bR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] / (float) bR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] % (float) bR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) Math.pow(fL[i], bR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal Expression.");
                            }
 
-                           break;
+                           return (Object) f;
 
-                        case SUBTRACTION:
+                       case TYPE_DOUBLE:
 
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) ((short) bL[i] - sR[i]);
+                           double[] d = new double[table.getNumRows()];
+                           fL = (float[]) left.evaluate();
+
+                           double[] dR = (double[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) fL[i] + dR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) fL[i] - dR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) fL[i] * dR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) fL[i] / dR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) fL[i] % dR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = Math.pow(fL[i], dR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) d;
 
-                        case MULTIPLICATION:
+                       case TYPE_FLOAT:
+                           f = new float[table.getNumRows()];
+                           fL = (float[]) left.evaluate();
 
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) ((short) bL[i] * sR[i]);
+                           float[] fR = (float[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] + fR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] - fR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] * fR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] / fR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] % fR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) Math.pow(fL[i], fR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) f;
 
-                        case DIVISION:
+                       case TYPE_INTEGER:
+                           f = new float[table.getNumRows()];
+                           fL = (float[]) left.evaluate();
 
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) ((short) bL[i] / sR[i]);
+                           int[] iR = (int[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] + (float) iR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] - (float) iR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] * (float) iR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] / (float) iR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] % (float) iR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) Math.pow(fL[i], iR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) f;
 
-                        case MODULUS:
+                       case TYPE_LONG:
+                           d = new double[table.getNumRows()];
+                           fL = (float[]) left.evaluate();
 
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) ((short) bL[i] % sR[i]);
+                           long[] lR = (long[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) fL[i] + (double) lR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) fL[i] - (double) lR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) fL[i] * (double) lR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) fL[i] / (double) lR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) fL[i] % (double) lR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = Math.pow(fL[i], lR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) d;
+
+                       case TYPE_SHORT:
+                           f = new float[table.getNumRows()];
+                           fL = (float[]) left.evaluate();
+
+                           short[] sR = (short[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] + (float) sR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] - (float) sR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] * (float) sR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] / (float) sR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = fL[i] % (float) sR[i];
+                                   }
+
+                                   break;
 
 
-                        case POW:
+                               case POW:
 
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) Math.pow(bL[i], sR[i]);
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) Math.pow(fL[i], sR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) f;
 
-                        default:
+                       default:
                            throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
 
-                     return (Object) s;
+                   }
 
-                  default:
-                     throw new ExpressionException("ColumnExpression: Illegal expression.");
+               case TYPE_INTEGER:
 
-               }
+                   switch (right.returnType) {
 
-            case TYPE_DOUBLE:
-
-               switch (right.returnType) {
-
-                  case TYPE_BOOLEAN:
-                     throw new ExpressionException("ColumnExpression: Illegal expression.");
-
-                  case TYPE_BYTE:
-
-                     double[] d = new double[table.getNumRows()];
-                     double[] dL = (double[]) left.evaluate();
-                     byte[] bR = (byte[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] + (double) bR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] - (double) bR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] * (double) bR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] / (double) bR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] % (double) bR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = Math.pow(dL[i], bR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal Expression.");
-                     }
-
-                     return (Object) d;
-
-                  case TYPE_DOUBLE:
-                     d = new double[table.getNumRows()];
-                     dL = (double[]) left.evaluate();
-
-                     double[] dR = (double[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] + dR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] - dR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] * dR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] / dR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] % dR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = Math.pow(dL[i], dR[i]);
-                           }
-
-                           break;
-
-                        default:
+                       case TYPE_BOOLEAN:
                            throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
 
-                     return (Object) d;
+                       case TYPE_BYTE:
 
-                  case TYPE_FLOAT:
-                     d = new double[table.getNumRows()];
-                     dL = (double[]) left.evaluate();
+                           int[] I = new int[table.getNumRows()];
+                           int[] iL = (int[]) left.evaluate();
+                           byte[] bR = (byte[]) right.evaluate();
 
-                     float[] fR = (float[]) right.evaluate();
+                           switch (type) {
 
-                     switch (type) {
+                               case ADDITION:
 
-                        case ADDITION:
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = iL[i] + (int) bR[i];
+                                   }
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] + (double) fR[i];
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = iL[i] - (int) bR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = iL[i] * (int) bR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = iL[i] / (int) bR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = iL[i] % (int) bR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = (int) Math.pow(iL[i], bR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal Expression.");
                            }
 
-                           break;
+                           return (Object) I;
 
-                        case SUBTRACTION:
+                       case TYPE_DOUBLE:
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] - (double) fR[i];
+                           double[] d = new double[table.getNumRows()];
+                           iL = (int[]) left.evaluate();
+
+                           double[] dR = (double[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) iL[i] + dR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) iL[i] - dR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) iL[i] * dR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) iL[i] / dR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) iL[i] % dR[i];
+                                   }
+
+                                   break;
+
+                               case POW:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = Math.pow(iL[i], dR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) d;
 
-                        case MULTIPLICATION:
+                       case TYPE_FLOAT:
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] * (double) fR[i];
+                           float[] f = new float[table.getNumRows()];
+                           iL = (int[]) left.evaluate();
+
+                           float[] fR = (float[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) iL[i] + fR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) iL[i] - fR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) iL[i] * fR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) iL[i] / fR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) iL[i] % fR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) Math.pow(iL[i], fR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) f;
 
-                        case DIVISION:
+                       case TYPE_INTEGER:
+                           I = new int[table.getNumRows()];
+                           iL = (int[]) left.evaluate();
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] / (double) fR[i];
+                           int[] iR = (int[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = iL[i] + iR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = iL[i] - iR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = iL[i] * iR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = iL[i] / iR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = iL[i] % iR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = (int) Math.pow(iL[i], iR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) I;
 
-                        case MODULUS:
+                       case TYPE_LONG:
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] % (double) fR[i];
+                           long[] l = new long[table.getNumRows()];
+                           iL = (int[]) left.evaluate();
+
+                           long[] lR = (long[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) iL[i] + lR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) iL[i] - lR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) iL[i] * lR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) iL[i] / lR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) iL[i] % lR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) Math.pow(iL[i], lR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) l;
 
+                       case TYPE_SHORT:
+                           I = new int[table.getNumRows()];
+                           iL = (int[]) left.evaluate();
 
-                        case POW:
+                           short[] sR = (short[]) right.evaluate();
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = Math.pow(dL[i], fR[i]);
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = iL[i] + (int) sR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = iL[i] - (int) sR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = iL[i] * (int) sR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = iL[i] / (int) sR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = iL[i] % (int) sR[i];
+                                   }
+
+                                   break;
+
+                               case POW:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = (int) Math.pow(iL[i], sR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) I;
 
-                        default:
+                       default:
                            throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
 
-                     return (Object) d;
+                   }
 
-                  case TYPE_INTEGER:
-                     d = new double[table.getNumRows()];
-                     dL = (double[]) left.evaluate();
+               case TYPE_SHORT:
 
-                     int[] iR = (int[]) right.evaluate();
+                   switch (right.returnType) {
 
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] + (double) iR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] - (double) iR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] * (double) iR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] / (double) iR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] % (double) iR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = Math.pow(dL[i], iR[i]);
-                           }
-
-                           break;
-
-                        default:
+                       case TYPE_BOOLEAN:
                            throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
 
-                     return (Object) d;
+                       case TYPE_BYTE:
 
-                  case TYPE_LONG:
-                     d = new double[table.getNumRows()];
-                     dL = (double[]) left.evaluate();
+                           short[] s = new short[table.getNumRows()];
+                           short[] sL = (short[]) left.evaluate();
+                           byte[] bR = (byte[]) right.evaluate();
 
-                     long[] lR = (long[]) right.evaluate();
+                           switch (type) {
 
-                     switch (type) {
+                               case ADDITION:
 
-                        case ADDITION:
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) (sL[i] + (short) bR[i]);
+                                   }
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] + (double) lR[i];
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) (sL[i] - (short) bR[i]);
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) (sL[i] * (short) bR[i]);
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) (sL[i] / (short) bR[i]);
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) (sL[i] % (short) bR[i]);
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) Math.pow(sL[i], bR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) s;
 
-                        case SUBTRACTION:
+                       case TYPE_DOUBLE:
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] - (double) lR[i];
+                           double[] d = new double[table.getNumRows()];
+                           sL = (short[]) left.evaluate();
+
+                           double[] dR = (double[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) sL[i] + dR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) sL[i] - dR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) sL[i] * dR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) sL[i] / dR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) sL[i] % dR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < d.length; i++) {
+                                       d[i] = (double) Math.pow(sL[i], dR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) d;
 
-                        case MULTIPLICATION:
+                       case TYPE_FLOAT:
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] * (double) lR[i];
+                           float[] f = new float[table.getNumRows()];
+                           sL = (short[]) left.evaluate();
+
+                           float[] fR = (float[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) sL[i] + fR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) sL[i] - fR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) sL[i] * fR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) sL[i] / fR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) sL[i] % fR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < f.length; i++) {
+                                       f[i] = (float) Math.pow(sL[i], fR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) f;
 
-                        case DIVISION:
+                       case TYPE_INTEGER:
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] / (double) lR[i];
+                           int[] I = new int[table.getNumRows()];
+                           sL = (short[]) left.evaluate();
+
+                           int[] iR = (int[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = (int) sL[i] + iR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = (int) sL[i] - iR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = (int) sL[i] * iR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = (int) sL[i] / iR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = (int) sL[i] % iR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < I.length; i++) {
+                                       I[i] = (int) Math.pow(sL[i], iR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) I;
 
-                        case MODULUS:
+                       case TYPE_LONG:
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] % (double) lR[i];
+                           long[] l = new long[table.getNumRows()];
+                           sL = (short[]) left.evaluate();
+
+                           long[] lR = (long[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) sL[i] + lR[i];
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) sL[i] - lR[i];
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) sL[i] * lR[i];
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) sL[i] / lR[i];
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) sL[i] % lR[i];
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < l.length; i++) {
+                                       l[i] = (long) Math.pow(sL[i], lR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) l;
 
-                        case POW:
+                       case TYPE_SHORT:
+                           s = new short[table.getNumRows()];
+                           sL = (short[]) left.evaluate();
 
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = Math.pow(dL[i], lR[i]);
+                           short[] sR = (short[]) right.evaluate();
+
+                           switch (type) {
+
+                               case ADDITION:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) (sL[i] + sR[i]);
+                                   }
+
+                                   break;
+
+                               case SUBTRACTION:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) (sL[i] - sR[i]);
+                                   }
+
+                                   break;
+
+                               case MULTIPLICATION:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) (sL[i] * sR[i]);
+                                   }
+
+                                   break;
+
+                               case DIVISION:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) (sL[i] / sR[i]);
+                                   }
+
+                                   break;
+
+                               case MODULUS:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) (sL[i] % sR[i]);
+                                   }
+
+                                   break;
+
+
+                               case POW:
+
+                                   for (int i = 0; i < s.length; i++) {
+                                       s[i] = (short) Math.pow(sL[i], sR[i]);
+                                   }
+
+                                   break;
+
+                               default:
+                                   throw new ExpressionException("ColumnExpression: Illegal expression.");
                            }
 
-                           break;
+                           return (Object) s;
 
-
-                        default:
+                       default:
                            throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
 
-                     return (Object) d;
+                   } // switch(right return type)
 
-                  case TYPE_SHORT:
-                     d = new double[table.getNumRows()];
-                     dL = (double[]) left.evaluate();
+           } // switch(left return type)
 
-                     short[] sR = (short[]) right.evaluate();
+           throw new ExpressionException("ColumnExpression: apparently malformed expression.");
+           // return null;
 
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] + (double) sR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] - (double) sR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] * (double) sR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] / (double) sR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = dL[i] % (double) sR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = Math.pow(dL[i], sR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) d;
-
-                  default:
-                     throw new ExpressionException("ColumnExpression: Illegal expression.");
-
-               }
-
-            case TYPE_FLOAT:
-
-               switch (right.returnType) {
-
-                  case TYPE_BOOLEAN:
-                     throw new ExpressionException("ColumnExpression: Illegal expression.");
-
-                  case TYPE_BYTE:
-
-                     float[] f = new float[table.getNumRows()];
-                     float[] fL = (float[]) left.evaluate();
-                     byte[] bR = (byte[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] + (float) bR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] - (float) bR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] * (float) bR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] / (float) bR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] % (float) bR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) Math.pow(fL[i], bR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal Expression.");
-                     }
-
-                     return (Object) f;
-
-                  case TYPE_DOUBLE:
-
-                     double[] d = new double[table.getNumRows()];
-                     fL = (float[]) left.evaluate();
-
-                     double[] dR = (double[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) fL[i] + dR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) fL[i] - dR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) fL[i] * dR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) fL[i] / dR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) fL[i] % dR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = Math.pow(fL[i], dR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) d;
-
-                  case TYPE_FLOAT:
-                     f = new float[table.getNumRows()];
-                     fL = (float[]) left.evaluate();
-
-                     float[] fR = (float[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] + fR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] - fR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] * fR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] / fR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] % fR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) Math.pow(fL[i], fR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) f;
-
-                  case TYPE_INTEGER:
-                     f = new float[table.getNumRows()];
-                     fL = (float[]) left.evaluate();
-
-                     int[] iR = (int[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] + (float) iR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] - (float) iR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] * (float) iR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] / (float) iR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] % (float) iR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) Math.pow(fL[i], iR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) f;
-
-                  case TYPE_LONG:
-                     d = new double[table.getNumRows()];
-                     fL = (float[]) left.evaluate();
-
-                     long[] lR = (long[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) fL[i] + (double) lR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) fL[i] - (double) lR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) fL[i] * (double) lR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) fL[i] / (double) lR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) fL[i] % (double) lR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = Math.pow(fL[i], lR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) d;
-
-                  case TYPE_SHORT:
-                     f = new float[table.getNumRows()];
-                     fL = (float[]) left.evaluate();
-
-                     short[] sR = (short[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] + (float) sR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] - (float) sR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] * (float) sR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] / (float) sR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = fL[i] % (float) sR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) Math.pow(fL[i], sR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) f;
-
-                  default:
-                     throw new ExpressionException("ColumnExpression: Illegal expression.");
-
-               }
-
-            case TYPE_INTEGER:
-
-               switch (right.returnType) {
-
-                  case TYPE_BOOLEAN:
-                     throw new ExpressionException("ColumnExpression: Illegal expression.");
-
-                  case TYPE_BYTE:
-
-                     int[] I = new int[table.getNumRows()];
-                     int[] iL = (int[]) left.evaluate();
-                     byte[] bR = (byte[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = iL[i] + (int) bR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = iL[i] - (int) bR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = iL[i] * (int) bR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = iL[i] / (int) bR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = iL[i] % (int) bR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = (int) Math.pow(iL[i], bR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal Expression.");
-                     }
-
-                     return (Object) I;
-
-                  case TYPE_DOUBLE:
-
-                     double[] d = new double[table.getNumRows()];
-                     iL = (int[]) left.evaluate();
-
-                     double[] dR = (double[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) iL[i] + dR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) iL[i] - dR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) iL[i] * dR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) iL[i] / dR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) iL[i] % dR[i];
-                           }
-
-                           break;
-
-                        case POW:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = Math.pow(iL[i], dR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) d;
-
-                  case TYPE_FLOAT:
-
-                     float[] f = new float[table.getNumRows()];
-                     iL = (int[]) left.evaluate();
-
-                     float[] fR = (float[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) iL[i] + fR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) iL[i] - fR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) iL[i] * fR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) iL[i] / fR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) iL[i] % fR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) Math.pow(iL[i], fR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) f;
-
-                  case TYPE_INTEGER:
-                     I = new int[table.getNumRows()];
-                     iL = (int[]) left.evaluate();
-
-                     int[] iR = (int[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = iL[i] + iR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = iL[i] - iR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = iL[i] * iR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = iL[i] / iR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = iL[i] % iR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = (int) Math.pow(iL[i], iR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) I;
-
-                  case TYPE_LONG:
-
-                     long[] l = new long[table.getNumRows()];
-                     iL = (int[]) left.evaluate();
-
-                     long[] lR = (long[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) iL[i] + lR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) iL[i] - lR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) iL[i] * lR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) iL[i] / lR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) iL[i] % lR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) Math.pow(iL[i], lR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) l;
-
-                  case TYPE_SHORT:
-                     I = new int[table.getNumRows()];
-                     iL = (int[]) left.evaluate();
-
-                     short[] sR = (short[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = iL[i] + (int) sR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = iL[i] - (int) sR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = iL[i] * (int) sR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = iL[i] / (int) sR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = iL[i] % (int) sR[i];
-                           }
-
-                           break;
-
-                        case POW:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = (int) Math.pow(iL[i], sR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) I;
-
-                  default:
-                     throw new ExpressionException("ColumnExpression: Illegal expression.");
-
-               }
-
-            case TYPE_SHORT:
-
-               switch (right.returnType) {
-
-                  case TYPE_BOOLEAN:
-                     throw new ExpressionException("ColumnExpression: Illegal expression.");
-
-                  case TYPE_BYTE:
-
-                     short[] s = new short[table.getNumRows()];
-                     short[] sL = (short[]) left.evaluate();
-                     byte[] bR = (byte[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) (sL[i] + (short) bR[i]);
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) (sL[i] - (short) bR[i]);
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) (sL[i] * (short) bR[i]);
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) (sL[i] / (short) bR[i]);
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) (sL[i] % (short) bR[i]);
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) Math.pow(sL[i], bR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) s;
-
-                  case TYPE_DOUBLE:
-
-                     double[] d = new double[table.getNumRows()];
-                     sL = (short[]) left.evaluate();
-
-                     double[] dR = (double[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) sL[i] + dR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) sL[i] - dR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) sL[i] * dR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) sL[i] / dR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) sL[i] % dR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < d.length; i++) {
-                              d[i] = (double) Math.pow(sL[i], dR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) d;
-
-                  case TYPE_FLOAT:
-
-                     float[] f = new float[table.getNumRows()];
-                     sL = (short[]) left.evaluate();
-
-                     float[] fR = (float[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) sL[i] + fR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) sL[i] - fR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) sL[i] * fR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) sL[i] / fR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) sL[i] % fR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < f.length; i++) {
-                              f[i] = (float) Math.pow(sL[i], fR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) f;
-
-                  case TYPE_INTEGER:
-
-                     int[] I = new int[table.getNumRows()];
-                     sL = (short[]) left.evaluate();
-
-                     int[] iR = (int[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = (int) sL[i] + iR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = (int) sL[i] - iR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = (int) sL[i] * iR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = (int) sL[i] / iR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = (int) sL[i] % iR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < I.length; i++) {
-                              I[i] = (int) Math.pow(sL[i], iR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) I;
-
-                  case TYPE_LONG:
-
-                     long[] l = new long[table.getNumRows()];
-                     sL = (short[]) left.evaluate();
-
-                     long[] lR = (long[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) sL[i] + lR[i];
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) sL[i] - lR[i];
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) sL[i] * lR[i];
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) sL[i] / lR[i];
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) sL[i] % lR[i];
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < l.length; i++) {
-                              l[i] = (long) Math.pow(sL[i], lR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) l;
-
-                  case TYPE_SHORT:
-                     s = new short[table.getNumRows()];
-                     sL = (short[]) left.evaluate();
-
-                     short[] sR = (short[]) right.evaluate();
-
-                     switch (type) {
-
-                        case ADDITION:
-
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) (sL[i] + sR[i]);
-                           }
-
-                           break;
-
-                        case SUBTRACTION:
-
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) (sL[i] - sR[i]);
-                           }
-
-                           break;
-
-                        case MULTIPLICATION:
-
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) (sL[i] * sR[i]);
-                           }
-
-                           break;
-
-                        case DIVISION:
-
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) (sL[i] / sR[i]);
-                           }
-
-                           break;
-
-                        case MODULUS:
-
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) (sL[i] % sR[i]);
-                           }
-
-                           break;
-
-
-                        case POW:
-
-                           for (int i = 0; i < s.length; i++) {
-                              s[i] = (short) Math.pow(sL[i], sR[i]);
-                           }
-
-                           break;
-
-                        default:
-                           throw new ExpressionException("ColumnExpression: Illegal expression.");
-                     }
-
-                     return (Object) s;
-
-                  default:
-                     throw new ExpressionException("ColumnExpression: Illegal expression.");
-
-               } // switch(right return type)
-
-         } // switch(left return type)
-
-         throw new ExpressionException("ColumnExpression: apparently malformed expression.");
-         // return null;
-
-      } // evaluate
+       } // evaluate
 
       /**
        * Format contents nicely.
@@ -3672,10 +3715,12 @@ public class ColumnExpression implements Expression {
     * @version $Revision$, $Date$
     */
    private class TerminalNode extends Node {
-
+      /** column index */
       private int column;
       private int myownflag;
+       /** scalar value */
       private float myownscalarvalue;
+       /** non-scalar value */
       private String myValue;
 
       /**

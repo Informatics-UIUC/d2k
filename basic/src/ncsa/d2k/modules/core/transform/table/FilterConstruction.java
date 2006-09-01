@@ -527,36 +527,51 @@ public class FilterConstruction extends HeadlessUIModule {
       }
    }
 
+    /**
+     * The view
+     */
    protected class FilterConstructionGUI extends JUserPane
       implements ActionListener, ExpressionListener {
 
+        /** add column button */
       private JButton addColumnButton;
+        /** add scalar button */
       private JButton addScalarButton;
+        /** add operation button */
       private JButton addOperationButton;
+        /** add boolean button */
       private JButton addBooleanButton;
+        /** abort button */
       private JButton abortButton;
-      private JButton doneButton;
+        /** help button */
       private JButton helpButton;
+        /** holds names of columns */
       private JComboBox columnBox;
+        /** holds operations */
       private JComboBox operationBox;
+        /** holds booleans */
       private JComboBox booleanBox;
-
+       /** panel */
       private JPanel comboOrFieldPanel;
+        /** expression */
       private FilterExpression expression;
-
+        /** gui for building expressions */
       private ExpressionGUI gui;
-
+        /** true if it has been initialized */
       private boolean initialized = false;
-
+        /** the view module that spawned this view */
       private ViewModule mod;
-      private HashMap nominalComboBoxLookup; // look up JComboBoxes for nominal
+        /** look up JComboBoxes for nominal */
+      private HashMap nominalComboBoxLookup;
 
-      // columns; key = column #
+      /** layout manager */
       private CardLayout nominalOrScalarLayout;
-      private int nominalShowing = -1; // which nominal combobox is showing?
+      /** which nominal combobox is showing? */
+      private int nominalShowing = -1;
 
-      // -1 if scalar textfield is showing
+      /** text field to enter scalar value */
       private JTextField scalarField;
+        /** table */
       private MutableTable table;
 
       /**

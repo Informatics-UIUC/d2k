@@ -100,14 +100,21 @@ public class EvaluateModels
     */
    public String getModuleInfo() {
       StringBuffer sb =
-         new StringBuffer("<p>Overview: This module applies a prediction model to a table of examples and ");
-      sb.append("makes predictions for each output attribute based on the values of the input attributes.</p>");
+         new StringBuffer("<p>Overview: This module applies a prediction model ");
+       sb.append("to a table of examples and ");
+      sb.append("makes predictions for each output attribute based on the ");
+      sb.append("values of the input attributes.</p>");
 
-      sb.append("<p>Detailed Description: This module applies a previously built model to a new set of examples that have the ");
-      sb.append("same attributes as those used to train/build the model. The module creates a new table that contains ");
-      sb.append("columns for each of the values the model predicts, in addition to the columns found in the original table. ");
-      sb.append("The new columns are filled in with values predicted by the model based on the values of the input attributes. ");
-      sb.append("The module is capable of testing severals models on the same test data.</p>");
+      sb.append("<p>Detailed Description: This module applies a previously ");
+      sb.append("built model to a new set of examples that have the ");
+      sb.append("same attributes as those used to train/build the model. The ");
+      sb.append("module creates a new table that contains ");
+      sb.append("columns for each of the values the model predicts, in ");
+      sb.append("addition to the columns found in the original table. ");
+      sb.append("The new columns are filled in with values predicted by the ");
+      sb.append("model based on the values of the input attributes. ");
+      sb.append("The module is capable of testing severals models on the same ");
+      sb.append("test data.</p>");
 
       return sb.toString();
    }
@@ -121,9 +128,10 @@ public class EvaluateModels
    public String getModuleName() { return "Evaluate Models"; }
 
    /**
-    * Description of method isReady.
+    * If this is the first execution, return true if both inputs are
+    * satisifed.  Otherwise return true if input 0 is available.
     *
-    * @return Description of return value.
+    * @return ready condtion
     */
    public boolean isReady() {
 

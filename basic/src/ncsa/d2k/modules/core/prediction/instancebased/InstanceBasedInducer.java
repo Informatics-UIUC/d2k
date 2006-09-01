@@ -53,7 +53,32 @@ import java.beans.PropertyVetoException;
 
 
 /**
- * Description of class InstanceBasedInducer.
+ * <p>Overview: This module builds an instance based model from an example
+ * table. </p>
+ * <p>
+ * Detailed Description:
+ * The module implements the instance based learning algorithm.  The instance
+ * based learning algorithm is also known as n-nearest neighbor or kernel
+ * density weighting.  During the training phase, the instance based inducer
+ * simply memorizes (makes a copy of) the training example table.  Given a
+ * target point in input space to classify, an instance based model first finds
+ * the n (<i>Neighborhood Size</i>) nearest examples using Euclidean distance,
+ * and weights each example to make the final prediction.  The formula used to
+ * weight each example is 1.0 / distance^<i>Distance Weighting Power</i>.
+ * Distance is Euclidean (square root of the sum of squared differences).  To
+ * prevent division by zero, a constant weight (<i>Zero Distance Weight</i>) is
+ * assigned to any example with a zero distance.  When
+ * <i>Distance Weighting Power</i> is 0.0, and <i>Zero Distance Value</i> is
+ * 1.0, every example in the neighborhood is given equal consideration.
+ * <p>Restrictions:
+ * This module will only classify examples with numeric input and output
+ * attributes.<p>
+ * Data Handling: This module does not modify the input data. </p>
+ * <p>
+ * Scalability: This module can efficiently process a data set that can be
+ * stored in memory.
+ * The ultimate limit is how much virtual memory java can access.
+ * Model prediction speed can be increased by reducing <i>Neighborhood Size</i>.
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -191,9 +216,9 @@ public class InstanceBasedInducer extends InstanceBasedInducerOpt {
    } // end method generateModel
 
    /**
-    * Description of method getDistanceWeightingPower.
+    * Get the value of distance weighting power
     *
-    * @return Description of return value.
+    * @return distance weighting power
     */
    public double getDistanceWeightingPower() {
       return this.DistanceWeightingPower;
@@ -244,20 +269,23 @@ public class InstanceBasedInducer extends InstanceBasedInducerOpt {
       }
    }
 
-   /**
-    * Description of method getInputTypes.
-    *
-    * @return Description of return value.
-    */
-   public String[] getInputTypes() {
-      String[] types =
-      {
-         "ncsa.d2k.modules.core.datatype.table.ExampleTable",
-         "ncsa.d2k.modules.core.prediction.ErrorFunction"
-      };
 
-      return types;
-   }
+    /**
+     * Returns an array of <code>String</code> objects each containing the fully
+     * qualified Java data type of the input at the corresponding index.
+     *
+     * @return An array of <code>String</code> objects each containing the fully
+     *         qualified Java data type of the input at the corresponding index.
+     */
+    public String[] getInputTypes() {
+        String[] types =
+                {
+                        "ncsa.d2k.modules.core.datatype.table.ExampleTable",
+                        "ncsa.d2k.modules.core.prediction.ErrorFunction"
+                };
+
+        return types;
+    }
 
 
    /**
@@ -269,9 +297,9 @@ public class InstanceBasedInducer extends InstanceBasedInducerOpt {
    public String getModuleName() { return "Instance Based Inducer"; }
 
    /**
-    * Description of method getNeighborhoodSize.
+    * Get the neighborhood size
     *
-    * @return Description of return value.
+    * @return neighborhood size
     */
    public int getNeighborhoodSize() { return this.NeighborhoodSize; }
 
@@ -363,9 +391,9 @@ public class InstanceBasedInducer extends InstanceBasedInducerOpt {
    } // end method getPropertiesDescriptions
 
    /**
-    * Description of method getZeroDistanceValue.
+    * Get the zero distance value
     *
-    * @return Description of return value.
+    * @return zero distance value
     */
    public double getZeroDistanceValue() { return this.ZeroDistanceValue; }
 

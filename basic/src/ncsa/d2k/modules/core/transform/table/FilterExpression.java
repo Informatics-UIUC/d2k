@@ -92,8 +92,6 @@ public class FilterExpression implements Expression, java.io.Serializable {
     */
    /******************************************************************************/
 
-   // ANCA added a new operator in order of precedence
-
    /** equality */
    static private final int OP_EQ = 100;
     /** */
@@ -370,11 +368,11 @@ public class FilterExpression implements Expression, java.io.Serializable {
    } // end method parseElement
 
    /**
-    * Parse a terminal expressions
+    * Parse a terminal expression
     *
     * @param  expression expression
     *
-    * @return Node
+    * @return Node Terminal node
     *
     * @throws ExpressionException when something goes wrong
     */
@@ -611,7 +609,7 @@ public class FilterExpression implements Expression, java.io.Serializable {
    }
 
    /**
-    * ANCA added this method.
+    * Get the expression as an SQL string
     *
     * @return get the expression as an SQL string
     */
@@ -626,25 +624,9 @@ public class FilterExpression implements Expression, java.io.Serializable {
 
 
     /**
-     * Returns a string representation of the object. In general, the
-     * <code>toString</code> method returns a string that
-     * "textually represents" this object. The result should
-     * be a concise but informative representation that is easy for a
-     * person to read.
-     * It is recommended that all subclasses override this method.
-     * <p/>
-     * The <code>toString</code> method for class <code>Object</code>
-     * returns a string consisting of the name of the class of which the
-     * object is an instance, the at-sign character `<code>@</code>', and
-     * the unsigned hexadecimal representation of the hash code of the
-     * object. In other words, this method returns a string equal to the
-     * value of:
-     * <blockquote>
-     * <pre>
-     * getClass().getName() + '@' + Integer.toHexString(hashCode())
-     * </pre></blockquote>
-     *
-     * @return a string representation of the object.
+     * Return a string representation of this expression.  It is built
+     * recursively starting at the root of the expression tree.
+     * @return string representation of this expression
      */
     public String toString() {
 
@@ -654,8 +636,6 @@ public class FilterExpression implements Expression, java.io.Serializable {
 
         return root.toString();
     }
-
-   //~ Inner Classes ***********************************************************
 
    /***************************************************************************
    * Elements -- the building blocks of a filter expression string -- can be
@@ -670,31 +650,62 @@ public class FilterExpression implements Expression, java.io.Serializable {
       /** Use serialVersionUID for interoperability. */
       static private final long serialVersionUID = -946996639011949735L;
 
-      // ANCA added this method
+       /**
+        * Return SQL-valid string describing this element
+        * @return SQL-valid string describing this element
+        */
       public abstract String toSQLString();
 
+       /**
+        * Return string describing this element
+        * @return string describing this element
+        */
       public abstract String toString();
    }
 
+    /**
+     * A node is an element of the tree.  it can be evaluated.
+     */
    protected abstract class Node implements java.io.Serializable {
 
       /** Use serialVersionUID for interoperability. */
       static private final long serialVersionUID = -5269921167973506810L;
 
+        /**
+         * Evaluate for the given row number
+         * @param rowNumber row number
+         * @return true if the evaluation is true
+         * @throws ExpressionException when something goes wrong
+         */
       abstract boolean evaluate(int rowNumber) throws ExpressionException;
 
-      // ANCA added this method
+       /**
+        * Return SQL-valid string describing this Node
+        * @return SQL-valid string describing this Node
+        */
       public abstract String toSQLString();
 
+       /**
+        * Return string describing this Node
+        * @return string describing this Node
+        */
       public abstract String toString();
    }
 
+    /**
+     * An element that represents a column of the table
+     */
    protected class ColumnElement extends Element {
-
+        /** column label */
       private String columnLabel;
-
+        /** column index in table */
       private int columnNumber;
 
+        /**
+         * Constructor.  Given the column label, look up its index.
+         * @param columnLabel column label
+         * @throws ExpressionException when something goes wrong
+         */
       public ColumnElement(String columnLabel) throws ExpressionException {
 
          Integer I = (Integer) labelToIndex.get(columnLabel);
@@ -710,10 +721,21 @@ public class FilterExpression implements Expression, java.io.Serializable {
 
       }
 
+        /**
+         * Return true if the value for this column at rowNumber is missing
+         * @param rowNumber row number
+         * @return true if the value for this column at rowNumber is missing
+         */
       private boolean isMissing(int rowNumber) {
          return table.isValueMissing(rowNumber, columnNumber);
       }
 
+        /**
+         * Get the double at rowNumber for this column
+         * @param rowNumber row number
+         * @return the double at rowNumber for this column
+         * @throws MissingValueException when the value was missing
+         */
       public double evaluateDouble(int rowNumber) throws MissingValueException {
 
          if (this.isMissing(rowNumber)) {
@@ -724,6 +746,12 @@ public class FilterExpression implements Expression, java.io.Serializable {
          return table.getDouble(rowNumber, columnNumber);
       }
 
+        /**
+         * Get the string at rowNumber for this column
+         * @param rowNumber row number
+         * @return the string at rowNumber for this column
+         * @throws MissingValueException when the value was missing
+         */
       public String evaluateString(int rowNumber) throws MissingValueException {
 
          if (this.isMissing(rowNumber)) {
@@ -734,69 +762,147 @@ public class FilterExpression implements Expression, java.io.Serializable {
          return table.getString(rowNumber, columnNumber);
       }
 
+        /**
+         * Get the column number for this ColumnElement
+         * @return column number
+         */
       public int getColumnNumber() { return columnNumber; }
 
-      // ANCA added this method
-      public String toSQLString() { return columnLabel; }
 
-      public String toString() { return columnLabel; }
+        /**
+         * Return SQL-valid string describing this element
+         *
+         * @return SQL-valid string describing this element
+         */
+        public String toSQLString() {
+            return columnLabel;
+        }
+
+        /**
+         * Return string describing this element
+         *
+         * @return string describing this element
+         */
+        public String toString() {
+            return columnLabel;
+        }
    } // end class ColumnElement
 
+    /**
+     * A nominal element is a value from a nominal column
+     */
    protected class NominalElement extends Element {
-
+        /** the nominal value */
       private String value;
 
+        /**
+         * Constructor
+         * @param value the nominal value
+         */
       public NominalElement(String value) { this.value = value; }
 
+        /**
+         * Return the nominal value
+         * @return nominal value
+         */
       public String evaluate() { return value; }
 
-      // ANCA added this method
-      public String toSQLString() {
 
-         if (value.equals("NULL")) {
-            return "null";
-         }
+        /**
+         * Return SQL-valid string describing this element
+         *
+         * @return SQL-valid string describing this element
+         */
+        public String toSQLString() {
 
-         return toString();
-      }
+            if (value.equals("NULL")) {
+                return "null";
+            }
 
-      public String toString() {
+            return toString();
+        }
 
-         StringBuffer buffer = new StringBuffer();
+        /**
+         * Return string describing this element
+         *
+         * @return string describing this element
+         */
+        public String toString() {
 
-         buffer.append('\'');
+            StringBuffer buffer = new StringBuffer();
 
-         buffer.append(value);
+            buffer.append('\'');
 
-         buffer.append('\'');
+            buffer.append(value);
 
-         return buffer.toString();
+            buffer.append('\'');
 
-      }
+            return buffer.toString();
+
+        }
 
    } // end class NominalElement
 
+    /**
+     * An element that represents a scalar value
+     */
    protected class ScalarElement extends Element {
+        /** scalar value */
       private double value;
 
+        /**
+         * Constructor
+         * @param value scalar value
+         */
       public ScalarElement(double value) { this.value = value; }
 
+        /**
+         * Return the scalar value
+         * @return scalar value
+         */
       public double evaluate() { return value; }
 
-      // ANCA added this method
-      public String toSQLString() { return Double.toString(value); }
 
-      public String toString() { return Double.toString(value); }
+        /**
+         * Return SQL-valid string describing this element
+         *
+         * @return SQL-valid string describing this element
+         */
+        public String toSQLString() {
+            return Double.toString(value);
+        }
+
+        /**
+         * Return string describing this element
+         *
+         * @return string describing this element
+         */
+        public String toString() {
+            return Double.toString(value);
+        }
 
    }
 
+    /**
+     * A subexpression has a right hand side and left hand side.  They are
+     * joined by an operator.
+     */
    protected class Subexpression extends Node {
 
+        /** left hand node */
       private Node left;
+        /** right hand node */
       private Node right;
 
+        /** code for operator */
       private int opcode;
 
+        /**
+         * Constructor
+         * @param opcode operator code
+         * @param left left hand side node
+         * @param right right hand side node
+         */
       Subexpression(int opcode, Node left, Node right) {
 
          this.opcode = opcode;
@@ -807,6 +913,13 @@ public class FilterExpression implements Expression, java.io.Serializable {
 
       }
 
+        /**
+         * Evaluate the given row of the table.  Either the AND or OR of the
+         * left and right hand nodes, depending on the opcode.
+         * @param rowNumber row of the table to evaluate
+         * @return the evaluation for the given row number
+         * @throws ExpressionException when the opcode is not recognized
+         */
       boolean evaluate(int rowNumber) throws ExpressionException {
 
          switch (opcode) {
@@ -831,88 +944,111 @@ public class FilterExpression implements Expression, java.io.Serializable {
       }
 
 
-      // ANCA added this method
-      public String toSQLString() {
 
-         StringBuffer buffer = new StringBuffer();
-         buffer.append('(');
-         buffer.append(left.toSQLString());
-         buffer.append(' ');
+        /**
+         * Return SQL-valid string describing this Node
+         *
+         * @return SQL-valid string describing this Node
+         */
+        public String toSQLString() {
 
-         switch (opcode) {
+            StringBuffer buffer = new StringBuffer();
+            buffer.append('(');
+            buffer.append(left.toSQLString());
+            buffer.append(' ');
 
-            case BOOL_AND:
-               buffer.append("and");
+            switch (opcode) {
 
-               break;
+                case BOOL_AND:
+                    buffer.append("and");
 
-            case BOOL_OR:
-               buffer.append("or");
+                    break;
 
-               break;
+                case BOOL_OR:
+                    buffer.append("or");
 
-            default:
-               buffer.append("??");
+                    break;
 
-               break;
-         }
+                default:
+                    buffer.append("??");
 
-         buffer.append(' ');
-         buffer.append(right.toSQLString());
-         buffer.append(')');
+                    break;
+            }
 
-         return buffer.toString();
-      } // end method toSQLString
+            buffer.append(' ');
+            buffer.append(right.toSQLString());
+            buffer.append(')');
 
-      public String toString() {
+            return buffer.toString();
+        } // end method toSQLString
 
-         StringBuffer buffer = new StringBuffer();
+        /**
+         * Return string describing this Node
+         *
+         * @return string describing this Node
+         */
+        public String toString() {
 
-         buffer.append('(');
+            StringBuffer buffer = new StringBuffer();
 
-         buffer.append(left.toString());
+            buffer.append('(');
 
-         buffer.append(' ');
+            buffer.append(left.toString());
 
-         switch (opcode) {
+            buffer.append(' ');
 
-            case BOOL_AND:
-               buffer.append("&&");
+            switch (opcode) {
 
-               break;
+                case BOOL_AND:
+                    buffer.append("&&");
 
-            case BOOL_OR:
-               buffer.append("||");
+                    break;
 
-               break;
+                case BOOL_OR:
+                    buffer.append("||");
 
-            default:
-               buffer.append("??");
+                    break;
 
-               break;
+                default:
+                    buffer.append("??");
 
-         }
+                    break;
 
-         buffer.append(' ');
+            }
 
-         buffer.append(right.toString());
+            buffer.append(' ');
 
-         buffer.append(')');
+            buffer.append(right.toString());
 
-         return buffer.toString();
+            buffer.append(')');
 
-      } // end method toString
+            return buffer.toString();
+
+        } // end method toString
    } // end class Subexpression
 
+    /**
+     * A Terminal node has left and right elements, joined by an operator.
+     */
    protected class Terminal extends Node {
-
+        /** left element */
       private Element left;
+        /** right element */
       private Element right;
-
+        /** operator */
       private int opcode;
 
+        /**
+         * Constructor
+         */
       Terminal() { }
 
+        /**
+         * Constructor
+         * @param opcode operator
+         * @param left left element
+         * @param right right element
+         */
       Terminal(int opcode, Element left, Element right) {
 
          this.opcode = opcode;
@@ -923,420 +1059,460 @@ public class FilterExpression implements Expression, java.io.Serializable {
 
       }
 
-      boolean evaluate(int rowNumber) throws ExpressionException {
+        /**
+         * Evaluate for the given row number
+         *
+         * @param rowNumber row number
+         * @return true if the evaluation is true
+         * @throws ncsa.d2k.modules.core.datatype.ExpressionException
+         *          when the opcode is not recognized
+         */
+        boolean evaluate(int rowNumber) throws ExpressionException {
 
-         // Each element (left and right) may represent a column label, a
+            // Each element (left and right) may represent a column label, a
 
-         // scalar value, or a column nominal value. All nine combinations,
+            // scalar value, or a column nominal value. All nine combinations,
 
-         // unfortunately, must be handled differently...
+            // unfortunately, must be handled differently...
 
-         if (left instanceof ColumnElement) {
+            if (left instanceof ColumnElement) {
 
-            if (right instanceof ColumnElement) {
-               ColumnElement cleft = (ColumnElement) left;
-               ColumnElement cright = (ColumnElement) right;
+                if (right instanceof ColumnElement) {
+                    ColumnElement cleft = (ColumnElement) left;
+                    ColumnElement cright = (ColumnElement) right;
 
-               try {
+                    try {
 
-                  // are both columns numeric?
-                  cleft.evaluateDouble(rowNumber);
-                  cright.evaluateDouble(rowNumber);
+                        // are both columns numeric?
+                        cleft.evaluateDouble(rowNumber);
+                        cright.evaluateDouble(rowNumber);
 
-                  // if so, compare doubles:
+                        // if so, compare doubles:
 
-                  switch (opcode) {
+                        switch (opcode) {
 
-                     case OP_EQ:
-                     case OP_IS: // ANCA added this case
+                            case OP_EQ:
+                            case OP_IS: // ANCA added this case
 
-                        return ((ColumnElement) left).evaluateDouble(rowNumber) ==
-                                  ((ColumnElement) right).evaluateDouble(rowNumber);
+                                return ((ColumnElement) left).evaluateDouble(rowNumber) ==
+                                        ((ColumnElement) right).evaluateDouble(rowNumber);
 
-                     case OP_NEQ:
+                            case OP_NEQ:
 
-                        return ((ColumnElement) left).evaluateDouble(rowNumber) !=
-                                  ((ColumnElement) right).evaluateDouble(rowNumber);
+                                return ((ColumnElement) left).evaluateDouble(rowNumber) !=
+                                        ((ColumnElement) right).evaluateDouble(rowNumber);
 
-                     case OP_LT:
+                            case OP_LT:
 
-                        return ((ColumnElement) left).evaluateDouble(rowNumber) <
-                                  ((ColumnElement) right).evaluateDouble(rowNumber);
+                                return ((ColumnElement) left).evaluateDouble(rowNumber) <
+                                        ((ColumnElement) right).evaluateDouble(rowNumber);
 
-                     case OP_LTE:
+                            case OP_LTE:
 
-                        return ((ColumnElement) left).evaluateDouble(rowNumber) <=
-                                  ((ColumnElement) right).evaluateDouble(rowNumber);
+                                return ((ColumnElement) left).evaluateDouble(rowNumber) <=
+                                        ((ColumnElement) right).evaluateDouble(rowNumber);
 
-                     case OP_GT:
+                            case OP_GT:
 
-                        return ((ColumnElement) left).evaluateDouble(rowNumber) >
-                                  ((ColumnElement) right).evaluateDouble(rowNumber);
+                                return ((ColumnElement) left).evaluateDouble(rowNumber) >
+                                        ((ColumnElement) right).evaluateDouble(rowNumber);
 
-                     case OP_GTE:
+                            case OP_GTE:
 
-                        return ((ColumnElement) left).evaluateDouble(rowNumber) >=
-                                  ((ColumnElement) right).evaluateDouble(rowNumber);
+                                return ((ColumnElement) left).evaluateDouble(rowNumber) >=
+                                        ((ColumnElement) right).evaluateDouble(rowNumber);
 
-                     default:
+                            default:
 
-                        throw new ExpressionException("FilterExpression: illegal opcode: " +
-                                                      opcode);
+                                throw new ExpressionException("FilterExpression: illegal opcode: " +
+                                        opcode);
 
-                  }
+                        }
 
-               } catch (NumberFormatException exc) {
+                    } catch (NumberFormatException exc) {
 
-                  // if not, compare strings:
+                        // if not, compare strings:
 
-                  switch (opcode) {
+                        switch (opcode) {
 
-                     case OP_EQ:
-                     case OP_IS: // ANCA added this case
+                            case OP_EQ:
+                            case OP_IS: // ANCA added this case
 
-                        return ((ColumnElement) left).evaluateString(rowNumber)
-                                  .equals(((ColumnElement) right)
-                                             .evaluateString(rowNumber));
+                                return ((ColumnElement) left).evaluateString(rowNumber)
+                                        .equals(((ColumnElement) right)
+                                                .evaluateString(rowNumber));
 
-                     case OP_NEQ:
+                            case OP_NEQ:
 
-                        return !((ColumnElement) left).evaluateString(rowNumber)
-                                  .equals(((ColumnElement) right)
-                                             .evaluateString(rowNumber));
+                                return !((ColumnElement) left).evaluateString(rowNumber)
+                                        .equals(((ColumnElement) right)
+                                                .evaluateString(rowNumber));
 
-                     default:
+                            default:
 
-                        throw new ExpressionException("FilterExpression: cannot perform operation on nominal columns: " +
-                                                      opcode);
+                                throw new ExpressionException("FilterExpression: cannot perform operation on nominal columns: " +
+                                        opcode);
 
-                  }
+                        }
 
-               } // end try-catch
+                    } // end try-catch
 
-            } else if (right instanceof ScalarElement) {
+                } else if (right instanceof ScalarElement) {
 
-               switch (opcode) {
+                    switch (opcode) {
 
-                  case OP_EQ:
-                  case OP_IS: // ANCA added this case
+                        case OP_EQ:
+                        case OP_IS: // ANCA added this case
 
-                     return ((ColumnElement) left).evaluateDouble(rowNumber) ==
-                               ((ScalarElement) right).evaluate();
+                            return ((ColumnElement) left).evaluateDouble(rowNumber) ==
+                                    ((ScalarElement) right).evaluate();
 
-                  case OP_NEQ:
+                        case OP_NEQ:
 
-                     return ((ColumnElement) left).evaluateDouble(rowNumber) !=
-                               ((ScalarElement) right).evaluate();
+                            return ((ColumnElement) left).evaluateDouble(rowNumber) !=
+                                    ((ScalarElement) right).evaluate();
 
-                  case OP_LT:
+                        case OP_LT:
 
-                     return ((ColumnElement) left).evaluateDouble(rowNumber) <
-                               ((ScalarElement) right).evaluate();
+                            return ((ColumnElement) left).evaluateDouble(rowNumber) <
+                                    ((ScalarElement) right).evaluate();
 
-                  case OP_LTE:
+                        case OP_LTE:
 
-                     return ((ColumnElement) left).evaluateDouble(rowNumber) <=
-                               ((ScalarElement) right).evaluate();
+                            return ((ColumnElement) left).evaluateDouble(rowNumber) <=
+                                    ((ScalarElement) right).evaluate();
 
-                  case OP_GT:
+                        case OP_GT:
 
-                     return ((ColumnElement) left).evaluateDouble(rowNumber) >
-                               ((ScalarElement) right).evaluate();
+                            return ((ColumnElement) left).evaluateDouble(rowNumber) >
+                                    ((ScalarElement) right).evaluate();
 
-                  case OP_GTE:
+                        case OP_GTE:
 
-                     return ((ColumnElement) left).evaluateDouble(rowNumber) >=
-                               ((ScalarElement) right).evaluate();
+                            return ((ColumnElement) left).evaluateDouble(rowNumber) >=
+                                    ((ScalarElement) right).evaluate();
 
-                  default:
+                        default:
 
-                     throw new ExpressionException("FilterExpression: illegal opcode: " +
-                                                   opcode);
+                            throw new ExpressionException("FilterExpression: illegal opcode: " +
+                                    opcode);
 
-               }
+                    }
 
-            } else { // right instanceof NominalElement
+                } else { // right instanceof NominalElement
 
-               switch (opcode) {
+                    switch (opcode) {
 
-                  case OP_EQ:
-                  case OP_IS: // ANCA added this case
+                        case OP_EQ:
+                        case OP_IS: // ANCA added this case
 
-                     return ((ColumnElement) left).evaluateString(rowNumber)
-                               .equals(((NominalElement) right).evaluate());
+                            return ((ColumnElement) left).evaluateString(rowNumber)
+                                    .equals(((NominalElement) right).evaluate());
 
-                  case OP_NEQ:
+                        case OP_NEQ:
 
-                     return !((ColumnElement) left).evaluateString(rowNumber)
-                               .equals(((NominalElement) right).evaluate());
+                            return !((ColumnElement) left).evaluateString(rowNumber)
+                                    .equals(((NominalElement) right).evaluate());
 
-                  default:
+                        default:
 
-                     throw new ExpressionException("FilterExpression: illegal opcode on nominal: " +
-                                                   opcode);
+                            throw new ExpressionException("FilterExpression: illegal opcode on nominal: " +
+                                    opcode);
 
-               }
+                    }
+
+                }
+
+            } else if (left instanceof ScalarElement) {
+
+                if (right instanceof ColumnElement) {
+
+                    switch (opcode) {
+
+                        case OP_EQ:
+                        case OP_IS: // ANCA added this case
+
+                            return ((ScalarElement) left).evaluate() ==
+                                    ((ColumnElement) right).evaluateDouble(rowNumber);
+
+                        case OP_NEQ:
+
+                            return ((ScalarElement) left).evaluate() !=
+                                    ((ColumnElement) right).evaluateDouble(rowNumber);
+
+                        case OP_LT:
+
+                            return ((ScalarElement) left).evaluate() <
+                                    ((ColumnElement) right).evaluateDouble(rowNumber);
+
+                        case OP_LTE:
+
+                            return ((ScalarElement) left).evaluate() >=
+                                    ((ColumnElement) right).evaluateDouble(rowNumber);
+
+                        case OP_GT:
+
+                            return ((ScalarElement) left).evaluate() >
+                                    ((ColumnElement) right).evaluateDouble(rowNumber);
+
+                        case OP_GTE:
+
+                            return ((ScalarElement) left).evaluate() >=
+                                    ((ColumnElement) right).evaluateDouble(rowNumber);
+
+                        default:
+
+                            throw new ExpressionException("FilterExpression: illegal opcode: " +
+                                    opcode);
+
+                    }
+
+                } else if (right instanceof ScalarElement) {
+
+                    switch (opcode) {
+
+                        case OP_EQ:
+                        case OP_IS: // ANCA added this case
+                            return ((ScalarElement) left).evaluate() ==
+                                    ((ScalarElement) right).evaluate();
+
+                        case OP_NEQ:
+
+                            return ((ScalarElement) left).evaluate() !=
+                                    ((ScalarElement) right).evaluate();
+
+                        case OP_LT:
+
+                            return ((ScalarElement) left).evaluate() <
+                                    ((ScalarElement) right).evaluate();
+
+                        case OP_LTE:
+
+                            return ((ScalarElement) left).evaluate() >=
+                                    ((ScalarElement) right).evaluate();
+
+                        case OP_GT:
+
+                            return ((ScalarElement) left).evaluate() >
+                                    ((ScalarElement) right).evaluate();
+
+                        case OP_GTE:
+
+                            return ((ScalarElement) left).evaluate() >=
+                                    ((ScalarElement) right).evaluate();
+
+                        default:
+
+                            throw new ExpressionException("FilterExpression: illegal opcode: " +
+                                    opcode);
+
+                    }
+
+                } else { // right instanceof NominalElement
+
+                    throw new ExpressionException("FilterExpression: invalid operation: <scalar> <op> <nominal>");
+
+                }
+
+            } else { // left instanceof NominalElement
+
+                if (right instanceof ColumnElement) {
+
+                    switch (opcode) {
+
+                        case OP_EQ:
+                        case OP_IS: // ANCA added this case
+
+                            return ((NominalElement) left).evaluate().equals(((ColumnElement)
+                                    right)
+                                    .evaluateString(rowNumber));
+
+                        case OP_NEQ:
+
+                            return !((NominalElement) left).evaluate().equals(((ColumnElement)
+                                    right)
+                                    .evaluateString(rowNumber));
+
+                        default:
+
+                            throw new ExpressionException("FilterExpression: illegal opcode on nominal: " +
+                                    opcode);
+
+                    }
+
+                } else if (right instanceof ScalarElement) {
+
+                    throw new ExpressionException("FilterExpression: invalid operation: <nominal> <op> <scalar>");
+
+                } else { // right instanceof NominalElement
+
+                    throw new ExpressionException("FilterExpression: invalid operation: <nominal> <op> <nominal>");
+
+                }
+
+            } // end if-else
+
+        } // end method evaluate
+
+
+        /**
+         * Return SQL-valid string describing this Node
+         *
+         * @return SQL-valid string describing this Node
+         */
+        public String toSQLString() {
+
+            StringBuffer buffer = new StringBuffer();
+            buffer.append("( ");
+            buffer.append(left.toSQLString());
+            buffer.append(' ');
+
+            switch (opcode) {
+
+                case OP_EQ:
+                    buffer.append("=");
+
+                    break;
+
+                case OP_IS:
+                    buffer.append("is");
+
+                    break;
+
+                case OP_NEQ:
+                    buffer.append("<>");
+
+                    break;
+
+                case OP_LT:
+                    buffer.append("<");
+
+                    break;
+
+                case OP_LTE:
+                    buffer.append("<=");
+
+                    break;
+
+                case OP_GT:
+                    buffer.append(">");
+
+                    break;
+
+                case OP_GTE:
+                    buffer.append(">=");
+
+                    break;
+
+                default:
+                    buffer.append("??");
+
+                    break;
+            }
+
+            buffer.append(' ');
+            buffer.append(right.toSQLString());
+            buffer.append(" )");
+
+            return buffer.toString();
+        } // end method toSQLString
+
+        /**
+         * Return string describing this Node
+         *
+         * @return string describing this Node
+         */
+        public String toString() {
+
+            StringBuffer buffer = new StringBuffer();
+
+            buffer.append('(');
+
+            buffer.append(left.toString());
+
+            buffer.append(' ');
+
+            switch (opcode) {
+
+                case OP_EQ:
+                    buffer.append("==");
+
+                    break;
+
+                case OP_NEQ:
+                    buffer.append("!=");
+
+                    break;
+
+                case OP_LT:
+                    buffer.append("<");
+
+                    break;
+
+                case OP_LTE:
+                    buffer.append("<=");
+
+                    break;
+
+                case OP_GT:
+                    buffer.append(">");
+
+                    break;
+
+                case OP_GTE:
+                    buffer.append(">=");
+
+                    break;
+
+                default:
+                    buffer.append("??");
+
+                    break;
 
             }
 
-         } else if (left instanceof ScalarElement) {
+            buffer.append(' ');
 
-            if (right instanceof ColumnElement) {
+            buffer.append(right.toString());
 
-               switch (opcode) {
+            buffer.append(')');
 
-                  case OP_EQ:
-                  case OP_IS: // ANCA added this case
+            return buffer.toString();
 
-                     return ((ScalarElement) left).evaluate() ==
-                               ((ColumnElement) right).evaluateDouble(rowNumber);
-
-                  case OP_NEQ:
-
-                     return ((ScalarElement) left).evaluate() !=
-                               ((ColumnElement) right).evaluateDouble(rowNumber);
-
-                  case OP_LT:
-
-                     return ((ScalarElement) left).evaluate() <
-                               ((ColumnElement) right).evaluateDouble(rowNumber);
-
-                  case OP_LTE:
-
-                     return ((ScalarElement) left).evaluate() >=
-                               ((ColumnElement) right).evaluateDouble(rowNumber);
-
-                  case OP_GT:
-
-                     return ((ScalarElement) left).evaluate() >
-                               ((ColumnElement) right).evaluateDouble(rowNumber);
-
-                  case OP_GTE:
-
-                     return ((ScalarElement) left).evaluate() >=
-                               ((ColumnElement) right).evaluateDouble(rowNumber);
-
-                  default:
-
-                     throw new ExpressionException("FilterExpression: illegal opcode: " +
-                                                   opcode);
-
-               }
-
-            } else if (right instanceof ScalarElement) {
-
-               switch (opcode) {
-
-                  case OP_EQ:
-                  case OP_IS: // ANCA added this case
-                     return ((ScalarElement) left).evaluate() ==
-                               ((ScalarElement) right).evaluate();
-
-                  case OP_NEQ:
-
-                     return ((ScalarElement) left).evaluate() !=
-                               ((ScalarElement) right).evaluate();
-
-                  case OP_LT:
-
-                     return ((ScalarElement) left).evaluate() <
-                               ((ScalarElement) right).evaluate();
-
-                  case OP_LTE:
-
-                     return ((ScalarElement) left).evaluate() >=
-                               ((ScalarElement) right).evaluate();
-
-                  case OP_GT:
-
-                     return ((ScalarElement) left).evaluate() >
-                               ((ScalarElement) right).evaluate();
-
-                  case OP_GTE:
-
-                     return ((ScalarElement) left).evaluate() >=
-                               ((ScalarElement) right).evaluate();
-
-                  default:
-
-                     throw new ExpressionException("FilterExpression: illegal opcode: " +
-                                                   opcode);
-
-               }
-
-            } else { // right instanceof NominalElement
-
-               throw new ExpressionException("FilterExpression: invalid operation: <scalar> <op> <nominal>");
-
-            }
-
-         } else { // left instanceof NominalElement
-
-            if (right instanceof ColumnElement) {
-
-               switch (opcode) {
-
-                  case OP_EQ:
-                  case OP_IS: // ANCA added this case
-
-                     return ((NominalElement) left).evaluate().equals(((ColumnElement)
-                                                                          right)
-                                                                         .evaluateString(rowNumber));
-
-                  case OP_NEQ:
-
-                     return !((NominalElement) left).evaluate().equals(((ColumnElement)
-                                                                           right)
-                                                                          .evaluateString(rowNumber));
-
-                  default:
-
-                     throw new ExpressionException("FilterExpression: illegal opcode on nominal: " +
-                                                   opcode);
-
-               }
-
-            } else if (right instanceof ScalarElement) {
-
-               throw new ExpressionException("FilterExpression: invalid operation: <nominal> <op> <scalar>");
-
-            } else { // right instanceof NominalElement
-
-               throw new ExpressionException("FilterExpression: invalid operation: <nominal> <op> <nominal>");
-
-            }
-
-         } // end if-else
-
-      } // end method evaluate
-
-      // ANCA added this method
-      public String toSQLString() {
-
-         StringBuffer buffer = new StringBuffer();
-         buffer.append("( ");
-         buffer.append(left.toSQLString());
-         buffer.append(' ');
-
-         switch (opcode) {
-
-            case OP_EQ:
-               buffer.append("=");
-
-               break;
-
-            case OP_IS:
-               buffer.append("is");
-
-               break;
-
-            case OP_NEQ:
-               buffer.append("<>");
-
-               break;
-
-            case OP_LT:
-               buffer.append("<");
-
-               break;
-
-            case OP_LTE:
-               buffer.append("<=");
-
-               break;
-
-            case OP_GT:
-               buffer.append(">");
-
-               break;
-
-            case OP_GTE:
-               buffer.append(">=");
-
-               break;
-
-            default:
-               buffer.append("??");
-
-               break;
-         }
-
-         buffer.append(' ');
-         buffer.append(right.toSQLString());
-         buffer.append(" )");
-
-         return buffer.toString();
-      } // end method toSQLString
-
-      public String toString() {
-
-         StringBuffer buffer = new StringBuffer();
-
-         buffer.append('(');
-
-         buffer.append(left.toString());
-
-         buffer.append(' ');
-
-         switch (opcode) {
-
-            case OP_EQ:
-               buffer.append("==");
-
-               break;
-
-            case OP_NEQ:
-               buffer.append("!=");
-
-               break;
-
-            case OP_LT:
-               buffer.append("<");
-
-               break;
-
-            case OP_LTE:
-               buffer.append("<=");
-
-               break;
-
-            case OP_GT:
-               buffer.append(">");
-
-               break;
-
-            case OP_GTE:
-               buffer.append(">=");
-
-               break;
-
-            default:
-               buffer.append("??");
-
-               break;
-
-         }
-
-         buffer.append(' ');
-
-         buffer.append(right.toString());
-
-         buffer.append(')');
-
-         return buffer.toString();
-
-      } // end method toString
+        } // end method toString
 
    } // end class Terminal
 
 
+    /**
+     * A true terminal node that always evaluates to true.
+     */
    protected class TrueTerminal extends Terminal {
 
+        /**
+         * Constructor
+         */
       TrueTerminal() { }
 
-      public boolean evaluate(int rowNumber) { return true; }
 
-      public String toString() { return "true"; }
+        /**
+         * Evaluate for the given row number.  Always returns true!
+         *
+         * @param rowNumber row number
+         * @return true if the evaluation is true
+         */
+        public boolean evaluate(int rowNumber) {
+            return true;
+        }
+
+        /**
+         * Return string describing this Node
+         *
+         * @return string describing this Node
+         */
+        public String toString() {
+            return "true";
+        }
 
    }
 

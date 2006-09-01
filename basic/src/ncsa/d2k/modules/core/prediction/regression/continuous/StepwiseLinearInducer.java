@@ -63,7 +63,7 @@ public class StepwiseLinearInducer extends StepwiseLinearInducerOpt {
 
    //~ Instance fields *********************************************************
 
-   /** Description of field numBiasDimensions. */
+   /** number of bias dimensions */
    protected int numBiasDimensions = 3;
 
    //~ Methods *****************************************************************

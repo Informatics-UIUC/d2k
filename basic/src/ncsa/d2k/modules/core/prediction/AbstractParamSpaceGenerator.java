@@ -52,31 +52,36 @@ import ncsa.d2k.modules.core.datatype.parameter.ParameterSpace;
  * <p>Overview:
  * This module produces a parameter space object that constrains the search
  * space for parameter optimization.
- * </p><p>Detailed Description:
+ * </p>
+ * <p>Detailed Description:
  * Model building algorithms often require one or more control parameters.
  * For example, a neural net may require parameters specifying the number of
  * hidden layers and an activation value.  The optimal control parameter
  * settings for a given dataset are not usually known before the run begins.
  * Therefore, several models are often built and evaluated to identify the best
  * control parameter settings for a given dataset.
- * </p><p>
+ * </p>
+ * <p>
  * To automate this build/evaluate process, D2K defines a procedure,
  * implemented as a series of modules in an itinerary, that supports the
  * optimization of control parameters.
- * </p><p>
+ * </p>
+ * <p>
  * This module allows the user to specify the range of possible values for
  * every control parameter that is relevant to the algorithm being used.  The
  * optimization itinerary will build multiple models, varying the parameters
  * within the space defined in this module.  The range of values to search is
  * specified via the property editor, and the results are made available on
  * the <i>Parameter Space</i> output port.
- * </p><p>Using the Property Editor:
+ * </p>
+ * <p>Using the Property Editor:
  * The property editor used to control the range of possible values for an
  * algorithm's control parameters is based on the same GUI interface regardless
  * of the algorithm.  The user is presented with a list of parameters that are
  * relevant to the algorithm they are employing.  These parameters are
  * explained in the <i>Properties</i> section of the <i>Module Information</i>.
- * </p><p>
+ * </p>
+ * <p>
  * For each parameter, text edit boxes allow the user to specify the range of
  * allowable values (<i>Min</i> and <i>Max</i>), the default value
  * (<i>Default</i>), and the minimum resolution to use when navigating the
@@ -84,20 +89,24 @@ import ncsa.d2k.modules.core.datatype.parameter.ParameterSpace;
  * parameter to restore the parameter specifications to their original settings.
  * The same set of boxes is used regardless of the type of the control
  * parameter.
- * </p><p>
+ * </p>
+ * <p>
  * For boolean parameters, a value of 0 is considered False and a value of 1
  * is considered True.  The <i>Min</i> and <i>Max</i> values should be set to
  * 0 or 1, with the minimum less than or equal to the maximum.  The resolution
  * should be 1 for these parameters.
- * </p><p>
+ * </p>
+ * <p>
  * For integer parameters, the <i>Min</i> and <i>Max</i> values should be
  * integers, with the minimum less than or equal to the maximum.  The
  * resolution should be set to an integer value.
- * </p><p>
+ * </p>
+ * <p>
  * For floating point parameters, the <i>Min</i> and <i>Max</i> values can be
  * floating point values, with the minimum less than or equal to the maximum.
  * The resolution can be a floating point value.
- * </p><p>
+ * </p>
+ * <p>
  * Enumerated parameters, for example the choice between multiple distance
  * metrics, are implemented as integer parameters.  The first choice in the
  * list of choices enumerated in the <i>Property Descriptions</i> is
@@ -105,7 +114,8 @@ import ncsa.d2k.modules.core.datatype.parameter.ParameterSpace;
  * For enumerated parameters, the user must select <i>Min</i> and <i>Max</i>
  * values that fall within the default range shown, as that range encompasses
  * the entire set of valid choices.  The resolution should be set to 1.
- * </p><p>
+ * </p>
+ * <p>
  * There may be times when the user wants to allow some control parameters to
  * vary over a range of values while holding other parameters constant.
  * This behavior can be accomplished by entering the same <i>Min</i> and

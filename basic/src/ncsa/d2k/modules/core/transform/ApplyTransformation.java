@@ -110,7 +110,8 @@ public class ApplyTransformation extends DataPrepModule {
      * Returns the name of the input at the specified index.
      *
      * @param i Index of the input for which a name should be returned.
-     * @return <code>String</code> containing the name of the input at the specified index.
+     * @return <code>String</code> containing the name of the input at
+     * the specified index.
      */
     public String getInputName(int i) {
 

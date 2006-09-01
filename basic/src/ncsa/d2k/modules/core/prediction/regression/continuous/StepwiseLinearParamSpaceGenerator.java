@@ -230,17 +230,21 @@ public class StepwiseLinearParamSpaceGenerator
       pds[0] =
          new PropertyDescription("useStepwise",
                                  "Use Stepwise",
-                                 "When true, a stepwise regression procedure is followed, otherwise normal regression is used on all features.");
+                                 "When true, a stepwise regression procedure "+
+                                 "is followed, otherwise normal regression is "+
+                                 "used on all features.");
 
       pds[1] =
          new PropertyDescription("direction",
                                  "Direction of Search",
-                                 "When set to 1, step up regression is used, and when set to -1 step down regression is done.  ");
+                                 "When set to 1, step up regression is used, "+
+                                 "and when set to -1 step down regression is done.  ");
 
       pds[2] =
          new PropertyDescription("numRounds",
                                  "Number of Feature Selection Rounds",
-                                 "The number of features to add (step up) or remove (step down) from the initial feature subset.  ");
+                                 "The number of features to add (step up) or "+
+                                 "remove (step down) from the initial feature subset.  ");
 
       return pds;
    }

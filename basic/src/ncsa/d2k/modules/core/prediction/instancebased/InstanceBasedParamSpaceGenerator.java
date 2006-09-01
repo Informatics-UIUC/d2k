@@ -244,23 +244,32 @@ public class InstanceBasedParamSpaceGenerator
       pds[0] =
          new PropertyDescription(NEIGHBORHOOD_SIZE,
                                  "Neighborhood Size",
-                                 "The number of examples to use for fitting the prediction module.  " +
+                                 "The number of examples to use for fitting "+
+                                 "the prediction module.  " +
                                  "This must be set to 1 or greater.  ");
 
       pds[1] =
          new PropertyDescription("DistanceWeightingPower",
                                  "Distance Weighting Power",
-                                 "The value of the power term in the inverse distance weighting formula.  " +
-                                 "Setting this to zero causes equal weighting of all examples.  " +
+                                 "The value of the power term in the inverse "+
+                                 "distance weighting formula.  " +
+                                 "Setting this to zero causes equal weighting "+
+                                 "of all examples.  " +
                                  "Setting it to 1.0 gives inverse distance weighting.  " +
-                                 "Setting it to 2.0 gives inverse distance squared weighting and so on.  ");
+                                 "Setting it to 2.0 gives inverse distance "+
+                                 "squared weighting and so on.  ");
 
       pds[2] =
          new PropertyDescription("zeroDistanceWeight",
                                  "Zero Distance Value",
-                                 "What weight to associate to a stored example which has zero distance to example to be predicted.  " +
-                                 "Since division by zero is not permitted, some value must be assigned to examples with zero distance.  " +
-                                 "This value is the weight and exact match should be given.  ");
+                                 "What weight to associate to a stored "+
+                                 "example which has zero distance to example "+
+                                 "to be predicted.  " +
+                                 "Since division by zero is not permitted, "+
+                                 "some value must be assigned to examples with "+
+                                 "zero distance.  " +
+                                 "This value is the weight and exact match "+
+                                 "should be given.  ");
 
       return pds;
    } // end method getPropertiesDescriptions

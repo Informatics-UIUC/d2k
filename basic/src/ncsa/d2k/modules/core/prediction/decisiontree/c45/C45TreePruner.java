@@ -107,7 +107,7 @@ public class C45TreePruner
     *
     * @return Description of return value.
     */
-   static private double errorEstimate(double N, double E, double z) {
+   private static double errorEstimate(double N, double E, double z) {
       double f = E / N;
 
       double usq = (f / N);
@@ -368,6 +368,7 @@ public class C45TreePruner
 
    /**
     * Called by the D2K Infrastructure after the itinerary completes execution.
+    * Clean up fields that were used during execution.
     */
    public void endExecution() {
       super.endExecution();

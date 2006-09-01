@@ -72,7 +72,7 @@ public class Utility {
     *
     * @return int value
     */
-   static public int audioBytesToInt(byte byte1, byte byte2) {
+   public static int audioBytesToInt(byte byte1, byte byte2) {
       int unsignedInt =
          unsignedByteToInt(byte2) * 256 + unsignedByteToInt(byte1);
 
@@ -96,7 +96,7 @@ public class Utility {
     *
     * @return given a two d array of doubles, create a table.
     */
-   static public ExampleTable getTable(double[][] data, String[] inputNames,
+   public static ExampleTable getTable(double[][] data, String[] inputNames,
                                        String[] outputNames, int[] inputs,
                                        int[] outputs, int count) {
       Column[] cols = new Column[data.length];
@@ -141,7 +141,7 @@ public class Utility {
     *
     * @return the individual values in the list
     */
-   static public String[] parseCSVList(String list) {
+   public static String[] parseCSVList(String list) {
 
       int length = list.length();
 
@@ -185,7 +185,7 @@ public class Utility {
    /* inclusive).
     */
    /*****************************************************************************/
-   static public int randomInt(Random generator, int min, int max) {
+   public static int randomInt(Random generator, int min, int max) {
       return (int) ((generator.nextDouble() * (max - min + 1)) + min);
    }
 
@@ -198,7 +198,7 @@ public class Utility {
     *
     * @throws Exception Description of exception Exception.
     */
-   static public void randomizeIntArray(Random generator, int[] data,
+   public static void randomizeIntArray(Random generator, int[] data,
                                         int numElements) throws Exception {
       int temp;
       int rand_index;
@@ -220,7 +220,7 @@ public class Utility {
     *
     * @return index of string in the array, or -1 if not found
     */
-   static public int stringToIndex(String[] strings, String string) {
+   public static int stringToIndex(String[] strings, String string) {
 
       int numStrings = strings.length;
       int index = -1;
@@ -244,7 +244,7 @@ public class Utility {
     *
     * @return int value
     */
-   static public int unsignedByteToInt(byte byte1) {
+   public static int unsignedByteToInt(byte byte1) {
 
       if (byte1 >= 0) {
          return (int) byte1;

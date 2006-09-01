@@ -92,23 +92,11 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
 
    //~ Instance fields *********************************************************
 
-   /**
-    * The threshold for information gain / private double infoGainThreshold =
-    * 0.005; public void setInfoGainThreshold(double d) { infoGainThreshold = d;
-    * } public double getInfoGainThreshold() { return infoGainThreshold; }.
-    */
-
    /** Turns debugging statements on or off. */
    private boolean debug = false;
 
    /** the minimum ratio per leaf. */
    private double minimumRatioPerLeaf = 0.001;
-
-   /*public void setMinimumRecordsPerLeaf(int num) {
-    * minimumRecordsPerLeaf = num;}*/
-
-/*  public int getMinimumRecordsPerLeaf() {
- *  return minimumRecordsPerLeaf;}*/
 
    /** the number of examples. */
    protected transient int numExamples;
@@ -130,7 +118,7 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
     * @return an array of size orig.length+1 with all the entries from orig
     *         copied over
     */
-   static private int[] expandArray(int[] orig) {
+   private static int[] expandArray(int[] orig) {
       int[] newarray = new int[orig.length + 1];
       System.arraycopy(orig, 0, newarray, 0, orig.length);
 
@@ -144,7 +132,7 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
     *
     * @return Description of return value.
     */
-   static private final double info(int[] tallies) {
+   private static final double info(int[] tallies) {
       int total = 0;
 
       for (int i = 0; i < tallies.length; i++) {
@@ -184,7 +172,7 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
     *
     * @return the binary log of d
     */
-   static private final double lg(double d) {
+   private static final double lg(double d) {
       return Math.log(d) / Math.log(2.0);
    }
 
@@ -198,7 +186,7 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
     *
     * @return the most common output value from the examples
     */
-   static private String mostCommonOutputValue(Table t, int outCol,
+   private static String mostCommonOutputValue(Table t, int outCol,
                                                int[] examples) {
       HashMap map = new HashMap();
       int[] tallies = new int[0];
@@ -245,7 +233,7 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
     * @return an array containing all the unique values for examples in this
     *         column
     */
-   static private String[] uniqueValues(Table t, int colNum, int[] examples) {
+   private static String[] uniqueValues(Table t, int colNum, int[] examples) {
       int numRows = examples.length;
 
       // count the number of unique items in this column
@@ -390,21 +378,6 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
 
       int[] sortedExamples = TableUtilities.multiSort(t, cols, examCopy);
 
-      // double mean = TableUtilities.mean(t, attCol);
-
-      /*for(int i = 0; i < examples.length; i++) {
-       *        int rowIdx = examples[i]; dc.setDouble(t.getDouble(rowIdx,
-       * attCol), i); sc.setString(t.getString(rowIdx, outCol), i); } Column[]
-       * cols = {dc, sc}; MutableTableImpl vt =
-       * (MutableTableImpl)DefaultTableFactory.getInstance().createTable(cols);
-       * // sort the table vt.sortByColumn(0);
-       */
-
-      // each row of the new table is an example
-      /*int[] exams = new int[vt.getNumRows()];
-       * for(int i = 0; i < vt.getNumRows(); i++) exams[i] = i;
-       */
-
       // now test the possible split values.  these are the half-way point
       // between two adjacent values.  keep the highest.
       double splitValue;
@@ -417,14 +390,6 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
       boolean allSame = true;
       double baseGain = outputInfo(t, outCol, examples);
       // double baseGain = outputInfo(t, outCol, sortedExamples);
-
-/*    double gain = baseGain = numericAttributeInfo(t, mean,
- *                                                examples, attCol, outCol);
- *
- * double spliter = splitInfo(t, attCol, mean, examples); gain /= spliter;
- *
- * split.gain = gain; split.splitValue = mean; return split;
- */
 
       // test the halfway point between the last value and the current value
       for (int i = 1; i < sortedExamples.length; i++) {

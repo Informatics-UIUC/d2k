@@ -2966,7 +2966,9 @@ public class SQLRainForest extends SQLRainForestOPT {
     * @version $Revision$, $Date$
     */
    private final class ColSplit {
+       /** column index */
       int col;
+        /** split value */
       double splitValue;
    }
 
@@ -2977,25 +2979,41 @@ public class SQLRainForest extends SQLRainForestOPT {
     * @version $Revision$, $Date$
     */
    private final class EntrSplit {
+       /** gain */
       double gain;
+       /** split value */
       double splitValue;
 
+       /**
+        * Constructor
+        */
       EntrSplit() { }
 
+       /**
+        * Constructor
+        * @param s split value
+        * @param g gain
+        */
       EntrSplit(double s, double g) {
          splitValue = s;
          gain = g;
       }
    }
 
-   // object stored in ArrayList avcSets
+    /**
+     * Stores an attribute-value-class combination
+     */
    public class AvcSet {
+        /** attribute name */
       public String attrName;
-      public String classLabel; // class label. We only implete single class
-                                // column
-      public int count; // count for this avcSet
-      public String highValue; // high end attribute value
-      public String lowValue; // low end attribute value
+        /** class label. We only implete single class column */
+      public String classLabel;
+       /** count for this avcSet */
+      public int count;
+        /** high end attribute value */
+      public String highValue;
+        /** low end attribute value */
+      public String lowValue;
    }
     
    /**
@@ -3005,13 +3023,27 @@ public class SQLRainForest extends SQLRainForestOPT {
     * @version $Revision$, $Date$
     */
    public class NodeInfo {
+        /** avc sets */
       public ArrayList[] avcSets;
+       /** class tallies */
       public int[] classTallies;
+       /** data */
       public MutableTableImpl data;
+       /** unique values */
       public ArrayList[] uniqValues;
 
+        /**
+         * Constructor
+         */
       public NodeInfo() { }
 
+        /**
+         * Constructor
+         * @param avcSets avc sets
+         * @param classTallies class tallies
+         * @param data data
+         * @param uniqValues unique values
+         */       
       public NodeInfo(ArrayList[] avcSets, int[] classTallies,
                       MutableTableImpl data, ArrayList[] uniqValues) {
          this.avcSets = avcSets;

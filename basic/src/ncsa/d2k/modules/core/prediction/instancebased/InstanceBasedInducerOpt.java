@@ -175,40 +175,39 @@ public class InstanceBasedInducerOpt extends FunctionInducerOpt {
       String s = "";
       s += "<p>";
       s += "Overview: ";
-      s +=
-         "This module builds an instance based model from an example table. </p>";
+      s += "This module builds an instance based model from an example table. ";
+      s += "</p>";
       s += "<p>";
       s += "Detailed Description: ";
       s += "The module implements the instance based learning algorithm. ";
-      s +=
-         "The instance based learning algorithm is also known as n-nearest neighbor or kernel density weighting.  ";
-      s +=
-         "During the training phase, the instance based inducer simply memorizes (makes a copy of) the training example table.  ";
-      s +=
-         "Given a target point in input space to classify, an instance based model first ";
-      s +=
-         "finds the n (<i>Neighborhood Size</i>) nearest examples using Euclidean distance, and weights each example to make the final prediction.  ";
-      s +=
-         "The formula used to weight each example is 1.0 / distance^<i>Distance Weighting Power</i>.  ";
-      s +=
-         "Distance is Euclidean (square root of the sum of squared differences).  ";
-      s +=
-         "To prevent division by zero, a constant weight (<i>Zero Distance Weight</i>) is assigned to any example with a zero distance.  ";
-      s +=
-         "When <i>Distance Weighting Power</i> is 0.0, and <i>Zero Distance Value</i> is 1.0, every example in the neighborhood is given equal consideration.  ";
-      s += "<p>";
-      s += "Restrictions: ";
-      s +=
-         "This module will only classify examples with numeric input and output attributes.";
+      s += "The instance based learning algorithm is also known as n-nearest ";
+      s += "neighbor or kernel density weighting.  ";
+      s += "During the training phase, the instance based inducer simply ";
+      s += "memorizes (makes a copy of) the training example table.  ";
+      s += "Given a target point in input space to classify, an instance based ";
+      s += "model first finds the n (<i>Neighborhood Size</i>) nearest ";
+      s += "examples using Euclidean distance, and weights each example to ";
+      s += "make the final prediction.  ";
+      s += "The formula used to weight each example is 1.0 / ";
+      s += "distance^<i>Distance Weighting Power</i>.  ";
+      s += "Distance is Euclidean (square root of the sum of squared differences).  ";
+      s += "To prevent division by zero, a constant weight ";
+      s += "(<i>Zero Distance Weight</i>) is assigned to any example with a ";
+      s += "zero distance.  ";
+      s += "When <i>Distance Weighting Power</i> is 0.0, and ";
+      s += "<i>Zero Distance Value</i> is 1.0, every example in the ";
+      s += "neighborhood is given equal consideration.  ";
+      s += "<p>Restrictions: ";
+      s += "This module will only classify examples with numeric input and ";
+      s += "output attributes.";
       s += "<p>";
       s += "Data Handling: This module does not modify the input data. </p>";
       s += "<p>";
-      s +=
-         "Scalability: This module can efficiently process a data set that can be stored in memory.  ";
-      s +=
-         "The ultimate limit is how much virtual memory java can access. </p> ";
-      s +=
-         "Model prediction speed can be increased by reducing <i>Neighborhood Size</i>.  ";
+      s += "Scalability: This module can efficiently process a data set that ";
+      s += "can be stored in memory.  ";
+      s += "The ultimate limit is how much virtual memory java can access. </p> ";
+      s += "Model prediction speed can be increased by reducing ";
+      s += "<i>Neighborhood Size</i>.  ";
 
       return s;
    } // end method getModuleInfo

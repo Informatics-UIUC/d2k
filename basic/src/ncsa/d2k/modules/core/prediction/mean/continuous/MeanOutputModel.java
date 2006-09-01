@@ -160,7 +160,7 @@ public class MeanOutputModel extends Model implements java.io.Serializable {
    }
 
    /**
-    * Print model options.
+    * Print this model.
     *
     * @param options The options.
     */

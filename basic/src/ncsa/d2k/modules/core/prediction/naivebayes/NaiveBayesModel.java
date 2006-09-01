@@ -27,6 +27,7 @@ public final class NaiveBayesModel
   /** The object that holds the true tallies.  This data is shown in
    the visualization */
   private BinTree binTree;
+
   /** The object that holds the data used in calculations.  This may
    be different than the data in the BinTree, because the tallies
    and totals are modified whenever there is a 0
@@ -38,10 +39,14 @@ public final class NaiveBayesModel
 
   /** A lookup table of the data for the chart, indexed by attribute name */
   private HashMap chartData;
+
   /** A lookup table of the default data, indexed by attribute name */
   private HashMap defaultData;
 
+  /** A lookup table of the ranked data, indexed by attribute name */
   private HashMap rankedChartData;
+
+  /** A lookup table of the alphabetical data, indexed by attribute name */
   private HashMap alphaChartData;
 
   /** The pie chart for the unknown attributes */
@@ -50,6 +55,8 @@ public final class NaiveBayesModel
   /** The initial evidence.  ie the evidence when no other pies
      are selected */
   private NaiveBayesPieChartData initialEvidence;
+
+  /** ratios for inital evidence */
   private double[] initEv;
 
   /** The current evidence. */
@@ -64,37 +71,42 @@ public final class NaiveBayesModel
   /** The attribute names, ranked in order of significance */
   private String[] rankedAttributes;
 
+  /** prediction values, indexed by attribute name */
   private HashMap predictionValues;
 
+  /** the column index of input features */
   private int[] inputFeatures;
+  /** the column index of output features */
   private int[] outputFeatures;
 
+    /** true if the setupForVis method has been called */
   private boolean isReadyForVisualization;
 
+    /**
+     * Return true if this model has been prepped for visualization
+     * @return true if this model is ready for visualization.
+     */
     boolean isReadyForVisualization () {
 	return isReadyForVisualization;
     }
 
+    /**
+     * Set to true if this model has been prepped for visualization
+     * @param val new isReadyForVisualzation
+     */
     void setIsReadyForVisualization ( boolean val ) {
 	isReadyForVisualization = val;
     }
 
-
-/*  private int trainingSetSize;
-
-  private String[] inputColumnNames;
-  private String[] outputColumnNames;
-
-  private String[] inputTypes;
-  private String[] outputTypes;
- */
-
+    /**
+     * Constructor
+     */
   public NaiveBayesModel() {}
 
   /**
    Constructor
    @param bt the bin tree
-   @param vt the vertical table
+   @param vt the training data
    */
   NaiveBayesModel(BinTree bt, ExampleTable vt) {
     super(vt);
@@ -104,37 +116,8 @@ public final class NaiveBayesModel
 
     inputFeatures = table.getInputFeatures();
     outputFeatures = table.getOutputFeatures();
-//    setTrainingTable(vt);
 
     isReadyForVisualization = false;
-
-/*    trainingSetSize = table.getNumRows();
-
-    inputColumnNames = new String[inputFeatures.length];
-    inputTypes = new String[inputFeatures.length];
-    for (int i = 0; i < inputFeatures.length; i++) {
-      inputColumnNames[i] = table.getColumnLabel(inputFeatures[i]);
-      //if(table.getColumn(inputFeatures[i]) instanceof NumericColumn)
-      if (table.isColumnScalar(inputFeatures[i])) {
-        inputTypes[i] = "Scalar";
-      }
-      else {
-        inputTypes[i] = "Nominal";
-      }
-    }
-
-    outputColumnNames = new String[outputFeatures.length];
-    outputTypes = new String[outputFeatures.length];
-    for (int i = 0; i < outputFeatures.length; i++) {
-      outputColumnNames[i] = table.getColumnLabel(outputFeatures[i]);
-      //if(table.getColumn(outputFeatures[i]) instanceof NumericColumn)
-      if (table.isColumnScalar(outputFeatures[i])) {
-        outputTypes[i] = "Scalar";
-      }
-      else {
-        outputTypes[i] = "Nominal";
-      }
-    }*/
 
     cn = bt.getClassNames();
 
@@ -150,11 +133,12 @@ public final class NaiveBayesModel
 
     // create the calc tree
     calcTree = new CalcTree(binTree);
-
-    // try to predict the classes based on the binning data
-    // predict(table);
   }
 
+    /**
+     * Cache all necessary data for visualization.  Create the rankedChartData,
+     * alphaChartData, and defaultData.
+     */
   public void setupForVis() {
     String[] an = binTree.getAttributeNames();
     // create all the NaiveBayesPieChartData objects
@@ -362,10 +346,20 @@ public final class NaiveBayesModel
     }
   }
 
-  private final class PredictionTally {
+    /**
+     * A structure that represents a prediction
+     */
+  private class PredictionTally {
+    /** name of attribute */
     String attributeName;
+    /** count */
     int tally;
 
+        /**
+         * Constructor
+         * @param an attribute name
+         * @param t tally
+         */
     PredictionTally(String an, int t) {
       attributeName = an;
       tally = t;
@@ -375,8 +369,11 @@ public final class NaiveBayesModel
   /**
    Sort the predictions lookup table.  The attribute with the least
    number of correct predictions goes first.
+   @param pred contain predictions
+   @return array with attribute names sorted by the one with the least number
+   of correct predictions
    */
-  private final String[] sortPredictions(HashMap pred) {
+  private String[] sortPredictions(HashMap pred) {
     Object[] preds = pred.values().toArray();
     List list = Arrays.asList(preds);
     // sort the prediction tallys
@@ -400,22 +397,37 @@ public final class NaiveBayesModel
     return names;
   }
 
-  private final class PredictionComparator
+    /**
+     * Comparator to compare PredictionTally objects
+     */
+  private class PredictionComparator
       implements Comparator {
-    public int compare(Object o1, Object o2) {
-      PredictionTally p1 = (PredictionTally) o1;
-      PredictionTally p2 = (PredictionTally) o2;
-      if (p1.tally > p2.tally) {
-        return 1;
-      }
-      if (p1.tally == p2.tally) {
-        return 0;
-      }
-      return -1;
-    }
+        /**
+         * Compare the tally field of two PredictionTally objects.
+         * @param o1 first PredictionTally
+         * @param o2 second PredictionTally
+         * @return -1,0, or 1 if o1.tally is less than, equal to, or greater than
+         * o2.tally, respectively
+         */
+        public int compare(Object o1, Object o2) {
+            PredictionTally p1 = (PredictionTally) o1;
+            PredictionTally p2 = (PredictionTally) o2;
+            if (p1.tally > p2.tally) {
+                return 1;
+            }
+            if (p1.tally == p2.tally) {
+                return 0;
+            }
+            return -1;
+        }
   }
 
-  final double getPredictionValue(String an) {
+    /**
+     * Get prediction value for an attribute name
+     * @param an attribute name
+     * @return predictor value
+     */
+  double getPredictionValue(String an) {
     Double d = (Double) predictionValues.get(an);
     if (d != null) {
       return d.doubleValue();
@@ -427,8 +439,10 @@ public final class NaiveBayesModel
 
   /**
    Return the index of the maximum item in a double array.
+   @param ar array
+   @return index of the maximum item
    */
-  private static final int getIndexOfMax(double[] ar) {
+  private static int getIndexOfMax(double[] ar) {
     double max = ar[0];
     int idx = 0;
 
@@ -444,17 +458,19 @@ public final class NaiveBayesModel
   /**
    Get the ratio for a class
    @param cn the class name
+   @return ratio for the class
    */
-  final double getClassRatio(String cn) {
+  double getClassRatio(String cn) {
     return (double) binTree.getClassTotal(cn) / binTree.getTotalClassified();
   }
 
-  // SORTING PIE CHARTS
 
   /**
-     Sort charts from largest to smallest
+     Sort charts from largest to smallest.
+   @param A unsorted pie charts
+   @return sorted pie charts
    */
-  private final NaiveBayesPieChartData[] sortPieCharts(NaiveBayesPieChartData[]
+  private NaiveBayesPieChartData[] sortPieCharts(NaiveBayesPieChartData[]
       A) {
     List list = Arrays.asList(A);
     Collections.sort(list, new PieChartComparator());
@@ -462,8 +478,19 @@ public final class NaiveBayesModel
     return (NaiveBayesPieChartData[]) list.toArray();
   }
 
-  private final class PieChartComparator
+    /**
+     * Comparator for NaiveBayesPieChartData objects that compares the totals.
+     */
+  private class PieChartComparator
       implements Comparator {
+
+        /**
+         * Compare the total of two NaiveBayesPieChartData objects.
+         * @param o1 first NaiveBayesPieChart
+         * @param o2 second NaiveBayesPieChart
+         * @return -1,0, or 1 if o1.total is less than, equal to, or greater than
+         * o2.total, respectively
+         */
     public int compare(Object o1, Object o2) {
       NaiveBayesPieChartData p1 = (NaiveBayesPieChartData) o1;
       NaiveBayesPieChartData p2 = (NaiveBayesPieChartData) o2;
@@ -478,7 +505,12 @@ public final class NaiveBayesModel
     }
   }
 
-  private final NaiveBayesPieChartData[] sortPieChartsAlpha(
+  /**
+     Sort charts by their bin name.
+   @param A unsorted pie charts
+   @return sorted pie charts
+   */
+  private NaiveBayesPieChartData[] sortPieChartsAlpha(
       NaiveBayesPieChartData[] A) {
     List list = Arrays.asList(A);
     Collections.sort(list, new PieChartAlphaComparator());
@@ -486,8 +518,19 @@ public final class NaiveBayesModel
     return (NaiveBayesPieChartData[]) list.toArray();
   }
 
-  private final class PieChartAlphaComparator
+    /**
+     * Comparator for NaiveBayesPieChartData objects that compares the bin names.
+     */
+  private class PieChartAlphaComparator
       implements Comparator {
+
+        /**
+         * Compare the bin names of two NaiveBayesPieChartData objects.
+         * @param o1 first NaiveBayesPieChart
+         * @param o2 second NaiveBayesPieChart
+         * @return -1,0, or 1 if o1.binname is less than, equal to, or greater than
+         * o2.binname, respectively
+         */
     public int compare(Object o1, Object o2) {
       NaiveBayesPieChartData p1 = (NaiveBayesPieChartData) o1;
       NaiveBayesPieChartData p2 = (NaiveBayesPieChartData) o2;
@@ -496,88 +539,101 @@ public final class NaiveBayesModel
     }
   }
 
-  /**
-      Return a description of the function of this module.
-      @return A description of this module.
-   */
-  public String getModuleInfo() {
-//    StringBuffer sb = new StringBuffer("Makes predictions based on the");
-//    sb.append(" data it was created with.  The predictions are put into ");
-//    sb.append(" a new column of the table.");
-//    return sb.toString();
 
-    return "<p>Overview: Make predictions based on the data this model was " +
-        "trained with."+
-        "<p>Detailed Description: Given a BinTree object that contains counts for "+
-        "each discrete item in the training data set, this module creates a "+
-        "Naive Bayesian learning model.  This method is based on Bayes's rule "+
-        "for conditional probability.  It \"naively\" assumes independence of "+
-        "the input features."+
-        "<p>Data Type Restrictions: This model can only use nominal data as the inputs "+
-        "and can only classify one nominal output.  The binning procedure will "+
-        "discretize any scalar inputs in the training data, but the output data "+
-        "is not binned and should be nominal."+
-        "<p>Data Handling: The input data is neither modified nor destroyed."+
-        "<p>Scalability: The module utilizes the counts in the BinTree, and "+
-        "as such does not perform any significant computations.";
-  }
+    /**
+     * Describe the function of this module.
+     *
+     * @return the description of this module.
+     */
+    public String getModuleInfo() {
+        return "<p>Overview: Make predictions based on the data this model was " +
+                "trained with." +
+                "<p>Detailed Description: Given a BinTree object that contains counts for " +
+                "each discrete item in the training data set, this module creates a " +
+                "Naive Bayesian learning model.  This method is based on Bayes's rule " +
+                "for conditional probability.  It \"naively\" assumes independence of " +
+                "the input features." +
+                "<p>Data Type Restrictions: This model can only use nominal data as the inputs " +
+                "and can only classify one nominal output.  The binning procedure will " +
+                "discretize any scalar inputs in the training data, but the output data " +
+                "is not binned and should be nominal." +
+                "<p>Data Handling: The input data is neither modified nor destroyed." +
+                "<p>Scalability: The module utilizes the counts in the BinTree, and " +
+                "as such does not perform any significant computations.";
+    }
 
-  /**
-     Return the name of this module.
-     @return The name of this module.
-   */
-  public String getModuleName() {
-    return "NBModel";
-  }
 
-  /**
-     Return a String array containing the datatypes the inputs to this
-     module.
-     @return The datatypes of the inputs.
-   */
-  public String[] getInputTypes() {
-    String[] in = {
-        "ncsa.d2k.modules.core.datatype.table.Table"};
-    return in;
-  }
+    /**
+     * Returns the name of the module that is appropriate for end-user consumption.
+     *
+     * @return The name of the module.
+     */
+    public String getModuleName() {
+        return "NBModel";
+    }
 
-  /**
-     Return a String array containing the datatypes of the outputs
-     of this module.
-     @return The datatypes of the outputs.
-   */
-  public String[] getOutputTypes() {
-    String[] out = {
-        "ncsa.d2k.modules.core.datatype.table.PredictionTable",
-        "ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"};
-    return out;
-  }
 
-  /**
-     Return a description of a specific input.
-     @param i The index of the input
-     @return The description of the input
-   */
-  public String getInputInfo(int i) {
-    StringBuffer sb = new StringBuffer("Table of data to predict.  This ");
-    sb.append("must have the same input variables as the training data!");
-    return sb.toString();
-  }
+   /**
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the input at the corresponding index.
+    *
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the input at the corresponding index.
+    */
+    public String[] getInputTypes() {
+        String[] in = {
+                "ncsa.d2k.modules.core.datatype.table.Table"};
+        return in;
+    }
 
-  /**
-     Return the name of a specific input.
-     @param i The index of the input.
-     @return The name of the input
-   */
+
+   /**
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the output at the corresponding index.
+    *
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the output at the corresponding index.
+    */
+    public String[] getOutputTypes() {
+        String[] out = {
+                "ncsa.d2k.modules.core.datatype.table.PredictionTable",
+                "ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"};
+        return out;
+    }
+
+
+   /**
+    * Returns a description of the input at the specified index.
+    *
+    * @param  i Index of the input for which a description should be returned.
+    *
+    * @return <code>String</code> describing the input at the specified index.
+    */
+    public String getInputInfo(int i) {
+        StringBuffer sb = new StringBuffer("Table of data to predict.  This ");
+        sb.append("must have the same input variables as the training data!");
+        return sb.toString();
+    }
+
+   /**
+    * Returns the name of the input at the specified index.
+    *
+    * @param  i Index of the input for which a name should be returned.
+    *
+    * @return <code>String</code> containing the name of the input at the
+    *         specified index.
+    */
   public String getInputName(int i) {
     return "newData";
   }
 
-  /**
-     Return the description of a specific output.
-     @param i The index of the output.
-     @return The description of the output.
-   */
+   /**
+    * Returns a description of the output at the specified index.
+    *
+    * @param  i Index of the output for which a description should be returned.
+    *
+    * @return <code>String</code> describing the output at the specified index.
+    */
   public String getOutputInfo(int i) {
     if (i == 0) {
       return "Data to predict, with the predictions in the last column.";
@@ -587,11 +643,14 @@ public final class NaiveBayesModel
     }
   }
 
-  /**
-     Return the name of a specific output.
-     @param i The index of the output.
-     @return The name of the output
-   */
+   /**
+    * Returns the name of the output at the specified index.
+    *
+    * @param  i Index of the output for which a description should be returned.
+    *
+    * @return <code>String</code> containing the name of the output at the
+    *         specified index.
+    */
   public String getOutputName(int i) {
     if (i == 0) {
       return "predictions";
@@ -601,10 +660,12 @@ public final class NaiveBayesModel
     }
   }
 
-  /**
-   Pull in the data to predict, and do the prediction.  A new Column
-   is added to the table to hold the predictions.
-   */
+   /**
+    * Performs the main work of the module.
+    *
+    * @throws Exception if a problem occurs while performing the work of the
+    *                   module
+    */
   public void doit() throws Exception {
     Table vt = (Table) pullInput(0);
     PredictionTable result;
@@ -620,46 +681,15 @@ public final class NaiveBayesModel
     pushOutput(this, 1);
   }
 
-/*  public int getTrainingSetSize() {
-    return trainingSetSize;
-  }
-
-  public String[] getInputColumnLabels() {
-    return inputColumnNames;
-  }
-
-  public String[] getOutputColumnLabels() {
-    return outputColumnNames;
-  }
-
-  public int[] getInputFeatureIndicies() {
-    return inputFeatures;
-  }
-
-  public int[] getOutputFeatureIndices() {
-    return outputFeatures;
-  }
-
-  public String[] getInputFeatureTypes() {
-    return inputTypes;
-  }
-
-  public String[] getOutputFeatureTypes() {
-    return outputTypes;
-  }*/
-
-
+  /**
+   Predict the classes based on the attributes.  The binning data
+   from the training set is used.  If the correct class is present,
+   keep a tally of the number of correct predictions.  The predictions
+   are put into a new column of the table, and this column is added
+   to the end of the table.
+   @param pt table with columns for predictions
+   */
   protected void makePredictions(PredictionTable pt) {
-/*    PredictionTable pt = null;
-    if (src instanceof PredictionTable) {
-      pt = (PredictionTable) src;
-    }
-    else {
-      pt = (PredictionTable) src.toPredictionTable();
-
-    }
-*/
-//    int numCorrect = 0;
 
     int[] ins = pt.getInputFeatures();
     int[] outs = pt.getOutputFeatures();
@@ -721,91 +751,10 @@ public final class NaiveBayesModel
   }
 
   /**
-   Predict the classes based on the attributes.  The binning data
-   from the training set is used.  If the correct class is present,
-   keep a tally of the number of correct predictions.  The predictions
-   are put into a new column of the table, and this column is added
-   to the end of the table.  The format of the prediction data is
-   assumed to be the same as that of the training data!
-   */
-  /*public PredictionTable predict(ExampleTable src) {
-    PredictionTable pt = null;
-    if (src instanceof PredictionTable) {
-      pt = (PredictionTable) src;
-    }
-    else {
-      pt = (PredictionTable) src.toPredictionTable();
-
-    }
-    int numCorrect = 0;
-
-    int[] ins = pt.getInputFeatures();
-    int[] outs = pt.getOutputFeatures();
-    int[] preds = pt.getPredictionSet();
-
-    if (preds.length == 0) {
-      String[] newPreds = new String[pt.getNumRows()];
-      pt.addPredictionColumn(newPreds, "Predictions");
-      preds = pt.getPredictionSet();
-    }
-
-    int numRows = pt.getNumRows();
-    for (int row = 0; row < numRows; row++) {
-      double[] currentEv = null;
-
-      // for each column
-      for (int col = 0; col < ins.length; col++) {
-        String aName = pt.getColumnLabel(ins[col]);
-        String bn = null;
-
-        // skip over the class column and omitted columns.
-        //Column c = pt.getColumn(ins[col]);
-
-        //if(c instanceof NumericColumn)
-        if (pt.isColumnScalar(ins[col])) {
-          bn = binTree.getBinNameForValue(pt.getColumnLabel(ins[col]),
-                                          pt.getDouble(row, ins[col]));
-        }
-        else {
-          bn = binTree.getBinNameForValue(pt.getColumnLabel(ins[col]),
-                                          pt.getString(row, ins[col]));
-
-        }
-        if (bn != null) {
-          currentEv = addEvidence(pt.getColumnLabel(ins[col]), bn);
-        }
-      }
-      // now predict
-      if (currentEv != null) {
-        // largest chunk of pie is the prediction
-        int id = getIndexOfMax(currentEv);
-
-        // get the predicted class
-        String predictedClass = cn[id];
-        pt.setStringPrediction(predictedClass, row, 0);
-
-        if (predictedClass.trim().equals(pt.getString(row, outs[0]))) {
-          numCorrect++;
-        }
-      }
-      else {
-        pt.setStringPrediction(null, row, 0);
-      }
-      clearEvidence();
-    }
-    //System.out.print("Number of correct predictions: "+numCorrect);
-    //System.out.println(" out of: "+pt.getNumRows());
-
-    return pt;
-  }*/
-
-  //	METHODS USED BY NAIVE BAYES VIS
-
-  /**
    Get the class names.
    @return the class names
    */
-  public final String[] getClassNames() {
+  public String[] getClassNames() {
     return binTree.getClassNames();
   }
 
@@ -813,7 +762,7 @@ public final class NaiveBayesModel
    Get the attribute names.
    @return the attribute names, in ranked order
    */
-  public final String[] getAttributeNames() {
+  public String[] getAttributeNames() {
     return rankedAttributes;
   }
 
@@ -821,7 +770,7 @@ public final class NaiveBayesModel
    Get the column number for the Class being predicted
    @return the column number
    */
-  public final String getClassColumn() {
+  public String getClassColumn() {
     //return outputColumnNames[0];
     return this.getOutputColumnLabels()[0];
   }
@@ -831,7 +780,7 @@ public final class NaiveBayesModel
      @param attributeName the attribute name
      @return the names of the bins for this attribute
    */
-  public final String[] getBinNames(String attributeName) {
+  public String[] getBinNames(String attributeName) {
     return binTree.getBinNames(attributeName);
   }
 
@@ -839,7 +788,7 @@ public final class NaiveBayesModel
    Get the number of unknown classes.
    @return the number of unknown classes
    */
-  final int getNumUnknownClasses() {
+  int getNumUnknownClasses() {
     return binTree.getNumUnknownClasses();
   }
 
@@ -848,7 +797,7 @@ public final class NaiveBayesModel
    @return the pie chart that shows the unknown attributes
     for each class
    */
-  final NaiveBayesPieChartData getUnknownAttributes() {
+  NaiveBayesPieChartData getUnknownAttributes() {
     return unknownAttrData;
   }
 
@@ -856,7 +805,7 @@ public final class NaiveBayesModel
    Get the current evidence pie chart.
    @return the pie chart that has the current evidence data
    */
-  final NaiveBayesPieChartData getCurrentEvidence() {
+  NaiveBayesPieChartData getCurrentEvidence() {
     return currentEvidence;
   }
 
@@ -865,7 +814,7 @@ public final class NaiveBayesModel
    @param an the attribute name
    @param bn the bin name
    */
-  final double[] addEvidence(String an, String bn) {
+  double[] addEvidence(String an, String bn) {
     // add pie chart to the end of the list
     EvidenceItem ei = new EvidenceItem(an, bn);
     evidenceList.add(ei);
@@ -879,7 +828,7 @@ public final class NaiveBayesModel
    @param an the attribute name
    @param bn the bin name
    */
-  final double[] removeEvidence(String an, String bn) {
+  double[] removeEvidence(String an, String bn) {
     // iterate through list and remove this evidence
     Iterator i = evidenceList.iterator();
     while (i.hasNext()) {
@@ -892,15 +841,19 @@ public final class NaiveBayesModel
     return computeEvidence();
   }
 
-  final void clearEvidence() {
+    /**
+     * Clear the evidence list and reset to the default.
+     */
+  void clearEvidence() {
     evidenceList.clear();
     computeEvidence();
   }
 
   /**
    Re-compute the current evidence.
+   @return current evidence, indexed the same as the class names
    */
-  private final double[] computeEvidence() {
+  private double[] computeEvidence() {
     double[] currentEv = new double[initEv.length];
 
     // set all values in currentEv to be initEv
@@ -934,7 +887,7 @@ public final class NaiveBayesModel
    @return an array of NaiveBayesPieChartData that represents a row in
     the visualization
    */
-  final NaiveBayesPieChartData[] getData(String an) {
+  NaiveBayesPieChartData[] getData(String an) {
     return (NaiveBayesPieChartData[]) chartData.get(an);
   }
 
@@ -942,31 +895,43 @@ public final class NaiveBayesModel
    Get the default pie chart for an attribute
    @return the pie chart that shows the defaults for an attribute
    */
-  final NaiveBayesPieChartData getDefaultChart(String an) {
+  NaiveBayesPieChartData getDefaultChart(String an) {
     return (NaiveBayesPieChartData) defaultData.get(an);
   }
 
-  final void sortChartDataAlphabetically() {
+    /**
+     * Use the alphabetically sorted chart data
+     */
+  void sortChartDataAlphabetically() {
     chartData = alphaChartData;
   }
 
-  final void sortChartDataByRank() {
+    /**
+     * Use the rank order sorted chart data
+     */
+  void sortChartDataByRank() {
     chartData = rankedChartData;
   }
-
-  // HELPER CLASSES
 
   /**
    EvidenceItems are contained in the evidence list.
    They contain the attribute name, bin name, and the ratios to use
    when performing the evidence calculations.
    */
-  private final class EvidenceItem
+  private class EvidenceItem
       implements Serializable {
+      /** attribute name */
     String an;
+      /** bin name */
     String bn;
+      /** */
     double[] multRatio;
 
+      /**
+       * Constructor
+       * @param a attribute name
+       * @param b bin name
+       */
     EvidenceItem(String a, String b) {
       an = a;
       bn = b;
@@ -982,9 +947,14 @@ public final class NaiveBayesModel
    A tree to hold the values used in calculations.  Very similar to
    BinTree.
    */
-  private final class CalcTree
+  private class CalcTree
       extends HashMap
       implements Serializable {
+
+      /**
+       * Constructor
+       * @param bt bin tree
+       */
     CalcTree(BinTree bt) {
       String[] cn = bt.getClassNames();
       String[] an = bt.getAttributeNames();
@@ -1010,7 +980,14 @@ public final class NaiveBayesModel
       //printAll();
     }
 
-    final double getRatio(String cn, String an, String bn) {
+      /**
+       * Get the ratio given class name, attribute name, and bin name
+       * @param cn class name
+       * @param an attribute name
+       * @param bn bin name
+       * @return ratio
+       */
+    double getRatio(String cn, String an, String bn) {
       AttTree at = (AttTree) get(cn);
       if (at == null) {
         return 0;
@@ -1018,7 +995,10 @@ public final class NaiveBayesModel
       return at.getRatio(an, bn);
     }
 
-    final void init() {
+      /**
+       * initialize
+       */
+    void init() {
       // find the items with zeros in them and increment
       Iterator i = keySet().iterator();
       while (i.hasNext()) {
@@ -1028,7 +1008,10 @@ public final class NaiveBayesModel
       }
     }
 
-    final void printAll() {
+      /**
+       * Print for debugging
+       */
+    void printAll() {
       Iterator i = keySet().iterator();
       while (i.hasNext()) {
         String key = (String) i.next();
@@ -1037,9 +1020,17 @@ public final class NaiveBayesModel
       }
     }
 
-    final class AttTree
+      /**
+       * Attribute tree
+       */
+    class AttTree
         extends HashMap
         implements Serializable {
+
+          /**
+           * Constructor
+           * @param an attribute names
+           */
       AttTree(String[] an) {
         super(an.length);
         for (int i = 0; i < an.length; i++) {
@@ -1047,7 +1038,14 @@ public final class NaiveBayesModel
         }
       }
 
-      final void add(String an, String bn, int tally, int total) {
+          /**
+           * Add a tally and total for the given attribute name and bin name
+           * @param an attribute name
+           * @param bn bin name
+           * @param tally the tally for the bin
+           * @param total the total for the attribute
+           */
+      void add(String an, String bn, int tally, int total) {
         HashMap cl = (HashMap) get(an);
         boolean hz = false;
         if (tally == 0) {
@@ -1056,7 +1054,13 @@ public final class NaiveBayesModel
         cl.put(bn, new CalcItem(tally, total));
       }
 
-      final double getRatio(String an, String bn) {
+          /**
+           * Get the ratio for an attribute name and bin name
+           * @param an attribute name
+           * @param bn bin name
+           * @return ratio
+           */
+     double getRatio(String an, String bn) {
         HashMap list = (HashMap) get(an);
         if (list == null) {
           return 0;
@@ -1065,7 +1069,10 @@ public final class NaiveBayesModel
         return ci.ratio;
       }
 
-      final void printAll() {
+      /**
+       * Print for debugging
+       */
+      void printAll() {
         Iterator i = keySet().iterator();
         while (i.hasNext()) {
           String key = (String) i.next();
@@ -1078,7 +1085,10 @@ public final class NaiveBayesModel
         }
       }
 
-      final void init() {
+          /**
+           * initialize
+           */
+      void init() {
         Iterator i = keySet().iterator();
         while (i.hasNext()) {
           String key = (String) i.next();
@@ -1109,12 +1119,23 @@ public final class NaiveBayesModel
       }
     }
 
-    final private class CalcItem
+      /**
+       * A structure that holds a tally, total, and a ratio.
+       */
+    private class CalcItem
         implements Serializable {
+          /** tally */
       int tally;
+          /** total */
       int total;
+          /** ratio */
       double ratio;
 
+          /**
+           * Constructor
+           * @param ta tally
+           * @param to total
+           */
       CalcItem(int ta, int to) {
         tally = ta;
         total = to;
@@ -1122,6 +1143,10 @@ public final class NaiveBayesModel
     }
   }
 
+    /**
+     * Get the BinTree that holds the counts for the training data.
+     * @return BinTree that holds counts for the training data
+     */
   BinTree getBinTree() {
     return binTree;
   }

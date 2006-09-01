@@ -65,7 +65,7 @@ public class MergeSVMProblems extends ncsa.d2k.core.modules.DataPrepModule {
 
    //~ Instance fields *********************************************************
 
-   /** Description of field first. */
+   /** true if first execution */
    private boolean first = true;
 
    //~ Methods *****************************************************************

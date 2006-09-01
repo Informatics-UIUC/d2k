@@ -65,13 +65,13 @@ public class StepwiseLinearModel extends Model implements java.io.Serializable {
 
    //~ Instance fields *********************************************************
 
-   /** Description of field numSelectedInputs. */
+   /** number of selected inputs */
    protected int numSelectedInputs;
 
-   /** Description of field selectedIndices. */
+   /** selected indices. */
    protected int[] selectedIndices;
 
-   /** Description of field weights. */
+   /** weights */
    protected double[][] weights;
 
    //~ Constructors ************************************************************
@@ -134,7 +134,7 @@ public class StepwiseLinearModel extends Model implements java.io.Serializable {
 
 
     /**
-     * Print model options. Must be overriden by implementation.
+     * Print this model.
      *
      * @param printOptions The options.
      * @throws Exception If exception occurs, exception is thrown.

@@ -77,20 +77,6 @@ public class C45TreeBuilder extends C45TreeBuilderOPT {
       table = (ExampleTable) pullInput(0);
       numExamples = table.getNumRows();
 
-/*    HashMap nameToIndexMap = new HashMap();
- *
- * for(int i = 0; i < pp.getNumParameters(); i++) {   String name = pp.getName(i);
- *   nameToIndexMap.put(name, new Integer(i)); }*/
-
-/*    int idx = (int)pp.getValue(C45ParamSpaceGenerator.MIN_RECORDS);
- *  if(idx == null)   throw new Exception(getAlias()+": Minimum Number of
- * records per leaf not defined!");
- */
-      // this.minimumRecordsPerLeaf =
-      // pp.getValue(C45ParamSpaceGenerator.MIN_RATIO); if(minimumRecordsPerLeaf
-      // < 1)  throw new Exception(getAlias()+": Must be at least one record per
-      // leaf!");
-
       int[] inputs = table.getInputFeatures();
 
       if (inputs == null || inputs.length == 0) {
@@ -177,8 +163,10 @@ public class C45TreeBuilder extends C45TreeBuilderOPT {
       PropertyDescription[] retVal = new PropertyDescription[1];
       retVal[0] =
          new PropertyDescription("minimumRatioPerLeaf", "Minimum Leaf Ratio",
-                                 "The minimum ratio of records in a leaf to the total number of records in the tree. " +
-                                 "The tree construction is terminated when this ratio is reached.");
+                                 "The minimum ratio of records in a leaf to "+
+                                 "the total number of records in the tree. " +
+                                 "The tree construction is terminated when "+
+                                 "this ratio is reached.");
 
       return retVal;
    }

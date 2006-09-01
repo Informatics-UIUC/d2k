@@ -1,4 +1,4 @@
-/* 
+/*
  * $Header$
  *
  * ===================================================================
@@ -6,17 +6,17 @@
  * D2K-Workflow
  * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
  * ILLINOIS. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License v2.0
  * as published by the Free Software Foundation and with the required
  * interpretation regarding derivative works as described below.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License v2.0 for more details.
- * 
+ *
  * This program and the accompanying materials are made available
  * under the terms of the GNU General Public License v2.0 (GPL v2.0)
  * which accompanies this distribution and is available at
@@ -34,7 +34,7 @@
  * make those components a derivative work of D2K-Workflow.
  * (Examples of such independently developed components include for
  * example, external databases or metadata and provenance stores).
- * 
+ *
  * Note: A non-GPL commercially licensed version of contributions
  * from the UNIVERSITY OF ILLINOIS may be available from the
  * designated commercial licensee RiverGlass, Inc. located at
@@ -71,63 +71,70 @@ public class ScalarView implements View {
 
    //~ Static fields/initializers **********************************************
 
-   /** Description of field graphics. */
-   static JFrame graphics;
+   /**
+    * A GUI component with a native peer that can be used to compute font
+    * metrics.
+    */
+   private static JFrame graphics;
 
    //~ Instance fields *********************************************************
 
-   /** Description of field barwidth. */
-   double barwidth = 5;
+   /** width of bars. */
+   private double barwidth = 5;
 
-   /** Description of field brushwidth. */
-   double brushwidth;
-   double brushheight;
+   /** the height of the brushing panel */
+   private double brushheight;
 
-   /** Description of field error. */
-   double error;
+   /** the width of the brushing panel */
+   private double brushwidth;
 
-   /** Description of field featurewidth. */
-   double featurewidth;
+   /** error amount */
+   private double error;
 
-   /** Description of field inset. */
-   double inset = 5;
+   /** feature width */
+   private double featurewidth;
 
-   /** Description of field maximumvalues. */
-   double[] maximumvalues;
+   /** height */
+   private double height;
 
-   /** Description of field meanvalues. */
-   double[] meanvalues;
+   /** inset. */
+   private double inset = 5;
 
-   /** Description of field minimumvalues. */
-   double[] minimumvalues;
+   /** the maximum values */
+   private double[] maximumvalues;
 
-   /** Description of field numberformat. */
-   NumberFormat numberformat;
+   /** the mean values */
+   private double[] meanvalues;
 
-   /** Description of field ranges. */
-   double[] ranges;
+   /** the minimum values */
+   private double[] minimumvalues;
 
-   /** Description of field reduction. */
-   double reduction;
+   /** used to format numbers for printing */
+   private NumberFormat numberformat;
 
-   /** Description of field samplesize. */
-   double samplesize = 10;
+   /** ranges */
+   private double[] ranges;
 
-   /** Description of field samplespace. */
-   double samplespace = 8;
+   /** reduction. */
+   private double reduction;
 
-   /** Description of field scalarmodel. */
-   Model scalarmodel;
+   /** amount of space needed to print samples */
+   private double samplesize = 10;
 
-   /** Description of field scalarnode. */
-   ScalarViewableDTNode scalarnode;
+   /** spacing between printing of samples */
+   private double samplespace = 8;
 
-   /** Description of field scheme. */
-   DecisionTreeScheme scheme;
+   /** the model that holds the data */
+   private Model scalarmodel;
 
-   /** Description of field width. */
-   double width;
-   double height;
+   /** root of the decision tree */
+   private ScalarViewableDTNode scalarnode;
+
+   /** scheme keeps the colors for the decision tree */
+   private DecisionTreeScheme scheme;
+
+   /** width. */
+   private double width;
 
    //~ Constructors ************************************************************
 
@@ -139,9 +146,10 @@ public class ScalarView implements View {
    //~ Methods *****************************************************************
 
    /**
-    * Description of method drawBrush.
+    * When the mouse brushes over this node, draw the total and percentages of
+    * each class for this node.
     *
-    * @param g2 Description of parameter g2.
+    * @param g2 graphics context
     */
    public void drawBrush(Graphics2D g2) {
       double x;
@@ -185,9 +193,9 @@ public class ScalarView implements View {
    } // end method drawBrush
 
    /**
-    * Description of method drawView.
+    * Draw this node to the specified graphics context.
     *
-    * @param g2 Description of parameter g2.
+    * @param g2 graphics context
     */
    public void drawView(Graphics2D g2) {
       double x;
@@ -213,9 +221,10 @@ public class ScalarView implements View {
    }
 
    /**
-    * Description of method expand.
+    * Get expanded conponent.  This component shows the contents of the node
+    * in more detail.
     *
-    * @return Description of return value.
+    * @return expanded component
     */
    public JComponent expand() {
 
@@ -229,9 +238,9 @@ public class ScalarView implements View {
    }
 
    /**
-    * Description of method getBrushHeight.
+    * Get the height of the brushable area that contains bar chart
     *
-    * @return Description of return value.
+    * @return height of brushable area
     */
    public double getBrushHeight() {
 
@@ -255,9 +264,9 @@ public class ScalarView implements View {
    }
 
    /**
-    * Description of method getBrushWidth.
+    * Get the width of the brushable area that contains bar chart
     *
-    * @return Description of return value.
+    * @return width of brushable area
     */
    public double getBrushWidth() {
 
@@ -303,24 +312,24 @@ public class ScalarView implements View {
    } // end method getBrushWidth
 
    /**
-    * Description of method getHeight.
+    * Get the height of this component
     *
-    * @return Description of return value.
+    * @return height
     */
    public double getHeight() { return height; }
 
    /**
-    * Description of method getWidth.
+    * Get the width of this component
     *
-    * @return Description of return value.
+    * @return width
     */
    public double getWidth() { return width; }
 
    /**
-    * Description of method setData.
+    * Set the data for this component.
     *
-    * @param model Description of parameter model.
-    * @param node  Description of parameter node.
+    * @param model The decision tree model
+    * @param node  decision tree node
     */
    public void setData(ViewableDTModel model, ViewableDTNode node) {
       scalarnode = (ScalarViewableDTNode) node;
@@ -366,75 +375,128 @@ public class ScalarView implements View {
 
    //~ Inner Classes ***********************************************************
 
-   class ScalarExpanded extends JPanel {
+    /**
+     * Expanded view for a scalar node
+     */
+   private class ScalarExpanded extends JPanel {
 
+        /** constant for Split: */
       static private final String SPLIT = "Split: ";
+
+        /** constant for Leaf: */
       static private final String LEAF = "Leaf: ";
+
+        /** space between bars */
       double barspace = 5;
-
+        /** width of a bar */
       double barwidth = 60;
+        /** bottom inset */
       double bottom = 15;
+        /** data bottom inset */
       double databottom = 10;
-      double dataleft = 10;
-      double dataright = 10;
-      double datatop = 10;
-      double datawidth;
+        /** data height */
       double dataheight;
+        /** data left inset */
+      double dataleft = 10;
+         /** data right inset */
+      double dataright = 10;
+        /** data top inset */
+      double datatop = 10;
+        /** width of data area */
+      double datawidth;
+         /** graph bottom inset */
       double graphbottom = 30;
-      double graphleft = 30;
-      double graphright = 30;
-      double graphspace = 15;
-      double graphspacing = 15;
-      double graphtop = 30;
-      double graphwidth;
+        /** height of graph */
       double graphheight;
+        /** graph left inset */
+      double graphleft = 30;
+        /** graph right inset */
+      double graphright = 30;
+        /** buffer space for graph */
+      double graphspace = 15;
+        /** buffer space for graph */
+      double graphspacing = 15;
+        /** top inset for graph */
+      double graphtop = 30;
+        /** width of graph */
+      double graphwidth;
+        /** height of graph */
       double gridheight = 300;
-
+        /** grid size */
       double gridsize = 10;
+        /** stroke for painting grid */
       float gridstroke = .1f;
+        /** width of grid */
       double gridwidth;
+        /** ascent for large font */
       int largeascent;
-      int smallascent;
-
+       /** FontMetrics for large font */
       FontMetrics largemetrics;
-      FontMetrics smallmetrics;
-
+      /** large tick size */
       double largetick = 10;
+      /** left inset */
       double left = 15;
+      /** labels of all branches from the root to this node */
       String[] path;
+      /** buffer space for drawing path */
       double pathbottom = 10;
-      int pathindex;
-      double pathleading = 2;
-      double pathleft = 10;
-      double pathright = 15;
-      double pathtop = 6;
-      double pathwidth;
+      /** height of area for drawing path */
       double pathheight;
+      /** index into path array */
+      int pathindex;
+      /** buffer space for drawing path */
+      double pathleading = 2;
+      /** left inset for path */
+      double pathleft = 10;
+      /** right inset for path */
+      double pathright = 15;
+      /** top inset for path */
+      double pathtop = 6;
+      /** width of path area */
+      double pathwidth;
+       /** right inset */
       double right = 15;
-
+      /** width of rectangle used for sample */
       double samplesize = 10;
+      /** buffer space */
       double samplespace = 8;
+      /** ascent for small font */
+      int smallascent;
+       /** font metrics for small font */
+      FontMetrics smallmetrics;
+      /** small tick size */
       double smalltick = 4;
+      /** space between ticks */
       double tickspace = 8;
+      /** top inset */
       double top = 15;
       double valuespace = 5;
 
       double[] valuewidths;
-
+      /** x location where the data area is painted */
       double xdata;
-      double ydata;
-
+      /** x location where the graph is painted */
       double xgraph;
-      double ygraph;
-
+      /** x location to draw label */
       double xlabel;
-      double ylabel;
-
+      /** x location for path area */
       double xpath;
-      double ypath;
+      /** y location for data area */
+      double ydata;
+      /** y location for graph */
+      double ygraph;
+      /** y location for label */
+      double ylabel;
+      /** buffer space in y direction for label */
       double ylabelspace = 15;
+      /** y location for path area */
+      double ypath;
+      /** buffer space in y direction for path */
       double ypathspace = 15;
 
+        /**
+         * Constructor
+         */
       ScalarExpanded() {
          int depth = scalarnode.getDepth();
          path = new String[depth];
@@ -453,6 +515,10 @@ public class ScalarView implements View {
          setBackground(scheme.expandedbackgroundcolor);
       }
 
+       /**
+        * Draw everything
+        * @param g2 graphics context
+        */
       void drawData(Graphics2D g2) {
          double x;
          double y;
@@ -499,6 +565,10 @@ public class ScalarView implements View {
                        (int) x, (int) y);
       } // end method drawData
 
+       /**
+        * Draw the graph
+        * @param g2 graphics context
+        */
       void drawGraph(Graphics2D g2) {
          scheme.setIndex(0);
 
@@ -559,6 +629,10 @@ public class ScalarView implements View {
          } // end for
       } // end method drawGraph
 
+       /**
+        * draw the label
+        * @param g2 graphics context
+        */
       void drawLabel(Graphics2D g2) {
          StringBuffer label;
 
@@ -575,6 +649,10 @@ public class ScalarView implements View {
          g2.drawString(label.toString(), (int) xlabel, (int) ylabel);
       }
 
+       /**
+        * Draw the items in the path
+        * @param g2 graphics context
+        */
       void drawLabelPath(Graphics2D g2) {
          g2.setFont(scheme.textfont);
 
@@ -593,6 +671,11 @@ public class ScalarView implements View {
          }
       }
 
+       /**
+        * Find the path for the given node.  The path is the path from the root
+        * to this node.
+        * @param node a node in the decision tree
+        */
       void findPath(ViewableDTNode node) {
          ViewableDTNode parent = node.getViewableParent();
 
@@ -612,102 +695,148 @@ public class ScalarView implements View {
          findPath(parent);
       }
 
-      public Dimension getMinimumSize() { return getPreferredSize(); }
+        /**
+         * If the minimum size has been set to a non-<code>null</code> value
+         * just returns it.  If the UI delegate's <code>getMinimumSize</code>
+         * method returns a non-<code>null</code> value then return that; otherwise
+         * defer to the component's layout manager.
+         *
+         * @return the value of the <code>minimumSize</code> property
+         * @see #setMinimumSize
+         * @see javax.swing.plaf.ComponentUI
+         */
+        public Dimension getMinimumSize() {
+            return getPreferredSize();
+        }
 
-      public Dimension getPreferredSize() {
-         xlabel = left;
-         ylabel = top + largeascent;
+        /**
+         * If the <code>preferredSize</code> has been set to a
+         * non-<code>null</code> value just returns it.
+         * If the UI delegate's <code>getPreferredSize</code>
+         * method returns a non <code>null</code> value then return that;
+         * otherwise defer to the component's layout manager.
+         *
+         * @return the value of the <code>preferredSize</code> property
+         * @see #setPreferredSize
+         * @see javax.swing.plaf.ComponentUI
+         */
+        public Dimension getPreferredSize() {
+            xlabel = left;
+            ylabel = top + largeascent;
 
-         xpath = xlabel;
-         ypath = ylabel + ylabelspace;
+            xpath = xlabel;
+            ypath = ylabel + ylabelspace;
 
-         StringBuffer label;
+            StringBuffer label;
 
-         if (scalarnode.getNumChildren() != 0) {
-            label = new StringBuffer(SPLIT);
-         } else {
-            label = new StringBuffer(LEAF);
-         }
-
-         label.append(scalarnode.getLabel());
-
-         pathwidth = largemetrics.stringWidth(new String(label));
-
-         for (int index = 0; index < path.length; index++) {
-            int smallwidth = smallmetrics.stringWidth(path[index]);
-
-            if (smallwidth > pathwidth) {
-               pathwidth = smallwidth;
+            if (scalarnode.getNumChildren() != 0) {
+                label = new StringBuffer(SPLIT);
+            } else {
+                label = new StringBuffer(LEAF);
             }
-         }
 
-         if (path.length > 0) {
-            pathwidth += pathleft + pathright;
-            pathheight =
-               pathtop + path.length * smallascent +
-               (path.length - 1) * pathleading + pathbottom;
-         }
+            label.append(scalarnode.getLabel());
 
-         xdata = xpath;
-         ydata = ypath + pathheight + ypathspace;
+            pathwidth = largemetrics.stringWidth(new String(label));
 
-         datawidth = dataleft + getBrushWidth() + dataright;
-         dataheight = datatop + getBrushHeight() + databottom;
+            for (int index = 0; index < path.length; index++) {
+                int smallwidth = smallmetrics.stringWidth(path[index]);
 
-         if (pathwidth > datawidth) {
-            datawidth = pathwidth;
-         } else {
-            pathwidth = datawidth;
-         }
+                if (smallwidth > pathwidth) {
+                    pathwidth = smallwidth;
+                }
+            }
 
-         ygraph = top;
-         xgraph = xpath + pathwidth + graphspace;
+            if (path.length > 0) {
+                pathwidth += pathleft + pathright;
+                pathheight =
+                        pathtop + path.length * smallascent +
+                                (path.length - 1) * pathleading + pathbottom;
+            }
 
-         graphheight = graphtop + gridheight + graphbottom;
+            xdata = xpath;
+            ydata = ypath + pathheight + ypathspace;
 
-         if (featurewidth > barwidth) {
-            barwidth = featurewidth;
-         }
+            datawidth = dataleft + getBrushWidth() + dataright;
+            dataheight = datatop + getBrushHeight() + databottom;
 
-         graphwidth = 0;
-         valuewidths = new double[maximumvalues.length];
+            if (pathwidth > datawidth) {
+                datawidth = pathwidth;
+            } else {
+                pathwidth = datawidth;
+            }
 
-         for (int index = 0; index < maximumvalues.length; index++) {
-            valuewidths[index] =
-               smallmetrics.stringWidth(numberformat.format(maximumvalues[index]));
-            graphwidth +=
-               valuewidths[index] + valuespace + largetick + 2 * barspace +
-               barwidth + graphspacing;
-         }
+            ygraph = top;
+            xgraph = xpath + pathwidth + graphspace;
 
-         graphwidth += graphleft + graphright;
+            graphheight = graphtop + gridheight + graphbottom;
 
-         double width = left + pathwidth + graphspace + graphwidth + right;
-         double height;
+            if (featurewidth > barwidth) {
+                barwidth = featurewidth;
+            }
 
-         double firstheight = ydata + dataheight + bottom;
-         double secondheight = top + graphheight + bottom;
+            graphwidth = 0;
+            valuewidths = new double[maximumvalues.length];
 
-         if (firstheight > secondheight) {
-            height = firstheight;
-         } else {
-            height = secondheight;
-         }
+            for (int index = 0; index < maximumvalues.length; index++) {
+                valuewidths[index] =
+                        smallmetrics.stringWidth(numberformat.format(maximumvalues[index]));
+                graphwidth +=
+                        valuewidths[index] + valuespace + largetick + 2 * barspace +
+                                barwidth + graphspacing;
+            }
 
-         return new Dimension((int) width, (int) height);
-      } // end method getPreferredSize
+            graphwidth += graphleft + graphright;
 
-      public void paintComponent(Graphics g) {
-         super.paintComponent(g);
+            double width = left + pathwidth + graphspace + graphwidth + right;
+            double height;
 
-         Graphics2D g2 = (Graphics2D) g;
-         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                             RenderingHints.VALUE_ANTIALIAS_ON);
+            double firstheight = ydata + dataheight + bottom;
+            double secondheight = top + graphheight + bottom;
 
-         drawLabel(g2);
-         drawLabelPath(g2);
-         drawData(g2);
-         drawGraph(g2);
-      }
+            if (firstheight > secondheight) {
+                height = firstheight;
+            } else {
+                height = secondheight;
+            }
+
+            return new Dimension((int) width, (int) height);
+        } // end method getPreferredSize
+
+        /**
+         * Calls the UI delegate's paint method, if the UI delegate
+         * is non-<code>null</code>.  We pass the delegate a copy of the
+         * <code>Graphics</code> object to protect the rest of the
+         * paint code from irrevocable changes
+         * (for example, <code>Graphics.translate</code>).
+         * <p/>
+         * If you override this in a subclass you should not make permanent
+         * changes to the passed in <code>Graphics</code>. For example, you
+         * should not alter the clip <code>Rectangle</code> or modify the
+         * transform. If you need to do these operations you may find it
+         * easier to create a new <code>Graphics</code> from the passed in
+         * <code>Graphics</code> and manipulate it. Further, if you do not
+         * invoker super's implementation you must honor the opaque property,
+         * that is
+         * if this component is opaque, you must completely fill in the background
+         * in a non-opaque color. If you do not honor the opaque property you
+         * will likely see visual artifacts.
+         *
+         * @param g the <code>Graphics</code> object to protect
+         * @see #paint
+         * @see javax.swing.plaf.ComponentUI
+         */
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+
+            drawLabel(g2);
+            drawLabelPath(g2);
+            drawData(g2);
+            drawGraph(g2);
+        }
    } // end class ScalarExpanded
 } // end class ScalarView
