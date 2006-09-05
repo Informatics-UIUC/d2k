@@ -25,5 +25,11 @@
 	<classpathentry kind="lib" path="lib/piccolox.jar"/>
 	<classpathentry kind="lib" path="lib/prefuse.jar"/>
 	<classpathentry kind="lib" path="lib/trove.jar"/>
+	<classpathentry kind="lib" path="/home/mcgrath/workspace/basic-post/lib/commons-httpclient.jar"/>
+	<classpathentry kind="lib" path="/home/mcgrath/workspace/basic-post/lib/commons-httpclient-contrib.jar"/>
+	<classpathentry kind="lib" path="/home/mcgrath/workspace/basic-post/lib/dsmgmt-1.0dev.jar"/>
+	<classpathentry kind="lib" path="/home/mcgrath/workspace/basic-post/lib/jakarta-slide-webdavlib-2.1.jar"/>
+	<classpathentry kind="lib" path="/home/mcgrath/workspace/basic-post/lib/security-1.0dev.jar"/>
+	<classpathentry kind="lib" path="/home/mcgrath/workspace/basic-post/lib/util-1.0dev.jar"/>
 	<classpathentry kind="output" path="modules"/>
 </classpath>

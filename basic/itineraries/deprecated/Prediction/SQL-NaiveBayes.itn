@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAAjdwgAAAAvAAAAE3QAGENyZWF0ZSBOYWl2ZSBCYXllcyBNb2RlbHNyABtuY3NhLmQyay5jb3Jl
+LlJlc291cmNlRW50cnkAAAAAAAAAAQIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2Jq
+ZWN0O0wAD29iamVjdENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAOW5jc2EuZDJr
+Lm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLm5haXZlYmF5ZXMuQ3JlYXRlTkJNb2RlbHQAIkNob29z
+ZSBJbnB1dCBhbmQgT3V0cHV0IEF0dHJpYnV0ZXNzcQB+AARwdAA6bmNzYS5kMmsubW9kdWxlcy5j
+b3JlLnRyYW5zZm9ybS5hdHRyaWJ1dGUuQ2hvb3NlQXR0cmlidXRlc3QABkZhbk91dHNxAH4ABHB0
+ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFuT3V0TW9kdWxldAAQU1FMQ3JlYXRlQmluVHJlZXNx
+AH4ABHB0ADhuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmJpbm5pbmcuU1FMQ3JlYXRl
+QmluVHJlZXQAC1NlbGVjdFRhYmxlc3EAfgAEcHQAKG5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5z
+cWwuU2VsZWN0VGFibGV0ABFTZWxlY3QgQXR0cmlidXRlc3NxAH4ABHB0AC1uY3NhLmQyay5tb2R1
+bGVzLmNvcmUuaW8uc3FsLlNlbGVjdEF0dHJpYnV0ZXN0AA9OYWl2ZSBCYXllcyBWaXNzcQB+AARw
+dAA5bmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRpY3Rpb24ubmFpdmViYXllcy5OYWl2ZUJheWVz
+VmlzdAAQUmVhZFF1ZXJ5UmVzdWx0c3NxAH4ABHB0AC1uY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8u
+c3FsLlJlYWRRdWVyeVJlc3VsdHN0ABpBdmFpbGFibGUgQXR0cmlidXRlcyBJbnB1dHNxAH4ABHB0
+ADVuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLkF2YWlsYWJsZUF0dHJpYnV0ZXNJbnB1dHQA
+B0Zhbk91dDVzcQB+AARwcQB+AA50AAdGYW5PdXQ0c3EAfgAEcHEAfgAOdAAHRmFuT3V0M3NxAH4A
+BHBxAH4ADnQAB0Zhbk91dDJzcQB+AARwcQB+AA50AAdGYW5PdXQxc3EAfgAEcHEAfgAOdAALQ29u
+bmVjdFRvREJzcQB+AARwdAAobmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLnNxbC5Db25uZWN0VG9E
+QnQAElNRTCBCaW4gQXR0cmlidXRlc3NxAH4ABHB0ADhuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJh
+bnNmb3JtLmJpbm5pbmcuU1FMQmluQXR0cmlidXRlc3QAFVNRTEZpbHRlckNvbnN0cnVjdGlvbnNx
+AH4ABHB0ADtuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLnRhYmxlLlNRTEZpbHRlckNv
+bnN0cnVjdGlvbnQAH1ByZXBhcmUgTW9kZWwgZm9yIFZpc3VhbGl6YXRpb25zcQB+AARwdAA5bmNz
+YS5kMmsubW9kdWxlcy5jb3JlLnByZWRpY3Rpb24ubmFpdmViYXllcy5QcmVwYXJlRm9yVmlzdAAU
+QXZhaWxhYmxlVGFibGVzSW5wdXRzcQB+AARwdAAxbmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLnNx
+bC5BdmFpbGFibGVUYWJsZXNJbnB1dHg=" label="SQL-NaiveBayes.itn">
+    <annotation><![CDATA[<p>
+      The itinerary builds a BinTree using SQL to do the counts and the builds 
+      a NaiveBayes model using flat file data. The flat file data can be 
+      loaded into the database before running this itinerary using fileToDB.itn
+    </p>
+    <p>
+      
+    </p>
+    <p>
+      NOTE: If attribute labels are not the same in the flat file and in the 
+      database table then the building the model will fail silently, not 
+      having found the right bins. Trying to display the generated 
+      visualization will give &quot; Unable to display &quot; error.
+    </p>
+    <p>
+      
+    </p>]]></annotation>
+    <module alias="FanOut4" classname="ncsa.d2k.core.modules.FanOutModule" xloc="608" yloc="143">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="java.lang.String">
+        <destination alias="ReadQueryResults" index="3"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+    <module alias="SQLCreateBinTree" classname="ncsa.d2k.modules.core.transform.binning.SQLCreateBinTree" xloc="346" yloc="252">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.transformations.BinTransform"/>
+      <input index="1" classname="ncsa.d2k.modules.io.sql.DBConnection"/>
+      <input index="2" classname="java.lang.String"/>
+      <input index="3" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.transform.binning.BinTree">
+        <destination alias="Create Naive Bayes Model" index="0"/>
+      </output>
+      <property name="debug" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="254" yloc="131">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="java.lang.String">
+        <destination alias="SQLFilterConstruction" index="1"/>
+      </output>
+      <output index="1" classname="java.lang.String">
+        <destination alias="ReadQueryResults" index="2"/>
+      </output>
+      <output index="2" classname="java.lang.String">
+        <destination alias="SQLCreateBinTree" index="2"/>
+      </output>
+      <output index="3" classname="java.lang.String">
+        <destination alias="SQL Bin Attributes" index="1"/>
+      </output>
+      <output index="4" classname="java.lang.String">
+        <destination alias="Available Attributes Input" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAA="/>
+    </module>
+    <module alias="Available Attributes Input" classname="ncsa.d2k.modules.core.io.sql.AvailableAttributesInput" xloc="260" yloc="8">
+      <input index="0" classname="ncsa.d2k.modules.io.input.sql.ConnectionWrapper"/>
+      <input index="1" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
+        <destination alias="FanOut1" index="0"/>
+      </output>
+      <output index="1" classname="java.util.Vector">
+        <destination alias="Select Attributes" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="415" yloc="24">
+      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
+        <destination alias="SQLFilterConstruction" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
+        <destination alias="SQL Bin Attributes" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="Select Attributes" classname="ncsa.d2k.modules.core.io.sql.SelectAttributes" xloc="399" yloc="53">
+      <input index="0" classname="java.util.Vector"/>
+      <output index="0" classname="[Ljava.lang.String;">
+        <destination alias="FanOut3" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="suppressGui" value="false"/>
+    </module>
+    <module alias="Choose Input and Output Attributes" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="12" yloc="353">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="FanOut5" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="suppressGui" value="false"/>
+    </module>
+    <module alias="FanOut2" classname="ncsa.d2k.core.modules.FanOutModule" xloc="88" yloc="104">
+      <input index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
+        <destination alias="AvailableTablesInput" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
+        <destination alias="ReadQueryResults" index="0"/>
+      </output>
+      <output index="2" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
+        <destination alias="SQLCreateBinTree" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAADAAAAAAAAAAAAAAAA"/>
+    </module>
+    <module alias="ConnectToDB" classname="ncsa.d2k.modules.core.io.sql.ConnectToDB" xloc="2" yloc="96">
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
+        <destination alias="FanOut2" index="0"/>
+      </output>
+      <property name="password" value=""/>
+      <property name="dbVendor" value=""/>
+      <property name="dbInstance" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="suppressGui" value="false"/>
+      <property name="username" value=""/>
+      <property name="url" value="jdbc:oracle:thin:@sol.ncsa.uiuc.edu:1521:oracle2"/>
+      <property name="port" value=""/>
+      <property name="driver" value=""/>
+      <property name="machine" value=""/>
+    </module>
+    <module alias="SQLFilterConstruction" classname="ncsa.d2k.modules.core.transform.table.SQLFilterConstruction" xloc="477" yloc="128">
+      <input index="0" classname="ncsa.d2k.modules.io.input.sql.ConnectionWrapper"/>
+      <input index="1" classname="java.lang.String"/>
+      <output index="0" classname="java.lang.String">
+        <destination alias="FanOut4" index="0"/>
+      </output>
+      <property name="includeMissingValues" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="lastExpression" value=""/>
+      <property name="suppressGui" value="false"/>
+    </module>
+    <module alias="SelectTable" classname="ncsa.d2k.modules.core.io.sql.SelectTable" xloc="161" yloc="130">
+      <input index="0" classname="java.util.Vector"/>
+      <output index="0" classname="java.lang.String">
+        <destination alias="FanOut" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="suppressGui" value="false"/>
+    </module>
+    <module alias="FanOut3" classname="ncsa.d2k.core.modules.FanOutModule" xloc="512" yloc="64">
+      <input index="0" classname="[Ljava.lang.String;"/>
+      <output index="0" classname="[Ljava.lang.String;">
+        <destination alias="ReadQueryResults" index="1"/>
+      </output>
+      <output index="1" classname="[Ljava.lang.String;">
+        <destination alias="SQL Bin Attributes" index="2"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="FanOut5" classname="ncsa.d2k.core.modules.FanOutModule" xloc="230" yloc="364">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="SQLCreateBinTree" index="3"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Create Naive Bayes Model" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="AvailableTablesInput" classname="ncsa.d2k.modules.core.io.sql.AvailableTablesInput" xloc="116" yloc="16">
+      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
+        <destination alias="Available Attributes Input" index="0"/>
+      </output>
+      <output index="1" classname="java.util.Vector">
+        <destination alias="SelectTable" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+      <property name="dataTableOnly" value="true"/>
+      <property name="dataCubeOnly" value="false"/>
+    </module>
+    <module alias="SQL Bin Attributes" classname="ncsa.d2k.modules.core.transform.binning.SQLBinAttributes" xloc="328" yloc="167">
+      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
+      <input index="1" classname="java.lang.String"/>
+      <input index="2" classname="[Ljava.lang.String;"/>
+      <input index="3" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.transformations.BinTransform">
+        <destination alias="SQLCreateBinTree" index="0"/>
+      </output>
+      <property name="newColumn" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="suppressGui" value="false"/>
+      <property name="savedBins" binaryValue="rO0ABXVyADhbTG5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0uYmlubmluZy5CaW5EZXNj
+cmlwdG9yO7tpifeLslBXAgAAeHAAAAASc3IAPG5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zv
+cm0uYmlubmluZy5OdW1lcmljQmluRGVzY3JpcHRvcml9qPZD2AstAgACRAADbWF4RAADbWlueHIA
+NW5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0uYmlubmluZy5CaW5EZXNjcmlwdG9y09Ql
+pNb0uC8CAANJAA1jb2x1bW5fbnVtYmVyTAAFbGFiZWx0ABJMamF2YS9sYW5nL1N0cmluZztMAARu
+YW1lcQB+AAR4cAAAAAB0AANBR0V0AApbLi4uIDogMThdQDIAAAAAAAD/8AAAAAAAAHNxAH4AAgAA
+AABxAH4ABnQACSgxOCA6IDIwXUA0AAAAAAAAQDIAAAAAAABzcQB+AAIAAAAAcQB+AAZ0AAkoMjAg
+OiAyNV1AOQAAAAAAAEA0AAAAAAAAc3EAfgACAAAAAHEAfgAGdAAJKDI1IDogMzBdQD4AAAAAAABA
+OQAAAAAAAHNxAH4AAgAAAABxAH4ABnQACSgzMCA6IDM1XUBBgAAAAAAAQD4AAAAAAABzcQB+AAIA
+AAAAcQB+AAZ0AAkoMzUgOiA0MF1ARAAAAAAAAEBBgAAAAAAAc3EAfgACAAAAAHEAfgAGdAAJKDQw
+IDogNDVdQEaAAAAAAABARAAAAAAAAHNxAH4AAgAAAABxAH4ABnQACSg0NSA6IDUwXUBJAAAAAAAA
+QEaAAAAAAABzcQB+AAIAAAAAcQB+AAZ0AAkoNTAgOiA2MF1ATgAAAAAAAEBJAAAAAAAAc3EAfgAC
+AAAAAHEAfgAGdAAKKDYwIDogLi4uXX/wAAAAAAAAQE4AAAAAAABzcQB+AAIAAAAEdAANSU5DSURF
+TlRfSE9VUnQACVsuLi4gOiAwXQAAAAAAAAAA//AAAAAAAABzcQB+AAIAAAAEcQB+ABt0AAcoMCA6
+IDNdQAgAAAAAAAAAAAAAAAAAAHNxAH4AAgAAAARxAH4AG3QABygzIDogNl1AGAAAAAAAAEAIAAAA
+AAAAc3EAfgACAAAABHEAfgAbdAAHKDYgOiA5XUAiAAAAAAAAQBgAAAAAAABzcQB+AAIAAAAEcQB+
+ABt0AAgoOSA6IDEyXUAoAAAAAAAAQCIAAAAAAABzcQB+AAIAAAAEcQB+ABt0AAkoMTIgOiAxNV1A
+LgAAAAAAAEAoAAAAAAAAc3EAfgACAAAABHEAfgAbdAAJKDE1IDogMThdQDIAAAAAAABALgAAAAAA
+AHNxAH4AAgAAAARxAH4AG3QACigxOCA6IC4uLl1/8AAAAAAAAEAyAAAAAAAA"/>
+    </module>
+    <module alias="Create Naive Bayes Model" classname="ncsa.d2k.modules.core.prediction.naivebayes.CreateNBModel" xloc="411" yloc="319">
+      <input index="0" classname="ncsa.d2k.modules.core.transform.binning.BinTree"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel">
+        <destination alias="Prepare Model for Visualization" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+    <module alias="Naive Bayes Vis" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesVis" xloc="696" yloc="393">
+      <input index="0" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+    </module>
+    <module alias="ReadQueryResults" classname="ncsa.d2k.modules.core.io.sql.ReadQueryResults" xloc="692" yloc="196">
+      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
+      <input index="1" classname="[Ljava.lang.String;"/>
+      <input index="2" classname="java.lang.String"/>
+      <input index="3" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.basic.TableImpl">
+        <destination alias="Choose Input and Output Attributes" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+    <module alias="Prepare Model for Visualization" classname="ncsa.d2k.modules.core.prediction.naivebayes.PrepareForVis" xloc="483" yloc="393">
+      <input index="0" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"/>
+      <output index="0" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel">
+        <destination alias="Naive Bayes Vis" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+  </itinerary>
+</toolkit>

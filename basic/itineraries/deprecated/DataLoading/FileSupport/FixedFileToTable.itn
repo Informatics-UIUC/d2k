@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAAIdwgAAAALAAAABXQAE1BhcnNlIEZpbGUgVG8gVGFibGVzcgAbbmNzYS5kMmsuY29yZS5SZXNv
+dXJjZUVudHJ5AAAAAAAAAAECAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtM
+AA9vYmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ADRuY3NhLmQyay5tb2R1
+bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1RhYmxldAAaQ3JlYXRlIEZpeGVkLUZv
+cm1hdCBQYXJzZXJzcQB+AARwdAA1bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQu
+Q3JlYXRlRml4ZWRQYXJzZXJ0ABxDcmVhdGUgRGVsaW1pdGVkIEZpbGUgUGFyc2Vyc3EAfgAEcHQA
+OW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LkNyZWF0ZURlbGltaXRlZFBhcnNl
+cnQAEklucHV0IDIgRmlsZSBOYW1lc3NxAH4ABHB0ADNuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8u
+ZmlsZS5pbnB1dC5JbnB1dDJGaWxlTmFtZXN0ABRQYXJzZSBGaWxlIFRvIFRhYmxlMXNxAH4ABHBx
+AH4ACHg=" label="FixedFileToTable.itn">
+    <annotation><![CDATA[<p>
+      <b>Fixed File to Table</b>
+    </p>
+    <p>
+      This itinerary loads a data set from a fixed-format file into a table in 
+      memory. D2K uses various implementations of the Table structure to 
+      organize the data that is being mined. A common source of fixed-format 
+      files is a database that saves table data to a file where each row 
+      corresponds to one tuple in the database table and each field in the 
+      tuple is output to a fixed position in the data file row. A separate 
+      file described the field labels, types, and positions.
+    </p>
+    <p>
+      Typically this itinerary would be included as a nested itinerary in a 
+      larger itinerary that works with the table that is created. The use of 
+      nested itineraries can eliminate repetitive module placement and 
+      connection operations when collections of modules are frequently used 
+      together. To nest this itinerary in another, drag it from the Itinerary 
+      Resource Panel and drop it in the Workspace. Press and hold the &quot;Ctrl&quot; 
+      key and double click the mouse on the nested itinerary icon in the 
+      Workspace to access the properties of the modules listed below.
+    </p>
+    <p>
+      <b>Modules with Properties</b>
+    </p>
+    <p>
+      The following modules have properties that may need to be adjusted. The 
+      properties can be changed by double clicking on the given module.
+    </p>
+    <p>
+      1 - <i><b>Input 2 File Names</b></i>
+    </p>
+    <p>
+      This module is used to specify the file containing the data as well as 
+      the file that describes the field labels, types, and positions. The data 
+      file is identified via the File Name 1 property and the descriptive, or 
+      metadata file, is identified via the File Name 2 property. The metadata 
+      file is expected to be a delimited file in this itinerary.
+    </p>
+    <p>
+      2 - <i><b>Create Delimited File Parser </b></i>
+    </p>
+    <p>
+      This module creates a parser to load the metadata file describing the 
+      field labels, types, and positions into a table. The metadata keywords 
+      that are required and optional are explained fully in the module 
+      information of the Create Fixed-Format Parser module, and the delimited 
+      file format is explained in the individual module information for this 
+      module.  A sample metadata file, data/fixed/iris-fixed-meta.data, is 
+      included in the D2K distribution.
+    </p>
+    <p>
+      3 - <i><b>Parse File To Table </b></i>
+    </p>
+    <p>
+      This module loads the metadata from a file to a Table in memory using 
+      the parser created by Create Delimited File Parser. A property of this 
+      module controls whether blanks should be interpreted as missing values. 
+      Typically a metadata file will not have missing values.
+    </p>
+    <p>
+      4 - <i><b>Parse File To Table1 </b></i>
+    </p>
+    <p>
+      This module loads the data from the fixed-format file to a Table in 
+      memory using the parser created by Create Fixed-Format Parser. A 
+      property of this module controls whether blanks should be interpreted as 
+      missing values.
+    </p>
+    <p>
+      <b>Modules without Properties</b>
+    </p>
+    <p>
+      1 - <i><b>Create Fixed-Format Parser</b></i>
+    </p>
+    <p>
+      The parser created by this module can read the data from the 
+      fixed-format file specified by File Name 1 in the Input 2 File Names 
+      module. It uses format information from the metadata Table that was 
+      loaded from the file specified by File Name 2 to determine the field 
+      names, types, and positions in the fixed-format file. See the individual 
+      module information for this module for further details.  A sample 
+      fixed-format file, data/fixed/iris-fixed.txt, is included in the D2K 
+      distribution.
+    </p>
+    <p>
+      <b>Execution</b>
+    </p>
+    <p>
+      Execute the itinerary by clicking on the &quot;Run&quot; button.
+    </p>
+    <p>
+      This itinerary by itself does not produce any noticeable results when it 
+      is executed. To view the Table that is created, attach a Table Viewer 
+      module to the output of the Parse File To Table1 module prior to 
+      execution.
+    </p>]]></annotation>
+    <module alias="Parse File To Table1" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="550" yloc="31">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <property name="useBlanks" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+    <module alias="Create Fixed-Format Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateFixedParser" xloc="368" yloc="31">
+      <input index="0" classname="java.lang.String"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.FixedFileParser">
+        <destination alias="Parse File To Table1" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="108" yloc="141">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="labelsRow" value="0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
+    </module>
+    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="304" yloc="141">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Create Fixed-Format Parser" index="1"/>
+      </output>
+      <property name="useBlanks" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+    <module alias="Input 2 File Names" classname="ncsa.d2k.modules.core.io.file.input.Input2FileNames" xloc="21" yloc="31">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Create Fixed-Format Parser" index="0"/>
+      </output>
+      <output index="1" classname="java.lang.String">
+        <destination alias="Create Delimited File Parser" index="0"/>
+      </output>
+      <property name="fileName1" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+      <property name="fileName0" value=""/>
+    </module>
+  </itinerary>
+</toolkit>

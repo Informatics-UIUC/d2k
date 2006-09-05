@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAAIdwgAAAALAAAAB3QAC0Nvbm5lY3RUb0RCc3IAG25jc2EuZDJrLmNvcmUuUmVzb3VyY2VFbnRy
+eQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9PYmplY3Q7TAAPb2JqZWN0
+Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdAAobmNzYS5kMmsubW9kdWxlcy5jb3Jl
+LmlvLnNxbC5Db25uZWN0VG9EQnQAEURlY2lzaW9uIFRyZWUgVmlzc3EAfgAEcHQAPW5jc2EuZDJr
+Lm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLmRlY2lzaW9udHJlZS5EZWNpc2lvblRyZWVWaXN0ABJE
+ZWNpc2lvblRyZWVWaWV3ZXJzcQB+AARwdABAbmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRpY3Rp
+b24uZGVjaXNpb250cmVlLkRlY2lzaW9uVHJlZVZpZXdlcnQAC0J1aWxkIFF1ZXJ5c3EAfgAEcHQA
+J25jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5zcWwuQnVpbGRRdWVyeXQABkZhbk91dHNxAH4ABHB0
+ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFuT3V0TW9kdWxldAAPU1FMIFJhaW4gRm9yZXN0c3EA
+fgAEcHQASW5jc2EuZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLmRlY2lzaW9udHJlZS5yYWlu
+Zm9yZXN0Lk5ld1NRTFJhaW5Gb3Jlc3R0AAdGYW5PdXQxc3EAfgAEcHEAfgAUeA==" label="SQL-RainForestDecisionTree.itn">
+    <annotation><![CDATA[<p>
+      This itinerary does the following tasks:
+    </p>
+    <p>
+      1. Choose a table from a database.
+    </p>
+    <p>
+      2. Choose the input features and output features from the selected 
+      database table.
+    </p>
+    <p>
+      3. Construct the decision tree using RainForest and C4.5 algorithms.
+    </p>
+    <p>
+      4. Display the decision tree in graphics and text formats.
+    </p>
+    <p>
+      This itinerary uses the parameter space generator to create the 
+      parameter space.
+    </p>
+    <p>
+      
+    </p>]]></annotation>
+    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="101" yloc="125">
+      <input index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
+        <destination alias="Build Query" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
+        <destination alias="SQL Rain Forest" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="ConnectToDB" classname="ncsa.d2k.modules.core.io.sql.ConnectToDB" xloc="17" yloc="114">
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
+        <destination alias="FanOut" index="0"/>
+      </output>
+      <property name="password" value="nibrs"/>
+      <property name="dbVendor" value=""/>
+      <property name="dbInstance" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="suppressGui" value="false"/>
+      <property name="username" value=""/>
+      <property name="url" value="jdbc:oracle:thin:@sol.ncsa.uiuc.edu:1521:oracle2"/>
+      <property name="port" value=""/>
+      <property name="driver" value=""/>
+      <property name="machine" value=""/>
+    </module>
+    <module alias="Decision Tree Vis" classname="ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeVis" xloc="618" yloc="251">
+      <input index="0" classname="ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+    </module>
+    <module alias="SQL Rain Forest" classname="ncsa.d2k.modules.core.prediction.decisiontree.rainforest.NewSQLRainForest" xloc="369" yloc="82">
+      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
+      <input index="1" classname="java.lang.String"/>
+      <input index="2" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <input index="3" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.prediction.decisiontree.rainforest.DecisionForestModel">
+        <destination alias="FanOut1" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="minimumRatioPerLeaf" value="0.0010"/>
+      <property name="dominateRatio" value="100.0"/>
+      <property name="modeThreshold" value="200000.0"/>
+      <property name="binNumber" value="100.0"/>
+    </module>
+    <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="550" yloc="194">
+      <input index="0" classname="ncsa.d2k.modules.core.prediction.decisiontree.rainforest.DecisionForestModel"/>
+      <output index="0" classname="ncsa.d2k.modules.core.prediction.decisiontree.rainforest.DecisionForestModel">
+        <destination alias="DecisionTreeViewer" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.prediction.decisiontree.rainforest.DecisionForestModel">
+        <destination alias="Decision Tree Vis" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="Build Query" classname="ncsa.d2k.modules.core.io.sql.BuildQuery" xloc="273" yloc="270">
+      <input index="0" classname="ncsa.d2k.modules.io.input.sql.ConnectionWrapper"/>
+      <output index="0" classname="java.lang.String">
+        <destination alias="SQL Rain Forest" index="1"/>
+      </output>
+      <output index="1" classname="[Ljava.lang.String;"/>
+      <output index="2" classname="java.lang.String">
+        <destination alias="SQL Rain Forest" index="3"/>
+      </output>
+      <output index="3" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="SQL Rain Forest" index="2"/>
+      </output>
+      <property name="includeMissingValues" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAEAAAAAQAAAAAAAAABAAAAAQ=="/>
+      <property name="lastExpression" value=" COLORADO.SEX == &apos;F&apos;"/>
+      <property name="queryCondition" value=""/>
+      <property name="suppressGui" value="false"/>
+      <property name="dataTableOnly" value="true"/>
+      <property name="dataCubeOnly" value="false"/>
+    </module>
+    <module alias="DecisionTreeViewer" classname="ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeViewer" xloc="606" yloc="114">
+      <input index="0" classname="ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+    </module>
+  </itinerary>
+</toolkit>

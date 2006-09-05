@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAAIdwgAAAALAAAAA3QAD0lucHV0IEZpbGUgTmFtZXNyABtuY3NhLmQyay5jb3JlLlJlc291cmNl
+RW50cnkAAAAAAAAAAQIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0O0wAD29i
+amVjdENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAMm5jc2EuZDJrLm1vZHVsZXMu
+Y29yZS5pby5maWxlLmlucHV0LklucHV0MUZpbGVOYW1ldAAQQ3JlYXRlIGFuIEFEVHJlZXNxAH4A
+BHB0ADVuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb0FEVHJl
+ZXQAHENyZWF0ZSBEZWxpbWl0ZWQgRmlsZSBQYXJzZXJzcQB+AARwdAA5bmNzYS5kMmsubW9kdWxl
+cy5jb3JlLmlvLmZpbGUuaW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2VyeA==" label="DelimitedFileToADTree.itn">
+    <annotation><![CDATA[<p>
+      Overview: This module creates a parser for the specified file. The file 
+      is expected to have a consistent delimiter character.  The contents of 
+      the file are read into an ADTree.
+    </p>
+    <p>
+      DetailedDescription: This module creates a parser that can be used to 
+      read data from a file that uses a single delimiter character to separate 
+      the data into fields. The delimiter can be found automatically, or it 
+      can be input in the properties editor. If the delimiter is to be found 
+      automatically, the file must be contain at least 2 rows. The file can 
+      contain a row of labels, and a row of data types. These are also 
+      specified via the properties editor.
+    </p>
+    <p>
+      Given a parser, reads the data, counting how many times each attribute 
+      value occurs.All these counts are stored into an ADTree structure. See 
+      B. Anderson and A. Moore in &quot;ADTrees for fast counting and for fast 
+      learning of association rules&quot;.The purpose of the tree is to answer 
+      questions like &quot; how many instances with x, y and z are in the dataset?&quot; 
+      in constant time. It cannot answer these questions for continuous data 
+      An ExampleTable that contains the column types and labels of the input 
+      data is also created.
+    </p>
+    <p>
+      Properties are used to specify the delimiter, the labels row number, and 
+      the types row number. The row numbers are indexed from zero.
+    </p>
+    <p>
+      Data Type Restrictions: The input to this module must be a delimited 
+      file. If the file is large a java OutOfMemory error might occur
+    </p>
+    <p>
+      Designed to work with nominal data, cannot handle real data.In practice 
+      the tree is not useful for real data.
+    </p>
+    <p>
+      Data Handling: The module does not destroy or modify the input data. The 
+      ADTree is in fact an index structure for a datacube.If there are a lot 
+      of attributes and they have many values the structurewill easily run out 
+      of memory. Optimizations have been made so that only thefirst branch of 
+      the tree is stored in memory and the rest are built as needed when the 
+      counts are retrived
+    </p>]]></annotation>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="130" yloc="18">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <destination alias="Create an ADTree" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="labelsRow" value="0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
+    </module>
+    <module alias="Create an ADTree" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToADTree" xloc="330" yloc="18">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.ADTree"/>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <property name="debug" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="23" yloc="18">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Create Delimited File Parser" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="fileName" value=""/>
+      <property name="fileFilterExtension" value=""/>
+    </module>
+  </itinerary>
+</toolkit>

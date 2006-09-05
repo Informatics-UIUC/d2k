@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAAIdwgAAAALAAAABXQAG0RlY2lzaW9uIFRyZWUgVmlzdWFsaXphdGlvbnNyABtuY3NhLmQyay5j
+b3JlLlJlc291cmNlRW50cnkAAAAAAAAAAQIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcv
+T2JqZWN0O0wAD29iamVjdENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAPW5jc2Eu
+ZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLmRlY2lzaW9udHJlZS5EZWNpc2lvblRyZWVWaXN0
+ABNQYXJzZSBGaWxlIFRvIFRhYmxlc3EAfgAEcHQANG5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5m
+aWxlLmlucHV0LlBhcnNlRmlsZVRvVGFibGV0AA9JbnB1dCBGaWxlIE5hbWVzcQB+AARwdAAybmNz
+YS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV0ABdQcmVkaWN0
+aW9uIFRhYmxlIFJlcG9ydHNxAH4ABHB0AC9uY3NhLmQyay5tb2R1bGVzLmNvcmUudmlzLlByZWRp
+Y3Rpb25UYWJsZVJlcG9ydHQAHENyZWF0ZSBEZWxpbWl0ZWQgRmlsZSBQYXJzZXJzcQB+AARwdAA5
+bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2Vy
+eA==" label="ApplyDecisionTreeModelForIris.itn">
+    <annotation><![CDATA[<p>
+      <b>Decision Tree Analysis with C4.5</b>
+    </p>
+    <p>
+      The C4.5 decision tree is a classification approach. This learning 
+      algorithm builds a model (which is a tree) to classify one attribute 
+      based on other data attributes. Each example is routed down the tree 
+      acccording to the attribute values that are tested at each split node, 
+      and upon reaching a leaf node it is assigned the class of the leaf node. 
+      The result of using decision trees is a model that can classify new 
+      examples. A decision tree is built by deciding how to split the data so 
+      that classification error can be reduced. The split nodes make up the 
+      nodes of the decision tree and the leaf nodes represent how data that 
+      follows this path through the tree would be classified.
+    </p>
+    <p>
+      This itinerary applies a saved Decision Tree model to new data. The 
+      model is dragged into the Workspace. The new data is passed into the 
+      model and the output is connected to the Decision Tree Vis and 
+      Prediction Table Report. The predictions can also be viewed with a Table 
+      Viewer. The tree structure in the visualization is based on the model of 
+      the training data while the counts represent the testing data and the 
+      PredictionTableReport is based on the testing data.
+    </p>
+    <p>
+      <b>Modules with Properties</b>
+    </p>
+    <p>
+      The following modules have properties that may need to be adjusted. The 
+      properties can be changed by double clicking on the given module.
+    </p>
+    <p>
+      1 - <i><b>Input File Name</b></i>:
+    </p>
+    <p>
+      This module selects the data set. The file is identified with the 
+      filename property.
+    </p>
+    <p>
+      2 - <i><b>Create Delimited File Parser</b></i>:
+    </p>
+    <p>
+      This module creates a parser for the specified file. The properties of 
+      the module specify the labels row number, the types row number and the 
+      delimiter.
+    </p>
+    <p>
+      3 - <i><b>Parse File To Table</b></i>:
+    </p>
+    <p>
+      This module loads the data from a file to a Table in memory. The 
+      property of this module indicates whether blanks should be interpreted 
+      as missing values.
+    </p>
+    <p>
+      4 - <i><b>Model (in this case iris-DecisionTreeC4.5)</b></i>:
+    </p>
+    <p>
+      All models have at least two properties/flags. One flag to indicate if 
+      transformations should be applied to the data before predictions, and 
+      one flag to indicate if transformations should be applied to the data 
+      after predictions.
+    </p>
+    <p>
+      <b>Execution</b>
+    </p>
+    <p>
+      Execute the itinerary by clicking on the &quot;Run&quot; button.
+    </p>
+    <p>
+      <b>Results</b>
+    </p>
+    <p>
+      Once execution has completed the status bar will disappear. The pane of 
+      the Generated Visualization Session Pane and the Generated Models 
+      Session Pane will turn red when visualization and model glpyhs have been 
+      created.
+    </p>
+    <p>
+      1 - <i><b>Decision Tree Visualization</b></i>:
+    </p>
+    <p>
+      Decison Tree Visualization is used to show the results of decision tree 
+      modeling. This window has two panes. The Navigator pane on the left 
+      illustrates the full decision tree, with the viewable window indicated 
+      by a black box outline. This box can be dragged around the tree to 
+      display different parts of the decision tree. The viewable tree is shown 
+      in the right pane. The Node Info pane shows the percentage of the 
+      examples in each class when the mouse brushes a chart in the decision 
+      tree. Clicking on a chart in the right pane, brings up a bar chart that 
+      shows visually the percentage of the examples in each class at this 
+      split point, and the path to get to this node in the tree. The Help 
+      window of this tool describes the functionality of this tool in more 
+      detail.
+    </p>
+    <p>
+      2 - <i><b>Prediction Table Report</b></i>:
+    </p>
+    <p>
+      This report shows the classification error - the number and percentage 
+      of correct and incorrect, and a confusion matrix.
+    </p>]]></annotation>
+    <module alias="Prediction Table Report" classname="ncsa.d2k.modules.core.vis.PredictionTableReport" xloc="296" yloc="112">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="windowName" value="PredictionTableReport"/>
+    </module>
+    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="307" yloc="16">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <property name="useBlanks" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Decision Tree Visualization" classname="ncsa.d2k.modules.core.prediction.decisiontree.DecisionTreeVis" xloc="286" yloc="184">
+      <input index="0" classname="ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="windowName" value="Decision Tree Visualization"/>
+    </module>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="138" yloc="16">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="labelsRow" value="0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
+    </module>
+    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="29" yloc="16">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Create Delimited File Parser" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="fileName" value="data/UCI/iris.csv"/>
+      <property name="fileFilterExtension" value=""/>
+    </module>
+  </itinerary>
+</toolkit>

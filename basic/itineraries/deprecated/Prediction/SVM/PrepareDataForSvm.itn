@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAAPdwgAAAAKAAAACnQAEHdyaXRlIHRlc3QgdGFibGVzcgAbbmNzYS5kMmsuY29yZS5SZXNvdXJj
+ZUVudHJ51S4sIEIDJtICAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtMAA9v
+YmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ADVuY3NhLmQyay5tb2R1bGVz
+LmNvcmUuaW8uZmlsZS5vdXRwdXQuV3JpdGVUYWJsZVRvRmlsZXQABkZhbk91dHNxAH4ABHB0ACJu
+Y3NhLmQyay5jb3JlLm1vZHVsZXMuRmFuT3V0TW9kdWxldAASSW5wdXQgMiBGaWxlIE5hbWVzc3EA
+fgAEcHQAM25jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LklucHV0MkZpbGVOYW1l
+c3QAEUNob29zZSBBdHRyaWJ1dGVzc3EAfgAEcHQAOm5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFu
+c2Zvcm0uYXR0cmlidXRlLkNob29zZUF0dHJpYnV0ZXN0ABREZWxpbWl0ZWRGaWxlVG9UYWJsZXNx
+AH4ABHB0ADJuY3NhLmQyay5jb3JlLm1vZHVsZXMuYWdlbmRhLk5lc3RlZEl0aW5lcmFyeU1vZHVs
+ZXQAFEFwcGx5IFRyYW5zZm9ybWF0aW9uc3EAfgAEcHQAM25jc2EuZDJrLm1vZHVsZXMuY29yZS50
+cmFuc2Zvcm0uQXBwbHlUcmFuc2Zvcm1hdGlvbnQAIFByZXBhcmUgT3V0cHV0IEF0dHJpYnV0ZSBG
+b3IgU1ZNc3EAfgAEcHQAP25jc2EuZDJrLm1vZHVsZXMucHJvamVjdHMudmVyZWQuc3ZtLlByZXBh
+cmVDbGFzc0F0dHJpYnV0ZU1vZHVsZXQAEXdyaXRlIHRyYWluIHRhYmxlc3EAfgAEcHEAfgAIdAAa
+UmVwbGFjZSBOb21pbmFscyBXaXRoIEludHNzcQB+AARwdABBbmNzYS5kMmsubW9kdWxlcy5jb3Jl
+LnRyYW5zZm9ybS5hdHRyaWJ1dGUuUmVwbGFjZU5vbWluYWxzV2l0aEludHN0ABFTaW1wbGUgVHJh
+aW4gVGVzdHNxAH4ABHB0ADVuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLnRhYmxlLlNp
+bXBsZVRyYWluVGVzdHg=" label="PrepareDataForSvm.itn">
+    <annotation><![CDATA[<p>
+      <b>Prepare Data For SVM:</b>
+    </p>
+    <p>
+      This itinerary preprocess data before it is input into an SVM itinerary.
+    </p>
+    <p>
+      <b><i>Replace Nominals With Ints -</i></b>
+    </p>
+    <p>
+      The nominal values are replaced with integers to transform the data into 
+      a scalar only dataset.
+    </p>
+    <p>
+      <b><i>Prepare output Attribute For SVM -</i></b>
+    </p>
+    <p>
+      Converts zeros in output attributes into -1.
+    </p>
+    <p>
+      <b><i>Simple Train Test -</i></b>
+    </p>
+    <p>
+      Divides the dataset into 2 separate Tables.
+    </p>
+    <p>
+      <b><i>Write Train Table</i></b><i> and<b> Write Test Table - </b></i>
+    </p>
+    <p>
+      Write the datasets into delimited files.
+    </p>
+    <p>
+      <b>Data Restrictions:</b>
+    </p>
+    <p>
+      The output features of the input table should be binary.
+    </p>]]></annotation>
+    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="139" yloc="28">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Apply Transformation" index="1"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Replace Nominals With Ints" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="write train table" classname="ncsa.d2k.modules.core.io.file.output.WriteTableToFile" xloc="599" yloc="148">
+      <input index="0" classname="java.lang.String"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <property name="useDataTypes" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="useColumnLabels" value="true"/>
+      <property name="delimChar" value="C"/>
+    </module>
+    <module alias="write test table" classname="ncsa.d2k.modules.core.io.file.output.WriteTableToFile" xloc="581" yloc="228">
+      <input index="0" classname="java.lang.String"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <property name="useDataTypes" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="useColumnLabels" value="true"/>
+      <property name="delimChar" value="C"/>
+    </module>
+    <module alias="Apply Transformation" classname="ncsa.d2k.modules.core.transform.ApplyTransformation" xloc="382" yloc="28">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Transformation"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Choose Attributes" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="DelimitedFileToTable" classname="ncsa.d2k.core.modules.agenda.NestedItineraryModule" xloc="3" yloc="19">
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="FanOut" index="0"/>
+      </output>
+      <itinerary label="DelimitedFileToTable">
+        <module alias="DelimitedFileToTable_Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="326" yloc="18">
+          <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+            <destination alias="DelimitedFileToTable" index="0"/>
+          </output>
+          <property name="useBlanks" value="true"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+        </module>
+        <module alias="DelimitedFileToTable_Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="23" yloc="18">
+          <output index="0" classname="java.lang.String">
+            <destination alias="DelimitedFileToTable_Create Delimited File Parser" index="0"/>
+          </output>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+        </module>
+        <module alias="DelimitedFileToTable_Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="130" yloc="18">
+          <input index="0" classname="java.lang.String"/>
+          <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+            <destination alias="DelimitedFileToTable_Parse File To Table" index="0"/>
+          </output>
+          <property name="typesRow" value="1"/>
+          <property name="labelsRow" value="0"/>
+          <property name="hasSpecDelim" value="false"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+          <property name="hasTypes" value="true"/>
+          <property name="hasLabels" value="true"/>
+        </module>
+      </itinerary>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="enableParallelization" value="false"/>
+    </module>
+    <module alias="Choose Attributes" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="511" yloc="28">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Prepare Output Attribute For SVM" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="windowName" value="Choose Attributes"/>
+      <property name="supressGui" value="false"/>
+    </module>
+    <module alias="Prepare Output Attribute For SVM" classname="ncsa.d2k.modules.core.prediction.svm.PrepareClassAttributeModule" xloc="11" yloc="108">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Simple Train Test" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Simple Train Test" classname="ncsa.d2k.modules.core.transform.table.SimpleTrainTest" xloc="252" yloc="108">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.TrainTable">
+        <destination alias="write train table" index="1"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.TestTable">
+        <destination alias="write test table" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAQAAAAE="/>
+      <property name="testPercent" value="10"/>
+      <property name="samplingMethod" value="0"/>
+      <property name="seed" value="123"/>
+      <property name="trainPercent" value="90"/>
+    </module>
+    <module alias="Input 2 File Names" classname="ncsa.d2k.modules.core.io.file.input.Input2FileNames" xloc="48" yloc="248">
+      <output index="0" classname="java.lang.String">
+        <destination alias="write train table" index="0"/>
+      </output>
+      <output index="1" classname="java.lang.String">
+        <destination alias="write test table" index="0"/>
+      </output>
+      <property name="fileName1" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAQAAAAE="/>
+      <property name="fileName0" value=""/>
+    </module>
+    <module alias="Replace Nominals With Ints" classname="ncsa.d2k.modules.core.transform.attribute.ReplaceNominalsWithInts" xloc="224" yloc="8">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ReversibleTransformation">
+        <destination alias="Apply Transformation" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="printMapping" value="false"/>
+    </module>
+  </itinerary>
+</toolkit>
