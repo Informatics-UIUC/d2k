@@ -456,7 +456,10 @@ public class SaveFileToDB extends HeadlessUIModule
         public String getMaxLength(int c) {
             int maxLength = 0;
             for (int i=0; i<vt.getNumRows(); i++) {
-                int l = vt.getString(i,c).length();
+                String s = vt.getString(i, c);
+                if(s == null)
+                    continue;
+                int l = s.length();
                 if (l > maxLength)
                     maxLength = l;
             }
@@ -1016,7 +1019,10 @@ public class SaveFileToDB extends HeadlessUIModule
    protected String getMaxLength(int col){
      int maxLength = 0;
      for (int i=0; i<vt.getNumRows(); i++) {
-         int l = vt.getString(i,col).length();
+         String s = vt.getString(i, col);
+         if(s == null)
+            continue;
+         int l = s.length();
          if (l > maxLength)
              maxLength = l;
      }
@@ -1033,6 +1039,8 @@ public class SaveFileToDB extends HeadlessUIModule
    protected boolean checkTypeRow(){
      for (int idx = 0; idx < vt.getNumColumns(); idx++){
        String current = vt.getString(0, idx);
+       if(current == null)
+        return false;
        if (current.equalsIgnoreCase(FlatFileParser.BOOLEAN_TYPE) ||
            current.equalsIgnoreCase(FlatFileParser.BYTE_ARRAY_TYPE) ||
            current.equalsIgnoreCase(FlatFileParser.BYTE_TYPE) ||
