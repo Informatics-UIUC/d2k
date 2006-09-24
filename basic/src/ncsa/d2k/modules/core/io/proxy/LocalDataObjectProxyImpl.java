@@ -54,8 +54,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-// import org.scidac.cmcs.util.NSProperty;
-
 
 /**
  * LocalDataObjectProxyImpl handles access to a local file. Users can read file or
@@ -168,17 +166,17 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
     * @throws DataObjectProxyException
     */
    public File getLocalFile() throws DataObjectProxyException {
-      boolean doCreate = true; // This may become a parameter.
-      File ret = null;
+	  boolean doCreate = true; // This may become a parameter.
+      File file = null;
 
       try {
-         File file = new File(mURL.toURI().getPath());
+          file = new File(mURL.toURI().getPath());
 
          // If file doesn't exist, create a empty file based on url.
          if (!file.exists()) {
 
             if (doCreate) {
-               file.createNewFile();
+            	 file.createNewFile();
             } else {
                throw new DataObjectProxyException(file + ": not found");
             }
@@ -187,7 +185,7 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
          handleExceptions(e);
       }
 
-      return ret;
+      return file;
    }
 
    /**

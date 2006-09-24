@@ -1021,7 +1021,6 @@ public class DelimitedFileParserFromURL implements FlatFileParser {
    public void setDelimiter(char d) { delimiter = d; }
 
    public void finalize() {
-	   System.out.println("calling finalize");
 	   if (mDataObj != null) {
 		   mDataObj.close();
 		   mDataObj = null;

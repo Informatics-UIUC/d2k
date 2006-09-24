@@ -272,7 +272,7 @@ public class Input2FileURLs extends InputModule {
       }
 
       DataObjectProxy dataobj1 =
-         DataObjectProxyFactory.getDataObjectProxy(url0, username1, password1);
+         DataObjectProxyFactory.getDataObjectProxy(url1, username1, password1);
 
       pushOutput(dataobj1, 1);
    } // end method doit
@@ -776,7 +776,45 @@ public class Input2FileURLs extends InputModule {
             setPassword0(f0);
             didChange = true;
          }
+         
+         String f1 = jtf1.getText();
 
+         if (f1 != getFileName1()) {
+            setFileName1(f1);
+            didChange = true;
+         }
+
+         f1 = hosturljtf1.getText();
+
+         if (f1 != getHostURL1()) {
+            setHostURL1(f1);
+            didChange = true;
+         }
+
+         f1 = usernamejtf1.getText();
+
+         if (f1 != getUserName1()) {
+            setUserName1(f1);
+            didChange = true;
+         }
+
+         /*
+          * Use passwordjpf.getPassword.toString will not give the password text
+          */
+         char[] chararray1 = passwordjpf1.getPassword();
+         StringBuffer sb1 = new StringBuffer();
+
+         for (int i = 0; i < chararray1.length; i++) {
+            sb1.append(chararray1[i]);
+         }
+
+         f1 = sb1.toString();
+
+         if (f1 != getPassword1()) {
+            setPassword1(f1);
+            didChange = true;
+         }
+         
          return didChange;
       } // end method updateModule
    } // end class PropEdit

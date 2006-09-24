@@ -73,7 +73,7 @@ public class WriteTableToURL extends OutputModule {
    //~ Instance fields *********************************************************
 
    /** When true, put default metadataon the stored file. NOT IMPLEMENTED YET */
-   boolean addDefaultMeta = true;
+   boolean addDefaultMeta = false;
 
    /** The delimChar. */
    String delimChar = "C";
@@ -160,7 +160,7 @@ public class WriteTableToURL extends OutputModule {
                                  boolean writeColumnTypes)
       throws IOException, DataObjectProxyException {
 
-      FileWriter fw = new FileWriter(dataobj.getLocalFile());
+	  FileWriter fw = new FileWriter(dataobj.getLocalFile());
       String newLine = "\n";
 
       // write the column labels
@@ -252,13 +252,10 @@ public class WriteTableToURL extends OutputModule {
 
          dataobj = (DataObjectProxy) pullInput(0);
       } else {
-         throw new DataObjectProxyException("no outpu specified");
+         throw new DataObjectProxyException("no output specified");
 
       }
 
-
-      FileWriter fw;
-      String newLine = "\n";
       delimiter = ","; // default to comma
 
       if (delimChar.equals("S")) {
