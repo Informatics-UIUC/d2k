@@ -239,10 +239,20 @@ public abstract class DataObjectProxy {
     * @return true if the current URL is a collection, false otherwise.
     *
     * @throws DataObjectProxyException.
-    * @throws DataObjectProxyException  Description of exception
-    *                                   DataObjectProxyException.
+    * 
     */
    public abstract boolean isCollection() throws DataObjectProxyException;
+
+   /**
+    * Create a directory at path
+    *
+    * @return a DOP for the new object.
+    *
+    * 
+    * @throws DataObjectProxyException  
+    */
+   public abstract DataObjectProxy createCollection(String path) 
+      throws DataObjectProxyException;
 
    /**
     * Put the file to the current URL being pointed to by the current

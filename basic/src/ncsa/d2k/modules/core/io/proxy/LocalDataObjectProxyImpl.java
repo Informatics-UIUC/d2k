@@ -176,7 +176,9 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
          if (!file.exists()) {
 
             if (doCreate) {
-            	 file.createNewFile();
+            	File p = file.getParentFile();
+            	p.mkdirs();
+            	file.createNewFile();
             } else {
                throw new DataObjectProxyException(file + ": not found");
             }
@@ -245,6 +247,40 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
 
       return file.isDirectory();
    }
+   
+   /**
+    * Create a directory at path
+    * 
+    *  @param path a relative path (relative to current URL).
+    *  
+    * @return DataObjectProxy for the new object.
+    */
+   public DataObjectProxy createCollection(String path) 
+      throws DataObjectProxyException {
+	    
+	   if (!mURL.getProtocol().equals("file")) {
+		   throw new DataObjectProxyException("createCollection: not local url");
+	   }
+	   
+	   File file = new File(File.separator+
+			   mURL.getHost()+File.separator+
+			   mURL.getPath()+File.separator+path);
+	     
+	   
+	     try {
+	    
+	      if (file.exists()) {
+	    	  return this.resetDataObjectProxy(file.toURI().toURL());
+	      }
+	      file.mkdirs();
+	      if (file.exists()) {
+	    	  return this.resetDataObjectProxy(file.toURI().toURL());
+	      }
+	      } catch (MalformedURLException mfu) {
+	    	  throw new DataObjectProxyException(mfu);
+	      }
+	      return this;
+   }
 
    /**
     * <p>Copy the the file being pointed to by the current URL to destination
@@ -252,7 +288,9 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
     *
     * @param dest - store the contents of URL to this destination file.
     */
-   public void putFromFile(File dest) { dest = new File(mURL.getFile()); }
+   public void putFromFile(File dest) throws DataObjectProxyException {
+	   //Do nothing ?
+   }
 
 
    // FUTURE:  what to do with metadata?  This method was commented for now.
@@ -276,7 +314,6 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
     * @throws DataObjectProxyException
     */
    public void putFromStream(InputStream is) throws DataObjectProxyException {
-
       try {
          File file = new File(mURL.toString());
          FileWriter fw = new FileWriter(file);

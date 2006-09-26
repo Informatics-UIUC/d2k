@@ -72,7 +72,7 @@ public class WriteTableToURL extends OutputModule {
 
    //~ Instance fields *********************************************************
 
-   /** When true, put default metadataon the stored file. NOT IMPLEMENTED YET */
+   /** When true, put default metadata on the stored file. NOT IMPLEMENTED YET */
    boolean addDefaultMeta = false;
 
    /** The delimChar. */
@@ -159,7 +159,7 @@ public class WriteTableToURL extends OutputModule {
                                  boolean writeColumnLabels,
                                  boolean writeColumnTypes)
       throws IOException, DataObjectProxyException {
-
+	  
 	  FileWriter fw = new FileWriter(dataobj.getLocalFile());
       String newLine = "\n";
 
@@ -245,17 +245,16 @@ public class WriteTableToURL extends OutputModule {
     * @throws IOException              Error writing local file.
     */
    public void doit() throws Exception {
+	   setAddDefaultMeta(false);
+	  
       DataObjectProxy dataobj;
       Table vt = (Table) pullInput(1);
 
       if (this.isInputPipeConnected(0)) {
-
          dataobj = (DataObjectProxy) pullInput(0);
       } else {
          throw new DataObjectProxyException("no output specified");
-
       }
-
       delimiter = ","; // default to comma
 
       if (delimChar.equals("S")) {
@@ -265,19 +264,16 @@ public class WriteTableToURL extends OutputModule {
       }
 
       try {
-
-         // write the actual data
+    	 // write the actual data
          writeTable(vt, delimiter, dataobj, useColumnLabels, useDataTypes);
       } catch (IOException e) {
          throw new IOException(getAlias() +
                                ": Could not open file: " + dataobj.getURL() +
                                "\n" + e);
       }
-
       if (this.getAddDefaultMeta() == false) {
-         dataobj.putFromFile(dataobj.getLocalFile());
-      }
-
+    	  dataobj.putFromFile(dataobj.getLocalFile());
+      } // else ?
       /*
        * Clean up temp files
        */
@@ -509,7 +505,7 @@ public class WriteTableToURL extends OutputModule {
     *
     * <p>Note: NOT IMPLEMENTED YET.</p>
     *
-    * @param b Teh value.
+    * @param b The value.
     */
    public void setAddDefaultMeta(boolean b) { addDefaultMeta = b; }
 

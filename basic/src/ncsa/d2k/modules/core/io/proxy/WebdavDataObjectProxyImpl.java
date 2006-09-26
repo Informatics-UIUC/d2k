@@ -46,7 +46,7 @@ package ncsa.d2k.modules.core.io.proxy;
 
 import org.scidac.cmcs.dsmgmt.dsi.DSI;
 import org.scidac.cmcs.dsmgmt.dsi.StatusException;
-import org.scidac.cmcs.security.auth.DialogAuthListener;
+//import org.scidac.cmcs.security.auth.DialogAuthListener;
 import org.scidac.cmcs.util.NSProperty;
 
 import java.io.File;
@@ -58,7 +58,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.Vector;
-
 
 /**
  * WebdavDataObjectProxyImpl manages access to files through the http/https 
@@ -414,7 +413,71 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
 	   }
       return ret;
    }
+   
+   /**
+    * Create a directory at path
+    * 
+    *  @param path a relative path (relative to current URL).
+    *  
+    * @return DataObjectProxy for the new object.
+    */
+   public DataObjectProxy createCollection(String path) throws DataObjectProxyException {
+	      String newpath = "";
+		   try {
+			   newpath = mDSI.makeCollection(path);
+		   }
+		   catch(StatusException se) {
+			   handleExceptions(se);
+		   }
+		    
+		   try {
+			   URL newU = new URL(mDSI.getURL());
+			   return this.resetDataObjectProxy(
+				   newU,
+				   this.getUsername(), 
+				   this.getPassword());
+		   } catch(MalformedURLException mfe) {
+			   handleExceptions(mfe);
+		   }
+		   
+		   return this;
+}
 
+   private boolean createPath() throws DataObjectProxyException {
+	   // get the path to the file
+	   try {
+		URL pu = new URL(mDSI.getURL());
+		String pt = pu.getPath();
+		pt = pt.substring(0,pt.lastIndexOf('/'));
+		String comps[] = pt.split("/");
+		String path = new String("");
+ 		String ppath = new String("");
+ 		for (int i =0; i < comps.length; i++) {
+ 			if (comps[i] == null || comps[i].equals("")) {
+ 				continue;
+ 			}
+ 			path = ppath+comps[i];
+ 			URL pp = new URL(pu.getProtocol(),pu.getHost(),pu.getPort(),"/"+path);
+ 		
+ 			DSI d2 = new DSI(pp.toString(),mUsername, mPassword);
+ 		
+ 			if (!d2.exists()) {
+ 				URL root = new URL(pu.getProtocol(),pu.getHost(),pu.getPort(),"/"+ppath);
+ 				DataObjectProxy dop2 = DataObjectProxyFactory.getDataObjectProxy(root,mUsername, mPassword);
+ 				dop2.createCollection(comps[i]);
+ 			}
+ 			ppath = path+"/";
+ 		}
+	   } catch (MalformedURLException mfe) {
+		   this.handleExceptions(mfe);
+		//   return false;
+	   } catch (StatusException se) {
+		   this.handleExceptions(se);
+//		   return false;
+	   }
+	   return true;
+   }
+   
    /**
     * Put a local file to the url represented by the current DSI object.
     *
@@ -424,7 +487,14 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     * 
     */
    public void putFromFile(File file) throws DataObjectProxyException{
-     try {
+     boolean doCreate = true;
+	   try {
+    	 if (!mDSI.exists()) {
+    		 boolean res = false;
+    		 	if (doCreate) {
+    		 		res = createPath();
+    		 	}
+    	 }
     	 mDSI.putDataSet(file);
      }
      catch(StatusException se) {
@@ -442,19 +512,19 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     *
     * 
     */
-   public void putFromFileWithProp(File file, NSProperty nsp,String value) throws DataObjectProxyException {
-	   try {
-		   mDSI.putDataSet(file);
-		   this.putMeta(nsp,value);
-		   mDSI.setURL(DSI.splitUrl(mDSI.getURL())[0]);
-		   this.putMeta(nsp,value);
-		   mDSI.setURL(mURL.toString());
-	   }
-	   catch (StatusException se){
-		  this.handleExceptions(se);
-	   }
+   //public void putFromFileWithProp(File file, NSProperty nsp,String value) throws DataObjectProxyException {
+	//   try {
+	////	   mDSI.putDataSet(file);
+	//	   this.putMeta(nsp,value);
+	//	   mDSI.setURL(DSI.splitUrl(mDSI.getURL())[0]);
+	//	   this.putMeta(nsp,value);
+	//	   mDSI.setURL(mURL.toString());
+	//   }
+	//   catch (StatusException se){
+	//	  this.handleExceptions(se);
+	//   }
 	      
-   }
+   //}
 
    /**
     * <p>Put InputStream to the url being pointed to by the current 
@@ -463,7 +533,14 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     * @throws DataObjectProxyException 
     */
    public void putFromStream(InputStream is) throws DataObjectProxyException {
+	   boolean doCreate = true;
 	   try {
+		   if (!mDSI.exists()) {
+	    		 boolean res = false;
+	    		 	if (doCreate) {		 		
+	    		 		res = createPath();	 	
+	    		 	}
+	    	 }
 		   mDSI.putDataSet(is);
 	   }
 	   catch (StatusException se) {

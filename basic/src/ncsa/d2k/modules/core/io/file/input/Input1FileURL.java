@@ -202,16 +202,14 @@ public class Input1FileURL extends InputModule {
          url = file.toURI().toURL();
       } else {
          setHostURL(hosturl);
-         url = new URL(getAbsURL(hosturl, fn));
-
+         url = new URL(getAbsURL(hosturl, fn));        
          /*
           * If url points to a collection, how can we handle it?
           */
       }
-
+       
       DataObjectProxy dataobj =
          DataObjectProxyFactory.getDataObjectProxy(url, username, password);
-
       pushOutput(dataobj, 0);
    } // end method doit
 
