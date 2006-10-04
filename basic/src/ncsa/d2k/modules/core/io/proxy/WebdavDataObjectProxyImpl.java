@@ -101,15 +101,21 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     * @param password - password to access the server.
     */
    public WebdavDataObjectProxyImpl(URL url, String username, String password) {
-      mURL = url;
+	  mURL = url;
       mDSI = new DSI(url.toString());
-
-      if (username != "" & password != "") {
-         this.setUsername(username);
-         this.setPassword(password);
-         mDSI = new DSI(url.toString(), mUsername, mPassword);
+      
+      if (!username.equals("")) { 
+    	  this.setUsername(username);
       }
-   }
+      if (!password.equals("")) {  
+         this.setPassword(password);
+      }
+      if (!this.getUsername().equals("")) {
+    	  mDSI = new DSI(url.toString(), this.getUsername(), this.getPassword());
+      } else {
+    	  mDSI = new DSI(url.toString()); 
+      }
+      }
 
    //~ Methods *****************************************************************
 
@@ -206,7 +212,10 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     * Get the password to access the server.
     * @return the current password to access the server.
     */
-   protected String getPassword() { return mPassword; }
+   protected String getPassword() { 
+	   if (mPassword == null) mPassword = "";
+	   return mPassword; 
+	  }
 
    /**
     * Check if userID and password are necessary to access the url if yes,
@@ -361,7 +370,10 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     * Get the current user to access the current WebDataObjectProxy. 
     * @return username.
     */
-   public String getUsername() { return mUsername; }
+   public String getUsername() { 
+	   if (mUsername == null) mUsername = "";
+	   return mUsername;  
+   }
 
    /**
     * Handles exceptions
@@ -377,8 +389,16 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
 	    */
 	   if( ex instanceof StatusException) {
 		   StatusException se = (StatusException)ex;
+		   Throwable theCause = se.getCause();
+		   if (theCause instanceof StatusException) {
+			   // extract the encased exception
+			   StatusException se2 = (StatusException)theCause;
+			   if (se2.getStatusCode() == 401) {
+				   throw new DataObjectProxyException("Unauthorized (401)");
+			   }
+		   }
 		   throw new DataObjectProxyException("*****StatusException "+
-				   se.getStatusCode()+ " "+se.getImprovedMessage());
+				   se.getStatusCode()+ " "+se.getImprovedMessage());   
 	   }
 	   else if (ex instanceof FileNotFoundException) {
 		   FileNotFoundException fe = (FileNotFoundException)ex;
@@ -458,22 +478,26 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
  			}
  			path = ppath+comps[i];
  			URL pp = new URL(pu.getProtocol(),pu.getHost(),pu.getPort(),"/"+path);
- 		
- 			DSI d2 = new DSI(pp.toString(),mUsername, mPassword);
- 		
+ 			
+ 			DSI d2 = null;
+ 			if (this.getUsername().equals("")) {
+ 				d2 = new DSI(pp.toString());
+ 			} else {
+ 				d2 = new DSI(pp.toString(),this.getUsername(), this.getPassword());	
+ 			}
  			if (!d2.exists()) {
  				URL root = new URL(pu.getProtocol(),pu.getHost(),pu.getPort(),"/"+ppath);
- 				DataObjectProxy dop2 = DataObjectProxyFactory.getDataObjectProxy(root,mUsername, mPassword);
+ 				DataObjectProxy dop2 = 
+ 					DataObjectProxyFactory.getDataObjectProxy(root,
+ 							this.getUsername(), this.getPassword());
  				dop2.createCollection(comps[i]);
  			}
  			ppath = path+"/";
  		}
 	   } catch (MalformedURLException mfe) {
 		   this.handleExceptions(mfe);
-		//   return false;
 	   } catch (StatusException se) {
 		   this.handleExceptions(se);
-//		   return false;
 	   }
 	   return true;
    }
@@ -592,7 +616,7 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     * @return a new DataObjectProxy representing the new url.
     */
    public DataObjectProxy resetDataObjectProxy(URL newURL) {
-      return resetDataObjectProxy(newURL, mUsername, mPassword);
+      return resetDataObjectProxy(newURL, this.getUsername(), this.getPassword());
    }
 
    /**
