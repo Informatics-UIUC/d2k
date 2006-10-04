@@ -48,7 +48,7 @@ import java.net.URL;
 
 
 /**
- * <p>Facory to create different DataObjectProxy implementations according to
+ * <p>Factory to create different DataObjectProxy implementations according to
  * the different protocols.</p>
  *
  * <p>This version only handles local files and files accessed via WebDAV (via
