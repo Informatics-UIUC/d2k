@@ -463,7 +463,7 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
 		   return this;
 }
 
-   private boolean createPath() throws DataObjectProxyException {
+   private void createPath() throws DataObjectProxyException {
 	   // get the path to the file
 	   try {
 		URL pu = new URL(mDSI.getURL());
@@ -499,6 +499,28 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
 	   } catch (StatusException se) {
 		   this.handleExceptions(se);
 	   }
+   }
+   
+   /*
+    *  Check if the URL ends in a '/'
+    *  <p>
+    *  If so, the Web server will be confused if you try to
+    *  put a file to the URL.
+    *  
+    *  
+    *
+    */
+   private boolean checkLastComp() {
+	   try {
+			URL pu = new URL(mDSI.getURL());
+			String pt = pu.getPath();
+			if (pt.contains("/")) {
+				pt = pt.substring(pt.lastIndexOf('/')+1);
+				if (pt.length() == 0) return false;
+			} 
+		} catch (MalformedURLException mfe) {
+				 return false;
+	   }
 	   return true;
    }
    
@@ -512,14 +534,20 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     */
    public void putFromFile(File file) throws DataObjectProxyException{
      boolean doCreate = true;
+     
 	   try {
     	 if (!mDSI.exists()) {
-    		 boolean res = false;
     		 	if (doCreate) {
-    		 		res = createPath();
+    		 		createPath();
     		 	}
     	 }
-    	 mDSI.putDataSet(file);
+    	 if (checkLastComp()) {
+    		 mDSI.putDataSet(file);
+    	 } else {
+    		 // not sure what to do in this case
+    		 throw new DataObjectProxyException(mDSI.getURL()+
+    				 ": target is a directory?");
+    	 }
      }
      catch(StatusException se) {
     	 this.handleExceptions(se);
@@ -560,12 +588,17 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
 	   boolean doCreate = true;
 	   try {
 		   if (!mDSI.exists()) {
-	    		 boolean res = false;
 	    		 	if (doCreate) {		 		
-	    		 		res = createPath();	 	
+	    		 		createPath();	 	
 	    		 	}
 	    	 }
-		   mDSI.putDataSet(is);
+		     if (checkLastComp()) {
+			   mDSI.putDataSet(is);
+	    	 } else {
+	    		 // not sure what to do in this case
+	    		 throw new DataObjectProxyException(mDSI.getURL()+
+	    				 ": target is a directory?");
+	    	 }
 	   }
 	   catch (StatusException se) {
 		   this.handleExceptions(se);
