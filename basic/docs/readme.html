@@ -10,79 +10,87 @@
 <p>This is D2K Basic 4.1.2. This version sees a number of changes from the
 previous 4.1.1 release.</p>
 
-	D2K Infrastructure:
-	<ul>
-		<li>Experimental support for SSL sockets with D2K server communications</li>
-		<li>Enhancements to ncsa.d2k.batch.BatchInterface
-		<ul>
-			<li>Documentation</li>
-			<li>New methods to make it easier to use</li>
-		</ul>
-		<li>Libraries that modules depend on can now be located in &lt;d2k home&gt;/lib/ext,
-		instead of in the modules directory. Moving libraries out of the modules directory
-		speeds up load time</li>
-		<li>Enhancements to class loader protocol
-		<ul>
-			<li>Remote resource loading</li>
-		</ul>
-		<li>Added removeResource() method to RootModule to remove an object from the
-		ResourceManager</li>
-		<li>Numerous documentation updates</li>
-		<li>HeadlessUIModule: changed supressGui property to suppressGui</li>
-		<li>machines.txt (for distributed computing) is now in the D2K install directory
-		rather than the user home directory</li>
-	</ul>
+  D2K Infrastructure:
+  <ul>
+    <li>Experimental support for SSL sockets with D2K server communications</li>
+    <li>Enhancements to ncsa.d2k.batch.BatchInterface
+    <ul>
+      <li>Documentation</li>
+      <li>New methods to make it easier to use</li>
+    </ul>
+    <li>Libraries that modules depend on can now be located in &lt;d2k home&gt;/lib/ext,
+    instead of in the modules directory. Moving libraries out of the modules directory
+    speeds up load time</li>
+    <li>Enhancements to class loader protocol
+    <ul>
+      <li>Remote resource loading</li>
+    </ul>
+    <li>Added removeResource() method to RootModule to remove an object from the
+    ResourceManager</li>
+    <li>Numerous documentation updates</li>
+    <li>HeadlessUIModule: changed supressGui property to suppressGui</li>
+    <li>machines.txt (for distributed computing) is now in the D2K install directory
+    rather than the user home directory</li>
+    <li>Enhancements to nested itineraries:</li>
+    <ul>
+       <li>Fixed ordering of nested itinerary inputs</li>
+       <li>Brushing the ports of a nested itinerary will show the name of the port
+           and the name of the module inside that the port comes from</li>
+       <li>Fixed bug in which certain nested modules could execute more than once</li>
+       <li>Now possible to nest itineraries within other nested itineraries</li>
+    </ul>
+  </ul>
 
-	D2K Toolkit:
-	<ul>
-		<li>Expanded use of anti-aliasing for text</li>
-	</ul>
+  D2K Toolkit:
+  <ul>
+    <li>Expanded use of anti-aliasing for text</li>
+  </ul>
 
-	D2K Basic:
-	<ul>
-		<li>Moved Column, NumericColumn, TextualColumn interfaces from
-		ncsa.d2k.modules.core.datatype.table.basic package to
-		ncsa.d2k.modules.core.datatype.table</li>
-		<li>Added getTableFactory() to Table interface</li>
-		<li>New sparse table implementation in ncsa.d2k.modules.core.datatype.table.sparse2
-		package.</li>
-		<li>Fix to ChooseAttributes: when attribute names were saved so the module could
-		run headless, they were all capitalized. This could cause problems, so the
-		capitalization was removed</li>
-		<li>Updated the included JUNG and Prefuse libraries.</li>
-		<li>Added a number of modules related to Prefuse-based graph visualization.</li>
-		<li>Included a Java 3D rule visualization.</li>
+  D2K Basic:
+  <ul>
+    <li>Moved Column, NumericColumn, TextualColumn interfaces from
+    ncsa.d2k.modules.core.datatype.table.basic package to
+    ncsa.d2k.modules.core.datatype.table</li>
+    <li>Added getTableFactory() to Table interface</li>
+    <li>New sparse table implementation in ncsa.d2k.modules.core.datatype.table.sparse2
+    package.</li>
+    <li>Fix to ChooseAttributes: when attribute names were saved so the module could
+    run headless, they were all capitalized. This could cause problems, so the
+    capitalization was removed</li>
+    <li>Updated the included JUNG and Prefuse libraries.</li>
+    <li>Added a number of modules related to Prefuse-based graph visualization.</li>
+    <li>Included a Java 3D rule visualization.</li>
                 <li>The module ncsa.d2k.modules.core.control.Sink was deprecated and replaced with
                   ncsa.d2k.modules.core.control.DisposeObject                </li>
 
                 <li>ncsa.d2k.modules.core.optimize package was refactored:<BR>
                   The following modules were deprecated and replaced:<BR>
                   <ul>
-                	<li>MultiTrainTestBiasEvaluator is replaced with ncsa.d2k.modules.core.optimize.evaluators.ModelingParametersEvaluator                 </li>
-	                <li>RandomGriddedSampling is replaced with ncsa.d2k.modules.core.optimize.samplers.GriddedSampler  </li>
-			<li>ncsa.d2k.modules.core.optimize.random.RandomSampling is replaced with  ncsa.d2k.modules.core.optimize.samplers.RandomSampler.java</li>
+                  <li>MultiTrainTestBiasEvaluator is replaced with ncsa.d2k.modules.core.optimize.evaluators.ModelingParametersEvaluator                 </li>
+                  <li>RandomGriddedSampling is replaced with ncsa.d2k.modules.core.optimize.samplers.GriddedSampler  </li>
+      <li>ncsa.d2k.modules.core.optimize.random.RandomSampling is replaced with  ncsa.d2k.modules.core.optimize.samplers.RandomSampler.java</li>
                         <li>ncsa.d2k.modules.core.optimize.random.UniformSampling is replaced with  ncsa.d2k.modules.core.optimize.optimizer.RandomOptimizer.java</li>
-		  </ul>
-		  The following modules were moved to different packages:
-		  <ul>
-			<li>CreateExample was moved to ncsa.d2k.modules.core.optimize.examples</li>
-			<li>SimpleModelEvaluator was moved to ncsa.d2k.modules.core.optimize.evaluators        </li><li>            ncsa.d2k.modules.core.optimize.random.ExampleCollector was moved to ncsa.d2k.modules.core.optimize.examples</li>
+      </ul>
+      The following modules were moved to different packages:
+      <ul>
+      <li>CreateExample was moved to ncsa.d2k.modules.core.optimize.examples</li>
+      <li>SimpleModelEvaluator was moved to ncsa.d2k.modules.core.optimize.evaluators        </li><li>            ncsa.d2k.modules.core.optimize.random.ExampleCollector was moved to ncsa.d2k.modules.core.optimize.examples</li>
                         <li>ncsa.d2k.modules.core.optimize.random.ExampleCollector was moved to ncsa.d2k.modules.core.optimize.examples</li>
-    		  </ul>
+          </ul>
                 </li>
 
-	</ul>
+  </ul>
 
-	T2K:
-	<ul>
-		<li>Internal structural changes to ncsa.d2k.modules.t2k.corpora.Document,
-		Annotation, AnnotationSet</li>
-		<li>Set serialVersionUID of all Documents</li>
-		<li>GateDocumentViewer, GateDocumentsViewer: clear doc list at end of
-		execution</li>
-		<li>Updated Gate modules to work with distributed computing</li>
-		<li>Added reentrant versions of Gate modules</li>
-	</ul>
+  T2K:
+  <ul>
+    <li>Internal structural changes to ncsa.d2k.modules.t2k.corpora.Document,
+    Annotation, AnnotationSet</li>
+    <li>Set serialVersionUID of all Documents</li>
+    <li>GateDocumentViewer, GateDocumentsViewer: clear doc list at end of
+    execution</li>
+    <li>Updated Gate modules to work with distributed computing</li>
+    <li>Added reentrant versions of Gate modules</li>
+  </ul>
 
 <h2>Changes made in 4.1.1</h2>
 <p>D2K Basic 4.1.1 saw several new features introduced since the previous
