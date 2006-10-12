@@ -326,13 +326,16 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
 
    /**
     * Get the metadata of the current DSI object
+    * 
+    * *<p><b>Note:  This class is under development.</b>
     *
-    * @return a meatdata Hashtable 
- * @throws DataObjectProxyException 
+    * @return a metadata Hashtable
+    *  
+    * @throws DataObjectProxyException 
     *
     * 
     */
-   public Hashtable getMeta() throws DataObjectProxyException {
+   public Object getMeta() throws DataObjectProxyException {
 	   Hashtable ret=null;
 	   try {
     	  ret = mDSI.getMetaData();
