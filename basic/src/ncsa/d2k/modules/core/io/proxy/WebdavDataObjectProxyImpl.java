@@ -134,9 +134,12 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       }
       try {
     	  localCopy = File.createTempFile("d2k", ".out", tempDataDir);
+    	  localCopy=mDSI.getDataSet();  // do this here?
       }
       catch(IOException ioe) {
     	  handleExceptions(ioe);
+      } catch(StatusException se) {
+    	  handleExceptions(se);
       }
       if (tempFilesCreated == null) {
          tempFilesCreated = new Vector();
@@ -148,6 +151,7 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
        */
       tempFilesCreated.add(localCopy.getAbsolutePath());
    }
+   
 
 
    /**
@@ -302,8 +306,17 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
 	   if (localCopy == null || (!localCopy.exists())) {
 		   createTempFile();
 	   }
+	   try {
+		   localCopy=mDSI.getDataSet();
+		}
+		 catch (Exception e) {
+		    this.handleExceptions(e);
+		}
 	   return localCopy;
    }
+   
+  
+	
 
    /**
     * Get a InputStream from locally cached copy
