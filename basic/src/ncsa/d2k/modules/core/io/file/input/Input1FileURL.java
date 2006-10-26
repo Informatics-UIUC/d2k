@@ -322,7 +322,7 @@ public class Input1FileURL extends InputModule {
     * fully qualified Java data type of the output at the corresponding index.
     */
    public String[] getOutputTypes() {
-      String[] out = { "ncsa.d2k.modules.core.io.DataObjectProxy" };
+      String[] out = { "ncsa.d2k.modules.core.io.proxy.DataObjectProxy" };
 
       return out;
    }

@@ -419,8 +419,8 @@ public class Input2FileURLs extends InputModule {
    public String[] getOutputTypes() {
       String[] out =
       {
-         "ncsa.d2k.modules.core.io.DataObjectProxy",
-         "ncsa.d2k.modules.core.io.DataObjectProxy"
+         "ncsa.d2k.modules.core.io.proxy.DataObjectProxy",
+         "ncsa.d2k.modules.core.io.proxy.DataObjectProxy"
       };
 
       return out;
