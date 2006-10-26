@@ -142,7 +142,7 @@ public class InputSerializedObjectFromURL extends InputModule {
     * @return The datatypes of the module inputs.
     */
    public String[] getInputTypes() {
-      String[] types = { "java.lang.String" };
+      String[] types = { "ncsa.d2k.module.core.io.proxy.DataObjectProxy" };
 
       return types;
    }
