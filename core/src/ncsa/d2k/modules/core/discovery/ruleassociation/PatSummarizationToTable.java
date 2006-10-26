@@ -482,6 +482,9 @@ public class PatSummarizationToTable extends ncsa.d2k.core.modules.ComputeModule
           }
 
           StringBuffer label = new StringBuffer();
+          label.append(
+              "cluster #" + col + ": (" + clusterMem[col].size() + ") ");
+
           for (int vi = 0; vi < clusterMem[col].size(); vi++) {
 
             /*
