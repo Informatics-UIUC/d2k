@@ -172,12 +172,12 @@ public class NBModelStatistics_2 extends ComputeModule {
          evidence[i] /= total;
       }
 
-      desc.append("|");
+      desc.append(delimiter);
 
       for (int i = 0; i < evidence.length; i++) {
 
          if (i != 0) {
-            desc.append("|");
+            desc.append(delimiter);
          }
 
          desc.append(evidence[i]);
@@ -192,6 +192,10 @@ public class NBModelStatistics_2 extends ComputeModule {
    private String replaceEmptyValue = "";
    public void setReplaceEmptyValue(String str){replaceEmptyValue = str;}
    public String getReplaceEmptyValue(){return replaceEmptyValue;}
+
+   private String delimiter = ",";
+   public void setDelimiter(String str){delimiter = str;}
+   public String getDelimiter(){return delimiter;}
 
    private String process_2(List data, Map attToIndex) {
      nbModel.clearEvidence();
@@ -225,7 +229,7 @@ public class NBModelStatistics_2 extends ComputeModule {
         }else{
           desc.append(attVals[i]);
         }
-        desc.append("|");
+        desc.append(this.delimiter);
       }
 
 
@@ -240,12 +244,12 @@ public class NBModelStatistics_2 extends ComputeModule {
         evidence[i] /= total;
      }
 
-   //  desc.append("|");
+
 
      for (int i = 0; i < evidence.length; i++) {
 
         if (i != 0 ) {
-           desc.append("|");
+           desc.append(this.delimiter);
         }
 
         desc.append(evidence[i]);
@@ -328,13 +332,13 @@ public class NBModelStatistics_2 extends ComputeModule {
       for (int i = 0; i < attributes.length; i++) {
         String an = attributes[i];
         writer.write(an);
-        writer.write("|");
+        writer.write(delimiter);
       }
 //      writer.write("Condition");
 
       for (int i = 0; i < classes.length; i++) {
-         if (i != classes.length - 1 && i != 0) {
-            writer.write("|");
+         if ( i != 0) {
+            writer.write(delimiter);
          }
          writer.write("Prob(" + classes[i] + ")");
       }
@@ -345,7 +349,7 @@ public class NBModelStatistics_2 extends ComputeModule {
       for (int i = 0; i < max; i++) {
          writer.write("String");
          if (i != max - 1) {
-            writer.write("|");
+            writer.write(delimiter);
          }
       }
       writer.write("\n");
@@ -377,13 +381,16 @@ public class NBModelStatistics_2 extends ComputeModule {
 
    public PropertyDescription[] getPropertiesDescriptions() {
 
-     PropertyDescription[] pds = new PropertyDescription[2];
-     pds[1] = new PropertyDescription("debug", "Debug", "When this property " +
+     PropertyDescription[] pds = new PropertyDescription[3];
+     pds[2] = new PropertyDescription("debug", "Debug", "When this property " +
          "is set to true, the module will output debug messages to stdout.");
      pds[0] = new PropertyDescription("replaceEmptyValue", "Empty Value Replacement",
                                       "Empty values in conditions will be replaced by this string. " +
                                       "The default value is an empty string");
-                                      return pds;
+
+    pds[1] = new PropertyDescription("delimiter", "Delimiter", "Set the delimiter to be used int he output file." +
+                                     " The default is comma ','");
+    return pds;
    }
    /**
     * Called by the D2K Infrastructure after the itinerary completes execution.
