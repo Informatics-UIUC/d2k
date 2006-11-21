@@ -58,6 +58,7 @@ public class SparseExampleTable
       outputColumns = tbl.outputColumns;
       testSet = tbl.testSet;
       trainSet = tbl.trainSet;
+
     }
     else {
       //initialize arrays to avoid null pointer exception

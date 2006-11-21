@@ -701,7 +701,12 @@ public abstract class SparseTable
    * @return
    */
   public int[] getRowIndicesUnsorted(int rowNumber) {
-    return ( (TIntArrayList) _rows.get(rowNumber)).toNativeArray();
+    try{
+      return ( (TIntArrayList) _rows.get(rowNumber)).toNativeArray();
+    }catch(Exception e){
+      e.printStackTrace(System.out);
+      return new int[0];
+    }
   }
 
   /**
