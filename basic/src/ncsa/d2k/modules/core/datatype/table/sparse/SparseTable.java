@@ -704,7 +704,9 @@ public abstract class SparseTable
     try{
       return ( (TIntArrayList) _rows.get(rowNumber)).toNativeArray();
     }catch(Exception e){
-      e.printStackTrace(System.out);
+      //LAM: Vered added and commented out this printing of stack trace.
+      //@TODO: need to debug this phenoman of SparseTable being generated with an empty row....
+  //    e.printStackTrace(System.out);
 
       return new int[0];
     }
