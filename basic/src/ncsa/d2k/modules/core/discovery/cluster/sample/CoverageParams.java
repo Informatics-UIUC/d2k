@@ -50,6 +50,8 @@ import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.discovery.cluster.gui.properties
           .CoverageParams_Props;
+import java.beans.PropertyVetoException;
+import ncsa.d2k.modules.core.discovery.cluster.hac.HAC;
 
 
 /**
@@ -269,21 +271,45 @@ public class CoverageParams extends CoverageParamsOPT {
     * @param cm Clustering method's ID, as defined in<code>
     *           ncsa.d2k.modules.core.discovery.cluster.hac.HAC</code>
     */
-   public void setClusterMethod(int cm) { _clusterMethod = cm; }
+   public void setClusterMethod(int cm) throws PropertyVetoException{
+     int max = HAC.s_ClusterMethodLabels.length ;
+     if(cm < 0 || cm >= max){
+       String msg = "Cluster Method ID must be in the range " +
+           "[0," + (max-1) + "]";
+       msg += ". The Clustering Methods IDs are as follows: " ;
+       for(int i=0; i<max; i++){
+         msg += i + " - " +HAC.s_ClusterMethodLabels[i];
+         if(i != max-1){
+           msg += ", " ;
+         }
+       }
+       throw new PropertyVetoException(msg, null);
+
+     }
+ _clusterMethod = cm; }
 
    /**
     * Sets the value for the coverage distance threshold.
     *
     * @param cdt The value for the coverage distance threshold, should be in the range [1,100]
     */
-   public void setCoverageDistanceThreshold(int cdt) { _covthresh = cdt; }
-
+   public void setCoverageDistanceThreshold(int cdt) throws PropertyVetoException {
+     if (cdt < 0 || cdt > 100)
+       throw new PropertyVetoException(
+           "Coverage Distance Threshold value should be in the range [0, 100]", null);
+     _covthresh = cdt;
+   }
    /**
     * Sets the value of Coverage Max Num Samples property.
     *
     * @param num The value for Coverage Max Num Samples property, should be >0.
     */
-   public void setCoverageMaxNumSamples(int num) {
+   public void setCoverageMaxNumSamples(int num)throws PropertyVetoException
+   {
+     if (num < 1)
+       throw new PropertyVetoException( CoverageParamSpaceGenerator.COV_MAX_NUM_SAMPLES +
+                                       " value should be greater than one", null);
+
       _coverageMaxNumSamples = num;
    }
 
@@ -294,28 +320,59 @@ public class CoverageParams extends CoverageParamsOPT {
     *           defined by <codE>
     *           ncsa.d2k.modules.core.discovery.cluster.hac.HAC</code>
     */
-   public void setDistanceMetric(int dm) { _distanceMetric = dm; }
+   public void setDistanceMetric(int dm)  throws PropertyVetoException
+   {
+     int max = HAC.s_DistanceMetricDesc.length;
+     if(dm < 0 || dm >= max){
+       String msg = "Distance Metric ID must be in the range " +
+           "[0," + (max-1) + "]";
+       msg += ". The Distance Metrics IDs are as follows: " ;
+       for(int i=0; i<max; i++){
+         msg += i + " - " +HAC.s_DistanceMetricLabels[i];
+         if(i != max-1){
+           msg += ", " ;
+         }
+       }
+       throw new PropertyVetoException(msg, null);
+
+     }
+ _distanceMetric = dm; }
 
    /**
     * Sets the value of the distance threshold property.
     *
     * @param hdt The value for the distance threshold property, should be in the range [1,100]
     */
-   public void setHacDistanceThreshold(int hdt) { _hacDistanceThreshold = hdt; }
-
+   public void setHacDistanceThreshold(int hdt) throws PropertyVetoException{
+     if (hdt < 0 || hdt > 100)
+       throw new PropertyVetoException(CoverageParamSpaceGenerator.
+                                       HAC_DISTANCE_THRESHOLD +
+                                       " value should be in the range [1,100]",
+                                       null);
+     _hacDistanceThreshold = hdt;
+   }
 
    /**
     * Sets the value for the number of clusters property.
     *
     * @param i The value for the number of clusters property, should be >=2
     */
-   public void setNumClusters(int i) { N = i; }
+   public void setNumClusters(int i)throws PropertyVetoException{
+     if(i < 2)
+       throw new PropertyVetoException(CoverageParamSpaceGenerator.NUM_CLUSTERS + " value should be greater than 1", null);
+     N = i;
+   }
 
    /**
     * Sets the value of the Number of Assignment Passes property.
     *
     * @param rmi The value for the Number of Assignment Passes property, should be >0.
     */
-   public void setRefinementMaxIterations(int rmi) { _maxIterations = rmi; }
+   public void setRefinementMaxIterations(int rmi) throws PropertyVetoException{
+     if(rmi < 1)
+       throw new PropertyVetoException(CoverageParamSpaceGenerator.MAX_ITERATIONS +
+                                       " value should be greater than zero", null);
+     _maxIterations = rmi;
+   }
 
 } // end class CoverageParams

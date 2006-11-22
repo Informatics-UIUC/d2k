@@ -58,6 +58,8 @@ import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.discovery.cluster.gui.properties
           .ClusterAssignment_Props;
+import java.beans.PropertyVetoException;
+import ncsa.d2k.modules.core.discovery.cluster.hac.HAC;
 
 
 /**
@@ -276,7 +278,23 @@ public class ClusterAssignment extends ClusterAssignmentOPT {
     *           values defined in <code>
     *           ncsa.d2k.modules.core.discovery.cluster.hac.HAC</code>
     */
-   public void setClusterMethod(int cm) { _clusterMethod = cm; }
+   public void setClusterMethod(int cm) throws PropertyVetoException{
+     int max = HAC.s_ClusterMethodLabels.length ;
+     if(cm < 0 || cm >= max){
+       String msg = "Cluster Method ID must be in the range " +
+           "[0," + (max-1) + "]";
+       msg += ". The Clustering Methods IDs are as follows: " ;
+       for(int i=0; i<max; i++){
+         msg += i + " - " +HAC.s_ClusterMethodLabels[i];
+         if(i != max-1){
+           msg += ", " ;
+         }
+       }
+       throw new PropertyVetoException(msg, null);
+
+     }
+     _clusterMethod = cm;
+   }
 
    /**
     * Sets the value of the distance metric ID property.
@@ -285,7 +303,24 @@ public class ClusterAssignment extends ClusterAssignmentOPT {
     *           values defined in <code>
     *           ncsa.d2k.modules.core.discovery.cluster.hac.HAC</code>
     */
-   public void setDistanceMetric(int dm) { _distanceMetric = dm; }
+   public void setDistanceMetric(int dm)  throws PropertyVetoException
+   {
+     int max = HAC.s_DistanceMetricDesc.length;
+     if(dm < 0 || dm >= max){
+       String msg = "Distance Metric ID must be in the range " +
+           "[0," + (max-1) + "]";
+       msg += ". The Distance Metrics IDs are as follows: " ;
+       for(int i=0; i<max; i++){
+         msg += i + " - " +HAC.s_DistanceMetricLabels[i];
+         if(i != max-1){
+           msg += ", " ;
+         }
+       }
+       throw new PropertyVetoException(msg, null);
+
+     }
+     _distanceMetric = dm;
+   }
 
    /**
     * Sets the value for the Number of Assignments property.

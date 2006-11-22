@@ -56,6 +56,8 @@ import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.discovery.cluster.gui.properties
           .CoverageSampler_Props;
+import java.beans.PropertyVetoException;
+import ncsa.d2k.modules.core.discovery.cluster.hac.HAC;
 
 
 /**
@@ -256,14 +258,35 @@ public class CoverageSampler extends CoverageSamplerOPT {
     * @param co The value of the Distance Threshold property, should be in the
     *           range [1,100].
     */
-   public void setCutOff(int co) { _cutOff = co; }
+   public void setCutOff(int co) throws PropertyVetoException {
+     if (co < 0 || co > 100)
+       throw new PropertyVetoException(
+           "Distance Threshold value should be in the range [0, 100]", null);
+     _cutOff = co;
+   }
 
    /**
     * Sets the value of the Distance Metric property.
     *
     * @param dm The value of the Distance Metric property.
     */
-   public void setDistanceMetric(int dm) { _distanceMetric = dm; }
+   public void setDistanceMetric(int dm) throws PropertyVetoException
+   {
+     int max = HAC.s_DistanceMetricDesc.length;
+     if(dm < 0 || dm >= max){
+       String msg = "Distance Metric ID must be in the range " +
+           "[0," + (max-1) + "]";
+       msg += ". The Distance Metrics IDs are as follows: " ;
+       for(int i=0; i<max; i++){
+         msg += i + " - " +HAC.s_DistanceMetricLabels[i];
+         if(i != max-1){
+           msg += ", " ;
+         }
+       }
+       throw new PropertyVetoException(msg, null);
+
+     }
+ _distanceMetric = dm; }
 
    /**
     * Sets the value of Maximum Samples property.
@@ -271,7 +294,12 @@ public class CoverageSampler extends CoverageSamplerOPT {
     * @param mnc The value for the Maximum Samples property (should be greater
     *            than zero)
     */
-   public void setMaxNumCenters(int mnc) { _maxNumCenters = mnc; }
-
+   public void setMaxNumCenters(int mnc) throws PropertyVetoException
+   {
+     if (mnc < 1)
+       throw new PropertyVetoException(this.NUM_CLUSTERS +
+                                       " value should be greater than zero", null);
+     _maxNumCenters = mnc;
+   }
 
 } // end class CoverageSampler

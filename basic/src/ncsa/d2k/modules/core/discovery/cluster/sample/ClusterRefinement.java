@@ -62,6 +62,7 @@ import ncsa.d2k.modules.core.discovery.cluster.util.TableColumnTypeException;
 import ncsa.d2k.modules.core.discovery.cluster.util.TableMissingValuesException;
 
 import java.util.ArrayList;
+import java.beans.PropertyVetoException;
 
 
 /**
@@ -543,7 +544,22 @@ public class ClusterRefinement {
     *            defined in <code>
     *            ncsa.d2k.modules.core.discovery.cluster.hac.HAC</code>
     */
-   public void setClusterMethod(int noc) { _clusterMethod = noc; }
+   public void setClusterMethod(int noc) throws PropertyVetoException{
+     int max = HAC.s_ClusterMethodLabels.length ;
+     if(noc < 0 || noc >= max){
+       String msg = "Cluster Method ID must be in the range " +
+           "[0," + (max-1) + "]";
+       msg += ". The Clustering Methods IDs are as follows: " ;
+       for(int i=0; i<max; i++){
+         msg += i + " - " +HAC.s_ClusterMethodLabels[i];
+         if(i != max-1){
+           msg += ", " ;
+         }
+       }
+       throw new PropertyVetoException(msg, null);
+
+     }
+ _clusterMethod = noc; }
 
    /**
     * Sets the value of the distance metric property.
@@ -551,7 +567,23 @@ public class ClusterRefinement {
     * @param dm int the ID of the distance metric. Must be one of the values of
     *           the static fileds of this class
     */
-   public void setDistanceMetric(int dm) { _distanceMetric = dm; }
+   public void setDistanceMetric(int dm)  throws PropertyVetoException
+   {
+     int max = HAC.s_DistanceMetricDesc.length;
+     if(dm < 0 || dm >= max){
+       String msg = "Distance Metric ID must be in the range " +
+           "[0," + (max-1) + "]";
+       msg += ". The Distance Metrics IDs are as follows: " ;
+       for(int i=0; i<max; i++){
+         msg += i + " - " +HAC.s_DistanceMetricLabels[i];
+         if(i != max-1){
+           msg += ", " ;
+         }
+       }
+       throw new PropertyVetoException(msg, null);
+
+     }
+ _distanceMetric = dm; }
 
    /**
     * Sets the value for thenumber of assignment property.
@@ -559,7 +591,11 @@ public class ClusterRefinement {
     * @param noc int number of iterations to perform (should be greater than
     *            zero)
     */
-   public void setNumAssignments(int noc) { m_numAssignments = noc; }
+   public void setNumAssignments(int noc) throws PropertyVetoException
+   {
+     if(noc < 1) throw new PropertyVetoException(ClusterParameterDefns.MAX_ITERATIONS +
+     " value should be greater than zero", null);
+ m_numAssignments = noc; }
 
    /**
     * Sets the value of the verbosity flag.
