@@ -44,8 +44,6 @@
  */
 package ncsa.d2k.modules.core.io.proxy;
 
-// import org.scidac.cmcs.util.NSProperty;
-
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
@@ -60,43 +58,73 @@ import java.util.logging.Logger;
  * alternative access protocols.</p>
  *
  * <p>To access an object, the general procedure is to construct a URL, and call
- * the DataObjectProxyFactory to get an instance of a proxy:
- * <p>
- *  <pre>
+ * the DataObjectProxyFactory to get an instance of a proxy:</p>
+ *
+ * <pre>
  *      DataObjectProxy dataobj =
  *      DataObjectProxyFactory.getDataObjectProxy(
  *          url, username, password);
  *     pushOutput(dataobj, 0);
- * </pre></p>
+ * </pre>
  *
- * <p>To read from the object, the proxy is called to get an input stream:
- * <p>
- *    <pre>
+ * <p>To read from the object, the proxy is called to get an input stream:</p>
+ *
+ * <pre>
  *      BufferedReader reader = new BufferedReader(
  *      new InputStreamReader(DataObjProx.getInputStream()));
  *    </pre>
  *
+ *<p>To  copy the file to a specific local file and read it there:
+ *        <pre>
+ *        DataObjectProxy dataobj =
+ *        DataObjectProxyFactory.getDataObjectProxy(
+ *          url, username, password);
+ *      
+          dataobj.readFile(new File (destinationPath));
+          
+          </pre>
+ * 
  * <p>To write the object, a file or input stream is passed to the
  * DataObjectProxy. After the put, the DataObjectProxy should be closed to
  * complete the store.</p>
- * 
- * <p>To write a temporary file and then push: 
- *    <pre>
+ *
+ * <p>To write a temporary file and then push:</p>
+ *
+ * <pre>
  *      FileWriter fw = new
- *           FileWriter( dataobj.getLocalFile());
+ *           FileWriter( dataobj.initLocalFile(null));
  *
  *      fw.write(...); fw.flush(); fw.close();
  *
- *      dataobj.putFromFile(dataobj.getLocalFile()); 
+ *      dataobj.putFromFile(dataobj.getLocalFile());
  *      dataobj.close();
  *    </pre>
  *
- * <p>To write from a stream, 
- * <p>  <pre>
+ * <p>To write from a stream,</p>
+ *
+ * <pre>
  *        InputStream is == ...
- *        dataobj.putFromFile(is); 
+ *        dataobj.putFromFile(is);
  *        dataobj.close();
- *     </pre></p>
+ *     </pre>
+ *
+ *<p>To read all the objects in a given directory/colletion:
+ *      <pre>
+ *      DataObjectProxy srcdop =  
+ *      int depth = DEPTH_INFINITY;
+ *      URL desurl = new URL(wheretoWrite);
+ *      srcdop.downloadDir(desurl,depth);	   
+ *      srcdop.close();
+ *		</pre>
+ *
+ *<p>To write the contents of a directory is similar:
+ *<p>   <pre>
+ *      DataObjectProxy destdop =  
+ *      int depth = DEPTH_INFINITY;
+ *      URL srcurl = new URL(wheretoread);
+ *      destdop.uploadloadDir(srcurl,depth);	   
+ *      destdop.close();
+ *		</pre>
  *
  * <p>All Known Implementing Classes:</p>
  *
@@ -110,9 +138,21 @@ import java.util.logging.Logger;
  */
 public abstract class DataObjectProxy {
 
+   //~ Static fields/initializers **********************************************
+
+
+   /** Traverse all the descendents of a directory. */
+   static public final int DEPTH_INFINITY = 2147483647;
+
+   /** Traverse only the immediate children. */
+   static public final int DEPTH_1 = 1;
+
+   /** Traverse on the object itself. */
+   static public final int DEPTH_0 = 0;
+
    //~ Instance fields *********************************************************
 
-   /** Description of field mLogger. */
+   /** The logger. */
    protected Logger mLogger = null;
 
    /** Password to access the current DataObjectProxy if needed. */
@@ -128,12 +168,9 @@ public abstract class DataObjectProxy {
    protected File tempDataDir = null;
 
    /**
-    * tempFilesCreated store the paths of all of the temp files created in the
-    * process.
-    */
-   /*
-    * from where --- url destination date
-    *
+    * The paths of all of the temporary files created in the
+    * process.  This is used to clean up the temporary files.  
+    * Not used when the DataObjectProxy Cache is used.
     */
    protected Vector tempFilesCreated;
 
@@ -146,14 +183,126 @@ public abstract class DataObjectProxy {
     */
    protected abstract String getPassword();
 
+
+   /**
+    * Give the resource name not including the path.
+    *
+    * @return give the resource name not including the path.
+    *
+    * @throws DataObjectProxyException
+    */
+   protected abstract String getResourceName() throws DataObjectProxyException;
+
+
+   /**
+    * Create the relative path of childdop to the srcdop.
+    *
+    * @param  srcdop   A DataObjectProxy pointing to the directory to be put
+    * @param  childdop A DataObjectProxy which points to a child of the
+    *                  directory to be put
+    *
+    * @return the path of childdop relative to srcdop
+    *
+    * @throws DataObjectProxyException
+    */
+   protected String getDestRelURLs(DataObjectProxy srcdop,
+                                   DataObjectProxy childdop)
+      throws DataObjectProxyException {
+      String relpath = srcdop.getResourceName();
+
+      if (!childdop.equals(srcdop)) {
+
+         // URL of childdop
+         String childurl = childdop.getURL().toString();
+
+         // URL of the reference
+         String relto = srcdop.getURL().toString();
+
+         // relative path of childdop relative to reference
+         relpath =
+            relpath + "/" +
+            childurl.substring(relto.length(), childurl.length());
+      }
+
+      return relpath;
+   }
+
    /**
     * Close the connection and clean up the temp files created.
+    * <p>
+    * The specific action depends on the soruce of the object. 
     */
    public abstract void close();
 
    /**
-    * Get the InputStream from the URL being pointed to by the DataObjectProxy.
+    * Create a directory at path.
     *
+    * @param  path Description of parameter path.
+    *
+    * @return a DOP for the new object.
+    *
+    * @throws DataObjectProxyException
+    */
+   public abstract DataObjectProxy createCollection(String relativePath)
+      throws DataObjectProxyException;
+
+   /**
+    * Download the object and it's descendants to the specified destination.
+    * <p>The source is a local or remote file or directory.
+    * <p>The destination is a local directory (or file).
+    *
+    * @param   wheretosave : A local directory to store the downloaded files
+    *           depth: A integer to indicate how you would like to download the
+    *           directory. There are only two valid values for depth:
+    *           DataObjectProxy.DEPTH_1: Only download the files under the
+    *           collection, no sub directories DataObjectProxy.DEPTH_INFINITY:
+    *           download all of the files and subdirectories
+    * @param  depth Description of parameter depth.
+    *
+    * @throws DataObjectProxyException Description of exception
+    *                                  DataObjectProxyException.
+    */
+   public abstract void downloadDir(URL wheretosave, int depth)
+      throws DataObjectProxyException;
+
+   /**
+    * Get a list of the descendents of the URL.
+    *
+    * @param  depth The depth to traverse.
+    *
+    * @return A list of the relative paths.
+    *
+    * @throws DataObjectProxyException */
+   public abstract Vector getChildrenURLs(int i)
+      throws DataObjectProxyException;
+
+   /**
+    * Read the file into a local file.
+    * <p>If a destination is specified, copy the file there.
+    * <p>If the input is <b>null<b>, create a temporary file and copy there.
+    * <p>The behavior depends on the source.
+    * <p>For a remote object, the file is downloaded.
+    * <p>For a local object, the file is copied.
+    *
+    * @param  File The destination, a local file, or <b>null</b>.
+    * 
+    * @throws DataObjectProxyException 
+    *  
+    *  */
+   public abstract File readFile(File dest)
+   throws DataObjectProxyException;
+   
+   /**
+    * Get the local copy of the file, if set.
+    * 
+    * @return File the file or null if not set;
+    */
+   public abstract File getLocalFile();
+
+
+   /**
+    * Get the InputStream from the URL being pointed to by the DataObjectProxy.
+    * <p>The bahavior depends on the source.
     * <p>When the object is remote, this will be the input stream from the
     * remote service.</p>
     *
@@ -170,14 +319,19 @@ public abstract class DataObjectProxy {
    public abstract InputStream getInputStream() throws DataObjectProxyException;
 
    /**
-    * Get the locally cached copy.
-    *
-    * <p>When the object is remote, this will be a cached local copy from the
+    * Set up the local file to be the source or destination.
+    * <p>The primary use is to create a local file to be uploaded to
+    * a remote destination.
+    * <p>The behavior depends on the source.
+    * <p>When the object is remote, this will be a local copy from the
     * remote service.</p>
     *
     * <p>When the object is local, this will be a local File.*</p>
     *
-    * @return a locally cached file.
+    * @param  dest The local file. If <b>null</b>, a temporary file is allocated
+    * in the local cache.
+    *
+    * @return a loca file.
     *
     * @throws DataObjectProxyException.
     * @throws DataObjectProxyException  Description of exception
@@ -185,11 +339,11 @@ public abstract class DataObjectProxy {
     *
     * @see    getLocalInputStream, getInputStream
     */
-   public abstract File getLocalFile() throws DataObjectProxyException;
+   public abstract File initLocalFile(File dest) throws DataObjectProxyException;
 
    /**
     * Get InputStream from a locally cached file.
-    *
+    *<p>The behavior depends on the source.
     * <p>When the object is remote, this force a copy to be cached from the
     * remote service.</p>
     *
@@ -208,16 +362,18 @@ public abstract class DataObjectProxy {
 
    /**
     * Get all properties on the current DataObjectProxy.
-    *
+    *<p>The behavior depends on the source.
     * @return A Hashtable of property objects.
     *
     * @throws Exception                Exception in read.
+    * @throws DataObjectProxyException Description of exception
+    *                                  DataObjectProxyException.
     */
    public abstract Object getMeta() throws DataObjectProxyException;
 
    /**
     * Get the value of the specified property on the current DataObjectProxy.
-    *
+    *<p>The behavior depends on the source.
     * @param  prop - property including namespace and key.
     *
     * @return a single propery.
@@ -225,6 +381,27 @@ public abstract class DataObjectProxy {
     * @throws DataObjectProxyException Excetion in read.
     */
    public abstract Object getMeta(Object prop) throws DataObjectProxyException;
+
+
+   /**
+    * Get a unique tag for the object. This is used to detect changes to 
+    * objects--when the tag is the same, the object is unchanged.
+    *<p>The behavior depends on the source.
+    *<p>For local objects, the tag is the modification date.
+    *<p>For remote objects, the tag is the "ETAG", defined by the
+    *HTTP standard.
+    * @return String The unique tag, rendered as a string.
+    *
+    * @throws DataObjectProxyException  */
+   public abstract String getTag() throws DataObjectProxyException;
+
+   /**
+    * Get the modification data of the object.
+    *
+    * @return String the modification data in a string.
+    *
+    * @throws DataObjectProxyException  */
+   public abstract String getURLLastModified() throws DataObjectProxyException;
 
    /**
     * Get the username being used to access the current DataObjectProxy.
@@ -239,25 +416,13 @@ public abstract class DataObjectProxy {
     * @return true if the current URL is a collection, false otherwise.
     *
     * @throws DataObjectProxyException.
-    * 
-    */
+    * @throws DataObjectProxyException  */
    public abstract boolean isCollection() throws DataObjectProxyException;
-
-   /**
-    * Create a directory at path
-    *
-    * @return a DOP for the new object.
-    *
-    * 
-    * @throws DataObjectProxyException  
-    */
-   public abstract DataObjectProxy createCollection(String path) 
-      throws DataObjectProxyException;
 
    /**
     * Put the file to the current URL being pointed to by the current
     * DataObjectProxy.
-    *
+    *<p>The behavior depends on the destination.
     * <p>When the URL is remote, this will push the file to the remote server.
     * </p>
     *
@@ -288,7 +453,7 @@ public abstract class DataObjectProxy {
     *
     * <p>When the object is remote, this will copy from the input stream to the
     * destination URL.</p>
-    *
+    *<p>The behavior depends on the destination.
     * <p>When the object is remote, the inptu strema will be copied to a local
     * file.</p>
     *
@@ -300,6 +465,13 @@ public abstract class DataObjectProxy {
     */
    public abstract void putFromStream(InputStream is)
       throws DataObjectProxyException;
+
+   /**
+    * Delete a directory and all its children.
+    * <p><b>Warning:</b>This method is very dangerous.
+    *
+    * @throws DataObjectProxyException */
+   public abstract void removeDirectory() throws DataObjectProxyException;
 
    /**
     * Get a new DataObjectProxy represents the new URL.
@@ -333,11 +505,37 @@ public abstract class DataObjectProxy {
    public abstract void setPassword(String pass);
 
    /**
+    * Description of method setUserInfo.
+    *
+    * @param user Description of parameter user.
+    * @param pass Description of parameter pass.
+    */
+   public abstract void setUserInfo(String user, String pass);
+
+   /**
     * Set up the username.
     *
     * @param user - username to be used.
     */
    public abstract void setUsername(String user);
+
+   /**
+    * Put the source and its descendents to the destination, recreating the 
+    * hierarchy.
+    * <p>The implemenation depends on the destination.
+    * 
+    *
+    * @param  srcdop a DataObjectProxy pointing to the collection in the server
+    *                where the directory to be uploaded will be stored
+    * @param  srcdop a DataObjectProxy pointing to the directory to be uploaded
+    *
+    * @throws DataObjectProxyException
+    * @throws DataObjectProxyException
+    * @throws MalformedURLException
+    * @throws MalformedURLException
+    */
+   public abstract void uploadDir(DataObjectProxy srcdop, int depth)
+      throws DataObjectProxyException;
 
    /**
     * Get the full URL currently being pointed to by the DataObjectProxy.
@@ -375,6 +573,4 @@ public abstract class DataObjectProxy {
     * @throws Exception Description of exception Exception.
     */
    public Object searchMeta() throws Exception { return null; }
-
-
 } // end class DataObjectProxy
