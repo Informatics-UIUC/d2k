@@ -172,7 +172,8 @@ public class FixedFileParserFromURL implements FlatFileParser {
 
       _dop = dop;
 
-      File file = _dop.getLocalFile();
+      File file = _dop.readFile(null);
+
       _reader = new LineNumberReader(new FileReader(file));
 
       _file = file;

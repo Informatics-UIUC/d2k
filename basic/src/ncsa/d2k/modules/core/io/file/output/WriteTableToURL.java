@@ -160,7 +160,7 @@ public class WriteTableToURL extends OutputModule {
                                  boolean writeColumnTypes)
       throws IOException, DataObjectProxyException {
 	  
-	  FileWriter fw = new FileWriter(dataobj.getLocalFile());
+	  FileWriter fw = new FileWriter(dataobj.initLocalFile(null));
       String newLine = "\n";
 
       // write the column labels
@@ -272,7 +272,7 @@ public class WriteTableToURL extends OutputModule {
                                "\n" + e);
       }
       if (this.getAddDefaultMeta() == false) {
-    	  dataobj.putFromFile(dataobj.getLocalFile());
+    	  dataobj.putFromFile(dataobj.initLocalFile(null));
       } // else ?
       /*
        * Clean up temp files

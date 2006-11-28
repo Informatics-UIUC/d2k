@@ -87,7 +87,7 @@ public class OutputSerializedObjectToURL extends OutputModule {
 
       try {
 
-         file = new FileOutputStream(localFile = dop.getLocalFile());
+         file = new FileOutputStream(localFile = dop.initLocalFile(null));
       } catch (FileNotFoundException e) {
          throw new FileNotFoundException("Could not open file: " +
                                          dop.getURL() +

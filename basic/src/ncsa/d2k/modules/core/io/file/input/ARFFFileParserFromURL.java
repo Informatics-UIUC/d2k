@@ -150,7 +150,7 @@ public class ARFFFileParserFromURL extends DelimitedFileParserFromURL {
     */
    public ARFFFileParserFromURL(DataObjectProxy dop) throws Exception {
       mDataObj = dop;
-      file = mDataObj.getLocalFile();
+      file = mDataObj.readFile(null);
 
       FileReader filereader = null;
 

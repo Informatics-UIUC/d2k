@@ -74,7 +74,7 @@ public class XMLToGraphFromURL extends InputModule {
     */
    public void doit() throws IOException, DataObjectProxyException {
       DataObjectProxy dop = (DataObjectProxy) pullInput(0);
-      File f = dop.getLocalFile();
+      File f = dop.readFile(null);
 
       pushOutput(PGraphML.load(f), 0);
       dop.close();

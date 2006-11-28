@@ -180,7 +180,7 @@ public class JungGraphToVNAtoURL {
     */
    public void write(Graph graph, DataObjectProxy dop)
       throws IOException, DataObjectProxyException {
-      File localFile = dop.getLocalFile();
+      File localFile = dop.initLocalFile(null);
       BufferedWriter writer = new BufferedWriter(new FileWriter(localFile));
 
       write(graph, writer);

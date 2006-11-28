@@ -160,7 +160,7 @@ public class WriteDBToURL extends OutputModule {
 
       // get the proxy of the file to write to
       DataObjectProxy dop = (DataObjectProxy)this.pullInput(4);
-      File f = dop.getLocalFile();
+      File f = dop.initLocalFile(null);
       fw = new FileWriter(f);
 
       ///////////////////////////

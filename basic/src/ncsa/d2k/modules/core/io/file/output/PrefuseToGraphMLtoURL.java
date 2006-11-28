@@ -78,7 +78,7 @@ public class PrefuseToGraphMLtoURL extends OutputModule {
       DataObjectProxy dop = (DataObjectProxy) pullInput(1);
 
       // Get a local copy of the file from the proxy.
-      File file = dop.getLocalFile();
+      File file = dop.initLocalFile(null);
 
       GraphMLWriter writer = new GraphMLWriter();
       writer.writeGraph(graph, file);

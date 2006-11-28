@@ -77,7 +77,7 @@ public class GraphMLToPrefuseFromURL extends InputModule {
 
       DataObjectProxy dop = (DataObjectProxy) pullInput(0);
 
-      File f = dop.getLocalFile();
+      File f = dop.readFile(null);
 
       GraphMLReader reader = new GraphMLReader();
 
