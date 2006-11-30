@@ -374,7 +374,7 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
 
 
    /**
-    * Get he URLs for a gien depth.
+    * Get he URLs for a given depth.
     *
     * @param  depth Get the descendents to depth 0, 1, or innitinty.
     *
@@ -409,22 +409,34 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
    }
 
    /**
+    * Get locally cached file.
+    * <p>If destination is null, then use the main file.
+    * <p>Else, will copy to a new file.
     * 
-    * Actually the method is copying the file refered by mURL to the given
-    * localpath.
+    * @param dest The destination file to copy to.
     *
-    * @param  localpath the destination to copy to.
+    * @return locally cached file
     *
-    * @throws DataObjectProxyException 
+    * @throws DataObjectProxyException
+    * @throws Exception                if the local file can not be created.
     */
    public File readFile(File dest) throws DataObjectProxyException {
-	   if (dest == null) {
-		   throw new DataObjectProxyException("Destination is null");
+
+	      if (dest == null) {
+	         File f = null;
+
+	         try {
+	            f = new File(mURL.toURI().getPath());
+	         } catch (URISyntaxException ue) { }
+
+	         return f;
+	        }
+
+	      File lf = initLocalFile(dest);
+	      this.readTheFile(lf.getAbsolutePath());
+
+	      return lf;
 	   }
-	   File lf = initLocalFile(dest);
-	   this.readTheFile(lf.getAbsolutePath());
-	   return lf;
-   }
    
    public File getLocalFile() {
 	   File f = null;
