@@ -485,6 +485,12 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
    public File initLocalFile(File dest) throws DataObjectProxyException {
       boolean doCreate = true; // This may become a parameter.
       File file = dest;
+      if (file == null) {
+    	  try {
+    		  file = new File(mURL.toURI().getPath());
+    	  } catch (URISyntaxException ue) { }
+      }
+      if (file != null) {
       try {
         // file = new File(mURL.toURI().getPath());
          // If file doesn't exist, create a empty file based on url.
@@ -499,6 +505,9 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
          }
       } catch (Exception e) {
          handleExceptions(e);
+      }
+      } else {
+          throw new DataObjectProxyException("No local path specified.");
       }
 
       return file;
