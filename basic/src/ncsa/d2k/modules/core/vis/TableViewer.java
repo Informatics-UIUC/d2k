@@ -350,8 +350,8 @@ public class TableViewer extends UIModule {
 
          try {
             dop =
-               DataObjectProxyFactory.getDataObjectProxy(new URL("file:/" +
-                                                                 fileName));
+               DataObjectProxyFactory.getDataObjectProxy(new URL("file://" +
+                                                                 fileName.replaceAll(" ", "%20")));
 
             WriteTableToURL.writeTable(table, delimiter, dop, true, true);
 
