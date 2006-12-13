@@ -550,8 +550,8 @@ public class CoverageParams_Props extends JPanel implements CustomModuleEditor,
          try {
             num = Integer.parseInt(m_numClust.getText());
          } catch (Exception e) {
-            throw new PropertyVetoException("Error in number of clusters field: " +
-                                            e.getMessage(), null);
+            throw new PropertyVetoException("Error in number of clusters field. " +
+                                           "Value should be an integer greater than 1.",null);
          }
 
          if (num < 2) {
@@ -565,8 +565,8 @@ public class CoverageParams_Props extends JPanel implements CustomModuleEditor,
       try {
          samp = Integer.parseInt(m_maxsamp.getText());
       } catch (Exception e) {
-         throw new PropertyVetoException("Error in seed field: " +
-                                         e.getMessage(), null);
+         throw new PropertyVetoException("Error in seed field. Value should be an integer greater than zero",
+                                         null);
       }
 
       if (samp < 1) {
@@ -578,8 +578,9 @@ public class CoverageParams_Props extends JPanel implements CustomModuleEditor,
       try {
          maxit = Integer.parseInt(m_max.getText());
       } catch (Exception e) {
-         throw new PropertyVetoException("Error in number of assignments field: " +
-                                         e.getMessage(), null);
+         throw new PropertyVetoException("Error in number of assignments field. " +
+                                        "Value should be an integer greater than 1.",
+                                       null);
       }
 
       if (maxit < 1) {

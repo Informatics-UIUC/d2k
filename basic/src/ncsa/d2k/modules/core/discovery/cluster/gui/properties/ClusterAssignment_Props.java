@@ -332,7 +332,8 @@ public class ClusterAssignment_Props extends JPanel
          maxit = Integer.parseInt(m_max.getText());
       } catch (Exception e) {
          throw new PropertyVetoException("Error in " + MAX_ITERATIONS +
-                                         " field: " + e.getMessage(), null);
+                                         " field. Value should be an integer greater than zero.",
+                                         null);
       }
 
       if (maxit < 1) {

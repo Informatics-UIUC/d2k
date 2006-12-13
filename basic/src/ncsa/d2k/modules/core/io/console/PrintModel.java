@@ -87,7 +87,7 @@ public PropertyDescription[] getPropertiesDescriptions() {
   public int MaximumFractionDigits = 3;
   public void setMaximumFractionDigits(int value) throws PropertyVetoException {
     if (value < 0) {
-      throw new PropertyVetoException(" < 0", null);
+      throw new PropertyVetoException("Maximum Fraction Digits should be a non negative integer.", null);
     }
     this.MaximumFractionDigits = value;
   }

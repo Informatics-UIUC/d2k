@@ -545,8 +545,9 @@ public class FractionationParams_Props extends JPanel
          try {
             num = Integer.parseInt(m_numClust.getText());
          } catch (Exception e) {
-            throw new PropertyVetoException("Error in number of clusters field: " +
-                                            e.getMessage(), null);
+            throw new PropertyVetoException("Error in number of clusters field. " +
+                                            "Value should be an integer greater than 1.",
+                                           null);
          }
 
          if (num < 2) {
@@ -560,8 +561,9 @@ public class FractionationParams_Props extends JPanel
       try {
          max = Integer.parseInt(m_maxPart.getText());
       } catch (Exception e) {
-         throw new PropertyVetoException("Error in max partition size field: " +
-                                         e.getMessage(), null);
+         throw new PropertyVetoException("Error in max partition size field. " +
+                                        "Value should be an integer greater than zero.",
+                                        null);
       }
 
       if (max < 1) {
@@ -574,8 +576,9 @@ public class FractionationParams_Props extends JPanel
       try {
          nth = Integer.parseInt(m_nthSort.getText());
       } catch (Exception e) {
-         throw new PropertyVetoException("Error in nth sort field: " +
-                                         e.getMessage(), null);
+         throw new PropertyVetoException("Error in nth sort field. " +
+                                         "Value should be a non negative integer.",
+                                        null);
       }
 
       if (nth < 0) {
@@ -587,8 +590,9 @@ public class FractionationParams_Props extends JPanel
       try {
          maxit = Integer.parseInt(m_max.getText());
       } catch (Exception e) {
-         throw new PropertyVetoException("Error in number of assignments field: " +
-                                         e.getMessage(), null);
+         throw new PropertyVetoException("Error in number of assignments field. " +
+                                         "Value should be an integer greater than 1.",
+                                         null);
       }
 
       if (maxit < 1) {

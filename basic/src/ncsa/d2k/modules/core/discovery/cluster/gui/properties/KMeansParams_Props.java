@@ -349,7 +349,7 @@ public class KMeansParams_Props extends JPanel
             num = Integer.parseInt(m_numClust.getText());
          } catch (Exception e) {
             throw new PropertyVetoException("Error in " + NUM_CLUSTERS +
-                                            " field: " + e.getMessage(), null);
+                                            " field. Value should be an integer greater than 1.", null);
          }
 
          if (num < 2) {
@@ -363,8 +363,7 @@ public class KMeansParams_Props extends JPanel
       try {
          seed = Integer.parseInt(m_seed.getText());
       } catch (Exception e) {
-         throw new PropertyVetoException("Error in " + SEED + " field: " +
-                                         e.getMessage(), null);
+         throw new PropertyVetoException("Error in " + SEED + " field. Value should be ab integer greater than or equal to zero.", null);
       }
 
       if (seed < 0) {
@@ -377,8 +376,8 @@ public class KMeansParams_Props extends JPanel
          maxit = Integer.parseInt(m_max.getText());
       } catch (Exception e) {
          throw new PropertyVetoException("Error in " + MAX_ITERATIONS +
-                                         " field: " +
-                                         e.getMessage(), null);
+                                         " field. Value should be ab integer greater than zero. "
+                                         , null);
       }
 
       if (maxit < 1) {

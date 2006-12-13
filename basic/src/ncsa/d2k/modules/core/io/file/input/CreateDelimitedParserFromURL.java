@@ -1,4 +1,4 @@
-/* 
+/*
  * $Header$
  *
  * ===================================================================
@@ -6,17 +6,17 @@
  * D2K-Workflow
  * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
  * ILLINOIS. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License v2.0
  * as published by the Free Software Foundation and with the required
  * interpretation regarding derivative works as described below.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License v2.0 for more details.
- * 
+ *
  * This program and the accompanying materials are made available
  * under the terms of the GNU General Public License v2.0 (GPL v2.0)
  * which accompanies this distribution and is available at
@@ -34,7 +34,7 @@
  * make those components a derivative work of D2K-Workflow.
  * (Examples of such independently developed components include for
  * example, external databases or metadata and provenance stores).
- * 
+ *
  * Note: A non-GPL commercially licensed version of contributions
  * from the UNIVERSITY OF ILLINOIS may be available from the
  * designated commercial licensee RiverGlass, Inc. located at
@@ -65,10 +65,10 @@ import java.awt.event.KeyEvent;
 
 /**
  * Create a DelimitedFileReader for a file.
- * <p><b>Note:</b>  This module is the same as deprecated module 
- * <i>CreateDelimitedFileParser</i>, extended to access the data through 
+ * <p><b>Note:</b>  This module is the same as deprecated module
+ * <i>CreateDelimitedFileParser</i>, extended to access the data through
  * <i>DataObjectProxy</i>.</p>
- * 
+ *
  * @author  $Author$
  * @version $Revision$, $Date$
  */
@@ -537,7 +537,7 @@ public class CreateDelimitedParserFromURL extends InputModule {
                try {
                   lrownum = Integer.parseInt(lrow);
                } catch (NumberFormatException e) {
-                  throw new Exception("The Labels Row was not a number.");
+                  throw new Exception("The Labels Row must be a non negative integer.");
                }
 
                if (lrownum != getLabelsRow()) {
@@ -567,7 +567,7 @@ public class CreateDelimitedParserFromURL extends InputModule {
                try {
                   trownum = Integer.parseInt(trow);
                } catch (NumberFormatException e) {
-                  throw new Exception("The Types Row was not a number.");
+                  throw new Exception("The Types Row must be a non negative integer.");
                }
 
                if (trownum != getTypesRow()) {
@@ -594,10 +594,10 @@ public class CreateDelimitedParserFromURL extends InputModule {
                String dd = null;
 
                if (delim.isSelected()) {
-                  dd = delimfld.getText(); 
+                  dd = delimfld.getText();
 
                   if (dd.length() != 1) {
-                     throw new Exception("The delimiter must be one character long.");
+                     throw new Exception("The delimiter must be exactly one character long.");
                   }
                }
 

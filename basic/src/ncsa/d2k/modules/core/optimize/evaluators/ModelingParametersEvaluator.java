@@ -653,9 +653,14 @@ public class ModelingParametersEvaluator extends ComputeModule {
     * @throws PropertyVetoException If value is < 1.
     */
    public void setBatchSize(int value) throws PropertyVetoException {
+     try{
+       Integer.parseInt("" + value);
+     }catch(Exception e){
+       throw new PropertyVetoException("Batch Size should be an integer greater than zero.", null);
+     }
 
       if (!(value >= 1)) {
-         throw new PropertyVetoException("< 1", null);
+         throw new PropertyVetoException("Batch Size should be an integer greater than zero.", null);
       }
 
       this.BatchSize = value;
@@ -669,9 +674,14 @@ public class ModelingParametersEvaluator extends ComputeModule {
     * @throws PropertyVetoException If value < 1.
     */
    public void setNumRepetitions(int value) throws PropertyVetoException {
+     try{
+            Integer.parseInt("" + value);
+          }catch(Exception e){
+            throw new PropertyVetoException("Num Repetitions should be an integer greater than zero.", null);
+          }
 
       if (!(value >= 1)) {
-         throw new PropertyVetoException("< 1", null);
+         throw new PropertyVetoException("Num Repetitions value should be an integer greater than zero.", null);
       }
 
       this.NumRepetitions = value;
@@ -685,14 +695,18 @@ public class ModelingParametersEvaluator extends ComputeModule {
     * @throws PropertyVetoException Illegal value.
     */
    public void setNumTestExamples(int value) throws PropertyVetoException {
-
+     try{
+                Integer.parseInt("" + value);
+              }catch(Exception e){
+                throw new PropertyVetoException("Number of Test Examples should be an integer greater than zero.", null);
+          }
       if ((value == -1) && (NumTrainExamples == -1)) {
-         throw new PropertyVetoException("both Num Test Examples and Num Test Examples cannot be -1",
+         throw new PropertyVetoException("both Num Test Examples and Num Train Examples cannot be -1",
                                          null);
       }
 
       if (((value != -1) && (value < 1))) {
-         throw new PropertyVetoException("< 1", null);
+         throw new PropertyVetoException("Number of Test Examples should be an integer greater than zero.", null);
       }
 
       this.NumTestExamples = value;
@@ -707,14 +721,20 @@ public class ModelingParametersEvaluator extends ComputeModule {
     *                               PropertyVetoException.
     */
    public void setNumTrainExamples(int value) throws PropertyVetoException {
-
+     try {
+       Integer.parseInt("" + value);
+     }
+     catch (Exception e) {
+       throw new PropertyVetoException(
+           "Number of Train Examples should be an integer greater than zero.", null);
+     }
       if ((value == -1) && (NumTestExamples == -1)) {
          throw new PropertyVetoException("both Num Test Examples and Num Train Examples cannot be -1",
                                          null);
       }
 
       if (((value != -1) && (value < 1))) {
-         throw new PropertyVetoException("< 1", null);
+         throw new PropertyVetoException("Number of Train Examples should be an integer greater than zero.", null);
       }
 
       this.NumTrainExamples = value;
@@ -725,7 +745,14 @@ public class ModelingParametersEvaluator extends ComputeModule {
     *
     * @param value The value.
     */
-   public void setRandomSeed(int value) { this.RandomSeed = value; }
+   public void setRandomSeed(int value) throws PropertyVetoException{
+try{
+  Integer.parseInt("" + value);
+}catch(Exception e){
+ throw new PropertyVetoException("Random Seed value should be a non negative integer.", null);
+}
+     this.RandomSeed = value;
+   }
 
    /**
     * Set RecycleExamples.

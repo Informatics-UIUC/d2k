@@ -262,7 +262,7 @@ public class GriddedSampler extends RandomSampler {
    public void setNumSamples(int value) throws PropertyVetoException {
 
       if (value < 1) {
-         throw new PropertyVetoException(" < 1", null);
+         throw new PropertyVetoException("Number of Samples should be an integer greater than zero.", null);
       }
 
       this.numSamples = value;

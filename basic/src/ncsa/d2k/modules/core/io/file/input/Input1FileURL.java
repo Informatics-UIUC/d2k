@@ -101,28 +101,28 @@ public class Input1FileURL extends InputModule {
     * the file or collection. For illustration, using the followingg URL as an
     * example:
     * <p>
-    * http://verbena.ncsa.uiuc.edu:8080/slide/files/data/data1.txt 
+    * http://verbena.ncsa.uiuc.edu:8080/slide/files/data/data1.txt
     * <p>User
-    * need to type Host URL: 
-    * <p>http://verbena.ncsa.uiuc.edu:8080 
+    * need to type Host URL:
+    * <p>http://verbena.ncsa.uiuc.edu:8080
     * <p>File Name:
     * <p>
-    * /slide/files/data/data1.txt 
+    * /slide/files/data/data1.txt
     * <p>In order to prevent users type in two
     * duplicated "/", one at the end of host and one at the begining of the file
     * name, or missing this "/". remove one if duplication happens and add one
     * if missing happens. So each one of the following will have the same url as
-    * the above one. Host URL File Name 
+    * the above one. Host URL File Name
     * <ul>
     * <li>http://verbena.ncsa.uiuc.edu:8080
     * <br>
-    * /slide/files/data/data1.txt 
+    * /slide/files/data/data1.txt
     * <p>http://verbena.ncsa.uiuc.edu:8080/
     * <br>
-    * /slide/files/data/data1.txt 
+    * /slide/files/data/data1.txt
     * <p>http://verbena.ncsa.uiuc.edu:8080/
     * <br>
-    * slide/files/data/data1.txt 
+    * slide/files/data/data1.txt
     * <p>http://verbena.ncsa.uiuc.edu:8080
     * <br>
     * slide/files/data/data1.txt
@@ -202,12 +202,12 @@ public class Input1FileURL extends InputModule {
          url = file.toURI().toURL();
       } else {
          setHostURL(hosturl);
-         url = new URL(getAbsURL(hosturl, fn));        
+         url = new URL(getAbsURL(hosturl, fn));
          /*
           * If url points to a collection, how can we handle it?
           */
       }
-       
+
       DataObjectProxy dataobj =
          DataObjectProxyFactory.getDataObjectProxy(url, username, password);
       pushOutput(dataobj, 0);
@@ -237,10 +237,10 @@ public class Input1FileURL extends InputModule {
    public String getInputInfo(int i) { return ""; }
 
    /**
-    * Returns an array of <code>String</code> objects each containing the 
+    * Returns an array of <code>String</code> objects each containing the
     * fully qualified Java data type of the input at the corresponding index.
     *
-    * @return An array of <code>String</code> objects each containing the 
+    * @return An array of <code>String</code> objects each containing the
     * fully qualified Java data type of the input at the corresponding index.
     */
    public String[] getInputTypes() { return null; }
@@ -296,7 +296,7 @@ public class Input1FileURL extends InputModule {
    /**
     * Returns a description of the output at the specified index.
     *
-    * @param outputIndex Index of the output for which a description 
+    * @param outputIndex Index of the output for which a description
     * should be returned.
     *
     * @return <code>String</code> describing the output at the specified index.
@@ -315,10 +315,10 @@ public class Input1FileURL extends InputModule {
    public String getOutputName(int i) { return "DataObjectProxy"; }
 
    /**
-    * Returns an array of <code>String</code> objects each containing the 
+    * Returns an array of <code>String</code> objects each containing the
     * fully qualified Java data type of the output at the corresponding index.
     *
-    * @return An array of <code>String</code> objects each containing the 
+    * @return An array of <code>String</code> objects each containing the
     * fully qualified Java data type of the output at the corresponding index.
     */
    public String[] getOutputTypes() {
@@ -380,8 +380,8 @@ public class Input1FileURL extends InputModule {
        *
        * // here we check for length of 0 but not for null as we don't want this
        * // to get thrown if an itinerary is saved/reloaded without the //
-       * property dialog being used 
-       * 
+       * property dialog being used
+       *
        * if ( s != null && s.length() == 0) { throw
        * new PropertyVetoException(        "A file name must be entered before
        * the dialog can be closed.",         null); }
@@ -422,7 +422,7 @@ public class Input1FileURL extends InputModule {
    }
 
    //~ Inner Classes ***********************************************************
-   // This class needs additional work to make it nicer to use.  Ideally would 
+   // This class needs additional work to make it nicer to use.  Ideally would
    // like 'browse' buttons for remote objects.
    private class PropEdit extends JPanel implements CustomModuleEditor {
 
