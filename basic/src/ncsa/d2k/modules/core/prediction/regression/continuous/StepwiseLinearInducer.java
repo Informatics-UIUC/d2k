@@ -34,7 +34,7 @@
  * make those components a derivative work of D2K-Workflow.
  * (Examples of such independently developed components include for
  * example, external databases or metadata and provenance stores).
- * 
+ *
  * Note: A non-GPL commercially licensed version of contributions
  * from the UNIVERSITY OF ILLINOIS may be available from the
  * designated commercial licensee RiverGlass, Inc. located at
@@ -326,9 +326,14 @@ public class StepwiseLinearInducer extends StepwiseLinearInducerOpt {
     * @throws PropertyVetoException if value is less than one
     */
    public void setNumRounds(int value) throws PropertyVetoException {
-
+     try {
+           Integer.parseInt("" + value);
+         }
+         catch (Exception e) {
+           throw new PropertyVetoException("Number of Feature Selection Rounds should be an integer greater than zero.", null);
+     }
       if (value < 1) {
-         throw new PropertyVetoException(" < 1", null);
+         throw new PropertyVetoException("Number of Feature Selection Rounds should be an integer greater than zero.", null);
       }
 
       this.NumRounds = value;

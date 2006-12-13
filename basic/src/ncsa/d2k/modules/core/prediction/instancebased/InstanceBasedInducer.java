@@ -424,9 +424,15 @@ public class InstanceBasedInducer extends InstanceBasedInducerOpt {
     * @throws PropertyVetoException when value is less than one
     */
    public void setNeighborhoodSize(int value) throws PropertyVetoException {
-
+     try {
+       Integer.parseInt("" + value);
+     }
+     catch (Exception e) {
+       throw new PropertyVetoException(
+           "Neighborhood Size should be an integer greater than zero.", null);
+     }
       if (value < 1) {
-         throw new PropertyVetoException(" < 1", null);
+         throw new PropertyVetoException("Neighborhood Size should be an integer greater than zero.", null);
       }
 
       this.NeighborhoodSize = value;
