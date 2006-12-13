@@ -45,6 +45,7 @@
 package ncsa.d2k.modules.core.control;
 
 import ncsa.d2k.core.modules.PropertyDescription;
+import java.beans.PropertyVetoException;
 
 
 /**
@@ -332,7 +333,8 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
     *
     * @return Total times the module will fire.
     */
-   public int getTimesToFire() { return N; }
+   public int getTimesToFire()
+   { return N; }
 
    /**
     * Returns whether or not to use the property 'N'.
@@ -355,11 +357,11 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
       if (numFires == 0) { // this is the 'first' run
 
          if (
-             
+
 
                 // we have the object to push
                 (this.getFlags()[0] > 0) &&
-                
+
 
                 // we have the number of times
                 ((usePropNValue) || (this.getFlags()[1] > 0))) {
@@ -389,7 +391,10 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
     *
     * @param i The total number of times to fire.
     */
-   public void setTimesToFire(int i) { N = i; }
+   public void setTimesToFire(int i) throws PropertyVetoException {
+     if(i<0) throw new PropertyVetoException("Number Times to Push should be zero or greater", null);
+     N = i;
+   }
 
    /**
     * Specifies whether or not to use the property 'N' when determining
