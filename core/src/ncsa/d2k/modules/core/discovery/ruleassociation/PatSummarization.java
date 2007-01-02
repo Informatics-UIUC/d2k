@@ -1,14 +1,10 @@
- package ncsa.d2k.modules.core.discovery.ruleassociation;
+package ncsa.d2k.modules.core.discovery.ruleassociation;
 
-import java.io.*;
-import java.lang.Math;
-import java.util.*;
-import gnu.trove.*;
 import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.discovery.ruleassociation.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
-import java.beans.PropertyVetoException;
+import java.util.*;
+import java.beans.*;
 
 /**
  * @author Hong Cheng
@@ -94,7 +90,7 @@ public class PatSummarization extends ncsa.d2k.core.modules.ComputeModule{
       public String getOutputName(int index) {
               switch(index) {
                       case 0:
-                              return "Rule Table";
+                              return "Table";
                       default:
                               return "No such output";
               }
@@ -108,8 +104,7 @@ public class PatSummarization extends ncsa.d2k.core.modules.ComputeModule{
       public String getOutputInfo (int index) {
               switch (index) {
                 case 0:
-                   String s = "A representation of the association rules found and accepted by this module. " +
-                             "This output is typically connected to a <i>Rule Visualization</i> module.";
+                   String s = "Table";
                   return s;
                 default:
                   return "No such output";
@@ -121,7 +116,7 @@ public class PatSummarization extends ncsa.d2k.core.modules.ComputeModule{
        * @return the data types of all outputs.
        */
       public String[] getOutputTypes () {
-        String[] types = {"ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"};
+        String[] types = {"ncsa.d2k.modules.core.datatype.table.Table"};
         return types;
       }
 
@@ -339,13 +334,19 @@ public class PatSummarization extends ncsa.d2k.core.modules.ComputeModule{
        fw.flush();
        fw.close();
 */
-       double [][] initCenter = new double[this.clusterNum][numItems];
 
-       boolean [][] initUnion = new boolean [this.clusterNum][numItems];
+      int effective_num_clusters =
+          (getClusterNum() <= fis.length) ?
+              getClusterNum() :
+              fis.length; // todo set a max as a function of fis.length?
+
+       double [][] initCenter = new double[effective_num_clusters][numItems];
+
+       boolean [][] initUnion = new boolean [effective_num_clusters][numItems];
        int item=0;
 
        //initialization
-       for(i = 0; i < clusterNum; i ++)
+       for(i = 0; i < effective_num_clusters; i ++)
          for(j = 0; j < numItems; j ++)
            initUnion[i][j] = false;
 
@@ -353,11 +354,11 @@ public class PatSummarization extends ncsa.d2k.core.modules.ComputeModule{
       Date d = new Date();
       rdm.setSeed(d.getTime());
 
-      int [] centerID = new int [this.clusterNum];
-      for(i = 0; i < this.clusterNum; i ++)
+      int [] centerID = new int [effective_num_clusters];
+      for(i = 0; i < effective_num_clusters; i ++)
         centerID[i] = 0;
 
-      for(i = 0; i < this.clusterNum; i ++)
+      for(i = 0; i < effective_num_clusters; i ++)
       {
         while(true)
         {
@@ -386,8 +387,8 @@ public class PatSummarization extends ncsa.d2k.core.modules.ComputeModule{
       double minKL = 0;
       int idxI = 0;
 
-      Vector [] clusterMem = new Vector [clusterNum];
-      for(i = 0; i < clusterNum; i ++)
+      Vector [] clusterMem = new Vector [effective_num_clusters];
+      for(i = 0; i < effective_num_clusters; i ++)
         clusterMem[i] = new Vector();
 
       //2nd step, kmeans
@@ -402,12 +403,12 @@ public class PatSummarization extends ncsa.d2k.core.modules.ComputeModule{
       int iter;
       for(iter = 0; iter < Iter; iter ++)
       {
-         for(i = 0; i < clusterNum; i ++)
+         for(i = 0; i < effective_num_clusters; i ++)
            clusterMem[i].clear();
 
          for(i = 0; i < numFis; i ++)
          {
-           for(j = 0; j < clusterNum; j ++)
+           for(j = 0; j < effective_num_clusters; j ++)
            {
              if(j == 0)
              {
@@ -430,7 +431,7 @@ public class PatSummarization extends ncsa.d2k.core.modules.ComputeModule{
          }
 
          int subCnt = 0;
-         for(i = 0; i < clusterNum; i ++)
+         for(i = 0; i < effective_num_clusters; i ++)
            if(clusterMem[i].size() == 0)
              ;//	printf("cluster %d is empty\n", i);
            else
@@ -440,7 +441,7 @@ public class PatSummarization extends ncsa.d2k.core.modules.ComputeModule{
            System.out.print(initCenter[0][i]+" ");
          System.out.println();
 */
-         for(i = 0; i < clusterNum; i ++)
+         for(i = 0; i < effective_num_clusters; i ++)
            simpleClusterCenter(i, clusterMem, initCenter, patProfiles, numItems);
 
 /*
@@ -449,16 +450,19 @@ public class PatSummarization extends ncsa.d2k.core.modules.ComputeModule{
            System.out.print(initCenter[0][i]+" ");
          System.out.println();
 */
-         for(i = 0; i < clusterNum; i ++)
+         for(i = 0; i < effective_num_clusters; i ++)
            computeItemUnion(i, clusterMem, fis, initUnion[i], numItems);
        }
 
        //the output is ready in initCenter, next step is visulization
        //initCenter is a two dimensional array
-       for(i = 0;  i < items.length; i ++)
+       /*
+        for(i = 0;  i < items.length; i ++)
          System.out.print(items[i] + " ");
        System.out.println();
+       */
 
+       /*
        for(i = 0; i < clusterNum; i ++)
        {    for(j = 0; j < numItems; j ++)
          {
@@ -467,5 +471,66 @@ public class PatSummarization extends ncsa.d2k.core.modules.ComputeModule{
          System.out.print("cluster member #: "+clusterMem[i].size());
          System.out.println();
        }
+       */
+
+        MutableTableImpl table = new MutableTableImpl();
+
+        for (int col = 0; col < effective_num_clusters; col++) {
+          table.addColumn(new DoubleColumn());
+        }
+
+        table.addRows(numItems);
+
+        for (int col = 0; col < effective_num_clusters; col++) {
+
+          for (int row = 0; row < numItems; row++) {
+            table.setDouble(initCenter[col][row], row, col);
+          }
+
+          StringBuffer label = new StringBuffer();
+          label.append(
+              "cluster #" + col + ": (" + clusterMem[col].size() + ") ");
+
+          for (int vi = 0; vi < clusterMem[col].size(); vi++) {
+
+            /*
+            label.append(clusterMem[col].get(vi));
+
+            if (vi < clusterMem[col].size() - 1) {
+              label.append('+');
+            }
+            */
+
+            label.append('(');
+
+            int fis_idx = ((Integer)clusterMem[col].get(vi)).intValue();
+            for (int vj = 0; vj < fis[fis_idx].length; vj++) {
+
+              label.append(iss.names[fis[fis_idx][vj]]);
+
+              if (vj < fis[fis_idx].length - 1) {
+                label.append(' ');
+              }
+
+            }
+
+            label.append(')');
+
+          }
+
+          System.out.println(col + " label: " + label);
+          table.setColumnLabel(label.toString(), col);
+
+        }
+
+        StringColumn sc = new StringColumn();
+        sc.addRows(numItems);
+        table.insertColumn(sc, 0);
+        for (int row = 0; row < iss.names.length; row++) {
+          table.setString(iss.names[row], row, 0);
+        }
+
+        pushOutput(table, 0);
+
     }
 }
