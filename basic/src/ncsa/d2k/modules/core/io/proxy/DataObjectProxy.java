@@ -205,10 +205,10 @@ public abstract class DataObjectProxy {
     *
     * @throws DataObjectProxyException
     */
-   protected String getDestRelURLs(DataObjectProxy srcdop,
+ /*  protected String xgetDestRelURLs(DataObjectProxy srcdop,
                                    DataObjectProxy childdop)
       throws DataObjectProxyException {
-      String relpath = srcdop.getResourceName();
+      String relpath = "";
 
       if (!childdop.equals(srcdop)) {
 
@@ -217,15 +217,25 @@ public abstract class DataObjectProxy {
 
          // URL of the reference
          String relto = srcdop.getURL().toString();
-
+         System.out.println("computing relpath for "+childurl);
+         String nextpart = childurl.substring(relto.length(), childurl.length());
+         System.out.println("nextpart is "+nextpart);
+         while (nextpart.startsWith("/")) {
+        		nextpart = nextpart.substring(1);
+         }
+         System.out.println("stripped nextpart is "+nextpart);
          // relative path of childdop relative to reference
          relpath =
             relpath + "/" +
             childurl.substring(relto.length(), childurl.length());
+         System.out.println("relpath is set to "+relpath);
+         relpath =
+        	 relpath + "/" + nextpart;
+         System.out.println("relpath is set 2nd time to "+relpath);
       }
-
+System.out.println("return relpath "+relpath);
       return relpath;
-   }
+   }*/
 
    /**
     * Close the connection and clean up the temp files created.
@@ -245,6 +255,7 @@ public abstract class DataObjectProxy {
     */
    public abstract DataObjectProxy createCollection(String relativePath)
       throws DataObjectProxyException;
+   
 
    /**
     * Download the object and it's descendants to the specified destination.
@@ -264,6 +275,25 @@ public abstract class DataObjectProxy {
     */
    public abstract void downloadDir(URL wheretosave, int depth)
       throws DataObjectProxyException;
+   
+   /**
+    * Download the object and it's descendants to the specified destination.
+    * <p>The source is a local or remote file or directory.
+    * <p>The destination is a local directory (or file).
+    *
+    * @param   wheretosave : A local directory to store the downloaded files
+    *           depth: A integer to indicate how you would like to download the
+    *           directory. There are only two valid values for depth:
+    *           DataObjectProxy.DEPTH_1: Only download the files under the
+    *           collection, no sub directories DataObjectProxy.DEPTH_INFINITY:
+    *           download all of the files and subdirectories
+    * @param  depth Description of parameter depth.
+    *
+    * @throws DataObjectProxyException Description of exception
+    *                                  DataObjectProxyException.
+    */
+   public abstract void downloadDir(DataObjectProxy wheretosave, int depth)
+   	throws DataObjectProxyException;
 
    /**
     * Get a list of the descendents of the URL.

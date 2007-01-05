@@ -49,13 +49,17 @@ import org.scidac.cmcs.dsmgmt.dsi.DSI;
 import org.scidac.cmcs.dsmgmt.dsi.DSIProperty;
 import org.scidac.cmcs.dsmgmt.dsi.StatusException;
 import org.scidac.cmcs.dsmgmt.util.ResourceList;
+//import org.scidac.cmcs.util.LoggerUtils;
 import org.scidac.cmcs.util.NSProperty;
 
+//import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+//import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+//import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -63,6 +67,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.TimeZone;
 import java.util.Vector;
+import java.util.logging.*;
 
 
 /**
@@ -123,8 +128,15 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     	  D2KLogger.logger.fatal(msg,dopex);
       }
       mURL = url;
-      mDSI = new DSI(url.toString());
-
+  
+      
+      org.apache.log4j.Level ll = D2KLogger.logger.getEffectiveLevel();
+      java.util.logging.Level l = convertLevel(ll);
+      setJavaUtilLogger(l);
+      
+   
+      
+      
       if (!username.equals("")) {
          this.setUsername(username);
       }
@@ -138,6 +150,47 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       } else {
          mDSI = new DSI(url.toString());
       }
+     
+   }
+   
+   private  void setJavaUtilLogger(java.util.logging.Level l)
+   {
+	   LogManager lm = LogManager.getLogManager();
+	   
+	   java.util.Enumeration e = lm.getLoggerNames();
+	   
+	   while (e.hasMoreElements()) {
+		   Logger jlogger = lm.getLogger( ( String) e.nextElement() );
+		   jlogger.setLevel(l);
+	   }
+
+   
+   }
+   
+  
+   
+   private java.util.logging.Level convertLevel(org.apache.log4j.Level lin) {
+	   if (lin == null) {
+		   // Fatal
+		   return null;
+	   }
+	   if (lin == org.apache.log4j.Level.DEBUG) {
+		   return java.util.logging.Level.FINEST;
+	   } else if (lin == org.apache.log4j.Level.WARN) {
+		   return java.util.logging.Level.WARNING;
+	   } else if (lin == org.apache.log4j.Level.INFO) {
+		   return java.util.logging.Level.INFO;
+	   } else if (lin == org.apache.log4j.Level.ERROR) {
+		   return java.util.logging.Level.SEVERE;
+	   }   else if (lin == org.apache.log4j.Level.FATAL) {
+			   return java.util.logging.Level.SEVERE;
+	   } else if (lin == org.apache.log4j.Level.OFF) {
+		   return java.util.logging.Level.OFF;   
+	   } else if (lin == org.apache.log4j.Level.ALL) {
+		   return java.util.logging.Level.ALL;
+	   } else {
+		   return java.util.logging.Level.INFO;
+	   }
    }
 
    //~ Methods *****************************************************************
@@ -164,7 +217,6 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       } catch (MalformedURLException mfe) {
     	  return false;
       }
-
       return true;
    }
 
@@ -227,60 +279,96 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     * path at the destination.
     *
     * @throws DataObjectProxyException  */
-   private void createPath() throws DataObjectProxyException {
 
-      // get the path to the file
-      try {
-         URL pu = new URL(mDSI.getURL());
-         String pt = pu.getPath();
-         pt = pt.substring(0, pt.lastIndexOf('/'));
+   private void createPath(URL pu, String rest, boolean includelast) throws DataObjectProxyException {
 
-         String[] comps = pt.split("/");
-         String path = new String("");
-         String ppath = new String("");
+	   	      // get the path to the file
+	   	      try {
 
-         for (int i = 0; i < comps.length; i++) {
+	   	         String pt = pu.getPath();
+	   	         if (!includelast) {
+	   	        	 pt = pt.substring(0, pt.lastIndexOf('/'));
+	   	         }
+	   	         if (!rest.equals("")) {
+	   	        	pt = new String(pt+"/"+rest);
+	   	         }
+	   	         
+	   	      URL pcheck =
+	               new URL(pu.getProtocol(), pu.getHost(), pu.getPort(), "/" +
+	                       pt);
+	         DSI dcheck = null;
 
-            if (comps[i] == null || comps[i].equals("")) {
-               continue;
-            }
+	            if (this.getUsername().equals("")) {
+	               dcheck = new DSI(pcheck.toString());
+	            } else {
+	               dcheck =
+	                  new DSI(pcheck.toString(), this.getUsername(),
+	                          this.getPassword());
+	            }
+	            if (dcheck.exists()) {
+	            	return;
+	            }
+	   	         String[] comps = pt.split("/");
+	   	         String path = new String("");
+	   	         String ppath = new String("");
+	   	         String newpath;
+	   	         
+	   	         for (int i = 0; i < comps.length; i++) {
+	   	            if (comps[i] == null || comps[i].equals("")) {
+	   	               continue;
+	   	            }
 
-            path = ppath + comps[i];
+	   	            path = ppath + comps[i];
 
-            URL pp =
-               new URL(pu.getProtocol(), pu.getHost(), pu.getPort(), "/" +
-                       path);
+	   	            URL pp =
+	   	               new URL(pu.getProtocol(), pu.getHost(), pu.getPort(), "/" +
+	   	                       path);
 
-            DSI d2 = null;
+	   	            DSI d2 = null;
 
-            if (this.getUsername().equals("")) {
-               d2 = new DSI(pp.toString());
-            } else {
-               d2 =
-                  new DSI(pp.toString(), this.getUsername(),
-                          this.getPassword());
-            }
+	   	            if (this.getUsername().equals("")) {
+	   	               d2 = new DSI(pp.toString());
+	   	            } else {
+	   	               d2 =
+	   	                  new DSI(pp.toString(), this.getUsername(),
+	   	                          this.getPassword());
+	   	            }
+	   	            if (!d2.exists()) {
+	   	            	
+	   	               URL root =
+	   	                  new URL(pu.getProtocol(), pu.getHost(), pu.getPort(), "/" +
+	   	                          ppath);
+	   	               
+	   	              DSI rootdsi =null;
+	   	              if (this.getUsername().equals("")) {
+	   	            	  rootdsi = new DSI(root.toString());
+	   	              } else {
+	   	            	  rootdsi =
+	   	                  new DSI(root.toString(), this.getUsername(),
+	   	                          this.getPassword());
+	   	              }
+	   	                                                    
+	   	              try {
+	   	            	  newpath = rootdsi.makeCollection(comps[i]);
+	   	              } catch (StatusException se) {
+	   	       	   		if (se.getStatusCode() == 405 || se.getStatusCode() == 409) {
+	   	       	   			/* already exists? */
+	   	       	   			System.out.println("405 or 409 "+se.getStatusCode());  
+	   	       	   		}
+	   	       	   		se.printStackTrace();
+	   	       	   		handleExceptions(se);
+	   	              }
 
-            if (!d2.exists()) {
-               URL root =
-                  new URL(pu.getProtocol(), pu.getHost(), pu.getPort(), "/" +
-                          ppath);
-               DataObjectProxy dop2 =
-                  DataObjectProxyFactory.getDataObjectProxy(root,
-                                                            this.getUsername(),
-                                                            this.getPassword());
-               dop2.createCollection(comps[i]);
-            }
+	   	            }
 
-            ppath = path + "/";
-         } // end for
-      } catch (MalformedURLException mfe) {
-         this.handleExceptions(mfe);
-      } catch (StatusException se) {
-         this.handleExceptions(se);
-      }
-   } // end method createPath
-
+	   	            ppath = path + "/";
+	   	         } // end for
+	   	      } catch (MalformedURLException mfe) {
+	   	         this.handleExceptions(mfe);
+	   	      } catch (StatusException se) {
+	   	         this.handleExceptions(se);
+	   	      }
+	   	   } 
    /**
     * <p>Create a temporary local file in the specified directory and save the
     * path of this temporary file into a Vector.</p>
@@ -371,7 +459,6 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     */
    private Object getMeta(NSProperty prop) throws DataObjectProxyException {
       Object ret = null;
-
       try {
          ret = mDSI.getMetaData(prop);
       } catch (StatusException se) {
@@ -399,17 +486,19 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       if (ex instanceof StatusException) {
          StatusException se = (StatusException) ex;
          Throwable theCause = se.getCause();
-
-         if (theCause instanceof StatusException) {
+         if (se.getStatusCode() == 200) {
+        	 throw new DataObjectProxyException("Unknown error (200), possibly authorization failed");
+         }
+         else if (theCause != null && theCause instanceof StatusException) {
 
             // extract the encased exception
             StatusException se2 = (StatusException) theCause;
-
             if (se2.getStatusCode() == 401) {
                throw new DataObjectProxyException("Unauthorized (401)");
+            } else if (se2.getStatusCode() == 200) {
+            	throw new DataObjectProxyException("Unknown error (200), possibly authorization failed");
             }
          }
-
          throw new DataObjectProxyException("*****StatusException " +
                                             se.getStatusCode() + " " +
                                             se.getImprovedMessage());
@@ -422,6 +511,7 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
          throw new DataObjectProxyException("******MalformedURLException " +
                                             me.getLocalizedMessage());
       } else {
+    	  ex.printStackTrace();
          throw new DataObjectProxyException("******Unknown Exception " +
                                             ex.getLocalizedMessage());
       }
@@ -454,7 +544,7 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
 
       }
 
-      tempDataDir.mkdir();
+      tempDataDir.mkdirs();
    }
 
    /**
@@ -484,8 +574,8 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       NSProperty prop = new NSProperty("DAV::displayname");
 
       DSIProperty val = (DSIProperty) this.getMeta(prop);
-      String rn = val.getPropertyAsString();
-
+      String rn = "";
+      rn =  val.getPropertyAsString();
       return rn;
      }
 
@@ -514,28 +604,26 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     * @throws DataObjectProxyException Description of exception
     *                                  DataObjectProxyException.
     */
+
    public DataObjectProxy createCollection(String relativePath)
-      throws DataObjectProxyException {
-      String newpath = "";
+   throws DataObjectProxyException {
 
-      try {
-         newpath = mDSI.makeCollection(relativePath);
-      } catch (StatusException se) {
-         handleExceptions(se);
-      }
 
-      try {
-         URL newU = new URL(mDSI.getURL());
+	   createPath(this.getURL(),relativePath,true);
+   
+	   try {
+		   URL newU = new URL(mDSI.getURL());
 
-         return this.resetDataObjectProxy(newU,
-                                          this.getUsername(),
-                                          this.getPassword());
-      } catch (MalformedURLException mfe) {
-         handleExceptions(mfe);
-      }
+		   newU = new URL(mDSI.getURL()+"/"+relativePath);
+		   return this.resetDataObjectProxy(newU,
+                                       this.getUsername(),
+                                       this.getPassword());
+	   } catch (MalformedURLException mfe) {
+		   handleExceptions(mfe);
+   	 	}
 
-      return this;
-   }
+	   return this;
+	}
 
    /**
     * Download the current collection refered by this to local.
@@ -551,91 +639,138 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     * @throws DataObjectProxyException Description of exception
     *                                  DataObjectProxyException.
     */
-   public void downloadDir(URL wheretosave, int depth)
-      throws DataObjectProxyException {
 
-      if (
-          depth != DataObjectProxy.DEPTH_1 &&
-             depth != DataObjectProxy.DEPTH_INFINITY) {
-         throw new DataObjectProxyException("Depth value is not valid");
-      }
-
-      URL curdir = wheretosave;
-      Vector childurls = new Vector();
-      DataObjectProxy tempdop = this;
-     
-      /*
-       * If it is not a collection, go ahead and download the file
-       */
-      try {
-
-         if (!tempdop.isCollection()) {
-            URL desurl =
-               new URL(curdir.toString() + "/" + tempdop.getResourceName());
-           tempdop.readFile(new File (desurl.getFile()));
-         }
-         /*
-          * If it is a collection, get the children URLs Note: The childrenURLs
-          * probably will include the parent directory, in order to avoid a dead
-          * loop, we will first check if the dop is the same as the parent dop
-          */
-         else {
-
-            /* DataObjectProxy.DEPTH_1 is correct
-             * First we get the direct children URLs If the depth is infinity,
-             * we will loop through the whole directory */
-            childurls = tempdop.getChildrenURLs(DataObjectProxy.DEPTH_1);
-            curdir = new URL(wheretosave + "/" + tempdop.getResourceName());
-            
-            File ff = new File(curdir.getFile());
-            /*If a directory with the same name exists, keep going */
-            if (!ff.exists()) {
-            
-            boolean success = new File(curdir.getFile()).mkdir();
- 
-            if (!success) {
-               throw new DataObjectProxyException("Failed to create directory " +
-                                                  curdir);
-            }
-         }
-
-            for (int i = 0; i < childurls.size(); i++) {
-                                                            
-               // Reset the dop point to each child urls
-               tempdop =
-                  tempdop.resetDataObjectProxy(new URL(childurls.elementAt(i)
-                                                                .toString()));
-
-               // Check if it is pointing to src collection
-               if (!(tempdop.isCollection())) {
-                  URL fileurl =
-                     new URL(curdir.toString() + "/" +
-                             tempdop.getResourceName());
-                 
-                  tempdop.readFile(new File (fileurl.getFile()));
-               } else {
-                  String thisurl = this.getURL().toString();
-
-                  // Check if the collection ends with a "/", if it is, remove
-                  // it for consistance with the listed children URLs
-                  if (this.getURL().toString().endsWith("/")) {
-                     thisurl = thisurl.substring(0, thisurl.length() - 1);
-                  }
-
-                  if (
-                      !tempdop.getURL().toString().equals(thisurl) &&
-                         depth == DataObjectProxy.DEPTH_INFINITY) {
-                     tempdop.downloadDir(curdir, depth);
-                  }
-               }
-            } // end for
-         } // end if
-      } catch (Exception e) {
-         this.handleExceptions(e);
-      }
+   public void downloadDir(DataObjectProxy wheretosave, int depth)
+   throws DataObjectProxyException {
+	   	DataObjectProxy srcdop =  this.resetDataObjectProxy(this.getURL());
+	   	wheretosave.uploadDir(srcdop, depth);
    } // end method downloadDir
+   
+   public void downloadDir(URL wheretosave, int depth)
+   throws DataObjectProxyException {
+	   /* this method will fail if the destination requires user/password */
+	   DataObjectProxy destdop = DataObjectProxyFactory.getDataObjectProxy(wheretosave);
+	   
+	   this.downloadDir(destdop, depth);
+}// end method downloadDir
+   
+ 
+   private Vector getChildrenURLs(int depth, URL url) throws DataObjectProxyException {
+	   Vector childrenURLs = new Vector();
+	   Vector childrenPaths = new Vector();
+	   Vector properties = new Vector();
 
+	   DataObjectProxy tempdop = this.resetDataObjectProxy(url);
+	  
+	   DSI lDSI = new DSI(url.toString());
+	   	   
+	   /*
+	    * Get the children urls of input url with depth 1
+	    */
+	   properties.add(new NSProperty("DAV::displayname"));
+	   ResourceList rl = null;
 
+	   try {
+		   /*  the boolean is for setting separateParent
+		    * But it seems not working
+	          */
+		   rl = lDSI.getResources(properties,DataObjectProxy.DEPTH_1, true);
+	   } catch (StatusException e) {
+	         this.handleExceptions(e);
+	   }
+	   rl.selectAll();
+	   childrenPaths = rl.getSelectedFilePaths();
+	   String server = rl.getServer();
+	   
+	   if (childrenPaths.size() == 0) {
+		   /* some servers return empty list when no children */
+		   return childrenURLs;
+	   }
+	   /* check for alternative behavior on servers */
+	   String first = (String)childrenPaths.firstElement();
+	   boolean hasServer = first.startsWith(server);
+	   
+	   /*  
+	    * If depth is 1, DSI getResources method works fine
+	    */
+	   if (depth == DataObjectProxy.DEPTH_1) {
+		   for (int i = 0; i < childrenPaths.size(); i++) {
+			   URL utmp = null;
+			   try { 
+				   if (hasServer) {
+					   utmp  = new URL((String)childrenPaths.elementAt(i));
+				   } else {
+				  utmp  = new URL(server+childrenPaths.elementAt(i));
+				   }
+			  }
+			  catch(Exception ex){
+				  this.handleExceptions(ex);
+			  }
+			  childrenURLs.add(utmp);
+		   }
+	   }
+	   
+	   /*
+	    * If depth is infinity, DSI getResources method does not work for url 
+	    * with more than 3 levels.
+	    * 
+	    * So, recurse to implementa a depth first list.
+	    */
+	   if (depth == DataObjectProxy.DEPTH_INFINITY) {
+		   if(tempdop.isCollection()) {
+			    childrenURLs.add(url);
+			   		   
+			   /*
+			    * Loop through all of the children at this level.
+			    */
+			   URL walker=null;
+			   for (int i = 0; i < childrenPaths.size(); i++) {
+		    		  try {
+		    			  if (hasServer) {
+		    				  walker = new URL((String)childrenPaths.elementAt(i));
+		    			  } else {
+		    				  walker = new URL(server+childrenPaths.elementAt(i));  
+		    			  }
+		    			  /*
+		    			   * If the path is not same as the input url
+		    			  */
+		    			  if(!(walker.toString().equals(url.toString()))) {
+		    				  tempdop=tempdop.resetDataObjectProxy(walker);
+		    			  }
+		    		  }
+		    		  catch(Exception ex){
+		    			  this.handleExceptions(ex);
+		    		  }
+		    		  
+		    		  /*
+		    		   * If the walker is not a collection (directory), 
+		    		   * just add url in childrenURLs
+		    		   */
+		    		  if(!tempdop.isCollection()) {
+		    			  childrenURLs.add(tempdop.getURL());
+		    		  }
+		    		  
+		    		  /*
+		    		   * If the walker is a collection and not same as input url
+		    		   * recursively call this method with walker as input url
+		    		   */
+		    		  else {
+		    			  if(!(walker.toString().equals(url.toString()))) {
+			    			  Vector subdir = this.getChildrenURLs(DataObjectProxy.DEPTH_INFINITY,walker);
+			    			  for (int k = 0; k < subdir.size(); k++) {
+			    				  if(!childrenURLs.contains(subdir.elementAt(k))) {
+			    					  childrenURLs.add(subdir.elementAt(k));
+			    				  }
+			    			  }
+			    		  }
+		    		  }
+			   }
+		   }
+	   }
+ 
+	   return childrenURLs;
+   }// end method getChildrenURLs
+     
    /**
     * if the url is not pointing to a collection return the url itself if it is,
     * return the collection url and all of its children.
@@ -654,46 +789,10 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     * @throws DataObjectProxyException
     */
    public Vector getChildrenURLs(int depth) throws DataObjectProxyException {
-
-      Vector childrenURLs = new Vector();
-      Vector childrenPaths = new Vector();
-      Vector properties = new Vector();
-      properties.add(new NSProperty("DAV::displayname"));
-
-      ResourceList rl = null;
-
-      try {
-
-         /*the boolean is for setting separateParent
-          * But it seems not working
-          */
-         rl = mDSI.getResources(properties, depth, true);
-      } catch (StatusException e) {
-         this.handleExceptions(e);
-      }
-
-      rl.selectAll();
-
-      /*
-       * The following should give the correct URLs directly, no idea why it
-       * will give URLs with the string "sam" inserted before /slide/files/...
-       * like: http://verbena.ncsa.uiuc.edu:8088/sam/slide/files/Fang/Testing
-       * childrenURLs=rl.getSelectedFileUrls();
-       */
-
-      childrenPaths = rl.getSelectedFilePaths();
-
-      String server = rl.getServer();
-      
-      childrenURLs.add(mURL);
-
-      for (int i = 0; i < childrenPaths.size(); i++) {
-         childrenURLs.add(server + childrenPaths.elementAt(i));
-      }
-
-      return childrenURLs;
-   } // end method getChildrenURLs
-
+	   return getChildrenURLs(depth,mURL);
+   }
+   
+   
    /**
     * Add more DSI methods wrapper later.
     *
@@ -751,7 +850,6 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
 			    	   p.mkdirs();
 			    	   } catch (Exception io) {
 			    		   //nothing
-			    		   //io.printStackTrace();
 			    	   }
 			       }
 			       localCopy.createNewFile();
@@ -926,26 +1024,26 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     */
    public void putFromFile(File file) throws DataObjectProxyException {
 	   boolean doCreate = true;
-      try {
+	  try {
 
          if (!mDSI.exists()) {
-
             if (doCreate) {
-            	createPath();
+            	createPath(this.getURL(),"",false);
             }
          }
 
          if (checkLastComp()) {
             mDSI.putDataSet(file);
          } else {
-        	 // not sure what to do in this case
-            throw new DataObjectProxyException(mDSI.getURL() +
-                                               ": target is a directory?");
-         }
+        	 /* All done--everything should be OK */
+            //throw new DataObjectProxyException(mDSI.getURL() +
+            }
       } catch (StatusException se) {
          this.handleExceptions(se);
       }
    }
+   
+   
 
    /**
     * <p>Put a local file to the url represented by the current DSI object Put
@@ -974,18 +1072,39 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     */
    public void putFromStream(InputStream is) throws DataObjectProxyException {
       boolean doCreate = true;
-
+      int verysmall = 1024;
+      
       try {
 
          if (!mDSI.exists()) {
 
             if (doCreate) {
-               createPath();
+              createPath(this.getURL(),"",false);
             }
          }
-
+         
          if (checkLastComp()) {
-            mDSI.putDataSet(is);
+        	 try {
+        	 if (is.available() < verysmall) {
+        		 File ftmp = File.createTempFile("xxx",".tmp");
+                 java.io.BufferedInputStream isr = new java.io.BufferedInputStream(is);
+                 java.io.BufferedOutputStream osr = new java.io.BufferedOutputStream(new java.io.FileOutputStream(ftmp));
+                 byte b[] =new byte[2*verysmall];
+                 while (isr.available() > 0) {
+                	int howmany = isr.read(b); 
+                    osr.write(b,0,howmany);  
+                 }
+                 osr.close();
+                 
+                 mDSI.putDataSet(ftmp);
+                 
+                 ftmp.delete();
+                 return;
+        	 }
+        	 } catch(Exception e) {
+        		 this.handleExceptions(e);
+        	 }
+        	 mDSI.putDataSet(is);
          } else {
 
             // not sure what to do in this case
@@ -1153,35 +1272,64 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     */
    public void uploadDir(DataObjectProxy srcdop, int depth)
       throws DataObjectProxyException {
+	   
       if (
           depth != DataObjectProxy.DEPTH_1 &&
              depth != DataObjectProxy.DEPTH_INFINITY) {
          throw new DataObjectProxyException("Depth value is not valid");
       }
+     
+      // 1. create the first directory, if needed
+      String firstdir = srcdop.getResourceName();
+          
+      DataObjectProxy dop2 = DataObjectProxyFactory.getDataObjectProxy(this.getURL(),
+                                                       this.getUsername(),
+                                             this.getPassword());
+     
+      DataObjectProxy dop3 = dop2.createCollection(firstdir);
 
-      Vector childrenURLs = srcdop.getChildrenURLs(depth);
-
-      String parenturl = this.getURL().toString();
-      DataObjectProxy childdop;
+      String parenturl = dop3.getURL().toString();
+    // get the children in the source area
+      
+      // get the children in the source area
+      Vector childrenURLs = srcdop.getChildrenURLs(DataObjectProxy.DEPTH_1);
+       DataObjectProxy childdop;
       String tempurl;
-      File tempfile;
-      DataObjectProxy tempdop = this;
-      URL childurl = null;
 
-
+      DataObjectProxy tempdop = this.resetDataObjectProxy(this.getURL());
+     URL childurl = null;
+    
       try {
 
          for (int i = 0; i < childrenURLs.size(); i++) {
-        	
             childurl = new URL(childrenURLs.elementAt(i).toString());
+            
             childdop = srcdop.resetDataObjectProxy(childurl);
-            tempurl = parenturl + "/" + this.getDestRelURLs(srcdop, childdop);
-            tempfile =
-               new File(new URL(childrenURLs.elementAt(i).toString())
-                           .getFile());
-            tempdop = this.resetDataObjectProxy(new URL(tempurl));
+          
             if (!(childdop.isCollection())) {
-            	tempdop.putFromFile(tempfile);
+            	String childname = childurl.getPath();
+                if (childname.contains("/")) {
+                	childname = childname.substring(childname.lastIndexOf('/'));
+                }
+                tempurl = parenturl + "/" + childname;
+                
+                tempdop = this.resetDataObjectProxy(new URL(tempurl));
+             	InputStream is = childdop.getInputStream();
+             	tempdop.putFromStream(is);
+             	tempdop.close();
+            } else {
+            	
+            	if (depth == DataObjectProxy.DEPTH_1) {
+            		continue;
+            	}
+         
+            	if (srcdop.getURL().sameFile(childdop.getURL())) {
+            		continue;
+            	}
+            	
+             	tempdop = this.resetDataObjectProxy(new URL(parenturl));
+
+            	tempdop.uploadDir(childdop,depth);
             }
 
          }
@@ -1191,4 +1339,5 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       }
 
    } // end method uploadDir
+   
 } // end class WebdavDataObjectProxyImpl
