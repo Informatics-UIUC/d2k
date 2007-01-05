@@ -12,6 +12,10 @@ public class ParseFileToTable extends InputModule {
     protected static final char QUESTION = '?';
     protected static final char SPACE = ' ';
 
+    public final static int IN_FACTORY = 1;
+    public final static int IN_PARSER = 0;
+
+
     private boolean useBlanks = true;
     public void setUseBlanks(boolean b) {
         useBlanks = b;
@@ -33,9 +37,11 @@ public PropertyDescription [] getPropertiesDescriptions () {
     }
 
     public String[] getInputTypes() {
-        String[] in = {"ncsa.d2k.modules.core.io.file.input.FlatFileParser",
-            "ncsa.d2k.modules.core.datatype.table.TableFactory"};
-        return in;
+      String[] in = new String[2];
+      in[IN_FACTORY] = "ncsa.d2k.modules.core.datatype.table.TableFactory";
+      in[IN_PARSER] = "ncsa.d2k.modules.core.io.file.input.FlatFileParser";
+
+      return in;
     }
 
     public String[] getOutputTypes() {
@@ -51,9 +57,14 @@ public PropertyDescription [] getPropertiesDescriptions () {
  * @return <code>String</code> describing the input at the specified index.
  */
 public String getInputInfo(int i) {
-        if(i == 0)
-            return "A FlatFileParser to read data from.";
-        return "An optional TableFactory to control the type of table created.  If not used, a basic table will be created.";
+  switch (i) {
+    case IN_FACTORY:
+      return "An optional TableFactory to control the type of table created.  If not used, a basic table will be created.";
+    case IN_PARSER:
+      return "A FlatFileParser to read data from.";
+    default:
+      return "no such input";
+  }
     }
 
     /**
@@ -80,7 +91,15 @@ public String getOutputInfo(int i) {
  * @return <code>String</code> containing the name of the input at the specified index.
  */
 public String getInputName(int i) {
-        return "File Parser";
+  switch (i) {
+    case IN_FACTORY:
+      return "Table Factory";
+    case IN_PARSER:
+      return "File Parser";
+    default:
+      return "no such input";
+  }
+
     }
 
     /**
@@ -181,7 +200,7 @@ public void doit() throws Exception {
 
         //MutableTableImpl ti = new MutableTableImpl(columns);
 
-        
+
          for(int i = 0; i < numRows; i++) {
             ParsedLine pl = df.getRowElements(i);
             char[][] row = pl.elements;
