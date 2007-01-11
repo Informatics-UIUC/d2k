@@ -44,23 +44,23 @@
  */
 package ncsa.d2k.modules.core.io.file.input.examples;
 
-import ncsa.d2k.core.modules.CustomModuleEditor;
-import ncsa.d2k.core.modules.InputModule;
-import ncsa.d2k.core.modules.PropertyDescription;
-import ncsa.d2k.modules.core.io.proxy.DataObjectProxy;
-import ncsa.d2k.modules.core.io.proxy.DataObjectProxyException;
-import ncsa.gui.Constrain;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Vector;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import ncsa.d2k.core.modules.CustomModuleEditor;
+import ncsa.d2k.core.modules.InputModule;
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.modules.core.io.proxy.DataObjectProxy;
+import ncsa.d2k.modules.core.io.proxy.DataObjectProxyException;
+import ncsa.gui.Constrain;
 
 
 /**
@@ -77,12 +77,22 @@ public class getDirectory extends InputModule {
 
    //~ Instance fields *********************************************************
 
-   /** Description of field depthLevel. */
+   /** the depth to traverse. */
    private String depthLevel = "infinity";
 
    //~ Methods *****************************************************************
    private void listDir(DataObjectProxy dop, int depth)  throws DataObjectProxyException{
 	   Vector list = dop.getChildrenURLs(depth);
+   
+   Enumeration en = list.elements();
+
+   while (en.hasMoreElements()) {
+      Object s = en.nextElement();
+      System.out.println("  " + s);
+   }
+   }
+   private void listFiles(DataObjectProxy dop, int depth)  throws DataObjectProxyException{
+	   Vector list = dop.getChildrenURLs(depth, true);
    
    Enumeration en = list.elements();
 
@@ -122,6 +132,8 @@ public class getDirectory extends InputModule {
       listDir(srcdop,depth);
       long a1 = System.currentTimeMillis();
       
+      System.out.println("List just the files ");
+      listFiles(srcdop, depth);
 
       System.out.println("Start downloading " + srcdop.getURL() + " to " +
                          desurl);
@@ -141,6 +153,8 @@ public class getDirectory extends InputModule {
       long b3 = System.currentTimeMillis();
       listDir(desdop,depth);
       long a3 = System.currentTimeMillis();
+      System.out.println("List just the files ");
+      listFiles(desdop,depth);
       desdop.close();
       srcdop.close();
       System.out.println("Timing:");

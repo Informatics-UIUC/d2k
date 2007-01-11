@@ -44,13 +44,13 @@
  */
 package ncsa.d2k.modules.core.io.proxy;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -89,6 +89,47 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
    //~ Methods *****************************************************************
 
    /**
+    * Create whatever directories are needed to create the location pu/res.
+    *
+    * <p>If 'includelast' is set, then create the whole path, else create just
+    * the parent of the last component.</p>
+    *
+    * <p>This method is used to prepare a directory to copy into.</p>
+    *
+    * @param  pu          A URL which is the base of the new path.
+    * @param  rest        A relative path from the URL.
+    * @param  includelast If true, then will create the whole path. If false,
+    *                     will create all but ht elast component..
+    *
+    * @throws DataObjectProxyException Description of exception
+    *                                  DataObjectProxyException.
+    * @throws DataObjectProxyException Description of exception
+    *                                  DataObjectProxyException.
+    */
+   private void createPath(URL pu, String rest, boolean includelast)
+      throws DataObjectProxyException {
+
+      String pt = pu.getPath();
+      pt = new String(pt + "/" + rest);
+
+      if (!includelast) {
+         pt = pt.substring(0, pt.lastIndexOf('/'));
+      }
+
+      File ff = new File(pt);
+
+      if (!ff.exists()) {
+
+         boolean success = ff.mkdirs();
+
+         if (!success) {
+            throw new DataObjectProxyException("Failed to create directory " +
+                                               pt);
+         }
+      }
+   }
+
+   /**
     * Format a date in to a standard string.
     *
     * @param  when The Data object.
@@ -107,7 +148,6 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
     *
     * @param  depth The depth to descend, currently 1 or infinite.
     * @param  url   The root of the descent.
-    * @param  dirs  include directories in outptu
     *
     * @return A list of all the children.
     *
@@ -115,14 +155,22 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
     */
    private Vector getChildrenURLs(int depth, URL url)
       throws DataObjectProxyException {
-	   Vector ret = new Vector();
+      Vector ret = new Vector();
+      Vector v = new Vector();
+      Vector noDirs = new Vector();
 
       if (isCollection()) {
-	  
-    	  ret.add(url);	
+
+         ret.add(url);
 
          File dir = new File(url.getPath());
          File[] relFileNames = dir.listFiles();
+
+         if (relFileNames == null) {
+        	 v.add(ret);
+        	 v.add(noDirs);
+            return v; //ret;
+         }
 
          // For depth_1
          if (depth == DataObjectProxy.DEPTH_1) {
@@ -130,8 +178,11 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
             for (int j = 0; j < relFileNames.length; j++) {
 
                try {
-            	   URL turl = (URL)relFileNames[j].toURL();		
-            	   ret.add(turl);
+                  URL turl = (URL) relFileNames[j].toURL();
+                  ret.add(turl);
+                  if (!relFileNames[j].isDirectory()) {
+                	  noDirs.add(turl);
+                  }
                } catch (Exception e) {
                   this.handleExceptions(e);
                }
@@ -146,22 +197,28 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
                if (relFileNames[j].isDirectory()) {
 
                   try {
-                	  	Vector subdir =
+                     Vector vsubdir =
                         this.getChildrenURLs(DataObjectProxy.DEPTH_INFINITY,
                                              relFileNames[j].toURL());
-
+                     Vector subdir = (Vector)vsubdir.get(0);
                      for (int k = 0; k < subdir.size(); k++) {
-                    	 URL turl = (URL)subdir.elementAt(k);
-                    	 ret.add(turl);
-                       }
+                        URL turl = (URL) subdir.elementAt(k);
+                        ret.add(turl);
+                     }
+                     Vector sd1 = (Vector)vsubdir.get(1);
+                     for (int k = 0; k < sd1.size(); k++) {
+                         URL turl = (URL) sd1.elementAt(k);
+                         noDirs.add(turl);
+                      }
                   } catch (Exception e) {
                      this.handleExceptions(e);
                   }
                } else {
 
                   try {
-                	  URL turl = (URL)relFileNames[j].toURL();
-                 	ret.add(turl);
+                     URL turl = (URL) relFileNames[j].toURL();
+                     ret.add(turl);
+                     noDirs.add(turl);
                   } catch (Exception e) {
                      this.handleExceptions(e);
                   }
@@ -169,10 +226,14 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
             }
          } // end if
       } else {
+
+         // Depth 0?
          ret.add(mURL);
       }
-
-      return ret;
+      v.add(ret);
+ 	 v.add(noDirs);
+     return v; //ret;
+   //   return ret;
 
    } // end method getChildrenURLs
 
@@ -212,7 +273,11 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
 
 
    /**
-    * Description of method readTheFile.
+    * Copy the contents of the file 'localpath' to the current file.
+    *
+    * <p><b>Warning:</b> this method does not do sophisticated error checking,
+    * e.g., it does not detect if the soruce and destination are the same, it
+    * doesn't check permissions, etc.</p>
     *
     * @param  localpath Description of parameter localpath.
     *
@@ -220,18 +285,22 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
     *                                  DataObjectProxyException.
     */
    private void readTheFile(String localpath) throws DataObjectProxyException {
-      
-     try {
+
+      try {
          String rpath = mURL.getPath();
-         BufferedInputStream isr = new BufferedInputStream(new FileInputStream(rpath));
-         BufferedOutputStream osr = new BufferedOutputStream(new FileOutputStream(localpath));
-         byte b[] =new byte[4096];
+         BufferedInputStream isr =
+            new BufferedInputStream(new FileInputStream(rpath));
+         BufferedOutputStream osr =
+            new BufferedOutputStream(new FileOutputStream(localpath));
+         byte[] b = new byte[4096];
+
          while (isr.available() > 0) {
-             	int howmany = isr.read(b); 
-                 osr.write(b,0,howmany);  
-          }
-          osr.close();
-          isr.close();
+            int howmany = isr.read(b);
+            osr.write(b, 0, howmany);
+         }
+
+         osr.close();
+         isr.close();
       } catch (Exception e) {
          this.handleExceptions(e);
       }
@@ -245,22 +314,6 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
     *         local files.
     */
    protected String getPassword() { return null; }
-
-
-   /**
-    * Give the resource name not including the path.
-    *
-    * @return give the resource name not including the path.
-    *
-    * @throws DataObjectProxyException Description of exception
-    *                                  DataObjectProxyException.
-    */
-   protected String getResourceName() throws DataObjectProxyException {
-	      File file = null;
-	   file = new File(this.getURL().getPath());
-
-      return file.getName();
-   }
 
    /**
     * No action required to clean up a local file.
@@ -292,14 +345,14 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
       try {
 
          if (file.exists()) {
-        	 return this.resetDataObjectProxy(file.toURL());
-             }
+            return this.resetDataObjectProxy(file.toURL());
+         }
 
          file.mkdirs();
 
          if (file.exists()) {
-        	 return this.resetDataObjectProxy(file.toURL());
-             }
+            return this.resetDataObjectProxy(file.toURL());
+         }
       } catch (MalformedURLException mfu) {
          throw new DataObjectProxyException(mfu);
       }
@@ -307,56 +360,107 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
       return this;
    } // end method createCollection
 
-      /* ???
-    * Copy all the files from the source to the destination.
+   /**
+    * Download the directory and it's descendants specified by this
+    * DataObjectProxy to the location specified by the destination proxy.
+    *
+    * <p>This is the same as dest.uploadDir(src).</p>
     *
     * @param  wheretosave : A local directory to store the downloaded files
-    *                     fromdop: A DataObjectProxy pointing to a collection
-    *                     depth: A integer to indicate how you would like to
-    *                     download the directory. There are only two valid
-    *                     values for depth: DataObjectProxy.DEPTH_1: Only
-    *                     download the files under the collection, no sub
-    *                     directories DataObjectProxy.DEPTH_INFINITY: download
-    *                     all of the files and subdirectories
-    * @param  depth       Description of parameter depth.
+    *                     depth:
+    * @param  depth       An integer to indicate how you would like to download
+    *                     the directory. There are only two valid values for
+    *                     depth: DataObjectProxy.DEPTH_1: Only download the
+    *                     files under the collection, no sub directories
+    *                     DataObjectProxy.DEPTH_INFINITY: download all of the
+    *                     files and subdirectories.
     *
-    * @throws DataObjectProxyException Description of exception
-    *                                  DataObjectProxyException.
+    * @throws DataObjectProxyException An error ocurred.
     */
-   
-   
-   private void createPath(URL pu, String rest,boolean includelast) throws DataObjectProxyException {
-
-	   String pt = pu.getPath();
-       pt = new String(pt+"/"+rest);
-       if (!includelast) {
-       pt = pt.substring(0, pt.lastIndexOf('/'));
-       }   
-        File ff = new File(pt);
-        if (!ff.exists()) {
-
-           boolean success = ff.mkdirs();
-
-           if (!success) {
-              throw new DataObjectProxyException("Failed to create directory " +
-                                                 pt);
-           }
-        }     
+   public void downloadDir(DataObjectProxy wheretosave, int depth)
+      throws DataObjectProxyException {
+      DataObjectProxy srcdop = this.resetDataObjectProxy(this.getURL());
+      wheretosave.uploadDir(srcdop, depth);
    }
- 
+
    /**
-    * Get he URLs for a given depth.
+    * Download the directory and it's descendants specified by this
+    * DataObjectProxy to the location specified by the destination proxy.
     *
-    * @param  depth Get the descendents to depth 0, 1, or infitinty.
+    * <p>This is the same as dest.uploadDir(src).</p>
     *
-    * @return A list of relative paths from the root, one for each descendent.
+    * <p><b>Note:</b> This method does not take authintication for the
+    * destination. Use downLoadDir(dop) below.</p>
     *
-    * @throws DataObjectProxyException
+    * @param  wheretosave : A local directory to store the downloaded files
+    *                     depth:
+    * @param  depth       An integer to indicate how you would like to download
+    *                     the directory. There are only two valid values for
+    *                     depth: DataObjectProxy.DEPTH_1: Only download the
+    *                     files under the collection, no sub directories
+    *                     DataObjectProxy.DEPTH_INFINITY: download all of the
+    *                     files and subdirectories.
+    *
+    * @throws DataObjectProxyException An error ocurred.
     */
-   public Vector getChildrenURLs(int depth) throws DataObjectProxyException { 
-	   return this.getChildrenURLs(depth, mURL);
+   public void downloadDir(URL wheretosave, int depth)
+      throws DataObjectProxyException {
+      DataObjectProxy destdop =
+         DataObjectProxyFactory.getDataObjectProxy(wheretosave);
+
+      this.downloadDir(destdop, depth);
    }
 
+   /**
+    * Return whether the object pointed to exists.
+    *
+    * @return true if the object exists, false otherwise.
+    */
+   public boolean exists() {
+      File file = new File(mURL.getPath());
+
+      return file.exists();
+   }
+
+   /**
+    * Get a list of the descendents of the URL, optinally return only
+    * file names (i.e., omit diretory names).
+    *
+    * <p>This is empty for a file or non-collection.</p>
+    *
+    * @param  i The depth to traverse.
+    * @param  noDirs  If true, returns only the file names, else return all.
+    *
+    * @return A list of the relative paths.
+    *
+    * @throws DataObjectProxyException Exception occured.
+    */
+   public Vector getChildrenURLs(int depth, boolean noDirs) throws DataObjectProxyException {
+      Vector v = this.getChildrenURLs(depth, mURL);
+      Vector v0 = (Vector) v.get(0);
+      Vector v1 = (Vector) v.get(1);
+      if (noDirs) {
+    	  return v1;
+      } else {
+    	  return v0;
+      }
+   }
+
+   /**
+    * Get a list of the descendents of the URL.
+    *
+    * <p>This is empty for a file or non-collection.</p>
+    * <p>This is the same as getChildrenURLs(int i, false) </p>
+    *
+    * @param  i The depth to traverse.
+    *
+    * @return A list of the relative paths.
+    *
+    * @throws DataObjectProxyException Exception occured.
+    */
+   public Vector getChildrenURLs(int depth) throws DataObjectProxyException {
+	   return getChildrenURLs(depth,false);
+   }
    /**
     * Get InputStream from URL being pointed to by the current
     * LocalDataObjectProxy.
@@ -378,7 +482,7 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
    }
 
    /**
-    * Description of method getLocalFile.
+    * Open the local file.
     *
     * @return Description of return value.
     */
@@ -386,6 +490,8 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
       File f = null;
 
       try {
+
+         /* uses 'toURI' to deal with spaces and other issues in URLs */
          f = new File(mURL.toURI().getPath());
       } catch (URISyntaxException ue) { }
 
@@ -431,6 +537,24 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
       throw new DataObjectProxyException("metadata not supported for local files");
    }
 
+
+   /**
+    * Returen the resource name not including the path, i.e., the file name.
+    *
+    * @return the resource name not including the path.
+    *
+    * @throws DataObjectProxyException Description of exception
+    *                                  DataObjectProxyException.
+    */
+   public String getResourceName() throws DataObjectProxyException {
+      File file = null;
+
+      /* uses 'toURI' to deal with spaces and other issues in URLs */
+      file = new File(this.getURL().getPath());
+
+      return file.getName();
+   }
+
    /**
     * Get the value of the Etag.
     *
@@ -461,6 +585,8 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
       File f = null;
 
       try {
+
+         /* uses 'toURI' to deal with spaces and other issues in URLs */
          f = new File(mURL.toURI().getPath());
       } catch (Exception e) {
          this.handleExceptions(e);
@@ -498,19 +624,23 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
    public File initLocalFile(File dest) throws DataObjectProxyException {
       boolean doCreate = true; // This may become a parameter.
       File file = dest;
+
       if (file == null) {
-    	  try {
-    		  file = new File(mURL.toURI().getPath());
-    	  } catch (URISyntaxException ue) { }
+
+         try {
+            file = new File(mURL.toURI().getPath());
+         } catch (URISyntaxException ue) { }
       }
+
       if (file != null) {
 
          try {
+
             // If file doesn't exist, create a empty file based on url.
             if (!file.exists()) {
 
                if (doCreate) {
-            	  File p = file.getParentFile();
+                  File p = file.getParentFile();
                   p.mkdirs();
                   file.createNewFile();
                } else {
@@ -520,10 +650,10 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
          } catch (Exception e) {
             handleExceptions(e);
          }
-      
-   } else {
-       throw new DataObjectProxyException("No local path specified.");
-   }
+
+      } else {
+         throw new DataObjectProxyException("No local path specified.");
+      }
 
       return file;
    } // end method initLocalFile
@@ -539,14 +669,6 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
       return file.isDirectory();
    }
 
-   /**
-    * Load a file from store. Does nothing for local files.
-    *
-    * @param  dest Description of parameter dest.
-    *
-    * @throws DataObjectProxyException
-    */
-   // public void loadFile() throws DataObjectProxyException { return; }
 
    /**
     * <p>Copy the the file being pointed to by the current URL to destination
@@ -573,9 +695,7 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
 
 
    /**
-    * putFromStream.
-    *
-    * <p>put the given InputStream into the URL being pointed to by the current
+    * <p>Copy the given InputStream into the URL being pointed to by the current
     * LocalDataObjectProxy.</p>
     *
     * @param  is - InputStream to be put into current URL.
@@ -585,17 +705,20 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
    public void putFromStream(InputStream is) throws DataObjectProxyException {
 
       try {
-    	  File file = new File(mURL.getPath());
-            BufferedInputStream isr = new BufferedInputStream(is);
-            BufferedOutputStream osr = new BufferedOutputStream(new FileOutputStream(file));
-            byte b[] =new byte[4096];
-            while (isr.available() > 0) {
-                	int howmany = isr.read(b); 
-                    osr.write(b,0,howmany);  
-             }
-             osr.close();
-             isr.close();
-        	
+         File file = new File(mURL.getPath());
+         BufferedInputStream isr = new BufferedInputStream(is);
+         BufferedOutputStream osr =
+            new BufferedOutputStream(new FileOutputStream(file));
+         byte[] b = new byte[4096];
+
+         while (isr.available() > 0) {
+            int howmany = isr.read(b);
+            osr.write(b, 0, howmany);
+         }
+
+         osr.close();
+         isr.close();
+
       } catch (IOException ioe) {
          handleExceptions(ioe);
       }
@@ -607,12 +730,19 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
     *
     * @param  dest the destination to copy to.
     *
-    * @return actually the method is copying the file refered by mURL to the
-    *         given localpath.
+    * @return the destination file.
     *
     * @throws DataObjectProxyException
     */
    public File readFile(File dest) throws DataObjectProxyException {
+
+      if (this.isCollection()) {
+
+         /* can't download this! */
+         throw new DataObjectProxyException(this.getURL() +
+                                            " is a collection ");
+      }
+
       if (dest == null) {
          File f = null;
 
@@ -623,6 +753,7 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
          return f;
          // throw new DataObjectProxyException("Destination is null");
       }
+
       File lf = initLocalFile(dest);
       this.readTheFile(lf.getAbsolutePath());
 
@@ -647,7 +778,7 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
                                                " Failed.");
          }
       } else {
-         Vector childurls = this.getChildrenURLs(DataObjectProxy.DEPTH_1);
+         Vector childurls = this.getChildrenURLs(DataObjectProxy.DEPTH_1, false);
 
          for (int i = 0; i < childurls.size(); i++) {
 
@@ -693,8 +824,11 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
     * @param  newURL URL to be used to create a DataObjectProxy.
     *
     * @return a DataObjectProxy.
+    *
+    * @throws DataObjectProxyException Unknown problem.
     */
-   public DataObjectProxy resetDataObjectProxy(URL newURL) {
+   public DataObjectProxy resetDataObjectProxy(URL newURL)
+      throws DataObjectProxyException {
       return resetDataObjectProxy(newURL, mUsername, mPassword);
    }
 
@@ -706,9 +840,12 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
     * @param  newPass - password to access the URL.
     *
     * @return DataObjectProxy.
+    *
+    * @throws DataObjectProxyException Unknown problem.
     */
    public DataObjectProxy resetDataObjectProxy(URL newURL, String newUser,
-                                               String newPass) {
+                                               String newPass)
+      throws DataObjectProxyException {
       return DataObjectProxyFactory.getDataObjectProxy(newURL, newUser,
                                                        newPass);
    }
@@ -735,8 +872,8 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
    /**
     * See reason in webdavObjectProxyImpl.
     *
-    * @param user Description of parameter user.
-    * @param pass Description of parameter pass.
+    * @param user User name.
+    * @param pass Password.
     */
    public void setUserInfo(String user, String pass) {
       this.mUsername = user;
@@ -751,8 +888,16 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
    public void setUsername(String s) { mUsername = s; }
 
    /**
-    * For local DataObjectProxy, upload is same as upload except we need to
-    * reverse the src and destination.
+    * Copy the source directory to the destination, along with children.
+    *
+    * <p>This recreates a file hierarchy at the destination</p>
+    *
+    * <p>This is called by 'downloadDir'.</p>
+    *
+    * <p><b>Warning</b> This method does not have sophisticated error checking
+    * or handling, and may beahave differently on different file systems. For
+    * example, if there are links or loops in the directory structure, the
+    * result is uncertain.</p>
     *
     * @param  srcdop Source to copy
     * @param  depth  Depth of the copy, currently 1 or infinite.
@@ -760,86 +905,77 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
     * @throws DataObjectProxyException
     */
    public void uploadDir(DataObjectProxy srcdop, int depth)
-   throws DataObjectProxyException {
-	       
-   if (
-       depth != DataObjectProxy.DEPTH_1 &&
-          depth != DataObjectProxy.DEPTH_INFINITY) {
-      throw new DataObjectProxyException("Depth value is not valid");
-   }
-  
-   // 1. create the first directory, if needed
-   String firstdir = srcdop.getResourceName();
-       
-   DataObjectProxy dop2 = DataObjectProxyFactory.getDataObjectProxy(this.getURL(),
-                                                    this.getUsername(),
-                                                 this.getPassword());
-   
-   DataObjectProxy dop3 = dop2.createCollection(firstdir);
+      throws DataObjectProxyException {
 
-   String parenturl = dop3.getURL().toString(); 
-   // get the children in the source area
-   Vector childrenURLs = srcdop.getChildrenURLs(DataObjectProxy.DEPTH_1);
-
-   DataObjectProxy childdop;
-   String tempurl;
-
-   DataObjectProxy tempdop = this.resetDataObjectProxy(this.getURL());
-   URL childurl = null;
- 
-   try {
-
-      for (int i = 0; i < childrenURLs.size(); i++) {
-         childurl = new URL(childrenURLs.elementAt(i).toString());
-   
-         childdop = srcdop.resetDataObjectProxy(childurl);
-  
-         if (!(childdop.isCollection())) {
-        	 String childname = childurl.getPath();
-             if (childname.contains("/")) {         
-             	childname = childname.substring(childname.lastIndexOf('/'));
-             }
-
-             tempurl = parenturl + "/" + childname;;
-             
-             tempdop = this.resetDataObjectProxy(new URL(tempurl));
-             
-          	InputStream is = childdop.getInputStream();
-          	tempdop.putFromStream(is);
-         } else {
-         	
-         	if (depth == DataObjectProxy.DEPTH_1) {
-         		continue;
-         	}
-        	      	
-         	if (srcdop.getURL().sameFile(childdop.getURL())) {
-         		continue;
-         	}
-  
-         	tempdop = this.resetDataObjectProxy(new URL(parenturl));
-         	
-         	tempdop.uploadDir(childdop,depth);
-         }
-
+      if (
+          depth != DataObjectProxy.DEPTH_1 &&
+             depth != DataObjectProxy.DEPTH_INFINITY) {
+         throw new DataObjectProxyException("Depth value is not valid");
       }
 
-   } catch (Exception e) {
-      this.handleExceptions(e);
-   }
+      // 1. create the first directory, if needed
+      String firstdir = srcdop.getResourceName();
 
-} // end method uploadDir
+      DataObjectProxy dop2 =
+         DataObjectProxyFactory.getDataObjectProxy(this.getURL(),
+                                                   this.getUsername(),
+                                                   this.getPassword());
 
-   public void downloadDir(DataObjectProxy wheretosave, int depth)
-   throws DataObjectProxyException {
-	   	DataObjectProxy srcdop = this.resetDataObjectProxy(this.getURL());
-	   wheretosave.uploadDir(srcdop, depth);
-   }
-   
-   public void downloadDir(URL wheretosave, int depth)
-   throws DataObjectProxyException 
-   {
-	   DataObjectProxy destdop = DataObjectProxyFactory.getDataObjectProxy(wheretosave);
-	   
-	   this.downloadDir(destdop, depth);
-   }
+      DataObjectProxy dop3 = dop2.createCollection(firstdir);
+
+      String parenturl = dop3.getURL().toString();
+
+      // get the children in the source area
+      Vector childrenURLs = srcdop.getChildrenURLs(DataObjectProxy.DEPTH_1, false);
+
+      DataObjectProxy childdop;
+      String tempurl;
+
+      DataObjectProxy tempdop = this.resetDataObjectProxy(this.getURL());
+      URL childurl = null;
+
+      try {
+
+         for (int i = 0; i < childrenURLs.size(); i++) {
+            childurl = new URL(childrenURLs.elementAt(i).toString());
+
+            childdop = srcdop.resetDataObjectProxy(childurl);
+
+            if (!(childdop.isCollection())) {
+               String childname = childurl.getPath();
+
+               if (childname.contains("/")) {
+                  childname = childname.substring(childname.lastIndexOf('/'));
+               }
+
+               tempurl = parenturl + "/" + childname;
+
+               tempdop = this.resetDataObjectProxy(new URL(tempurl));
+
+               InputStream is = childdop.getInputStream();
+               tempdop.putFromStream(is);
+            } else {
+
+               if (depth == DataObjectProxy.DEPTH_1) {
+                  continue;
+               }
+
+               if (srcdop.getURL().sameFile(childdop.getURL())) {
+                  continue;
+               }
+
+               tempdop = this.resetDataObjectProxy(new URL(parenturl));
+
+               tempdop.uploadDir(childdop, depth);
+            }
+
+         } // end for
+
+      } catch (Exception e) {
+         this.handleExceptions(e);
+      }
+
+   } // end method uploadDir
+
+
 } // end class LocalDataObjectProxyImpl

@@ -53,12 +53,11 @@ import java.net.URL;
  *
  * <p>This version only handles local files and files accessed via WebDAV (via
  * HTTP).</p>
- * 
- * @see DataObjectProxy
- * @see Input1FileURL
  *
  * @author  $Author$
  * @version $Revision$, $Date$
+ * @see     DataObjectProxy
+ * @see     Input1FileURL
  */
 public class DataObjectProxyFactory {
 
@@ -70,8 +69,13 @@ public class DataObjectProxyFactory {
     * @param  url - The URL the DataObjectProxy to point to.
     *
     * @return A DataObjectProxy.
+    *
+    * @throws DataObjectProxyException Error create the proxy. Could be a bad
+    *                                  URL or the access methond might not be
+    *                                  supported.
     */
-   static public DataObjectProxy getDataObjectProxy(URL url) {
+   static public DataObjectProxy getDataObjectProxy(URL url)
+      throws DataObjectProxyException {
       return getDataObjectProxy(url, "", "");
    }
 
@@ -87,9 +91,14 @@ public class DataObjectProxyFactory {
     * @param  password - the password to be used to access DataObjectProxy.
     *
     * @return The new Data Object Proxy.
+    *
+    * @throws DataObjectProxyException Error create the proxy. Could be a bad
+    *                                  URL or the access methond might not be
+    *                                  supported.
     */
    static public DataObjectProxy getDataObjectProxy(URL url, String username,
-                                                    String password) {
+                                                    String password)
+      throws DataObjectProxyException {
       String protocol = url.getProtocol();
 
       if (protocol.equals("file")) {
