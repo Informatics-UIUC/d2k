@@ -50,9 +50,16 @@ import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.io.proxy.DataObjectProxy;
 import ncsa.d2k.modules.core.io.proxy.DataObjectProxyException;
 import ncsa.d2k.modules.core.io.proxy.DataObjectProxyFactory;
+import ncsa.d2k.preferences.UserPreferences;
 import ncsa.gui.Constrain;
+import ncsa.gui.JOutlinePanel;
 
-import javax.swing.JLabel;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -60,6 +67,7 @@ import javax.swing.JTextField;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.net.URL;
@@ -93,39 +101,55 @@ public class Input1FileURL extends InputModule {
    /** The username property. */
    private String username = "";
 
+
+   /** the end of the font style. */
+   final String endfontstyle = "</font>";
+
+
+   /** the fontstyle tags. */
+   final String fontstyle =
+      "<font size=\"" +
+      UserPreferences.thisPreference.getFontSize() +
+      "\" face=\"Arial,Helvetica,SansSerif \">";
+
    //~ Methods *****************************************************************
 
    /**
     * Construct path for URL.
-    * <p>In order to use DSI, We need to get the absolute URL of
-    * the file or collection. For illustration, using the followingg URL as an
-    * example:
-    * <p>
-    * http://verbena.ncsa.uiuc.edu:8080/slide/files/data/data1.txt
-    * <p>User
-    * need to type Host URL:
-    * <p>http://verbena.ncsa.uiuc.edu:8080
-    * <p>File Name:
-    * <p>
-    * /slide/files/data/data1.txt
-    * <p>In order to prevent users type in two
-    * duplicated "/", one at the end of host and one at the begining of the file
-    * name, or missing this "/". remove one if duplication happens and add one
-    * if missing happens. So each one of the following will have the same url as
-    * the above one. Host URL File Name
+    *
+    * <p>In order to use DSI, We need to get the absolute URL of the file or
+    * collection. For illustration, using the followingg URL as an example:</p>
+    *
+    * <p>http://verbena.ncsa.uiuc.edu:8080/slide/files/data/data1.txt</p>
+    *
+    * <p>User need to type Host URL:</p>
+    *
+    * <p>http://verbena.ncsa.uiuc.edu:8080</p>
+    *
+    * <p>File Name:</p>
+    *
+    * <p>/slide/files/data/data1.txt</p>
+    *
+    * <p>In order to prevent users type in two duplicated "/", one at the end of
+    * host and one at the begining of the file name, or missing this "/". remove
+    * one if duplication happens and add one if missing happens. So each one of
+    * the following will have the same url as the above one. Host URL File Name
+    * </p>
+    *
     * <ul>
-    * <li>http://verbena.ncsa.uiuc.edu:8080
-    * <br>
-    * /slide/files/data/data1.txt
-    * <p>http://verbena.ncsa.uiuc.edu:8080/
-    * <br>
-    * /slide/files/data/data1.txt
-    * <p>http://verbena.ncsa.uiuc.edu:8080/
-    * <br>
-    * slide/files/data/data1.txt
-    * <p>http://verbena.ncsa.uiuc.edu:8080
-    * <br>
-    * slide/files/data/data1.txt
+    *   <li>http://verbena.ncsa.uiuc.edu:8080<br>
+    *     /slide/files/data/data1.txt
+    *
+    *     <p>http://verbena.ncsa.uiuc.edu:8080/<br>
+    *     /slide/files/data/data1.txt</p>
+    *
+    *     <p>http://verbena.ncsa.uiuc.edu:8080/<br>
+    *     slide/files/data/data1.txt</p>
+    *
+    *     <p>http://verbena.ncsa.uiuc.edu:8080<br>
+    *     slide/files/data/data1.txt</p>
+    *   </li>
+    * </ul>
     *
     * @param  hosturl - url to host including protocol,path and port.
     * @param  fn      - relative path on the host.
@@ -230,18 +254,18 @@ public class Input1FileURL extends InputModule {
    /**
     * Returns a description of the input at the specified index.
     *
-    * @param i Index of the input for which a description should be returned.
+    * @param  i Index of the input for which a description should be returned.
     *
     * @return <code>String</code> describing the input at the specified index.
     */
    public String getInputInfo(int i) { return ""; }
 
    /**
-    * Returns an array of <code>String</code> objects each containing the
-    * fully qualified Java data type of the input at the corresponding index.
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the input at the corresponding index.
     *
-    * @return An array of <code>String</code> objects each containing the
-    * fully qualified Java data type of the input at the corresponding index.
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the input at the corresponding index.
     */
    public String[] getInputTypes() { return null; }
 
@@ -255,8 +279,8 @@ public class Input1FileURL extends InputModule {
       s +=
          "This module is used to enter the url to a local or remote resource. ";
       s += "</p><p>Detailed Description: ";
-      s+= "<p>Collect a URL or local path, and create a <i>DataObjectProxy</i>";
-      s  += " to access it. The proxy is output.</p>";
+      s += "<p>Collect a URL or local path, and create a <i>DataObjectProxy</i>";
+      s += " to access it. The proxy is output.</p>";
       s += "The module provides a properties editor that can be used to ";
       s += "enter a url to a local or remote resource.  If the url points ";
       s += "to a local file, the user can enter the name directly into ";
@@ -296,8 +320,7 @@ public class Input1FileURL extends InputModule {
    /**
     * Returns a description of the output at the specified index.
     *
-    * @param outputIndex Index of the output for which a description
-    * should be returned.
+    * @param  i Index of the output for which a description should be returned.
     *
     * @return <code>String</code> describing the output at the specified index.
     */
@@ -306,20 +329,21 @@ public class Input1FileURL extends InputModule {
    }
 
    /**
- * Returns the name of the output at the specified index.
- *
- * @param outputIndex Index of the output for which a description should be returned.
- *
- * @return <code>String</code> containing the name of the output at the specified index.
- */
+    * Returns the name of the output at the specified index.
+    *
+    * @param  i Index of the output for which a description should be returned.
+    *
+    * @return <code>String</code> containing the name of the output at the
+    *         specified index.
+    */
    public String getOutputName(int i) { return "DataObjectProxy"; }
 
    /**
-    * Returns an array of <code>String</code> objects each containing the
-    * fully qualified Java data type of the output at the corresponding index.
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the output at the corresponding index.
     *
-    * @return An array of <code>String</code> objects each containing the
-    * fully qualified Java data type of the output at the corresponding index.
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the output at the corresponding index.
     */
    public String[] getOutputTypes() {
       String[] out = { "ncsa.d2k.modules.core.io.proxy.DataObjectProxy" };
@@ -342,10 +366,12 @@ public class Input1FileURL extends InputModule {
       pds[1] =
          new PropertyDescription("hostURL", "protocol+host+port for a server",
                                  "Example: http://verbena.ncsa.uiuc.edu:8888.");
-      pds[2] = new PropertyDescription("username", "User Name" + hostURL,
-                                       "");
-      pds[3] = new PropertyDescription("password", "Password" + hostURL,
-                                       "");
+      pds[2] =
+         new PropertyDescription("username", "User Name",
+                                 "The user login name to access the object, if needed.");
+      pds[3] =
+         new PropertyDescription("password", "Password",
+                                 "The user password to access the object, if needed.");
 
       return pds;
    }
@@ -382,9 +408,9 @@ public class Input1FileURL extends InputModule {
        * // to get thrown if an itinerary is saved/reloaded without the //
        * property dialog being used
        *
-       * if ( s != null && s.length() == 0) { throw
-       * new PropertyVetoException(        "A file name must be entered before
-       * the dialog can be closed.",         null); }
+       * if ( s != null && s.length() == 0) { throw new PropertyVetoException(
+       *    "A file name must be entered before the dialog can be closed.",
+       *    null); }
        *
        * End of commented out section.
        **/
@@ -395,45 +421,35 @@ public class Input1FileURL extends InputModule {
    /**
     * Set HostURL.
     *
-    * @param  The new value.
+    * @param s new value.
     */
-   public void setHostURL(String s) {
-      hostURL = s;
-   }
+   public void setHostURL(String s) { hostURL = s; }
 
    /**
     * Set Password.
     *
-    * @param  s the new value.
-    *
+    * @param s the new value.
     */
-   public void setPassword(String s) {
-      password = s;
-   }
+   public void setPassword(String s) { password = s; }
 
    /**
     * Set UserName.
     *
-    * @param  the new value.
-    *
+    * @param s new value.
     */
-   public void setUserName(String s) {
-      username = s;
-   }
+   public void setUserName(String s) { username = s; }
 
    //~ Inner Classes ***********************************************************
-   // This class needs additional work to make it nicer to use.  Ideally would
-   // like 'browse' buttons for remote objects.
+
    private class PropEdit extends JPanel implements CustomModuleEditor {
 
       /** Use serialVersionUID for interoperability. */
       static private final long serialVersionUID = 2637786544956495261L;
-
       private JTextField hosturljtf;
       private JTextField jtf;
       private JPasswordField passwordjpf;
+      private String prophost;
       private JTextField usernamejtf;
-
 
       private PropEdit() {
          setLayout(new GridBagLayout());
@@ -441,10 +457,7 @@ public class Input1FileURL extends InputModule {
 
          String name = getFileName();
          jtf = new JTextField(10);
-
-         /*
-          * Set HostURL
-          */
+         jtf.setText(name);
          hosturljtf = new JTextField(10);
          hosturljtf.setText(getHostURL());
 
@@ -458,39 +471,233 @@ public class Input1FileURL extends InputModule {
           * Set Password
           */
 
-         passwordjpf = new JPasswordField();
+         passwordjpf = new JPasswordField(10);
          passwordjpf.setEchoChar('*');
          passwordjpf.setText(getPassword());
 
-         jtf.setText(name);
+         JOutlinePanel namePanel = new JOutlinePanel("File Name");
+         namePanel.setLayout(new GridBagLayout());
 
-         Constrain.setConstraints(this, new JLabel("File Name"), 0, 0, 1, 1,
-                                  GridBagConstraints.NONE,
+         // set up the description of the property
+         StringBuffer tp = new StringBuffer("<html>");
+         tp.append(fontstyle);
+         tp.append("The name of a file, possibly including the path.");
+         tp.append(endfontstyle);
+         tp.append("</html>");
+
+         JEditorPane jta =
+            new JEditorPane("text/html", tp.toString()) {
+               static private final long serialVersionUID = 1L;
+
+               // we can no longer have a horizontal scrollbar if we are always
+               // set to the same width as our parent....may need to be fixed.
+               public Dimension getPreferredSize() {
+                  Dimension d = this.getMinimumSize();
+
+                  return new Dimension(450, d.height);
+               }
+            };
+         jta.setEditable(false);
+         jta.setBackground(namePanel.getBackground());
+
+         JButton b0 = new JButton("Browse Local");
+
+         Constrain.setConstraints(namePanel, jta, 0, 0, 3, 1,
+                                  GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 0, 0);
-         Constrain.setConstraints(this, jtf, 1, 0, 1, 1,
+
+         Constrain.setConstraints(namePanel, jtf, 0, 1, 1, 1,
                                   GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 1, 0);
-         Constrain.setConstraints(this, new JLabel("Host URL"), 0, 2, 1, 1,
+         Constrain.setConstraints(namePanel, b0, 1, 1, 1, 1,
                                   GridBagConstraints.NONE,
                                   GridBagConstraints.CENTER, 0, 0);
-         Constrain.setConstraints(this, hosturljtf, 1, 2, 1, 1,
+
+
+         JOutlinePanel urlPanel = new JOutlinePanel("Server URL");
+         urlPanel.setLayout(new GridBagLayout());
+
+         // set up the description of the property
+         tp = new StringBuffer("<html>");
+         tp.append(fontstyle);
+         tp.append("The name of a server, including port and protocol");
+         tp.append(endfontstyle);
+         tp.append("</html>");
+
+         JEditorPane jta2 =
+            new JEditorPane("text/html", tp.toString()) {
+               static private final long serialVersionUID = 1L;
+
+               // we can no longer have a horizontal scrollbar if we are always
+               // set to the same width as our parent....may need to be fixed.
+               public Dimension getPreferredSize() {
+                  Dimension d = this.getMinimumSize();
+
+                  return new Dimension(450, d.height);
+               }
+            };
+         jta2.setEditable(false);
+         jta2.setBackground(urlPanel.getBackground());
+
+         Constrain.setConstraints(urlPanel, jta2, 0, 0, 2, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+         Constrain.setConstraints(urlPanel, hosturljtf, 0, 1, 1, 1,
                                   GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 1, 0);
-         Constrain.setConstraints(this, new JLabel("User Name"), 0, 3, 1, 1,
-                                  GridBagConstraints.NONE,
+
+         JOutlinePanel usernamePanel = new JOutlinePanel("User Name");
+         usernamePanel.setLayout(new GridBagLayout());
+
+         // set up the description of the property
+         tp = new StringBuffer("<html>");
+         tp.append(fontstyle);
+         tp.append("The login name to use");
+         tp.append(endfontstyle);
+         tp.append("</html>");
+
+         JEditorPane jta3 =
+            new JEditorPane("text/html", tp.toString()) {
+               static private final long serialVersionUID = 1L;
+
+               // we can no longer have a horizontal scrollbar if we are always
+               // set to the same width as our parent....may need to be fixed.
+               public Dimension getPreferredSize() {
+                  Dimension d = this.getMinimumSize();
+
+                  return new Dimension(450, d.height);
+               }
+            };
+         jta3.setEditable(false);
+         jta3.setBackground(usernamePanel.getBackground());
+
+         Constrain.setConstraints(usernamePanel, jta3, 0, 0, 2, 1,
+                                  GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 0, 0);
-         Constrain.setConstraints(this, usernamejtf, 1, 3, 1, 1,
+         Constrain.setConstraints(usernamePanel, usernamejtf, 0, 1, 1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+
+         JOutlinePanel passwordPanel = new JOutlinePanel("Password");
+         passwordPanel.setLayout(new GridBagLayout());
+
+         // set up the description of the property
+         tp = new StringBuffer("<html>");
+         tp.append(fontstyle);
+         tp.append("The password");
+         tp.append(endfontstyle);
+         tp.append("</html>");
+
+         JEditorPane jta4 =
+            new JEditorPane("text/html", tp.toString()) {
+               static private final long serialVersionUID = 1L;
+
+               // we can no longer have a horizontal scrollbar if we are always
+               // set to the same width as our parent....may need to be fixed.
+               public Dimension getPreferredSize() {
+                  Dimension d = this.getMinimumSize();
+
+                  return new Dimension(450, d.height);
+               }
+            };
+         jta4.setEditable(false);
+         jta4.setBackground(passwordPanel.getBackground());
+         Constrain.setConstraints(passwordPanel, jta4, 0, 0, 2, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+
+         Constrain.setConstraints(passwordPanel, passwordjpf, 0, 1, 1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+
+         Constrain.setConstraints(this, namePanel, 0, 0, 3, 1,
                                   GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 1, 0);
-         Constrain.setConstraints(this, new JLabel("Password"), 0, 4, 1, 1,
-                                  GridBagConstraints.NONE,
-                                  GridBagConstraints.CENTER, 0, 0);
-         Constrain.setConstraints(this, passwordjpf, 1, 4, 1, 1,
+         Constrain.setConstraints(this, urlPanel, 0, 1, 3, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 1, 0);
+         Constrain.setConstraints(this, usernamePanel, 0, 2, 3, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 1, 0);
+         Constrain.setConstraints(this, passwordPanel, 0, 3, 3, 1,
                                   GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 1, 0);
 
 
-      }
+         b0.addActionListener(new AbstractAction() {
+               public void actionPerformed(ActionEvent e) {
+                  prophost = "";
+                  prophost = hosturljtf.getText();
+
+                  boolean nohost =
+                     (prophost == null) || (prophost.trim().length() == 0);
+
+                  if (!nohost) {
+                     JFrame frame = new JFrame("Ooops");
+                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                     JOptionPane.showMessageDialog(frame,
+                                                   "Browse is not supported for remote services");
+
+                     return;
+
+
+                  }
+
+                  JFileChooser chooser = new JFileChooser();
+                  chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                  chooser.addChoosableFileFilter(new CSVFilter());
+                  chooser.addChoosableFileFilter(new TXTFilter());
+                  chooser.addChoosableFileFilter(new XMLFilter());
+                  chooser.addChoosableFileFilter(new JPGFilter());
+                  chooser.addChoosableFileFilter(new GIFFilter());
+                  chooser.setFileFilter(chooser.getAcceptAllFileFilter());
+
+                  String d = jtf.getText();
+
+                  if (d == null) {
+                     d = getFileName();
+                  }
+
+                  ;
+
+                  // if(d != null) {                  added 3.25.2004 by DC ---
+                  // d.trim().length() > 0
+                  if (d != null && (d.trim().length() > 0)) {
+                     File thefile = new File(d);
+
+                     chooser.setSelectedFile(thefile);
+
+                  }
+// added 3.25.2004 by DC
+                  else {
+                     chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+                  }
+// end
+
+                  // set the title of the FileDialog
+                  StringBuffer sb = new StringBuffer("Select File");
+                  chooser.setDialogTitle(sb.toString());
+
+                  // get the file
+                  String fn;
+                  int retVal = chooser.showOpenDialog(null);
+
+                  if (retVal == JFileChooser.APPROVE_OPTION) {
+                     fn = chooser.getSelectedFile().getAbsolutePath();
+                  } else {
+                     return;
+                  }
+
+                  if (fn != null) {
+
+                     // display the path to the chosen file
+                     jtf.setText(fn);
+                  }
+
+               } // End of ActionPerformed
+            });
+
+      } // End of Constructor PropEdit()
 
       public boolean updateModule() throws Exception {
          String f0 = jtf.getText();
@@ -536,5 +743,49 @@ public class Input1FileURL extends InputModule {
 
          return didChange;
       } // end method updateModule
+
+      class CSVFilter extends javax.swing.filechooser.FileFilter {
+         public boolean accept(File f) {
+            return f.isDirectory() || f.getName().endsWith(".csv");
+         }
+
+         public String getDescription() {
+            return "Comma-Separated Values (.csv)";
+         }
+      }
+
+      class GIFFilter extends javax.swing.filechooser.FileFilter {
+         public boolean accept(File f) {
+            return f.isDirectory() || f.getName().endsWith(".gif");
+         }
+
+         public String getDescription() { return "GIF Image (.gif)"; }
+      }
+
+      class JPGFilter extends javax.swing.filechooser.FileFilter {
+         public boolean accept(File f) {
+            return f.isDirectory() || f.getName().endsWith(".jpg");
+         }
+
+         public String getDescription() { return "JPG Image (.jpg)"; }
+      }
+
+      class TXTFilter extends javax.swing.filechooser.FileFilter {
+         public boolean accept(File f) {
+            return f.isDirectory() || f.getName().endsWith(".txt");
+         }
+
+         public String getDescription() { return "Text Files (.txt)"; }
+      }
+
+      class XMLFilter extends javax.swing.filechooser.FileFilter {
+         public boolean accept(File f) {
+            return f.isDirectory() || f.getName().endsWith(".xml");
+         }
+
+         public String getDescription() { return "XML Files (.xml)"; }
+      }
+
    } // end class PropEdit
+
 } // end class Input1FileURL

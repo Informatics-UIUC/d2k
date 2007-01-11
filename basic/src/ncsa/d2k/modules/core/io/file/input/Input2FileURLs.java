@@ -50,9 +50,17 @@ import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.io.proxy.DataObjectProxy;
 import ncsa.d2k.modules.core.io.proxy.DataObjectProxyException;
 import ncsa.d2k.modules.core.io.proxy.DataObjectProxyFactory;
+import ncsa.d2k.preferences.UserPreferences;
 import ncsa.gui.Constrain;
+import ncsa.gui.JOutlinePanel;
 
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -60,19 +68,18 @@ import javax.swing.JTextField;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.net.URL;
 
 
 /**
- * Input2FileURL allows the user to input the URLSs to two
- *  local or remote resources.
- * The URLs can be set in the properties editor.
+ * Input2FileURL allows the user to input the URLSs to two local or remote
+ * resources. The URLs can be set in the properties editor.
  *
- * <p>This module creates a Data Object Proxy for each specified file or URL. 
- * The two
- * <i>DataObjectProxy</i> objects are pushed to the output ports.</p>
+ * <p>This module creates a Data Object Proxy for each specified file or URL.
+ * The two <i>DataObjectProxy</i> objects are pushed to the output ports.</p>
  *
  * <p>In general, this replaces the deprecated <i>Input2FileName</i>.</p>
  *
@@ -107,39 +114,55 @@ public class Input2FileURLs extends InputModule {
    /** The username property. */
    private String username1 = "";
 
+
+   /** the end of the font style. */
+   final String endfontstyle = "</font>";
+
+
+   /** the fontstyle tags. */
+   final String fontstyle =
+      "<font size=\"" +
+      UserPreferences.thisPreference.getFontSize() +
+      "\" face=\"Arial,Helvetica,SansSerif \">";
+
    //~ Methods *****************************************************************
 
    /**
     * Construct path for URL.
-    * <p>In order to use DSI, We need to get the absolute URL of
-    * the file or collection. For illustration, using the followingg URL as an
-    * example:
-    * <p>
-    * http://verbena.ncsa.uiuc.edu:8080/slide/files/data/data1.txt 
-    * <p>User
-    * need to type Host URL: 
-    * <p>http://verbena.ncsa.uiuc.edu:8080 
-    * <p>File Name:
-    * <p>
-    * /slide/files/data/data1.txt 
-    * <p>In order to prevent users type in two
-    * duplicated "/", one at the end of host and one at the begining of the file
-    * name, or missing this "/". remove one if duplication happens and add one
-    * if missing happens. So each one of the following will have the same url as
-    * the above one. Host URL File Name 
+    *
+    * <p>In order to use DSI, We need to get the absolute URL of the file or
+    * collection. For illustration, using the followingg URL as an example:</p>
+    *
+    * <p>http://verbena.ncsa.uiuc.edu:8080/slide/files/data/data1.txt</p>
+    *
+    * <p>User need to type Host URL:</p>
+    *
+    * <p>http://verbena.ncsa.uiuc.edu:8080</p>
+    *
+    * <p>File Name:</p>
+    *
+    * <p>/slide/files/data/data1.txt</p>
+    *
+    * <p>In order to prevent users type in two duplicated "/", one at the end of
+    * host and one at the begining of the file name, or missing this "/". remove
+    * one if duplication happens and add one if missing happens. So each one of
+    * the following will have the same url as the above one. Host URL File Name
+    * </p>
+    *
     * <ul>
-    * <li>http://verbena.ncsa.uiuc.edu:8080
-    * <br>
-    * /slide/files/data/data1.txt 
-    * <p>http://verbena.ncsa.uiuc.edu:8080/
-    * <br>
-    * /slide/files/data/data1.txt 
-    * <p>http://verbena.ncsa.uiuc.edu:8080/
-    * <br>
-    * slide/files/data/data1.txt 
-    * <p>http://verbena.ncsa.uiuc.edu:8080
-    * <br>
-    * slide/files/data/data1.txt
+    *   <li>http://verbena.ncsa.uiuc.edu:8080<br>
+    *     /slide/files/data/data1.txt
+    *
+    *     <p>http://verbena.ncsa.uiuc.edu:8080/<br>
+    *     /slide/files/data/data1.txt</p>
+    *
+    *     <p>http://verbena.ncsa.uiuc.edu:8080/<br>
+    *     slide/files/data/data1.txt</p>
+    *
+    *     <p>http://verbena.ncsa.uiuc.edu:8080<br>
+    *     slide/files/data/data1.txt</p>
+    *   </li>
+    * </ul>
     *
     * @param  hosturl - url to host including protocol,path and port.
     * @param  fn      - relative path on the host.
@@ -306,20 +329,20 @@ public class Input2FileURLs extends InputModule {
    public String getHostURL1() { return hostURL1; }
 
    /**
- * Returns a description of the input at the specified index.
- *
- * @param i Index of the input for which a description should be returned.
- *
- * @return <code>String</code> describing the input at the specified index.
- */
+    * Returns a description of the input at the specified index.
+    *
+    * @param  i Index of the input for which a description should be returned.
+    *
+    * @return <code>String</code> describing the input at the specified index.
+    */
    public String getInputInfo(int i) { return ""; }
 
    /**
-    * Returns an array of <code>String</code> objects each containing the 
-    * fully qualified Java data type of the input at the corresponding index.
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the input at the corresponding index.
     *
-    * @return An array of <code>String</code> objects each containing 
-    * the fully qualified Java data type of the input at the corresponding index.
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the input at the corresponding index.
     */
    public String[] getInputTypes() { return null; }
 
@@ -333,8 +356,9 @@ public class Input2FileURLs extends InputModule {
       s +=
          "This module is used to enter two URLs to local or remote resources. ";
       s += "</p><p>Detailed Description: ";
-      s += "<p>Collect two URLs or local paths, and create a <i>DataObjectProxy</i>";
-      s  += " to access each. The proxies are output.</p>";
+      s +=
+         "<p>Collect two URLs or local paths, and create a <i>DataObjectProxy</i>";
+      s += " to access each. The proxies are output.</p>";
       s += "The module provides a properties editor that can be used to ";
       s += "enter URLS to two local or remote resource.  If the url points ";
       s += "to a local file, the user can enter the name directly into ";
@@ -373,8 +397,7 @@ public class Input2FileURLs extends InputModule {
    /**
     * Returns a description of the output at the specified index.
     *
-    * @param i Index of the output for which a description 
-    * should be returned.
+    * @param  i Index of the output for which a description should be returned.
     *
     * @return <code>String</code> describing the output at the specified index.
     */
@@ -392,11 +415,10 @@ public class Input2FileURLs extends InputModule {
    /**
     * Returns the name of the output at the specified index.
     *
-    * @param i Index of the output for which a description 
-    * should be returned.
+    * @param  i Index of the output for which a description should be returned.
     *
-    * @return <code>String</code> containing the name of the output 
-    * at the specified index.
+    * @return <code>String</code> containing the name of the output at the
+    *         specified index.
     */
    public String getOutputName(int i) {
 
@@ -410,11 +432,11 @@ public class Input2FileURLs extends InputModule {
    }
 
    /**
-    * Returns an array of <code>String</code> objects each containing the 
-    * fully qualified Java data type of the output at the corresponding index.
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the output at the corresponding index.
     *
-    * @return An array of <code>String</code> objects each containing the 
-    * fully qualified Java data type of the output at the corresponding index.
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the output at the corresponding index.
     */
    public String[] getOutputTypes() {
       String[] out =
@@ -439,11 +461,15 @@ public class Input2FileURLs extends InputModule {
                                  "File Name",
                                  "The name of a file, possibly including the path.");
       pds[1] =
-         new PropertyDescription("hostURL0", "protocol+host+port for a server",
-                                 "Example: http://verbena.ncsa.uiuc.edu:8888.");
-      pds[2] = new PropertyDescription("username0", "User Name" + hostURL0,
-                                       "");
-      pds[3] = new PropertyDescription("password0", "Password" + hostURL0, "");
+         new PropertyDescription("hostURL0",
+                                 "protocol+host+port for a remote server (Optional)",
+                                 "Example: http://verbena.ncsa.uiuc.edu:8888");
+      pds[2] =
+         new PropertyDescription("username0", "User Name",
+                                 "The user name, if needed to access the object.");
+      pds[3] =
+         new PropertyDescription("password0", "Password",
+                                 "The user login password, if needed.");
       pds[4] =
          new PropertyDescription("fileName1",
                                  "File Name",
@@ -451,10 +477,12 @@ public class Input2FileURLs extends InputModule {
       pds[5] =
          new PropertyDescription("hostURL1", "protocol+host+port for a server",
                                  "Example: http://verbena.ncsa.uiuc.edu:8888.");
-      pds[6] = new PropertyDescription("username1", "User Name" + hostURL1,
-                                       "");
-      pds[7] = new PropertyDescription("password1", "Password" + hostURL1,
-                                       "");
+      pds[6] =
+         new PropertyDescription("username1", "User Name",
+                                 "The user name, if needed to access the object.");
+      pds[7] =
+         new PropertyDescription("password1", "Password",
+                                 "The user login password, if needed.");
 
       return pds;
    } // end method getPropertiesDescriptions
@@ -484,7 +512,7 @@ public class Input2FileURLs extends InputModule {
    /**
     * Set FileName0.
     *
-    * @param s the new value.
+    * @param  s the new value.
     *
     * @throws PropertyVetoException not implemented yet.
     */
@@ -510,7 +538,7 @@ public class Input2FileURLs extends InputModule {
    /**
     * Set FileName1.
     *
-    * @param s the new value.
+    * @param  s the new value.
     *
     * @throws PropertyVetoException not implemented yet.
     */
@@ -537,206 +565,466 @@ public class Input2FileURLs extends InputModule {
     * Set HostURL.
     *
     * @param s the new value.
-    *
     */
-   public void setHostURL0(String s) {
-      hostURL0 = s;
-   }
+   public void setHostURL0(String s) { hostURL0 = s; }
 
    /**
     * Set HostURL1.
     *
     * @param s the new value.
-    *
     */
-   public void setHostURL1(String s) {
-      hostURL1 = s;
-   }
+   public void setHostURL1(String s) { hostURL1 = s; }
 
    /**
     * Set Password0.
     *
     * @param s the new value.
-    *
     */
-   public void setPassword0(String s) {
-      password0 = s;
-   }
+   public void setPassword0(String s) { password0 = s; }
 
    /**
     * Set Password1.
     *
     * @param s the new value.
-    *
     */
-   public void setPassword1(String s) {
-      password1 = s;
-   }
+   public void setPassword1(String s) { password1 = s; }
 
    /**
     * Set UserName1.
     *
     * @param s the new value.
-    *
     */
-   public void setUserName0(String s) {
-      username0 = s;
-   }
+   public void setUserName0(String s) { username0 = s; }
 
    /**
     * Set UserName1.
     *
     * @param s the new value.
-    *
     */
-   public void setUserName1(String s) {
-      username1 = s;
-   }
+   public void setUserName1(String s) { username1 = s; }
 
    //~ Inner Classes ***********************************************************
 
-   // This class needs additional work to make it nicer to use.  Ideally would 
-   // like 'browse' buttons for remote objects.
    private class PropEdit extends JPanel implements CustomModuleEditor {
 
       /** Use serialVersionUID for interoperability. */
       static private final long serialVersionUID = -8620817673571802994L;
-
-      private JTextField hosturljtf;
+      private JTextField hosturljtf0;
       private JTextField hosturljtf1;
-      private JTextField jtf;
+      private JTextField jtf0;
       private JTextField jtf1;
-      private JPasswordField passwordjpf;
+      private JPasswordField passwordjpf0;
       private JPasswordField passwordjpf1;
-      private JTextField usernamejtf;
+      private String prophost;
+      private JTextField usernamejtf0;
       private JTextField usernamejtf1;
-
 
       private PropEdit() {
          setLayout(new GridBagLayout());
          this.setMinimumSize(new Dimension(14, 14));
 
+         /*
+          * Set up the text entry fields for the first target
+          */
          String name = getFileName0();
-         jtf = new JTextField(10);
+         jtf0 = new JTextField(10);
+         jtf0.setText(name);
+         hosturljtf0 = new JTextField(10);
+         hosturljtf0.setText(getHostURL0());
+         usernamejtf0 = new JTextField(10);
+         usernamejtf0.setText(getUserName0());
+         passwordjpf0 = new JPasswordField(10);
+         passwordjpf0.setEchoChar('*');
+         passwordjpf0.setText(getPassword0());
+
+         JOutlinePanel namePanel = new JOutlinePanel("File Name 1");
+         namePanel.setLayout(new GridBagLayout());
+
+         // set up the description of the property
+         StringBuffer tp = new StringBuffer("<html>");
+         tp.append(fontstyle);
+         tp.append("The name of a file, possibly including the path, and server address if remote.");
+         tp.append(endfontstyle);
+         tp.append("</html>");
+
+         JEditorPane jta =
+            new JEditorPane("text/html", tp.toString()) {
+               static private final long serialVersionUID = 1L;
+
+               // we can no longer have a horizontal scrollbar if we are always
+               // set to the same width as our parent....may need to be fixed.
+               public Dimension getPreferredSize() {
+                  Dimension d = this.getMinimumSize();
+
+                  return new Dimension(450, d.height);
+               }
+            };
+         jta.setEditable(false);
+         jta.setBackground(namePanel.getBackground());
+
+         JButton b0 = new JButton("Browse Local");
+
+         Constrain.setConstraints(namePanel, jta, 0, 0, 3, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+
+
+         Constrain.setConstraints(namePanel, new JLabel("File Name"), 0, 1, 1,
+                                  1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+         Constrain.setConstraints(namePanel, jtf0, 1, 1, 1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+         Constrain.setConstraints(namePanel, b0, 2, 1, 1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+
+         Constrain.setConstraints(namePanel,
+                                  new JLabel("Server Name (if remote)"), 0, 3,
+                                  1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+         Constrain.setConstraints(namePanel, hosturljtf0, 1, 3, 1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 1, 0);
+
+
+         JOutlinePanel usernamePanel = new JOutlinePanel("User Name/Passowrd");
+         usernamePanel.setLayout(new GridBagLayout());
+
+         // set up the description of the property
+         tp = new StringBuffer("<html>");
+         tp.append(fontstyle);
+         tp.append("The login name to use");
+         tp.append(endfontstyle);
+         tp.append("</html>");
+
+         JEditorPane jta3 =
+            new JEditorPane("text/html", tp.toString()) {
+               static private final long serialVersionUID = 1L;
+
+               // we can no longer have a horizontal scrollbar if we are always
+               // set to the same width as our parent....may need to be fixed.
+               public Dimension getPreferredSize() {
+                  Dimension d = this.getMinimumSize();
+
+                  return new Dimension(450, d.height);
+               }
+            };
+         jta3.setEditable(false);
+         jta3.setBackground(usernamePanel.getBackground());
+
+         Constrain.setConstraints(usernamePanel, jta3, 0, 0, 2, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+
+
+         Constrain.setConstraints(usernamePanel, new JLabel("User Name"), 0, 1,
+                                  1, 1,
+                                  GridBagConstraints.NONE,
+                                  GridBagConstraints.CENTER, 0, 0);
+         Constrain.setConstraints(usernamePanel, usernamejtf0, 1, 1, 1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+
+         Constrain.setConstraints(usernamePanel, new JLabel("Password"), 0, 2,
+                                  1, 1,
+                                  GridBagConstraints.NONE,
+                                  GridBagConstraints.CENTER, 0, 0);
+         Constrain.setConstraints(usernamePanel, passwordjpf0, 1, 2, 1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
 
          /*
-          * Set HostURL
+          * Repeat for the second target
           */
-         hosturljtf = new JTextField(10);
-         hosturljtf.setText(getHostURL0());
-
-
-         /*
-          * Set UserName
-          */
-         usernamejtf = new JTextField(10);
-         usernamejtf.setText(getUserName0());
-
-         /*
-          * Set Password
-          */
-
-         passwordjpf = new JPasswordField();
-         passwordjpf.setEchoChar('*');
-         passwordjpf.setText(getPassword0());
-
-         jtf.setText(name);
-
          String name1 = getFileName1();
          jtf1 = new JTextField(10);
-
-         /*
-          * Set HostURL
-          */
+         jtf1.setText(name1);
          hosturljtf1 = new JTextField(10);
          hosturljtf1.setText(getHostURL1());
 
-
-         /*
-          * Set UserName
-          */
          usernamejtf1 = new JTextField(10);
          usernamejtf1.setText(getUserName1());
 
-         /*
-          * Set Password
-          */
-
-         passwordjpf1 = new JPasswordField();
+         passwordjpf1 = new JPasswordField(10);
          passwordjpf1.setEchoChar('*');
          passwordjpf1.setText(getPassword1());
 
-         jtf1.setText(name1);
+         JOutlinePanel namePanel1 = new JOutlinePanel("File Name 2");
+         namePanel1.setLayout(new GridBagLayout());
+         // set up the description of the property
+         tp = new StringBuffer("<html>");
+         tp.append(fontstyle);
+         tp.append("The name of a file, possibly including the path, and the server if remote.");
+         tp.append(endfontstyle);
+         tp.append("</html>");
 
-         Constrain.setConstraints(this, new JLabel("File Name"), 0, 0, 1, 1,
-                                  GridBagConstraints.NONE,
+         JEditorPane jta8 =
+            new JEditorPane("text/html", tp.toString()) {
+               static private final long serialVersionUID = 1L;
+
+               // we can no longer have a horizontal scrollbar if we are always
+               // set to the same width as our parent....may need to be fixed.
+               public Dimension getPreferredSize() {
+                  Dimension d = this.getMinimumSize();
+
+                  return new Dimension(450, d.height);
+               }
+            };
+         jta8.setEditable(false);
+         jta8.setBackground(namePanel.getBackground());
+
+         JButton b1 = new JButton("Browse Local");
+
+         Constrain.setConstraints(namePanel1, jta8, 0, 0, 3, 1,
+                                  GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 0, 0);
-         Constrain.setConstraints(this, jtf, 1, 0, 1, 1,
+         Constrain.setConstraints(namePanel1, new JLabel("File Name"), 0, 1, 1,
+                                  1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+         Constrain.setConstraints(namePanel1, jtf1, 1, 1, 1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 1, 0);
+         Constrain.setConstraints(namePanel1, b1, 2, 1, 1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+
+         Constrain.setConstraints(namePanel1,
+                                  new JLabel("Server Name (if remote)"), 0, 3,
+                                  1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+         Constrain.setConstraints(namePanel1, hosturljtf1, 1, 3, 1, 1,
                                   GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 1, 0);
 
-// HostURl label and text field
-         Constrain.setConstraints(this, new JLabel("Host URL"), 0, 2, 1, 1,
-                                  GridBagConstraints.NONE,
+
+         JOutlinePanel usernamePanel1 = new JOutlinePanel("User Name/Password");
+         usernamePanel1.setLayout(new GridBagLayout());
+
+         // set up the description of the property
+         tp = new StringBuffer("<html>");
+         tp.append(fontstyle);
+         tp.append("The login name and password to use");
+         tp.append(endfontstyle);
+         tp.append("</html>");
+
+         JEditorPane jta6 =
+            new JEditorPane("text/html", tp.toString()) {
+               static private final long serialVersionUID = 1L;
+
+               // we can no longer have a horizontal scrollbar if we are always
+               // set to the same width as our parent....may need to be fixed.
+               public Dimension getPreferredSize() {
+                  Dimension d = this.getMinimumSize();
+
+                  return new Dimension(450, d.height);
+               }
+            };
+         jta6.setEditable(false);
+         jta6.setBackground(usernamePanel.getBackground());
+
+         Constrain.setConstraints(usernamePanel1, jta6, 0, 0, 2, 1,
+                                  GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 0, 0);
-         Constrain.setConstraints(this, hosturljtf, 1, 2, 1, 1,
+
+         Constrain.setConstraints(usernamePanel1, new JLabel("User Name"), 0, 1,
+                                  1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+         Constrain.setConstraints(usernamePanel1, usernamejtf1, 1, 1, 1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+
+         Constrain.setConstraints(usernamePanel1, new JLabel("Password"), 0, 2,
+                                  1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+         Constrain.setConstraints(usernamePanel1, passwordjpf1, 1, 2, 1, 1,
+                                  GridBagConstraints.HORIZONTAL,
+                                  GridBagConstraints.CENTER, 0, 0);
+
+
+/*
+ * Set up the panel with the 4 sub-panels
+ */
+         Constrain.setConstraints(this, namePanel, 0, 0, 4, 1,
                                   GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 1, 0);
 
-
-         // User name and text field
-         Constrain.setConstraints(this, new JLabel("User Name"), 0, 3, 1, 1,
-                                  GridBagConstraints.NONE,
-                                  GridBagConstraints.CENTER, 0, 0);
-         Constrain.setConstraints(this, usernamejtf, 1, 3, 1, 1,
+         Constrain.setConstraints(this, usernamePanel, 0, 2, 4, 1,
                                   GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 1, 0);
 
-         // Password and text field
-         Constrain.setConstraints(this, new JLabel("Password"), 0, 4, 1, 1,
-                                  GridBagConstraints.NONE,
-                                  GridBagConstraints.CENTER, 0, 0);
-         Constrain.setConstraints(this, passwordjpf, 1, 4, 1, 1,
+         Constrain.setConstraints(this, namePanel1, 0, 4, 4, 1,
                                   GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 1, 0);
 
-         Constrain.setConstraints(this, new JLabel("File Name2"), 0, 5, 1, 1,
-                                  GridBagConstraints.NONE,
-                                  GridBagConstraints.CENTER, 0, 0);
-         Constrain.setConstraints(this, jtf1, 1, 5, 1, 1,
+         Constrain.setConstraints(this, usernamePanel1, 0, 6, 4, 1,
                                   GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 1, 0);
 
-// HostURl label and text field
-         Constrain.setConstraints(this, new JLabel("Host URL 2"), 0, 6, 1, 1,
-                                  GridBagConstraints.NONE,
-                                  GridBagConstraints.CENTER, 0, 0);
-         Constrain.setConstraints(this, hosturljtf1, 1, 6, 1, 1,
-                                  GridBagConstraints.HORIZONTAL,
-                                  GridBagConstraints.CENTER, 1, 0);
+         /*
+          * Define the actions for the two prowse buttons
+          */
+         b0.addActionListener(new AbstractAction() {
+               public void actionPerformed(ActionEvent e) {
+                  prophost = "";
+                  prophost = hosturljtf0.getText();
+
+                  boolean nohost =
+                     (prophost == null) || (prophost.trim().length() == 0);
+
+                  if (!nohost) {
+                     JFrame frame = new JFrame("Ooops");
+                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                     JOptionPane.showMessageDialog(frame,
+                                                   "Browse is not supported for remote services");
+
+                     return;
 
 
-// User name and text field
-         Constrain.setConstraints(this, new JLabel("User Name 2"), 0, 7, 1, 1,
-                                  GridBagConstraints.NONE,
-                                  GridBagConstraints.CENTER, 0, 0);
-         Constrain.setConstraints(this, usernamejtf1, 1, 7, 1, 1,
-                                  GridBagConstraints.HORIZONTAL,
-                                  GridBagConstraints.CENTER, 1, 0);
+                  }
 
-// Password and text field
-         Constrain.setConstraints(this, new JLabel("Password 2"), 0, 8, 1, 1,
-                                  GridBagConstraints.NONE,
-                                  GridBagConstraints.CENTER, 0, 0);
-         Constrain.setConstraints(this, passwordjpf1, 1, 8, 1, 1,
-                                  GridBagConstraints.HORIZONTAL,
-                                  GridBagConstraints.CENTER, 1, 0);
+                  JFileChooser chooser = new JFileChooser();
+                  chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                  chooser.addChoosableFileFilter(new CSVFilter());
+                  chooser.addChoosableFileFilter(new TXTFilter());
+                  chooser.addChoosableFileFilter(new XMLFilter());
+                  chooser.addChoosableFileFilter(new JPGFilter());
+                  chooser.addChoosableFileFilter(new GIFFilter());
+                  chooser.setFileFilter(chooser.getAcceptAllFileFilter());
+
+                  String d = jtf0.getText();
+
+                  if (d == null) {
+                     d = getFileName0();
+                  }
+
+                  ;
+
+                  // if(d != null) {
+// added 3.25.2004 by DC --- d.trim().length() > 0
+                  if (d != null && (d.trim().length() > 0)) {
+                     File thefile = new File(d);
+
+                     chooser.setSelectedFile(thefile);
+
+                  }
+// added 3.25.2004 by DC
+                  else {
+                     chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+                  }
+// end
+
+                  // set the title of the FileDialog
+                  StringBuffer sb = new StringBuffer("Select File");
+                  chooser.setDialogTitle(sb.toString());
+
+                  // get the file
+                  String fn;
+                  int retVal = chooser.showOpenDialog(null);
+
+                  if (retVal == JFileChooser.APPROVE_OPTION) {
+                     fn = chooser.getSelectedFile().getAbsolutePath();
+                  } else {
+                     return;
+                  }
+
+                  if (fn != null) {
+
+                     // display the path to the chosen file
+                     jtf0.setText(fn);
+                  }
+
+               } // End of ActionPerformed
+            });
+
+
+         b1.addActionListener(new AbstractAction() {
+               public void actionPerformed(ActionEvent e) {
+                  prophost = "";
+                  prophost = hosturljtf1.getText();
+
+                  boolean nohost =
+                     (prophost == null) || (prophost.trim().length() == 0);
+
+                  if (!nohost) {
+                     JFrame frame = new JFrame("Ooops");
+                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                     JOptionPane.showMessageDialog(frame,
+                                                   "Browse is not supported for remote services ");
+
+                     return;
+
+
+                  }
+
+                  JFileChooser chooser = new JFileChooser();
+                  chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                  chooser.addChoosableFileFilter(new CSVFilter());
+                  chooser.addChoosableFileFilter(new TXTFilter());
+                  chooser.addChoosableFileFilter(new XMLFilter());
+                  chooser.addChoosableFileFilter(new JPGFilter());
+                  chooser.addChoosableFileFilter(new GIFFilter());
+                  chooser.setFileFilter(chooser.getAcceptAllFileFilter());
+
+                  String d = jtf1.getText();
+
+                  if (d == null) {
+                     d = getFileName1();
+                  }
+
+                  ;
+
+                  // if(d != null) {
+// added 3.25.2004 by DC --- d.trim().length() > 0
+                  if (d != null && (d.trim().length() > 0)) {
+                     File thefile = new File(d);
+
+                     chooser.setSelectedFile(thefile);
+
+                  }
+// added 3.25.2004 by DC
+                  else {
+                     chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+                  }
+// end
+
+                  // set the title of the FileDialog
+                  StringBuffer sb = new StringBuffer("Select File");
+                  chooser.setDialogTitle(sb.toString());
+
+                  // get the file
+                  String fn;
+                  int retVal = chooser.showOpenDialog(null);
+
+                  if (retVal == JFileChooser.APPROVE_OPTION) {
+                     fn = chooser.getSelectedFile().getAbsolutePath();
+                  } else {
+                     return;
+                  }
+
+                  if (fn != null) {
+
+                     // display the path to the chosen file
+                     jtf1.setText(fn);
+                  }
+
+               } // End of ActionPerformed
+            });
 
       }
 
-
+      /*
+       * The method to collect the data and update the values @see
+       * ncsa.d2k.core.modules.CustomModuleEditor#updateModule()
+       */
       public boolean updateModule() throws Exception {
-         String f0 = jtf.getText();
+         String f0 = jtf0.getText();
 
          boolean didChange = false;
 
@@ -745,14 +1033,14 @@ public class Input2FileURLs extends InputModule {
             didChange = true;
          }
 
-         f0 = hosturljtf.getText();
+         f0 = hosturljtf0.getText();
 
          if (f0 != getHostURL0()) {
             setHostURL0(f0);
             didChange = true;
          }
 
-         f0 = usernamejtf.getText();
+         f0 = usernamejtf0.getText();
 
          if (f0 != getUserName0()) {
             setUserName0(f0);
@@ -762,7 +1050,7 @@ public class Input2FileURLs extends InputModule {
          /*
           * Use passwordjpf.getPassword.toString will not give the password text
           */
-         char[] chararray = passwordjpf.getPassword();
+         char[] chararray = passwordjpf0.getPassword();
          StringBuffer sb = new StringBuffer();
 
          for (int i = 0; i < chararray.length; i++) {
@@ -776,46 +1064,93 @@ public class Input2FileURLs extends InputModule {
             setPassword0(f0);
             didChange = true;
          }
-         
-         String f1 = jtf1.getText();
 
-         if (f1 != getFileName1()) {
-            setFileName1(f1);
+         f0 = jtf1.getText();
+
+         if (f0 != getFileName1()) {
+            setFileName1(f0);
             didChange = true;
          }
 
-         f1 = hosturljtf1.getText();
+         f0 = hosturljtf1.getText();
 
-         if (f1 != getHostURL1()) {
-            setHostURL1(f1);
+         if (f0 != getHostURL1()) {
+            setHostURL1(f0);
             didChange = true;
          }
 
-         f1 = usernamejtf1.getText();
+         f0 = usernamejtf1.getText();
 
-         if (f1 != getUserName1()) {
-            setUserName1(f1);
+         if (f0 != getUserName1()) {
+            setUserName1(f0);
             didChange = true;
          }
 
          /*
           * Use passwordjpf.getPassword.toString will not give the password text
           */
-         char[] chararray1 = passwordjpf1.getPassword();
-         StringBuffer sb1 = new StringBuffer();
+         char[] chararray2 = passwordjpf1.getPassword();
+         StringBuffer sb2 = new StringBuffer();
 
-         for (int i = 0; i < chararray1.length; i++) {
-            sb1.append(chararray1[i]);
+         for (int i = 0; i < chararray2.length; i++) {
+            sb2.append(chararray2[i]);
          }
 
-         f1 = sb1.toString();
+         f0 = sb2.toString();
 
-         if (f1 != getPassword1()) {
-            setPassword1(f1);
+         if (f0 != getPassword1()) {
+
+            setPassword1(f0);
             didChange = true;
          }
-         
+
          return didChange;
       } // end method updateModule
+
+      /*
+       * Define the file name filters
+       */
+      class CSVFilter extends javax.swing.filechooser.FileFilter {
+         public boolean accept(File f) {
+            return f.isDirectory() || f.getName().endsWith(".csv");
+         }
+
+         public String getDescription() {
+            return "Comma-Separated Values (.csv)";
+         }
+      }
+
+      class GIFFilter extends javax.swing.filechooser.FileFilter {
+         public boolean accept(File f) {
+            return f.isDirectory() || f.getName().endsWith(".gif");
+         }
+
+         public String getDescription() { return "GIF Image (.gif)"; }
+      }
+
+      class JPGFilter extends javax.swing.filechooser.FileFilter {
+         public boolean accept(File f) {
+            return f.isDirectory() || f.getName().endsWith(".jpg");
+         }
+
+         public String getDescription() { return "JPG Image (.jpg)"; }
+      }
+
+      class TXTFilter extends javax.swing.filechooser.FileFilter {
+         public boolean accept(File f) {
+            return f.isDirectory() || f.getName().endsWith(".txt");
+         }
+
+         public String getDescription() { return "Text Files (.txt)"; }
+      }
+
+      class XMLFilter extends javax.swing.filechooser.FileFilter {
+         public boolean accept(File f) {
+            return f.isDirectory() || f.getName().endsWith(".xml");
+         }
+
+         public String getDescription() { return "XML Files (.xml)"; }
+      }
+
    } // end class PropEdit
 } // end class Input2FileURLs
