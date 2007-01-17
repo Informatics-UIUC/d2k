@@ -1,4 +1,4 @@
-/* 
+/*
  * $Header$
  *
  * ===================================================================
@@ -6,17 +6,17 @@
  * D2K-Workflow
  * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
  * ILLINOIS. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License v2.0
  * as published by the Free Software Foundation and with the required
  * interpretation regarding derivative works as described below.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License v2.0 for more details.
- * 
+ *
  * This program and the accompanying materials are made available
  * under the terms of the GNU General Public License v2.0 (GPL v2.0)
  * which accompanies this distribution and is available at
@@ -34,7 +34,7 @@
  * make those components a derivative work of D2K-Workflow.
  * (Examples of such independently developed components include for
  * example, external databases or metadata and provenance stores).
- * 
+ *
  * Note: A non-GPL commercially licensed version of contributions
  * from the UNIVERSITY OF ILLINOIS may be available from the
  * designated commercial licensee RiverGlass, Inc. located at
@@ -72,19 +72,19 @@ public class putDirectory extends InputModule {
 
    //~ Instance fields *********************************************************
 
-   /** Description of field depthLevel. */
+   /** The depth to traverse. */
    private String depthLevel;
 
    //~ Methods *****************************************************************
 
    /**
-    * Description of method listDir.
+    * List the contents pointed to by the DataObjectProxy, to the specified
+    * depth.
     *
-    * @param  dop   Description of parameter dop.
-    * @param  depth Description of parameter depth.
+    * @param  dop   DataObjectProxy of local or remot directory.
+    * @param  depth Depth to descend (1, or infinity)
     *
-    * @throws DataObjectProxyException Description of exception
-    *                                  DataObjectProxyException.
+    * @throws DataObjectProxyException
     */
    private void listDir(DataObjectProxy dop, int depth)
       throws DataObjectProxyException {
@@ -100,13 +100,13 @@ public class putDirectory extends InputModule {
    }
 
    /**
-    * Description of method listFiles.
+    * List the only the files (omit directories) pointed to by the
+    * DataObjectProxy, to the specified depth.
     *
-    * @param  dop   Description of parameter dop.
-    * @param  depth Description of parameter depth.
+    * @param  dop   DataObjectProxy of local or remot directory.
+    * @param  depth Depth to descend (1, or infinity)
     *
-    * @throws DataObjectProxyException Description of exception
-    *                                  DataObjectProxyException.
+    * @throws DataObjectProxyException
     */
    private void listFiles(DataObjectProxy dop, int depth)
       throws DataObjectProxyException {
@@ -121,9 +121,9 @@ public class putDirectory extends InputModule {
    }
 
    /**
-    * Description of method doit.
+    * Example of uploading a whole directory using DataObjectProxy.
     *
-    * @throws Exception                Description of exception Exception.
+    * @throws Exception
     * @throws DataObjectProxyException Description of exception
     *                                  DataObjectProxyException.
     */
@@ -181,18 +181,19 @@ public class putDirectory extends InputModule {
    } // end method doit
 
    /**
-    * Description of method getDepth.
+    * Value of the property depth.
     *
-    * @return Description of return value.
+    * @return depth.
     */
    public String getDepth() { return depthLevel; }
 
+
    /**
-    * Description of method getInputInfo.
+    * Returns a description of the input at the specified index.
     *
-    * @param  i Description of parameter i.
+    * @param  i Index of the input for which a description should be returned.
     *
-    * @return Description of return value.
+    * @return <code>String</code> describing the input at the specified index.
     */
    public String getInputInfo(int i) {
 
@@ -210,11 +211,12 @@ public class putDirectory extends InputModule {
    }
 
    /**
-    * Description of method getInputName.
+    * Returns the name of the input at the specified index.
     *
-    * @param  i Description of parameter i.
+    * @param  i Index of the input for which a name should be returned.
     *
-    * @return Description of return value.
+    * @return <code>String</code> containing the name of the input at the
+    *         specified index.
     */
    public String getInputName(int i) {
 
@@ -233,9 +235,11 @@ public class putDirectory extends InputModule {
 
 
    /**
-    * Description of method getInputTypes.
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the input at the corresponding index.
     *
-    * @return Description of return value.
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the input at the corresponding index.
     */
    public String[] getInputTypes() {
       String[] types =
@@ -268,19 +272,20 @@ public class putDirectory extends InputModule {
    } // end method getModuleInfo
 
    /**
-    * Return the name of this module.
+    * Returns the name of the module that is appropriate for end-user
+    * consumption.
     *
-    * @return The display name for this module.
+    * @return The name of the module.
     */
    public String getModuleName() { return "putDirectory"; }
 
-
    /**
-    * Description of method getOutputInfo.
+    * Returns a description of the output at the specified index.
     *
-    * @param  arg0 Description of parameter arg0.
+    * @param  arg0 Index of the output for which a description should be
+    *              returned.
     *
-    * @return Description of return value.
+    * @return <code>String</code> describing the output at the specified index.
     */
    public String getOutputInfo(int arg0) { return null; }
 
@@ -302,9 +307,11 @@ public class putDirectory extends InputModule {
    public String[] getOutputTypes() { return null; }
 
    /**
-    * Description of method getPropertiesDescriptions.
+    * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    * objects for each property of the module.
     *
-    * @return Description of return value.
+    * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    *         objects.
     */
    public PropertyDescription[] getPropertiesDescriptions() {
       PropertyDescription[] pds = new PropertyDescription[1];
@@ -318,14 +325,16 @@ public class putDirectory extends InputModule {
    }
 
    /**
-    * Description of method getPropertyEditor.
+    * Return a custom property editor.
     *
-    * @return Description of return value.
+    * @return return a custom property editor.
     */
    public CustomModuleEditor getPropertyEditor() { return new PropEdit(); }
 
    /**
-    * Description of method setDepth.
+    * Set the depth of the traversal.
+    *
+    * <p>"1" or "infinity"</p>
     *
     * @param s Description of parameter s.
     */
@@ -333,15 +342,13 @@ public class putDirectory extends InputModule {
 
    //~ Inner Classes ***********************************************************
 
-// This class needs additional work to make it nicer to use.  Ideally would
-// like 'browse' buttons for remote objects.
    private class PropEdit extends JPanel implements CustomModuleEditor {
 
       /** Use serialVersionUID for interoperability. */
       static private final long serialVersionUID = 2637786544956495261L;
 
+      /* the value for the depth */
       private JTextField depthjtf;
-
 
       private PropEdit() {
          setLayout(new GridBagLayout());
@@ -357,8 +364,6 @@ public class putDirectory extends InputModule {
          Constrain.setConstraints(this, depthjtf, 1, 0, 1, 1,
                                   GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 1, 0);
-
-
       }
 
       public boolean updateModule() throws Exception {
@@ -367,6 +372,9 @@ public class putDirectory extends InputModule {
          boolean didChange = false;
          String sdl = getDepth();
 
+         /*
+          * Ideally should check the input value, "1" or "infinity"
+          */
          if (f0 != sdl) {
             setDepth(f0);
             didChange = true;

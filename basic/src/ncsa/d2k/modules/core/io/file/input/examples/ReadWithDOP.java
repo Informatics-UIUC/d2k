@@ -55,11 +55,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 
 
 /**
- * Example use of DataObjecProxy to read data..
+ * Example use of DataObjecProxy to read data.
  *
  * 
  *
@@ -71,7 +70,7 @@ public class ReadWithDOP extends InputModule {
    //~ Methods *****************************************************************
 
    /**
-    * readFromLocalCopy--example of ue of DOP.  Reads the contents of the
+    * readFromLocalCopy--example of use of DOP.  Reads the contents of the
     * target from a stream.
     * <p>
     * If the target is remote, the file is downloaded to a temporary file, and
@@ -86,7 +85,7 @@ public class ReadWithDOP extends InputModule {
    private void readFromLocalCopy(DataObjectProxy _dop) {
 	int _tableLength = 0;
 
-      // count the number of lines in the file
+      // demonstration: count the number of lines in the file
       try {
          BufferedReader rdr =
             new BufferedReader(new InputStreamReader(_dop.getLocalInputStream()));
@@ -104,7 +103,7 @@ public class ReadWithDOP extends InputModule {
    }
 
    /**
-    * readFromStrea,--example of ue of DOP.  Reads the contents of the
+    * readFromStream--example of use of DOP.  Reads the contents of the
     * target from a stream.
     * <p>
     * If the target is remote, an HTTP stream is read.
@@ -119,7 +118,7 @@ public class ReadWithDOP extends InputModule {
 
       int _tableLength = 0;
 
-      // count the number of lines in the file
+      // Demonstration: count the number of lines in the file
       try {
          BufferedReader rdr =
             new BufferedReader(new InputStreamReader(_dop.getInputStream()));
@@ -141,8 +140,9 @@ public class ReadWithDOP extends InputModule {
       lg.fatal("Fatal");
       
    }
+   
    /**
-    * readFromStrea,--example of ue of DOP.  Reads the contents of the
+    * readFile--example of use of DOP.  Reads the contents of the
     * target from a stream.
     * <p>
     * If the target is remote, an HTTP stream is read.
@@ -156,15 +156,13 @@ public class ReadWithDOP extends InputModule {
    private void readFile(DataObjectProxy _dop,File dest) {
 	   int _tableLength = 0;
 	   try {
+		   // manually read into local file
 	    	  File file = _dop.readFile(dest);
-	      
 
-//	      LineNumberReader _reader = new LineNumberReader(new FileReader(file));
-
-	      // count the number of lines in the file
+	      // count the number of lines in the local file
 	     
 	         BufferedReader rdr =
-	            new BufferedReader(new InputStreamReader(_dop.getInputStream()));
+	            new BufferedReader(new FileReader(file));
 	         String line = null;
 
 	         while ((line = rdr.readLine()) != null) {
@@ -194,13 +192,17 @@ public class ReadWithDOP extends InputModule {
 	   DataObjectProxy dop = (DataObjectProxy) pullInput(0);
 
       /*
-       * Read the data:  2 variations that do the same thing.
+       * Read the data:  3 variations that do the same thing.
        */
       readFromStream(dop);
 
       readFromLocalCopy(dop);
       
       readFile(dop,null);
+      
+      /*
+       * 'readFile(dop,destfile)' would read into local file
+       */
    }
 
    /**
@@ -243,9 +245,9 @@ public class ReadWithDOP extends InputModule {
    }
 
    /**
-    * Description of method getInputTypes.
+    * List of the input types.
     *
-    * @return Description of return value.
+    * @return The input types.
     */
    public String[] getInputTypes() {
       String[] in = {
@@ -256,7 +258,7 @@ public class ReadWithDOP extends InputModule {
    }
 
    /**
-    * Describes the purpose of the module.
+    * Get info about the module.
     *
     * @return <code>String</code> describing the purpose of the module.
     */
@@ -268,8 +270,6 @@ public class ReadWithDOP extends InputModule {
       sb.append("Given a <i>DataObjectProxy</i> this module reads the ");
       sb.append("contents of the target file. ");
       sb.append("</p>");
-
-
       sb.append("</p><p>Data Handling: ");
       sb.append("This module does not destroy or modify its input data.");
       sb.append("</p>");
@@ -278,11 +278,11 @@ public class ReadWithDOP extends InputModule {
    } // end method getModuleInfo
 
    /**
-    * Describes the purpose of the module.
+    * Get the pretty name of the module.
     *
     * @return <code>String</code> describing the purpose of the module.
     */
-   public String getModuleName() { return "Read uisng DOP"; }
+   public String getModuleName() { return "Read using DOP"; }
 
    /**
     * Returns a description of the output at the specified index.
@@ -304,7 +304,7 @@ public class ReadWithDOP extends InputModule {
    public String getOutputName(int i) { return ""; }
 
    /**
-    * Description of method getOutputTypes.
+    * Get the output types.
     *
     * @return Description of return value.
     */

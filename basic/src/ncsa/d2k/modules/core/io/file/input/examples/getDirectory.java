@@ -1,4 +1,4 @@
-/* 
+/*
  * $Header$
  *
  * ===================================================================
@@ -6,17 +6,17 @@
  * D2K-Workflow
  * Copyright (c) 1997,2006 THE BOARD OF TRUSTEES OF THE UNIVERSITY OF
  * ILLINOIS. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License v2.0
  * as published by the Free Software Foundation and with the required
  * interpretation regarding derivative works as described below.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License v2.0 for more details.
- * 
+ *
  * This program and the accompanying materials are made available
  * under the terms of the GNU General Public License v2.0 (GPL v2.0)
  * which accompanies this distribution and is available at
@@ -34,7 +34,7 @@
  * make those components a derivative work of D2K-Workflow.
  * (Examples of such independently developed components include for
  * example, external databases or metadata and provenance stores).
- * 
+ *
  * Note: A non-GPL commercially licensed version of contributions
  * from the UNIVERSITY OF ILLINOIS may be available from the
  * designated commercial licensee RiverGlass, Inc. located at
@@ -44,17 +44,6 @@
  */
 package ncsa.d2k.modules.core.io.file.input.examples;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.Vector;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import ncsa.d2k.core.modules.CustomModuleEditor;
 import ncsa.d2k.core.modules.InputModule;
 import ncsa.d2k.core.modules.PropertyDescription;
@@ -62,13 +51,24 @@ import ncsa.d2k.modules.core.io.proxy.DataObjectProxy;
 import ncsa.d2k.modules.core.io.proxy.DataObjectProxyException;
 import ncsa.gui.Constrain;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Vector;
+
 
 /**
  * Example of how to download a directory using DataObjectProxy.
- * <p>
- * The source can be a local or remote directory.
- * <p>
- * The destination must be a local directory.
+ *
+ * <p>The source can be a local or remote directory.</p>
+ *
+ * <p>The destination must be a local directory.</p>
  *
  * @author  $Author$
  * @version $Revision$, $Date$
@@ -77,40 +77,63 @@ public class getDirectory extends InputModule {
 
    //~ Instance fields *********************************************************
 
-   /** the depth to traverse. */
+   /** the depth to traverse: infinity or 1. */
    private String depthLevel = "infinity";
 
    //~ Methods *****************************************************************
-   private void listDir(DataObjectProxy dop, int depth)  throws DataObjectProxyException{
-	   Vector list = dop.getChildrenURLs(depth);
-   
-   Enumeration en = list.elements();
 
-   while (en.hasMoreElements()) {
-      Object s = en.nextElement();
-      System.out.println("  " + s);
-   }
-   }
-   private void listFiles(DataObjectProxy dop, int depth)  throws DataObjectProxyException{
-	   Vector list = dop.getChildrenURLs(depth, true);
-   
-   Enumeration en = list.elements();
+   /**
+    * List the contents pointed to by the DataObjectProxy, to the
+    * specified depth.
+    *
+    * @param  dop   DataObjectProxy of local or remot directory.
+    * @param  depth Depth to descend (1, or infinity)
+    * 
+    * @throws DataObjectProxyException 
+    */
+   private void listDir(DataObjectProxy dop, int depth)
+      throws DataObjectProxyException {
+      Vector list = dop.getChildrenURLs(depth);
 
-   while (en.hasMoreElements()) {
-      Object s = en.nextElement();
-      System.out.println("  " + s);
+      Enumeration en = list.elements();
+
+      while (en.hasMoreElements()) {
+         Object s = en.nextElement();
+         System.out.println("  " + s);
+      }
    }
+
+   /**
+    * List the only the files (omit directories) pointed to by the 
+    * DataObjectProxy, to the specified depth.
+    *
+    * @param  dop   DataObjectProxy of local or remot directory.
+    * @param  depth Depth to descend (1, or infinity)
+    * 
+    * @throws DataObjectProxyException 
+    */
+   private void listFiles(DataObjectProxy dop, int depth)
+      throws DataObjectProxyException {
+      Vector list = dop.getChildrenURLs(depth, true);
+
+      Enumeration en = list.elements();
+
+      while (en.hasMoreElements()) {
+         Object s = en.nextElement();
+         System.out.println("  " + s);
+      }
    }
+
    /**
     * Example of downloading a whole directory using DataObjectProxy.
-    * <p>
     *
-    * @throws Exception                Description of exception Exception.
-    * @throws DataObjectProxyException Description of exception
-    *                                  DataObjectProxyException.
+    * @throws Exception                
     */
    public void doit() throws Exception {
 
+	   /*
+	    * Get the source and destination from input.
+	    */
       DataObjectProxy srcdop = (DataObjectProxy) pullInput(0);
       DataObjectProxy desdop = (DataObjectProxy) pullInput(1);
       int depth;
@@ -118,6 +141,9 @@ public class getDirectory extends InputModule {
       System.out.println("Source DOP is " + srcdop.getURL());
       System.out.println("Destination DOP is " + desdop.getURL());
 
+      /*
+       * This example sets depth as a property.
+       */
       if (this.getDepth().equals("1")) {
          depth = 1;
       } else if (this.getDepth().equalsIgnoreCase("infinity")) {
@@ -128,54 +154,61 @@ public class getDirectory extends InputModule {
 
       URL desurl = desdop.getURL();
       System.out.println("List the contents of the source:");
+
       long b1 = System.currentTimeMillis();
-      listDir(srcdop,depth);
+      listDir(srcdop, depth);
+
       long a1 = System.currentTimeMillis();
-      
+
       System.out.println("List just the files ");
       listFiles(srcdop, depth);
 
       System.out.println("Start downloading " + srcdop.getURL() + " to " +
                          desurl);
+
       long b2 = System.currentTimeMillis();
+
       if (desdop.getUsername().equals("")) {
-    	  srcdop.downloadDir(desurl, depth);
+         srcdop.downloadDir(desurl, depth);
       } else {
-    	  srcdop.downloadDir(desdop, depth);
+         srcdop.downloadDir(desdop, depth);
       }
- //     srcdop.downloadDirP(desdop, depth);
+
+      // srcdop.downloadDirP(desdop, depth);
       long a2 = System.currentTimeMillis();
       System.out.println("End downloading " + srcdop.getURL() + " to " +
                          desurl);
-      
-      
+
+
       System.out.println("List the contents of the destination:");
+
       long b3 = System.currentTimeMillis();
-      listDir(desdop,depth);
+      listDir(desdop, depth);
+
       long a3 = System.currentTimeMillis();
       System.out.println("List just the files ");
-      listFiles(desdop,depth);
+      listFiles(desdop, depth);
       desdop.close();
       srcdop.close();
       System.out.println("Timing:");
-      System.out.println("  List Source: "+(a1-b1)+ " ms.");
-      System.out.println("  Download: "+(a2-b2)+ " ms.");
-      System.out.println("  List Dest: "+(a3-b3)+ " ms.");
-      } // end method doit
+      System.out.println("  List Source: " + (a1 - b1) + " ms.");
+      System.out.println("  Download: " + (a2 - b2) + " ms.");
+      System.out.println("  List Dest: " + (a3 - b3) + " ms.");
+   } // end method doit
 
    /**
-    * Description of method getDepth.
+    * Value of the property depth.
     *
-    * @return Description of return value.
+    * @return depth.
     */
    public String getDepth() { return depthLevel; }
 
    /**
-    * Description of method getInputInfo.
+    * Returns a description of the input at the specified index.
     *
-    * @param  i Description of parameter i.
+    * @param  i Index of the input for which a description should be returned.
     *
-    * @return Description of return value.
+    * @return <code>String</code> describing the input at the specified index.
     */
    public String getInputInfo(int i) {
 
@@ -193,11 +226,12 @@ public class getDirectory extends InputModule {
    }
 
    /**
-    * Description of method getInputName.
+    * Returns the name of the input at the specified index.
     *
-    * @param  i Description of parameter i.
+    * @param  i Index of the input for which a name should be returned.
     *
-    * @return Description of return value.
+    * @return <code>String</code> containing the name of the input at the
+    *         specified index.
     */
    public String getInputName(int i) {
 
@@ -216,9 +250,11 @@ public class getDirectory extends InputModule {
 
 
    /**
-    * Description of method getInputTypes.
+    * Returns an array of <code>String</code> objects each containing the fully
+    * qualified Java data type of the input at the corresponding index.
     *
-    * @return Description of return value.
+    * @return An array of <code>String</code> objects each containing the fully
+    *         qualified Java data type of the input at the corresponding index.
     */
    public String[] getInputTypes() {
       String[] types =
@@ -243,24 +279,29 @@ public class getDirectory extends InputModule {
    } // end method getModuleInfo
 
    /**
-    * Return the name of this module.
+    * Returns the name of the module that is appropriate for end-user
+    * consumption.
     *
-    * @return The display name for this module.
+    * @return The name of the module.
     */
    public String getModuleName() { return "getDirectory"; }
 
 
    /**
-    * Description of method getOutputInfo.
+    * Returns a description of the output at the specified index.
     *
-    * @param  arg0 Description of parameter arg0.
+    * @param  index Index of the output for which a description should be
+    *               returned.
     *
-    * @return Description of return value.
+    * @return <code>String</code> describing the output at the specified index.
     */
    public String getOutputInfo(int arg0) { return null; }
 
    /**
     * Returns the name of the output at the specified index.
+    *
+    * @param  index Index of the output for which a description should be
+    *               returned.
     *
     * @return <code>String</code> containing the name of the output at the
     *         specified index.
@@ -277,9 +318,11 @@ public class getDirectory extends InputModule {
    public String[] getOutputTypes() { return null; }
 
    /**
-    * Description of method getPropertiesDescriptions.
+    * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    * objects for each property of the module.
     *
-    * @return Description of return value.
+    * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    *         objects.
     */
    public PropertyDescription[] getPropertiesDescriptions() {
       PropertyDescription[] pds = new PropertyDescription[1];
@@ -293,14 +336,16 @@ public class getDirectory extends InputModule {
    }
 
    /**
-    * Description of method getPropertyEditor.
+    * Return a custom property editor.
     *
-    * @return Description of return value.
+    * @return return a custom property editor.
     */
    public CustomModuleEditor getPropertyEditor() { return new PropEdit(); }
 
    /**
-    * Description of method setDepth.
+    * Set the depth of the traversal.
+    * 
+    * <p>"1" or "infinity"</p>
     *
     * @param s Description of parameter s.
     */
@@ -308,15 +353,13 @@ public class getDirectory extends InputModule {
 
    //~ Inner Classes ***********************************************************
 
-// This class needs additional work to make it nicer to use.  Ideally would
-// like 'browse' buttons for remote objects.
    private class PropEdit extends JPanel implements CustomModuleEditor {
 
       /** Use serialVersionUID for interoperability. */
       static private final long serialVersionUID = 2637786544956495261L;
 
+      /* the value for the depth */
       private JTextField depthjtf;
-
 
       private PropEdit() {
          setLayout(new GridBagLayout());
@@ -342,6 +385,10 @@ public class getDirectory extends InputModule {
          boolean didChange = false;
          String sdl = getDepth();
 
+         /*
+          * Idelly, should check the value of the input, which must be "1", 
+          * or "infinity".
+          */
          if (f0 != sdl) {
             setDepth(f0);
             didChange = true;

@@ -1,4 +1,3 @@
-
 /*
  * $Header$
  *
@@ -50,15 +49,11 @@ import ncsa.d2k.core.modules.InputModule;
 import ncsa.d2k.modules.core.io.proxy.DataObjectProxy;
 import ncsa.d2k.modules.core.io.proxy.DataObjectProxyException;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
-import java.io.*;
 
 
 /**
@@ -72,101 +67,107 @@ public class WriteWithDOP extends InputModule {
    //~ Methods *****************************************************************
 
    /**
-    * writeToURL--example of use of DOP.  write the contents of a file
-    * to the target.
+    * writeStreamToURL--example of use of DOP. write the contents of an input
+    * stream to the target.
     *
-    * @param _dop The DataObjectProxy for either local or remote file.
+    * @param dop The DataObjectProxy for either local or remote file.
     */
-   private void writeToURL(DataObjectProxy dop) {     
+   private void writeStreamToURL(DataObjectProxy dop) {
 
-  FileOutputStream fos = null;
+      FileOutputStream fos = null;
       ObjectOutputStream out = null;
 
-      
-      try {
-    	  File temp = File.createTempFile("xxy", "txt");
 
-    	  /* Allocate local file  */
-         fos = new FileOutputStream(dop.initLocalFile(temp));    
+      try {
+         File temp = File.createTempFile("xxy", "txt");
+
+         /* Allocate local file  */
+         fos = new FileOutputStream(dop.initLocalFile(temp));
          out = new ObjectOutputStream(fos);
+
+         /* write stuff to the file */
+         out.writeObject("Contents of the output.");
+
+         byte bb = (byte) 44;
+         out.write(bb);
+         out.writeInt(77);
+         out.writeObject("The end");
+         out.flush();
+         out.close();
+
+         // Demonstrate: Open the file as input stream, upload from stream
+         FileInputStream fis = new FileInputStream(temp);
+
+         /* upload file to server */
+         dop.putFromStream(fis);
+
+         /* close connection an ddelete temp file */
+         dop.close();
+      } catch (IOException e) {
+         System.out.println("Unable to serialize object " +
+                            "\n" + e);
+
+      } catch (DataObjectProxyException dopex) {
+         System.out.println("Exception: " + dopex);
+      } catch (SecurityException se) {
+         System.out.println("Could not open file: \n" + se);
+      }
+
+      System.out.println("Write done");
+   } // end method writeStreamToURL
+
+   /**
+    * writeToURL--example of use of DOP. write the contents of a file to the
+    * target.
+    *
+    * @param dop The DataObjectProxy for either local or remote file.
+    */
+   private void writeToURL(DataObjectProxy dop) {
+
+      FileOutputStream fos = null;
+      ObjectOutputStream out = null;
+
+
+      try {
+         File temp = File.createTempFile("xxy", "txt");
+
+         /* Allocate local file  */
+         fos = new FileOutputStream(dop.initLocalFile(temp));
+         out = new ObjectOutputStream(fos);
+
          /* write stuff to the file */
          out.writeObject("Contents of the output.");
          out.flush();
          out.close();
-         
+
          /* upload file to server */
          dop.putFromFile(temp);
+
          /* close connection an ddelete temp file */
          dop.close();
       } catch (IOException e) {
-    	  System.out.println("Unable to serialize object " +
-                               "\n" + e);
-      
-   } catch (DataObjectProxyException dopex) {
-       System.out.println("Exception: " + dopex);
-    } catch (SecurityException se) {
- 	  System.out.println("Could not open file: \n" + se);
-   }
-    System.out.println("Write done");
-   }
-   /**
-    * writeStreamToURL--example of use of DOP.  write the contents of an input
-    * stream
-    * to the target.
-    *
-    * @param _dop The DataObjectProxy for either local or remote file.
-    */
-   private void writeStreamToURL(DataObjectProxy dop) {     
+         System.out.println("Unable to serialize object " +
+                            "\n" + e);
 
-	     FileOutputStream fos = null;
-	        ObjectOutputStream out = null;
-	        
+      } catch (DataObjectProxyException dopex) {
+         System.out.println("Exception: " + dopex);
+      } catch (SecurityException se) {
+         System.out.println("Could not open file: \n" + se);
+      }
 
-	        try {
-	        	File temp = File.createTempFile("xxy", "txt");
+      System.out.println("Write done");
+   } // end method writeToURL
 
-	      	  /* Allocate local file  */
-	           fos = new FileOutputStream(dop.initLocalFile(temp));    
-	           out = new ObjectOutputStream(fos);
-	           /* write stuff to the file */
-	           out.writeObject("Contents of the output.");
-	           byte bb = (byte)44;
-	           out.write(bb);
-	           out.writeInt(77);
-	           out.writeObject("The end");
-	           out.flush();
-	           out.close();
-	           
-	           // Demonstrate: Open the file as input stream, upload from stream
-	           FileInputStream fis = new FileInputStream(temp);
-	                    
-	           /* upload file to server */
-	           dop.putFromStream(fis);
-	           /* close connection an ddelete temp file */
-	           dop.close();
-	        } catch (IOException e) {
-	      	  System.out.println("Unable to serialize object " +
-	                                 "\n" + e);
-	        
-	     } catch (DataObjectProxyException dopex) {
-	         System.out.println("Exception: " + dopex);
-	      } catch (SecurityException se) {
-	   	  System.out.println("Could not open file: \n" + se);
-	     }
-	      System.out.println("Write done");
-	     }
-   
-   
 
    /**
     * Performs the main work of the module.
-    * <p>
-    * This step takes in a single DataObjectProxy, and calls the two examples
-    * of writing.
-    * <p>
-    * Use "Input1FileURL" to get the DOP.
-    * <p>
-    * Try either a local file (path) or a URL (path plus server)
+    *
+    * <p>This step takes in a single DataObjectProxy, and calls the two examples
+    * of writing.</p>
+    *
+    * <p>Use "Input1FileURL" to get the DOP.</p>
+    *
+    * <p>Try either a local file (path) or a URL (path plus server)</p>
     *
     * @throws Exception Description of exception Exception.
     */
@@ -176,16 +177,16 @@ public class WriteWithDOP extends InputModule {
       /*
        * Write the data:  2 variations that do the same thing.
        */
-      
+
       writeStreamToURL(dop);
-      
+
       // Reset the proxy.  Otherwise, internal checks may prevent
       // second write to exactly the same connection.
       DataObjectProxy dop2 = dop.resetDataObjectProxy(dop.getURL());
-      
+
       writeToURL(dop2);
-      
-   
+
+
    }
 
    /**
@@ -299,4 +300,4 @@ public class WriteWithDOP extends InputModule {
       return out;
    }
 
-} // end class ReadWithDOP
+} // end class WriteWithDOP
