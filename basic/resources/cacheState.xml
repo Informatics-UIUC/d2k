@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<dataObjectCacheInfo>
+    <cacheList rid="d2kTempData\d2k53833.out">
+        <calendar>2006-06-29T17:49:11Z</calendar>
+        <ID>d2kTempData\d2k53833.out</ID>
+        <localFile>d2kTempData\d2k53833.out</localFile>
+        <URL>http://vesta.ncsa.uiuc.edu:8088/slide/files/Fang/data/segment.csv</URL>
+        <ETag>93ea3b72d39be4b1e8b73502e032ab5c</ETag>
+        <username>fangguo2</username>
+    </cacheList>
+    <cacheList rid="file1.txt">
+        <calendar>day1</calendar>
+        <ID>r1</ID>
+        <localFile>file1.txt</localFile>
+        <URL>url1</URL>
+        <ETag>etag1</ETag>
+        <username>fang1</username>
+    </cacheList>
+    <cacheList rid="file3.txt">
+        <calendar>day3</calendar>
+        <ID>r3</ID>
+        <localFile>file3.txt</localFile>
+        <URL>url3</URL>
+        <ETag>etag3</ETag>
+        <username>fang3</username>
+    </cacheList>
+    <cacheList rid="file4.txt">
+        <calendar>day4</calendar>
+        <ID>r4</ID>
+        <localFile>file4.txt</localFile>
+        <URL>url4</URL>
+        <ETag>etag4</ETag>
+        <username>fang4</username>
+    </cacheList>
+    <cacheList rid="file5.txt">
+        <calendar>day5</calendar>
+        <ID>r5</ID>
+        <localFile>file5.txt</localFile>
+        <URL>url5</URL>
+        <ETag>etag5</ETag>
+        <username>fang5</username>
+    </cacheList>
+    <cacheList rid="file6.txt">
+        <calendar>day6</calendar>
+        <ID>r6</ID>
+        <localFile>file6.txt</localFile>
+        <URL>url6</URL>
+        <ETag>etag6</ETag>
+        <username>fang6</username>
+    </cacheList>
+    <cacheList rid="file7.txt">
+        <calendar>day7</calendar>
+        <ID>r7</ID>
+        <localFile>file7.txt</localFile>
+        <URL>url7</URL>
+        <ETag>etag7</ETag>
+        <username>fang7</username>
+    </cacheList>
+    <cacheList rid="file8.txt">
+        <calendar>day8</calendar>
+        <ID>r8</ID>
+        <localFile>file8.txt</localFile>
+        <URL>url8</URL>
+        <ETag>etag8</ETag>
+        <username>fang8</username>
+    </cacheList>
+    <cacheList rid="file9.txt">
+        <calendar>day9</calendar>
+        <ID>r9</ID>
+        <localFile>file9.txt</localFile>
+        <URL>url9</URL>
+        <ETag>etag9</ETag>
+        <username>fang9</username>
+    </cacheList>
+    <cacheList rid="file10.txt">
+        <calendar>day10</calendar>
+        <ID>r10</ID>
+        <localFile>file10.txt</localFile>
+        <URL>url10</URL>
+        <ETag>etag10</ETag>
+        <username>fang10</username>
+    </cacheList>
+    
+        <cacheList rid="file101.txt">
+        <calendar>day10</calendar>
+        <ID>r10</ID>
+        <localFile>file10.txt</localFile>
+        <URL>url10</URL>
+        <ETag>etag101</ETag>
+        <username>fang10</username>
+    </cacheList>
+</dataObjectCacheInfo>

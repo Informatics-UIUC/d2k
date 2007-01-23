@@ -473,9 +473,15 @@ public class RandomSampler extends ComputeModule {
     * @throws PropertyVetoException If value < 1.
     */
    public void setNumSamples(int value) throws PropertyVetoException {
-
+     try {
+            Integer.parseInt("" + value);
+          }
+          catch (Exception e) {
+            throw new PropertyVetoException(
+                "Number of Samples should be an integer greater than zero.", null);
+     }
       if (value < 1) {
-         throw new PropertyVetoException(" < 1", null);
+         throw new PropertyVetoException("Number of Samples should be an integer greater than zero.", null);
       }
 
       this.numSamples = value;
@@ -486,7 +492,17 @@ public class RandomSampler extends ComputeModule {
     *
     * @param value The value.
     */
-   public void setSeed(int value) { this.seed = value; }
+   public void setSeed(int value) throws PropertyVetoException{
+
+     try{
+      Integer.parseInt(""+value);
+    }catch(Exception e){
+      throw new PropertyVetoException("Random Number Seed should be an integer value.", null);
+    }
+
+
+     this.seed = value;
+   }
 
    /**
     * Set Trace.

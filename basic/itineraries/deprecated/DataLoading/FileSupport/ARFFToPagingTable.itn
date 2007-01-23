@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAAIdwgAAAALAAAAA3QAF0NyZWF0ZSBBUkZGIEZpbGUgUGFyc2Vyc3IAG25jc2EuZDJrLmNvcmUu
+UmVzb3VyY2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9PYmpl
+Y3Q7TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdAA0bmNzYS5kMmsu
+bW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuQ3JlYXRlQVJGRlBhcnNlcnQAD0lucHV0IEZpbGUg
+TmFtZXNxAH4ABHB0ADJuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5JbnB1dDFG
+aWxlTmFtZXQAGlBhcnNlIEZpbGUgdG8gUGFnaW5nIFRhYmxlc3EAfgAEcHQAOm5jc2EuZDJrLm1v
+ZHVsZXMuY29yZS5pby5maWxlLmlucHV0LlBhcnNlRmlsZVRvUGFnaW5nVGFibGV4" label="ARFFToPagingTable.itn">
+    <annotation><![CDATA[<p>
+      <b>ARFF to Paging Table</b>
+    </p>
+    <p>
+      This itinerary loads a data set from an ARFF file into a Paging Table. 
+      D2K uses various implementations of the Table structure to organize the 
+      data that is being mined. The Paging Table is a type of Table capable of 
+      keeping only part of its contents in memory at any given time, allowing 
+      tables larger than what will fit in memory to be processed. An ARFF 
+      (Attribute-Relation File Format) file is an ASCII file that describes a 
+      list of instances sharing a set of attributes. ARFF files were developed 
+      by the Machine Learning Project at the Department of Computer Science of 
+      the University of Waikota for use with the Weka machine learning 
+      software.
+    </p>
+    <p>
+      Typically this itinerary would be included as a nested itinerary in a 
+      larger itinerary that works with the table that is created. The use of 
+      nested itineraries can eliminate repetitive module placement and 
+      connection operations when collections of modules are frequently used 
+      together. To nest this itinerary in another, drag it from the Itinerary 
+      Resource Panel and drop it in the Workspace. Press and hold the &quot;Ctrl&quot; 
+      key and double click the mouse on the nested itinerary icon in the 
+      Workspace to access the properties of the modules listed below.
+    </p>
+    <p>
+      <b>Modules with Properties</b>
+    </p>
+    <p>
+      The following modules have properties that may need to be adjusted. The 
+      properties can be changed by double clicking on the given module.
+    </p>
+    <p>
+      1 -<b><i> Input File Name</i></b>
+    </p>
+    <p>
+      This module is used to specify the data set. The file is identified via 
+      the File Name property.
+    </p>
+    <p>
+      2 - <b><i>Parse File To Paging Table </i></b>
+    </p>
+    <p>
+      This module loads the data from a file to a Table in memory, using the 
+      parser created by Create ARFF File Parser. A property of this module 
+      controls whether blanks should be interpreted as missing values. A 
+      second property controls the maximum number of table rows to load into 
+      memory at any one time.
+    </p>
+    <p>
+      <b>Modules without Properties</b>
+    </p>
+    <p>
+      1 - <b><i>Create ARFF File Parser</i></b>
+    </p>
+    <p>
+      The parser is designed to read valid ARFF files, not to validate 
+      correctness, and does not handle the sparse data representation 
+      introduced in recent versions of the ARFF format. See the individual 
+      module information for this module for further details.
+    </p>
+    <p>
+      <b>Execution</b>
+    </p>
+    <p>
+      Execute the itinerary by clicking on the &quot;Run&quot; button.
+    </p>
+    <p>
+      This itinerary by itself does not produce any noticeable results when it 
+      is executed. To view the Table that is created, attach a Table Viewer 
+      module to the output of the Parse File To Paging Table module prior to 
+      execution.
+    </p>]]></annotation>
+    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="23" yloc="18">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Create ARFF File Parser" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="fileName" value=""/>
+      <property name="fileFilterExtension" value=""/>
+    </module>
+    <module alias="Parse File to Paging Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToPagingTable" xloc="302" yloc="18">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <property name="useBlanks" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="pageSubsets" value="true"/>
+      <property name="numRowsPerPage" value="5000"/>
+    </module>
+    <module alias="Create ARFF File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateARFFParser" xloc="145" yloc="18">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.ARFFFileParser">
+        <destination alias="Parse File to Paging Table" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+  </itinerary>
+</toolkit>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAARdwgAAAAXAAAADnQAEkNvbXB1dGUgQ29uZmlkZW5jZXNyABtuY3NhLmQyay5jb3JlLlJlc291
+cmNlRW50cnkAAAAAAAAAAQIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0O0wA
+D29iamVjdENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQASW5jc2EuZDJrLm1vZHVs
+ZXMuY29yZS5kaXNjb3ZlcnkucnVsZWFzc29jaWF0aW9uLmFwcmlvcmkuQ29tcHV0ZUNvbmZpZGVu
+Y2V0AA9SdWxlQXNzb2NSZXBvcnRzcQB+AARwdAA/bmNzYS5kMmsubW9kdWxlcy5jb3JlLmRpc2Nv
+dmVyeS5ydWxlYXNzb2NpYXRpb24uUnVsZUFzc29jUmVwb3J0dAATUGFyc2UgRmlsZSBUbyBUYWJs
+ZXNxAH4ABHB0ADRuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVU
+b1RhYmxldAAHQXByaW9yaXNxAH4ABHB0AD9uY3NhLmQyay5tb2R1bGVzLmNvcmUuZGlzY292ZXJ5
+LnJ1bGVhc3NvY2lhdGlvbi5hcHJpb3JpLkFwcmlvcml0AA5CaW4gQXR0cmlidXRlc3NxAH4ABHB0
+ADVuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmJpbm5pbmcuQmluQXR0cmlidXRlc3QA
+FEFwcGx5IFRyYW5zZm9ybWF0aW9uc3EAfgAEcHQAM25jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFu
+c2Zvcm0uQXBwbHlUcmFuc2Zvcm1hdGlvbnQAElRhYmxlIFRvIEl0ZW0gU2V0c3NxAH4ABHB0AD9u
+Y3NhLmQyay5tb2R1bGVzLmNvcmUuZGlzY292ZXJ5LnJ1bGVhc3NvY2lhdGlvbi5UYWJsZVRvSXRl
+bVNldHN0AAdGYW5PdXQyc3EAfgAEcHQAIm5jc2EuZDJrLmNvcmUubW9kdWxlcy5GYW5PdXRNb2R1
+bGV0AAdGYW5PdXQxc3EAfgAEcHEAfgAddAAGRmFuT3V0c3EAfgAEcHEAfgAddAAcQ3JlYXRlIERl
+bGltaXRlZCBGaWxlIFBhcnNlcnNxAH4ABHB0ADluY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmls
+ZS5pbnB1dC5DcmVhdGVEZWxpbWl0ZWRQYXJzZXJ0ABFDaG9vc2UgQXR0cmlidXRlc3NxAH4ABHB0
+ADpuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmF0dHJpYnV0ZS5DaG9vc2VBdHRyaWJ1
+dGVzdAASUnVsZSBWaXN1YWxpemF0aW9uc3EAfgAEcHQAN25jc2EuZDJrLm1vZHVsZXMuY29yZS5k
+aXNjb3ZlcnkucnVsZWFzc29jaWF0aW9uLlJ1bGVWaXN0AA9JbnB1dCBGaWxlIE5hbWVzcQB+AARw
+dAAybmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV4" label="apriori-binning.itn">
+    <annotation><![CDATA[<HTML>
+</HTML>]]></annotation>
+    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="136" yloc="252">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"/>
+      <output index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets">
+        <destination alias="Compute Confidence" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets">
+        <destination alias="Apriori" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="309" yloc="32">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Choose Attributes" index="0"/>
+      </output>
+      <property name="useBlanks" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="132" yloc="32">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="labelsRow" value="0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
+    </module>
+    <module alias="Table To Item Sets" classname="ncsa.d2k.modules.core.discovery.ruleassociation.TableToItemSets" xloc="7" yloc="241">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets">
+        <destination alias="FanOut" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="26" yloc="32">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Create Delimited File Parser" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="fileName" value="data/UCI/iris.csv"/>
+      <property name="fileFilterExtension" value=""/>
+    </module>
+    <module alias="Choose Attributes" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="441" yloc="32">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="FanOut2" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="windowName" value="Choose Attributes"/>
+      <property name="suppressGui" value="false"/>
+      <property name="selectedInputs" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAR0AAtzZXBhbGxlbmd0
+aHQACnNlcGFsd2lkdGh0AAtwZXRhbGxlbmd0aHQACnBldGFsd2lkdGg="/>
+      <property name="selectedOutputs" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAF0AAVjbGFzcw=="/>
+    </module>
+    <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="406" yloc="246">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable">
+        <destination alias="Rule Visualization" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable">
+        <destination alias="RuleAssocReport" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="RuleAssocReport" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleAssocReport" xloc="468" yloc="313">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"/>
+      <property name="displayCount" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="windowName" value="RuleAssocReport"/>
+    </module>
+    <module alias="Bin Attributes" classname="ncsa.d2k.modules.core.transform.binning.BinAttributes" xloc="149" yloc="120">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.transformations.BinTransform">
+        <destination alias="Apply Transformation" index="0"/>
+      </output>
+      <property name="newColumn" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="windowName" value="Bin Attributes"/>
+      <property name="suppressGui" value="false"/>
+      <property name="savedBins" binaryValue="rO0ABXVyADhbTG5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0uYmlubmluZy5CaW5EZXNj
+cmlwdG9yO7tpifeLslBXAgAAeHAAAAAUc3IAPG5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zv
+cm0uYmlubmluZy5OdW1lcmljQmluRGVzY3JpcHRvcml9qPZD2AstAgACRAADbWF4RAADbWlueHIA
+NW5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0uYmlubmluZy5CaW5EZXNjcmlwdG9y09Ql
+pNb0uC8CAANJAA1jb2x1bW5fbnVtYmVyTAAFbGFiZWx0ABJMamF2YS9sYW5nL1N0cmluZztMAARu
+YW1lcQB+AAR4cAAAAAB0AAtzZXBhbGxlbmd0aHQADFsuLi4gOiA1LjAyXUAUFHrhR64U//AAAAAA
+AABzcQB+AAIAAAAAcQB+AAZ0ABooNS4wMiA6IDUuNzM5OTk5OTk5OTk5OTk5XUAW9cKPXCj1QBQU
+euFHrhRzcQB+AAIAAAAAcQB+AAZ0ACcoNS43Mzk5OTk5OTk5OTk5OTkgOiA2LjQ1OTk5OTk5OTk5
+OTk5OV1AGdcKPXCj1kAW9cKPXCj1c3EAfgACAAAAAHEAfgAGdAAnKDYuNDU5OTk5OTk5OTk5OTk5
+IDogNy4xNzk5OTk5OTk5OTk5OTldQBy4UeuFHrdAGdcKPXCj1nNxAH4AAgAAAABxAH4ABnQAGSg3
+LjE3OTk5OTk5OTk5OTk5OSA6IC4uLl1/8AAAAAAAAEAcuFHrhR63c3EAfgACAAAAAXQACnNlcGFs
+d2lkdGh0AAxbLi4uIDogMi40OF1AA9cKPXCj1//wAAAAAAAAc3EAfgACAAAAAXEAfgARdAANKDIu
+NDggOiAyLjk2XUAHrhR64UeuQAPXCj1wo9dzcQB+AAIAAAABcQB+ABF0AA0oMi45NiA6IDMuNDRd
+QAuFHrhR64VAB64UeuFHrnNxAH4AAgAAAAFxAH4AEXQADSgzLjQ0IDogMy45Ml1AD1wo9cKPXEAL
+hR64UeuFc3EAfgACAAAAAXEAfgARdAAMKDMuOTIgOiAuLi5df/AAAAAAAABAD1wo9cKPXHNxAH4A
+AgAAAAJ0AAtwZXRhbGxlbmd0aHQADFsuLi4gOiAyLjE4XUABcKPXCj1x//AAAAAAAABzcQB+AAIA
+AAACcQB+ABx0ABsoMi4xOCA6IDMuMzYwMDAwMDAwMDAwMDAwM11ACuFHrhR64kABcKPXCj1xc3EA
+fgACAAAAAnEAfgAcdAAoKDMuMzYwMDAwMDAwMDAwMDAwMyA6IDQuNTQwMDAwMDAwMDAwMDAxXUAS
+KPXCj1wqQArhR64UeuJzcQB+AAIAAAACcQB+ABx0ACcoNC41NDAwMDAwMDAwMDAwMDEgOiA1Ljcy
+MDAwMDAwMDAwMDAwMV1AFuFHrhR64kASKPXCj1wqc3EAfgACAAAAAnEAfgAcdAAZKDUuNzIwMDAw
+MDAwMDAwMDAxIDogLi4uXX/wAAAAAAAAQBbhR64UeuJzcQB+AAIAAAADdAAKcGV0YWx3aWR0aHQA
+DFsuLi4gOiAwLjU4XT/ij1wo9cKP//AAAAAAAABzcQB+AAIAAAADcQB+ACd0AA0oMC41OCA6IDEu
+MDZdP/D1wo9cKPY/4o9cKPXCj3NxAH4AAgAAAANxAH4AJ3QADSgxLjA2IDogMS41NF0/+KPXCj1w
+pD/w9cKPXCj2c3EAfgACAAAAA3EAfgAndAANKDEuNTQgOiAyLjAyXUAAKPXCj1wpP/ij1wo9cKRz
+cQB+AAIAAAADcQB+ACd0AAwoMi4wMiA6IC4uLl1/8AAAAAAAAEAAKPXCj1wp"/>
+    </module>
+    <module alias="FanOut2" classname="ncsa.d2k.core.modules.FanOutModule" xloc="53" yloc="140">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Bin Attributes" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Apply Transformation" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="Rule Visualization" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleVis" xloc="468" yloc="212">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="windowName" value="Rule Visualizer"/>
+    </module>
+    <module alias="Apply Transformation" classname="ncsa.d2k.modules.core.transform.ApplyTransformation" xloc="278" yloc="159">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Transformation"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Table To Item Sets" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Apriori" classname="ncsa.d2k.modules.core.discovery.ruleassociation.apriori.Apriori" xloc="199" yloc="305">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"/>
+      <output index="0" classname="[[I">
+        <destination alias="Compute Confidence" index="1"/>
+      </output>
+      <property name="debug" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="showProgress" value="true"/>
+      <property name="maxRuleSize" value="6"/>
+      <property name="minimumSupport" value="30.0"/>
+    </module>
+    <module alias="Compute Confidence" classname="ncsa.d2k.modules.core.discovery.ruleassociation.apriori.ComputeConfidence" xloc="284" yloc="235">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"/>
+      <input index="1" classname="[[I"/>
+      <output index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable">
+        <destination alias="FanOut1" index="0"/>
+      </output>
+      <property name="debug" value="false"/>
+      <property name="confidence" value="30.0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="showProgress" value="true"/>
+    </module>
+  </itinerary>
+</toolkit>

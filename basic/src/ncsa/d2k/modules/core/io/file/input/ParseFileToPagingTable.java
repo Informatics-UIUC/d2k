@@ -5,6 +5,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.paging.*;
 import java.io.*;
+import java.beans.PropertyVetoException;
 
 /**
  * Read a file to a SubsetPagingTable.
@@ -15,7 +16,12 @@ public class ParseFileToPagingTable extends ParseFileToTable {
 	public int getNumRowsPerPage() {
 		return numRowsPerPage;
 	}
-	public void setNumRowsPerPage(int nr) {
+	public void setNumRowsPerPage(int nr) throws PropertyVetoException{
+          try{
+        Integer.parseInt("" + nr);
+          }catch(Exception e){
+            throw new PropertyVetoException("Number of Rows per Page should be an integer greater than zero.", null);
+          }
 		numRowsPerPage = nr;
 	}
 
@@ -119,10 +125,10 @@ public void doit() throws Exception {
 
 		// now figure out how many sub-tables we will make.
 		int numTables = (int) Math.ceil(((double) numRows) / ((double) numRowsPerPage));
-		
+
 		// create the pages.
 		Page [] pages = new Page[numTables];
-		
+
 		// the number of rows per page
 		int[] pageRowNums = new int[numTables];
 		int[] offsets = new int[numTables];
@@ -134,7 +140,7 @@ public void doit() throws Exception {
 				curNum += pageRowNums[i];
 			} else
 				pageRowNums[i] = numRows - curNum;
-				
+
 		}
 
 		curNum = 0;
@@ -207,7 +213,7 @@ public void doit() throws Exception {
 								ti.setChars(Integer.toString(0).toCharArray(), i, j);
 								ti.setValueToMissing(true, i, j);
 							}
-							
+
 							// otherwise put the '?' in the table and set the value to missing
 							else {
 								ti.setChars(elem, i, j);
@@ -217,7 +223,7 @@ public void doit() throws Exception {
 					}
 			}
 			try {
-				if (pageSubsets) { 
+				if (pageSubsets) {
 					pages[nt] = new SubsetsPage(ti, false);
 				} else {
 					pages[nt] = new Page(ti, false);

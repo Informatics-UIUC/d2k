@@ -57,7 +57,8 @@ import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.discovery.cluster.gui.properties
           .BuckshotParams_Props;
-
+import java.beans.PropertyVetoException;
+import  ncsa.d2k.modules.core.discovery.cluster.hac.HAC;
 
 /**
  * <p>Title: BuckshotParams</p>
@@ -323,7 +324,23 @@ public class BuckshotParams extends BuckshotParamsOPT {
     *           values defined in <code>
     *           ncsa.d2k.modules.core.discovery.cluster.hac.HAC</code>
     */
-   public void setClusterMethod(int cm) { _clusterMethod = cm; }
+   public void setClusterMethod(int cm) throws PropertyVetoException{
+     int max = HAC.s_ClusterMethodLabels.length ;
+     if(cm < 0 || cm >= max){
+       String msg = "Cluster Method ID must be in the range " +
+           "[0," + (max-1) + "]";
+       msg += ". The Clustering Methods IDs are as follows: " ;
+       for(int i=0; i<max; i++){
+         msg += i + " - " +HAC.s_ClusterMethodLabels[i];
+         if(i != max-1){
+           msg += ", " ;
+         }
+       }
+       throw new PropertyVetoException(msg, null);
+
+     }
+     _clusterMethod = cm;
+   }
 
 
    /**
@@ -333,7 +350,25 @@ public class BuckshotParams extends BuckshotParamsOPT {
     *           values defined in <code>
     *           ncsa.d2k.modules.core.discovery.cluster.hac.HAC</code>
     */
-   public void setDistanceMetric(int dm) { _distanceMetric = dm; }
+   public void setDistanceMetric(int dm)  throws PropertyVetoException
+   {
+     int max = HAC.s_DistanceMetricDesc.length;
+     if(dm < 0 || dm >= max){
+       String msg = "Distance Metric ID must be in the range " +
+           "[0," + (max-1) + "]";
+       msg += ". The Distance Metrics IDs are as follows: " ;
+       for(int i=0; i<max; i++){
+         msg += i + " - " +HAC.s_DistanceMetricLabels[i];
+         if(i != max-1){
+           msg += ", " ;
+         }
+       }
+       throw new PropertyVetoException(msg, null);
+
+     }
+
+     _distanceMetric = dm;
+   }
 
 
    /**
@@ -342,7 +377,13 @@ public class BuckshotParams extends BuckshotParamsOPT {
     * @param dist The value for the distance threshold property. Should be in
     *             the range of [1,100]
     */
-   public void setDistanceThreshold(int dist) { _thresh = dist; }
+   public void setDistanceThreshold(int dist) throws PropertyVetoException{
+     if(dist < 0 || dist > 100)
+       throw new PropertyVetoException(BuckshotParamSpaceGenerator.DISTANCE_THRESHOLD +
+                                       " value should be in the range [1,100]",
+                                     null);
+     _thresh = dist;
+   }
 
 
    /**
@@ -351,7 +392,12 @@ public class BuckshotParams extends BuckshotParamsOPT {
     * @param mi The value for the maximum iterations property. Should be greater
     *           than zero.
     */
-   public void setMaxIterations(int mi) { _maxIterations = mi; }
+   public void setMaxIterations(int mi)throws PropertyVetoException
+   {
+     if(mi < 1) throw new PropertyVetoException(this.MAX_ITERATIONS +
+     " value should be greater than zero", null);
+     _maxIterations = mi;
+   }
 
    // ============
    // Properties
@@ -362,7 +408,12 @@ public class BuckshotParams extends BuckshotParamsOPT {
     *
     * @param i int Number of clusters to be formed, should be greater than 1.
     */
-   public void setNumClusters(int i) { N = i; }
+   public void setNumClusters(int i) throws PropertyVetoException
+   {
+     if(i < 2) throw new PropertyVetoException(this.NUM_CLUSTERS +
+     " value should be greater than 1", null);
+     N = i;
+   }
 
    /**
     * Sets the seed property.

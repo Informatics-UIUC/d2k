@@ -25,5 +25,21 @@
 	<classpathentry kind="lib" path="lib/piccolox.jar"/>
 	<classpathentry kind="lib" path="lib/prefuse.jar"/>
 	<classpathentry kind="lib" path="lib/trove.jar"/>
+	<classpathentry kind="lib" path="lib/commons-httpclient.jar"/>
+	<classpathentry kind="lib" path="lib/commons-httpclient-contrib.jar"/>
+	<classpathentry kind="lib" path="lib/dsmgmt-1.0dev.jar"/>
+	<classpathentry kind="lib" path="lib/jakarta-slide-webdavlib-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/security-1.0dev.jar"/>
+	<classpathentry kind="lib" path="lib/util-1.0dev.jar"/>
+	<classpathentry kind="lib" path="lib/activation.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb1-impl.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-impl.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-xjc.jar"/>
+	<classpathentry kind="lib" path="lib/jaxp-api.jar"/>
+	<classpathentry kind="lib" path="lib/jsr173_1.0_api.jar"/>
+	<classpathentry kind="lib" path="lib/classes12.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl-2.7.1.jar"/>
+	<classpathentry kind="lib" path="lib/sam-webdavlib.jar"/>
 	<classpathentry kind="output" path="modules"/>
 </classpath>

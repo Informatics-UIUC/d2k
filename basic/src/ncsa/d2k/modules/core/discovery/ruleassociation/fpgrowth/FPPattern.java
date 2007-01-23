@@ -50,7 +50,7 @@ import gnu.trove.TIntObjectHashMap;
 
 
 /**
- * Description of class FPPattern.
+ * Representation of a pattern
  *
  * @author  $Author$
  * @version $Revision$, $Date$

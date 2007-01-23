@@ -26,7 +26,7 @@ public class BinTransform implements Transformation, Cloneable {
 		else		//missing values info is contained in tbl and "unknown" bins are added for relevant atrbs
 		 bins = BinningUtils.addMissingValueBins(tbl,b);
 
-		System.out.println("bins.length " + bins.length);
+		//System.out.println("bins.length " + bins.length);
 		new_column = new_col;
 
 	}

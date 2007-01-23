@@ -606,15 +606,29 @@ public class SparseMutableTable extends SparseTable
             // get the row
             TIntArrayList set = (TIntArrayList)_rows.get(i);
             // start at the end
-            for(int j = position; j < _columns.size(); j++) {
+            int removeMe = set.binarySearch(position);
+            int decrementTillHere = removeMe;
+            if(removeMe < 0) decrementTillHere = -decrementTillHere;
+//            for(int j = position; j < _columns.size(); j++) {
+            for(int j = set.size()-1; j > decrementTillHere; j--) {
               // if this column was in the set, replace with decremented index
-              if(set.contains(j)) {
+              int theValue = set.get(j);
+              set.set(j, theValue-1);
+/*             Vered - this is not correct. j is the value to be decremented and removed
+           but it is also used as an offset into set (remove(j) - throws array index out of bounds Exception
+ or even worse - does not break, but does wrong things.
+               if(set.contains(j)) {
                 set.remove(j);
                 if(j != position)
                   // add the decremented index
                   set.add(j-1);
-              }
+              }*/
             }
+
+            //now all indices greater than position are decremeneted.
+            //remove position
+            if(removeMe >= 0)
+              set.remove(removeMe);
         }
 
         _columns.remove(position);
@@ -1194,13 +1208,22 @@ throw new UnsupportedOperationException("reorderRows(VIntIntHashMap newOrder) is
           // first column was contained,  remove it
           // and add its new index
           therow.remove(pos1);
-          therow.add(pos2);
+          int insertHere = therow.binarySearch(pos2);
+          if(insertHere < 0){
+            therow.insert(-insertHere-1, pos2);
+          }
+      //    therow.add(pos2);
         }
         else if(contains2) {
           // second column was contained,  remove it
           // and add its new index
           therow.remove(pos2);
-          therow.add(pos1);
+          int insertHere = therow.binarySearch(pos1);
+          if(insertHere < 0){
+            therow.insert(-insertHere-1, pos1);
+          }
+
+//          therow.add(pos1);
         }
       }
 

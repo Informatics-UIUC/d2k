@@ -441,8 +441,9 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor,
       try {
          num = Integer.parseInt(m_numClust.getText());
       } catch (Exception e) {
-         throw new PropertyVetoException("Error in number of clusters field: " +
-                                         e.getMessage(),
+         throw new PropertyVetoException("Error in number of clusters field. " +
+                                         "Value should be an integer greater than 1.",
+
                                          null);
       }
 
@@ -457,7 +458,7 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor,
          seed = Integer.parseInt(m_seed.getText());
       } catch (Exception e) {
          throw new PropertyVetoException("Error in seed field: " +
-                                         e.getMessage(), null);
+                                         "Value should be a non negative integer.", null);
       }
 
       if (seed < 0) {
@@ -469,8 +470,8 @@ public class BuckshotParams_Props extends JPanel implements CustomModuleEditor,
       try {
          maxit = Integer.parseInt(m_max.getText());
       } catch (Exception e) {
-         throw new PropertyVetoException("Error in number of assignments field: " +
-                                         e.getMessage(),
+         throw new PropertyVetoException("Error in number of assignments field. " +
+                                         "Value should be an integer greater than 1.",
                                          null);
       }
 

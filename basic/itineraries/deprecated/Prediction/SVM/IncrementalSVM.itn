@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAAjdwgAAAAOAAAAD3QAB0Zhbk91dDNzcgAbbmNzYS5kMmsuY29yZS5SZXNvdXJjZUVudHJ51S4s
+IEIDJtICAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtMAA9vYmplY3RDbGFz
+c05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFu
+T3V0TW9kdWxldAAHRmFuT3V0MnNxAH4ABHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFuT3V0
+TW9kdWxldAALQ2F0Y2ggTW9kZWxzcQB+AARwdAArbmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRp
+Y3Rpb24uQ2F0Y2hNb2RlbHQAB0Zhbk91dDFzcQB+AARwdAAibmNzYS5kMmsuY29yZS5tb2R1bGVz
+LkZhbk91dE1vZHVsZXQAEENyZWF0ZSBTVk0gTW9kZWxzcQB+AARwdAAzbmNzYS5kMmsubW9kdWxl
+cy5jb3JlLnByZWRpY3Rpb24uc3ZtLkNyZWF0ZVNWTU1vZGVsdAAXUHJlZGljdGlvbiBUYWJsZSBS
+ZXBvcnRzcQB+AARwdAAvbmNzYS5kMmsubW9kdWxlcy5jb3JlLnZpcy5QcmVkaWN0aW9uVGFibGVS
+ZXBvcnR0AA1Mb2FkIFRlc3QgU2V0c3EAfgAEcHQAMm5jc2EuZDJrLmNvcmUubW9kdWxlcy5hZ2Vu
+ZGEuTmVzdGVkSXRpbmVyYXJ5TW9kdWxldAASQ3JlYXRlIFNWTSBQcm9ibGVtc3EAfgAEcHQAMW5j
+c2EuZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLnN2bS5TVk1Qcm9iTWFrZXJ0AAZGYW5PdXRz
+cQB+AARwdAAibmNzYS5kMmsuY29yZS5tb2R1bGVzLkZhbk91dE1vZHVsZXQAJENob29zZSBBdHRy
+aWJ1dGVzIGZvciBTdHJlYW1pbmcgRGF0YXNxAH4ABHB0ADpuY3NhLmQyay5tb2R1bGVzLmNvcmUu
+dHJhbnNmb3JtLmF0dHJpYnV0ZS5DaG9vc2VBdHRyaWJ1dGVzdAAeQ2hvb3NlIEF0dHJpYnV0ZXMg
+Zm9yIHRlc3Qgc2V0c3EAfgAEcHEAfgAjdAAPRXZhbHVhdGUgTW9kZWxzc3EAfgAEcHQAL25jc2Eu
+ZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLkV2YWx1YXRlTW9kZWxzdAASTWVyZ2UgU1ZNIFBy
+b2JsZW1zc3EAfgAEcHQANW5jc2EuZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLnN2bS5NZXJn
+ZVNWTVByb2JsZW1zdAALU1ZNIEJ1aWxkZXJzcQB+AARwdAAvbmNzYS5kMmsubW9kdWxlcy5jb3Jl
+LnByZWRpY3Rpb24uc3ZtLlNWTUJ1aWxkZXJ0AB1DcmVhdGUgTW9kZWwgQ29tcGFyaXNvbiBUYWJs
+ZXNxAH4ABHB0ADtuY3NhLmQyay5tb2R1bGVzLmNvcmUucHJlZGljdGlvbi5DcmVhdGVNb2RlbENv
+bXBhcmlzb25UYWJsZXg=" label="IncrementalSVM.itn">
+    <annotation><![CDATA[<p>
+      <b>Incremental SVM: </b>
+    </p>
+    <p>
+      This itinerary trains an SVM model over a streaming data.
+    </p>
+    <p>
+      <b>Detailed Description:</b>
+    </p>
+    <p>
+      During each iteration <i>Create SVM Problem </i>converts a d2k Table 
+      into an <i>svm_problem</i>.
+    </p>
+    <p>
+      <i>Merge SVM Problems</i> merges the <i>svm_problem</i> with the support 
+      vectors of the <i>svm_model</i> that was created during the previous 
+      iteration.
+    </p>
+    <p>
+      <i>SVM Builder</i> creates a new <i>svm_model</i> and trains it over the 
+      merged <i>svm_problem</i>.
+    </p>
+    <p>
+      <i>Create SVM Model</i> transforms the svm_model into a d2k <i>SVMModel</i>
+ .
+    </p>
+    <p>
+      The d2k <i>SVMModel</i> is then tested over a test dataset by <i>
+      Evaluate Models</i>. The performances of each model are saved into a 
+      comparison table by <i>Create Model Comparison Table</i> module, and at 
+      the end of the itinerary it is saved into a binary file. You may use <i>
+      PlotPerformances</i> itinerary to generate visualizations of this 
+      comparison.
+    </p>
+    <p>
+      <i>Prediction Table Report </i>evaluates each of the generated models 
+      and generates a visualization of the performances for each model.
+    </p>
+    <p>
+      <i>Catch Model</i> catches the last (not necessarily the best) generated 
+      model into the Generated Models jump-up pane.
+    </p>
+    <p>
+      <b>How to use this itinerary?</b>
+    </p>
+    <p>
+      The input port of module <i>Choose Attributes for Streaming Data</i> 
+      should be hooked to the output port of either <i>streamData.itn</i> or <i>
+imitateDataStream.itn</i> (hereinafter - &quot;<i>streaming data itinerary</i> 
+      &quot;).
+    </p>
+    <p>
+      <b>Data Restrictions:</b>
+    </p>
+    <p>
+      The input dataset to this itinerary should be all scalar with a single 
+      output feature. The output feature should be binary, see <i>
+      PrepareDataForSvm</i> itinerary, it preprocess nominal data and also 
+      creates 2 separate files, one for streaming data (train set) and one for 
+      the test set. The train set is the input to the streaming data itinerary 
+      and the test set is the input to <i>Load Test Set</i>.
+    </p>
+    <p>
+      <b>Setting Properties: </b>
+    </p>
+    <p>
+      <b><i>SVM Builder -</i></b>
+    </p>
+    <p>
+      See this module's info for more information about its properties.
+    </p>
+    <p>
+      <b><i>Incrementing Module -</i></b>
+    </p>
+    <p>
+      Create Deep Copy - it is esential that this property is set to true if 
+      the user wishes to test each of the models. otherwise it may be set to 
+      false. In such case the output of <i>Evaluate Models</i> and <i>Create 
+      Model Comparison Table</i> has no true meaning.
+    </p>
+    <p>
+      <b><i>Create Model Comparison Table -</i> </b>
+    </p>
+    <p>
+      Output File Name - full or relative path into which this module saves 
+      the generated Table.
+    </p>
+    <p>
+      Approximate Number of Models - this property helps initializing the 
+      comparison table to a reasonable size.
+    </p>
+    <p>
+      <b>BEFORE running the itinerary for the first time: </b>
+    </p>
+    <p>
+      the streaming data itineraries will stream lots of Tables into the 
+      itinerary. This will make the GUI of ChooseAttributes worthless. You 
+      should remove the nested streaming data itinerary, and run the 
+      itinerary. This will invoke the UI of <i>Choose Attrobutes for test 
+      dataset</i> and allow you to choose the attributes. Then you should set <i>
+Choose Attributes for test dataset </i>to suppress UI. Copy the module and 
+      replace the copy with <i>Choose Attributes for Streaming Data. </i>
+    </p>]]></annotation>
+    <module alias="Prediction Table Report" classname="ncsa.d2k.modules.core.vis.PredictionTableReport" xloc="556" yloc="348">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="windowName" value="Prediction Table Report1"/>
+    </module>
+    <module alias="Merge SVM Problems" classname="ncsa.d2k.modules.core.prediction.svm.MergeSVMProblems" xloc="318" yloc="122">
+      <input index="0" classname="libsvm.svm_problem"/>
+      <input index="1" classname="libsvm.svm_model"/>
+      <output index="0" classname="libsvm.svm_problem">
+        <destination alias="SVM Builder" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAIg=="/>
+    </module>
+    <module alias="Evaluate Models" classname="ncsa.d2k.modules.core.prediction.EvaluateModels" xloc="315" yloc="408">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <input index="1" classname="ncsa.d2k.modules.PredictionModelModule"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable">
+        <destination alias="FanOut" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+    <module alias="Choose Attributes for Streaming Data" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="18" yloc="48">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="FanOut3" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="windowName" value="Choose Attributes for Streaming Data"/>
+      <property name="supressGui" value="false"/>
+    </module>
+    <module alias="Catch Model" classname="ncsa.d2k.modules.core.prediction.CatchModel" xloc="551" yloc="267">
+      <input index="0" classname="ncsa.d2k.modules.PredictionModelModule"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+    </module>
+    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="419" yloc="371">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable">
+        <destination alias="Prediction Table Report" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable">
+        <destination alias="Create Model Comparison Table" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="Create Model Comparison Table" classname="ncsa.d2k.modules.core.prediction.CreateModelComparisonTable" xloc="471" yloc="428">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="aproxNumModels" value="0"/>
+    </module>
+    <module alias="Choose Attributes for test set" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="121" yloc="348">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Evaluate Models" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="windowName" value="Choose Attributes for test set"/>
+      <property name="supressGui" value="false"/>
+    </module>
+    <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="581" yloc="93">
+      <input index="0" classname="libsvm.svm_model"/>
+      <output index="0" classname="libsvm.svm_model">
+        <destination alias="Merge SVM Problems" index="1"/>
+      </output>
+      <output index="1" classname="libsvm.svm_model">
+        <destination alias="Create SVM Model" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="Create SVM Model" classname="ncsa.d2k.modules.core.prediction.svm.CreateSVMModel" xloc="249" yloc="260">
+      <input index="0" classname="libsvm.svm_model"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.prediction.svm.SVMModel">
+        <destination alias="FanOut2" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAIg=="/>
+    </module>
+    <module alias="FanOut2" classname="ncsa.d2k.core.modules.FanOutModule" xloc="383" yloc="270">
+      <input index="0" classname="ncsa.d2k.modules.core.prediction.svm.SVMModel"/>
+      <output index="0" classname="ncsa.d2k.modules.core.prediction.svm.SVMModel">
+        <destination alias="Catch Model" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.prediction.svm.SVMModel">
+        <destination alias="Evaluate Models" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="Create SVM Problem" classname="ncsa.d2k.modules.core.prediction.svm.SVMProbMaker" xloc="225" yloc="32">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <output index="0" classname="libsvm.svm_problem">
+        <destination alias="Merge SVM Problems" index="0"/>
+      </output>
+      <output index="1" classname="java.lang.Integer">
+        <destination alias="SVM Builder" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAIgAAACI="/>
+    </module>
+    <module alias="SVM Builder" classname="ncsa.d2k.modules.core.prediction.svm.SVMBuilder" xloc="449" yloc="24">
+      <input index="0" classname="libsvm.svm_problem"/>
+      <input index="1" classname="java.lang.Integer"/>
+      <output index="0" classname="libsvm.svm_model">
+        <destination alias="FanOut1" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAIg=="/>
+      <property name="gamma" value="0.0"/>
+      <property name="c" value="1.0"/>
+      <property name="shrinking" value="1"/>
+      <property name="coef0" value="0.0"/>
+      <property name="eps" value="0.0010"/>
+      <property name="cacheSize" value="40.0"/>
+      <property name="nu" value="0.5"/>
+      <property name="p" value="0.1"/>
+      <property name="degree" value="3.0"/>
+      <property name="svmType" value="0"/>
+      <property name="kernelType" value="2"/>
+    </module>
+    <module alias="FanOut3" classname="ncsa.d2k.core.modules.FanOutModule" xloc="159" yloc="148">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Create SVM Problem" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Create SVM Model" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="Load Test Set" classname="ncsa.d2k.core.modules.agenda.NestedItineraryModule" xloc="38" yloc="315">
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Choose Attributes for test set" index="0"/>
+      </output>
+      <itinerary label="Load Test Set">
+        <module alias="Load Test Set_Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="326" yloc="18">
+          <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+            <destination alias="Load Test Set" index="0"/>
+          </output>
+          <property name="useBlanks" value="true"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+        </module>
+        <module alias="Load Test Set_Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="23" yloc="18">
+          <output index="0" classname="java.lang.String">
+            <destination alias="Load Test Set_Create Delimited File Parser" index="0"/>
+          </output>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+        </module>
+        <module alias="Load Test Set_Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="130" yloc="18">
+          <input index="0" classname="java.lang.String"/>
+          <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+            <destination alias="Load Test Set_Parse File To Table" index="0"/>
+          </output>
+          <property name="typesRow" value="1"/>
+          <property name="labelsRow" value="0"/>
+          <property name="hasSpecDelim" value="false"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+          <property name="hasTypes" value="true"/>
+          <property name="hasLabels" value="true"/>
+        </module>
+      </itinerary>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="enableParallelization" value="false"/>
+    </module>
+  </itinerary>
+</toolkit>

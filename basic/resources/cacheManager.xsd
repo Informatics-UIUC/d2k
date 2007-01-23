@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:element name="dataObjectCacheInfo" type="DataObjectCacheRecords" />
+
+<xs:complexType name="DataObjectCacheRecords">
+    <xs:sequence>
+    <xs:element name="cacheList" type="DataObjectCacheRecord" minOccurs="0" maxOccurs="unbounded" />
+     </xs:sequence>
+ </xs:complexType>
+   
+  <xs:complexType name="DataObjectCacheRecord">
+    <xs:sequence>
+      <xs:element name="calendar" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="ID" type="xs:string" minOccurs="1"  maxOccurs="1" />
+      <xs:element name="localFile" type="xs:string" minOccurs="1"  maxOccurs="1" />
+      <xs:element name="URL" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="ETag" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="username" type="xs:string" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="rid" type="xs:string" />
+  </xs:complexType>
+</xs:schema>
+

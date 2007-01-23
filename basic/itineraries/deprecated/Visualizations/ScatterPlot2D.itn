@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAAIdwgAAAALAAAABHQADzJEIFNjYXR0ZXIgUGxvdHNyABtuY3NhLmQyay5jb3JlLlJlc291cmNl
+RW50cnkAAAAAAAAAAQIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0O0wAD29i
+amVjdENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAJ25jc2EuZDJrLm1vZHVsZXMu
+Y29yZS52aXMuU2NhdHRlclBsb3QyRHQAE1BhcnNlIEZpbGUgVG8gVGFibGVzcQB+AARwdAA0bmNz
+YS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuUGFyc2VGaWxlVG9UYWJsZXQAD0lucHV0
+IEZpbGUgTmFtZXNxAH4ABHB0ADJuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5J
+bnB1dDFGaWxlTmFtZXQAHENyZWF0ZSBEZWxpbWl0ZWQgRmlsZSBQYXJzZXJzcQB+AARwdAA5bmNz
+YS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2VyeA==" label="ScatterPlot2D.itn">
+    <annotation><![CDATA[<p>
+      Overview: This module creates a two-dimensional scatter plot of Table 
+      data, plotting any numeric column against itself or any other numeric 
+      column.
+    </p>]]></annotation>
+    <module alias="2D Scatter Plot" classname="ncsa.d2k.modules.core.vis.ScatterPlot2D" xloc="488" yloc="40">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="windowName" value="2D Scatter Plot"/>
+    </module>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="138" yloc="40">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="labelsRow" value="0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
+    </module>
+    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="335" yloc="40">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="2D Scatter Plot" index="0"/>
+      </output>
+      <property name="useBlanks" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="29" yloc="40">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Create Delimited File Parser" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="fileName" value="data/UCI/iris.csv"/>
+      <property name="fileFilterExtension" value=""/>
+    </module>
+  </itinerary>
+</toolkit>

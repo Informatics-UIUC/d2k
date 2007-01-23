@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAAIdwgAAAALAAAAB3QAE1BhcnNlIEZpbGUgVG8gVGFibGVzcgAbbmNzYS5kMmsuY29yZS5SZXNv
+dXJjZUVudHJ5AAAAAAAAAAECAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtM
+AA9vYmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ADRuY3NhLmQyay5tb2R1
+bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1RhYmxldAAPSW5wdXQgRmlsZSBOYW1l
+c3EAfgAEcHQAMm5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LklucHV0MUZpbGVO
+YW1ldAAGRmFuT3V0c3EAfgAEcHQAIm5jc2EuZDJrLmNvcmUubW9kdWxlcy5GYW5PdXRNb2R1bGV0
+AA9OYWl2ZSBCYXllcyBWaXNzcQB+AARwdAA5bmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRpY3Rp
+b24ubmFpdmViYXllcy5OYWl2ZUJheWVzVmlzdAAXUHJlZGljdGlvbiBUYWJsZSBSZXBvcnRzcQB+
+AARwdAAvbmNzYS5kMmsubW9kdWxlcy5jb3JlLnZpcy5QcmVkaWN0aW9uVGFibGVSZXBvcnR0ABxD
+cmVhdGUgRGVsaW1pdGVkIEZpbGUgUGFyc2Vyc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMuY29y
+ZS5pby5maWxlLmlucHV0LkNyZWF0ZURlbGltaXRlZFBhcnNlcnQADFRhYmxlIFZpZXdlcnNxAH4A
+BHB0ACVuY3NhLmQyay5tb2R1bGVzLmNvcmUudmlzLlRhYmxlVmlld2VyeA==" label="ApplyNaiveBayesModelForIris.itn">
+    <annotation><![CDATA[<p>
+      <b>Naive Bayesian Analysis </b>
+    </p>
+    <p>
+      Naive Bayesian builds a model to classify new examples, based upon 
+      observed probabilities and supporting evidence from the training data. 
+      The data set for this type of problem is one with input attributes and a 
+      known output attribute or class.
+    </p>
+    <p>
+      This itinerary applies a saved Naive Bayes model to new data. The model 
+      is dragged into the Workspace. The new data is passed into the model and 
+      the output is connected to the Naive Bayes Vis and Prediction Table 
+      Report. The predictions can also be viewed with a Table Viewer. The 
+      visualization is based on the model of the training data and the 
+      Prediction Table Report is based on the testing data.
+    </p>
+    <p>
+      <b>Modules with Properties</b>
+    </p>
+    <p>
+      The following modules have properties that may need to be adjusted. The 
+      properties can be changed by double clicking on the given module.
+    </p>
+    <p>
+      1 - <i><b>Input File Name</b></i>:
+    </p>
+    <p>
+      This module selects the data set. The file is identified with the 
+      filename property.
+    </p>
+    <p>
+      2 - <i><b>Create Delimited File Parser</b></i>:
+    </p>
+    <p>
+      This module creates a parser for the specified file. The properties of 
+      the module specify the labels row number, the types row number and the 
+      delimiter.
+    </p>
+    <p>
+      3 - <i><b>Parse File To Table</b></i>:
+    </p>
+    <p>
+      This module loads the data from a file to a Table in memory. The 
+      property of this module indicates whether blanks should be interpreted 
+      as missing values.
+    </p>
+    <p>
+      4 - <i><b>Model (in this case iris-NaiveBayes)</b></i>
+    </p>
+    <p>
+      All models have at least two properties/flags. One flag to indicate if 
+      transformations should be applied to the data before predictions, and 
+      one flag to indicate if transformations should be applied to the data 
+      after predictions.
+    </p>
+    <p>
+      <b>Execution</b>
+    </p>
+    <p>
+      Execute the itinerary by clicking on the &quot;Run&quot; button.
+    </p>
+    <p>
+      <b>Results</b>
+    </p>
+    <p>
+      Once execution has completed the status bar will disappear. The pane of 
+      the Generated Visualization Session Pane and the Generated Models 
+      Session Pane will turn red when visualization and model glpyhs have been 
+      created.
+    </p>
+    <p>
+      1 - <i><b>Naive Bayes Vis</b></i>
+    </p>
+    <p>
+      Naive Bayes Vis provides an evidence visualization for a Naive Bayes 
+      Model. Information about this visualization can be found in the help 
+      menu item of this visualization. The evidence are the attributes/values 
+      combinations and are shown in the left pane as pie charts (or bar 
+      charts). Each individual evidence shows how that attribute/value 
+      combination is split among the classes of the output attribute. Evidence 
+      items can be selected by clicking on an item and the conclusion will 
+      update the predictions. Multiple evidence charts can be selected and the 
+      predictions are conditional probabilities. Only one chart may be 
+      selected per row. Clicking on charts toggle them on and off. The 
+      predictions are shown in the conclusion graph and in the legend in the 
+      right pane. The evidence can also be zoomed or scaled interactively by 
+      right-clicking the mouse and dragging it up and down.
+    </p>
+    <p>
+      2 - <i><b>Prediction Table Report</b></i>
+    </p>
+    <p>
+      This report shows the classification error - the number and percentage 
+      of correct and incorrect, and a confusion matrix.
+    </p>
+    <p>
+      3 - <i><b>Table Viewer</b></i>
+    </p>
+    <p>
+      The predictions can also be viewed with the TableViewer.
+    </p>]]></annotation>
+    <module alias="Prediction Table Report" classname="ncsa.d2k.modules.core.vis.PredictionTableReport" xloc="296" yloc="112">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="windowName" value="PredictionTableReport"/>
+    </module>
+    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="206" yloc="171">
+      <input index="0" classname="java.lang.Object"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable">
+        <destination alias="Prediction Table Report" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.Table">
+        <destination alias="Table Viewer" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="307" yloc="16">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <property name="useBlanks" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="138" yloc="16">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="labelsRow" value="0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
+    </module>
+    <module alias="Table Viewer" classname="ncsa.d2k.modules.core.vis.TableViewer" xloc="324" yloc="184">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <property name="maxFractionDigits" value="-1"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="windowName" value="Table Viewer"/>
+    </module>
+    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="29" yloc="16">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Create Delimited File Parser" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="fileName" value="data/UCI/iris.csv"/>
+      <property name="fileFilterExtension" value=""/>
+    </module>
+    <module alias="Naive Bayes Vis" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesVis" xloc="316" yloc="256">
+      <input index="0" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="windowName" value="Naive Bayes Vis"/>
+    </module>
+  </itinerary>
+</toolkit>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAAIdwgAAAALAAAAB3QADFNlbGVjdCBUYWJsZXNyABtuY3NhLmQyay5jb3JlLlJlc291cmNlRW50
+cnkAAAAAAAAAAQIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0O0wAD29iamVj
+dENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAKG5jc2EuZDJrLm1vZHVsZXMuY29y
+ZS5pby5zcWwuU2VsZWN0VGFibGV0ABZBdmFpbGFibGUgVGFibGVzIElucHV0c3EAfgAEcHQAMW5j
+c2EuZDJrLm1vZHVsZXMuY29yZS5pby5zcWwuQXZhaWxhYmxlVGFibGVzSW5wdXR0AA1Db25uZWN0
+IFRvIERCc3EAfgAEcHQAKG5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5zcWwuQ29ubmVjdFRvREJ0
+AAZGYW5PdXRzcQB+AARwdAAibmNzYS5kMmsuY29yZS5tb2R1bGVzLkZhbk91dE1vZHVsZXQAHFNR
+TCBHZXQgUnVsZSBBc3NvYyBGcm9tIEN1YmVzcQB+AARwdABHbmNzYS5kMmsubW9kdWxlcy5jb3Jl
+LmRpc2NvdmVyeS5ydWxlYXNzb2NpYXRpb24uU1FMR2V0UnVsZUFzc29jRnJvbUN1YmV0ABJSdWxl
+IFZpc3VhbGl6YXRpb25zcQB+AARwdAA3bmNzYS5kMmsubW9kdWxlcy5jb3JlLmRpc2NvdmVyeS5y
+dWxlYXNzb2NpYXRpb24uUnVsZVZpc3QAEVJ1bGUgQXNzb2MgUmVwb3J0c3EAfgAEcHQAP25jc2Eu
+ZDJrLm1vZHVsZXMuY29yZS5kaXNjb3ZlcnkucnVsZWFzc29jaWF0aW9uLlJ1bGVBc3NvY1JlcG9y
+dHg=" label="GetRuleAsscFromCube.itn">
+    <annotation><![CDATA[<p>
+      <b>Get Rule Association from a Cube</b>
+    </p>
+    <p>
+      Rule association is an unsupervised learning approach that seeks to 
+      discover signifcant relationships among attributes in a data set. The 
+      visualization of these relationships are represented at two levels, 
+      structural and quantitative. At the structural level, the model will 
+      indicate which attributes are locally dependent on one another. At the 
+      quantitative level, the model will offer some numeric measure of support 
+      and confidence for these relationships. Rule association has also been 
+      called market basket analysis because of its application to the retail 
+      sales domain.
+    </p>
+    <p>
+      Two of the main quantitative measures are support and confidence. Given 
+      if X, then Y. Support is the percent of the number of records that 
+      contain both X and Y out of the total number of records. Confidence is 
+      the percent of the number of records taht contain both X and Y out of 
+      the number of records that contain X.
+    </p>
+    <p>
+      This itinerary explores a cube data to generate association rules. The 
+      visualization is a graphical display of the rules generated or a table 
+      view of the rules.
+    </p>
+    <p>
+      <b>Modules with Properties</b>
+    </p>
+    <p>
+      The following modules have properties that may need to be adjusted. The 
+      properties can be changed by double clicking on the given module.
+    </p>
+    <p>
+      1 - <b><i>Connect To DB</i></b>:
+    </p>
+    <p>
+      This module establishes a connection to a database. It has many 
+      properties that need to be specified.
+    </p>
+    <p>
+      2 - <b><i>Available Tables Input</i></b>:
+    </p>
+    <p>
+      This module retrieves the list of available database tables.
+    </p>
+    <p>
+      3 - <b><i>SQL Get Rule Assoc From Cube</i></b>:
+    </p>
+    <p>
+      This module extracts association rules from a cube table.
+    </p>
+    <p>
+      4 - <b><i>Rule Assoc Report: </i></b>
+    </p>
+    <p>
+      This module display rules in a table view. The rules and two measures, 
+      support and confidence, are displayed in default. The property &quot;Display 
+      Count&quot; can be optionally set to true if the absolute count need to be 
+      displayed.
+    </p>
+    <p>
+      <b>Execution</b>
+    </p>
+    <p>
+      Execute the itinerary by clicking on the &quot;Run&quot; button. As the itinerary 
+      runs, the following windows will open for user input.
+    </p>
+    <p>
+      1 - <b><i>Select Table</i></b>:
+    </p>
+    <p>
+      This module allows users to select a database cube table.
+    </p>
+    <p>
+      2 -<b><i> SQL Get Rule Assoc From Cube</i></b>:
+    </p>
+    <p>
+      This module allows users to set up filters on rule's attribute, support 
+      and confidence.
+    </p>
+    <p>
+      <b>Results</b>
+    </p>
+    <p>
+      Once execution has completed the status bar will disappear. The pane of 
+      the Generated Visualization Session Pane and the Generated Models 
+      Session Pane will turn red when visualization and model glpyhs have been 
+      created.
+    </p>
+    <p>
+      1 - <b><i>Rule Visualizer</i></b>:
+    </p>
+    <p>
+      This module provides a visual representation of the association rules 
+      encapsulated in the Rule Table.
+    </p>
+    <p>
+      2 - <b><i>Rule Assoc Report</i></b>:
+    </p>
+    <p>
+      This module displays the association rules in a table form.
+    </p>]]></annotation>
+    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="403" yloc="149">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable">
+        <destination alias="Rule Visualization" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable">
+        <destination alias="Rule Assoc Report" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="Rule Visualization" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleVis" xloc="478" yloc="218">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+    </module>
+    <module alias="Available Tables Input" classname="ncsa.d2k.modules.core.io.sql.AvailableTablesInput" xloc="107" yloc="75">
+      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
+        <destination alias="SQL Get Rule Assoc From Cube" index="0"/>
+      </output>
+      <output index="1" classname="java.util.Vector">
+        <destination alias="Select Table" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+      <property name="dataTableOnly" value="false"/>
+      <property name="dataCubeOnly" value="true"/>
+    </module>
+    <module alias="Rule Assoc Report" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleAssocReport" xloc="474" yloc="56">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"/>
+      <property name="displayCount" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+    </module>
+    <module alias="Select Table" classname="ncsa.d2k.modules.core.io.sql.SelectTable" xloc="139" yloc="236">
+      <input index="0" classname="java.util.Vector"/>
+      <output index="0" classname="java.lang.String">
+        <destination alias="SQL Get Rule Assoc From Cube" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="suppressGui" value="false"/>
+      <property name="selectedTable" value="CH_MARKET_SURVEY_CUBE"/>
+    </module>
+    <module alias="Connect To DB" classname="ncsa.d2k.modules.core.io.sql.ConnectToDB" xloc="12" yloc="164">
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
+        <destination alias="Available Tables Input" index="0"/>
+      </output>
+      <property name="password" value=""/>
+      <property name="dbVendor" value=""/>
+      <property name="dbInstance" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="suppressGui" value="false"/>
+      <property name="username" value=""/>
+      <property name="url" value="jdbc:oracle:thin:@sol.ncsa.uiuc.edu:1521:oracle1"/>
+      <property name="port" value=""/>
+      <property name="driver" value=""/>
+      <property name="machine" value=""/>
+    </module>
+    <module alias="SQL Get Rule Assoc From Cube" classname="ncsa.d2k.modules.core.discovery.ruleassociation.SQLGetRuleAssocFromCube" xloc="230" yloc="138">
+      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
+      <input index="1" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable">
+        <destination alias="FanOut" index="0"/>
+      </output>
+      <property name="minConfidence" value="50.0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="minSupport" value="0.1"/>
+      <property name="threshold" value="10.0"/>
+    </module>
+  </itinerary>
+</toolkit>

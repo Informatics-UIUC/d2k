@@ -353,8 +353,9 @@ public class CoverageSampler_Props extends JPanel implements CustomModuleEditor,
       try {
          num = Integer.parseInt(m_numClust.getText());
       } catch (Exception e) {
-         throw new PropertyVetoException("Error in max number of samples field: " +
-                                         e.getMessage(), null);
+         throw new PropertyVetoException("Error in max number of samples field. " +
+                                         "Value should be an integer greater than zero.",
+                                         null);
       }
 
       if (num < 1) {

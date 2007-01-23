@@ -722,9 +722,15 @@ public class RandomOptimizer extends ComputeModule
     * @throws PropertyVetoException If value < 1..
     */
    public void setMaxNumIterations(int value) throws PropertyVetoException {
-
+     try {
+       Integer.parseInt("" + value);
+     }
+     catch (Exception e) {
+       throw new PropertyVetoException(
+           "Maximum Number of Iterations should be an integer greater than zero.", null);
+     }
       if (value < 1) {
-         throw new PropertyVetoException(" < 1", null);
+         throw new PropertyVetoException("Maximum Number of Iterations should be an integer greater than zero.", null);
       }
 
       this.MaxNumIterations = value;
@@ -741,7 +747,7 @@ public class RandomOptimizer extends ComputeModule
       throws PropertyVetoException {
 
       if (!((value == -1) || (value == 1))) {
-         throw new PropertyVetoException(" must be -1 or 1", null);
+         throw new PropertyVetoException("Objective Score Direction must be -1 or 1", null);
       }
 
       this.ObjectiveScoreDirection = value;
@@ -756,9 +762,13 @@ public class RandomOptimizer extends ComputeModule
     */
    public void setObjectiveScoreOutputFeatureNumber(int value)
       throws PropertyVetoException {
-
+    try{
+           Integer.parseInt(""+value);
+         }catch(Exception e){
+           throw new PropertyVetoException("Objective Score Output Feature Number should be an integer greater than zero.", null);
+     }
       if (value < 1) {
-         throw new PropertyVetoException(" < 1", null);
+         throw new PropertyVetoException("Objective Score Output Feature Number should be an integer greater than zero.", null);
       }
 
       this.ObjectiveScoreOutputFeatureNumber = value;
@@ -769,7 +779,14 @@ public class RandomOptimizer extends ComputeModule
     *
     * @param value The value.
     */
-   public void setRandomSeed(int value) { this.RandomSeed = value; }
+   public void setRandomSeed(int value) throws PropertyVetoException{
+     try{
+       Integer.parseInt(""+value);
+     }catch(Exception e){
+       throw new PropertyVetoException("Random Seed should be an integer value.", null);
+     }
+     this.RandomSeed = value;
+   }
 
    /**
     * Set StopObjectiveScoreThreshold.

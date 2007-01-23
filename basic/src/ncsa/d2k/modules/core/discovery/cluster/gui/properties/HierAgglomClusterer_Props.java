@@ -490,7 +490,7 @@ public class HierAgglomClusterer_Props extends JPanel
             num = Integer.parseInt(m_numClust.getText());
          } catch (Exception e) {
             throw new PropertyVetoException("Error in " + NUM_CLUSTERS +
-                                            " field: " + e.getMessage(), null);
+                                            " field. Value should be an integer greater than 1.", null);
          }
 
          if (num < 2) {

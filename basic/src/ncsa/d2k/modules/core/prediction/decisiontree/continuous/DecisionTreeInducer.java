@@ -405,9 +405,13 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     * @throws PropertyVetoException when value is less than 1.
     */
    public void setMaxTreeDepth(int value) throws PropertyVetoException {
-
+     try{
+            Integer.parseInt(""+value);
+          }catch(Exception e){
+            throw new PropertyVetoException("Maximum Tree Depth should be an integer greater than zero.", null);
+     }
       if (value < 1) {
-         throw new PropertyVetoException(" < 1", null);
+         throw new PropertyVetoException("Maximum Tree Depth should be an integer greater than zero.", null);
       }
 
       this.MaxTreeDepth = value;
@@ -422,9 +426,13 @@ public class DecisionTreeInducer extends DecisionTreeInducerOpt {
     */
    public void setMinDecompositionPopulation(int value)
       throws PropertyVetoException {
-
+    try{
+               Integer.parseInt(""+value);
+             }catch(Exception e){
+               throw new PropertyVetoException("Minimum examples per leaf should be an integer greater than zero.", null);
+     }
       if (value < 1) {
-         throw new PropertyVetoException(" < 1", null);
+         throw new PropertyVetoException("Minimum examples per leaf should be an integer greater than zero.", null);
       }
 
       this.MinDecompositionPopulation = value;

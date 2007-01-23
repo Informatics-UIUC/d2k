@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAAjdwgAAAAvAAAAH3QAGU5lc3RlZENvbnREVF9UcmlnZ2VyIFB1c2hzcgAbbmNzYS5kMmsuY29y
+ZS5SZXNvdXJjZUVudHJ5AAAAAAAAAAECAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09i
+amVjdDtMAA9vYmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ACpuY3NhLmQy
+ay5tb2R1bGVzLmNvcmUuY29udHJvbC5UcmlnZ2VyUHVzaEJ0AAVTY2FsZXNxAH4ABHB0AC9uY3Nh
+LmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmF0dHJpYnV0ZS5TY2FsZXQAE05lc3RlZENvbnRE
+VF9OLUZvbGRzcQB+AARwdAA0bmNzYS5kMmsubW9kdWxlcy5jb3JlLnRyYW5zZm9ybS50YWJsZS5O
+Rm9sZFRyYWluVGVzdHQABkZhbk91dHNxAH4ABHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFu
+T3V0TW9kdWxldAAMTmVzdGVkQ29udERUc3EAfgAEcHQAMm5jc2EuZDJrLmNvcmUubW9kdWxlcy5h
+Z2VuZGEuTmVzdGVkSXRpbmVyYXJ5TW9kdWxldAANVHJpZ2dlciBQdXNoMnNxAH4ABHBxAH4ACHQA
+G05lc3RlZENvbnREVF9FcnJvciBGdW5jdGlvbnNxAH4ABHB0ADduY3NhLmQyay5tb2R1bGVzLmNv
+cmUucHJlZGljdGlvbi5FcnJvckZ1bmN0aW9uR2VuZXJhdG9ydAATTmVzdGVkQ29udERUX0Zhbk91
+dHNxAH4ABHBxAH4AEXQAFEVxdWlkaXN0YW50IFNhbXBsaW5nc3EAfgAEcHQAO25jc2EuZDJrLm1v
+ZHVsZXMuY29yZS5vcHRpbWl6ZS5yYW5kb20uUmFuZG9tR3JpZGRlZFNhbXBsaW5ndAAMRmluYWwg
+UmVzdWx0c3EAfgAEcHQALW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5jb25zb2xlLlByaW50RXhh
+bXBsZXQAEUV4YW1wbGUgQ29sbGVjdG9yc3EAfgAEcHQANm5jc2EuZDJrLm1vZHVsZXMuY29yZS5v
+cHRpbWl6ZS5yYW5kb20uRXhhbXBsZUNvbGxlY3RvcnQAFE5lc3RlZENvbnREVF9GYW5PdXQxc3EA
+fgAEcHEAfgARdAANRmlsZSBUbyBUYWJsZXNxAH4ABHB0ADRuY3NhLmQyay5tb2R1bGVzLmNvcmUu
+aW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1RhYmxldAAcTmVzdGVkQ29udERUX0Vycm9yIEZ1bmN0
+aW9uMXNxAH4ABHBxAH4AGXQAC0NhdGNoIE1vZGVsc3EAfgAEcHQAK25jc2EuZDJrLm1vZHVsZXMu
+Y29yZS5wcmVkaWN0aW9uLkNhdGNoTW9kZWx0AA5FcnJvciBGdW5jdGlvbnNxAH4ABHBxAH4AGXQA
+ElNjYWxhcml6ZSBOb21pbmFsc3NxAH4ABHB0ADtuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNm
+b3JtLmF0dHJpYnV0ZS5TY2FsYXJpemVOb21pbmFsc3QAHE5lc3RlZENvbnREVF9QdXNoIEVycm9y
+IEZ1bmNzcQB+AARwcQB+AAh0AAdGYW5PdXQyc3EAfgAEcHEAfgARdAAHRmFuT3V0MXNxAH4ABHBx
+AH4AEXQAI0RlY2lzaW9uIFRyZWUgUGFyYW0gU3BhY2UgR2VuZXJhdG9yc3EAfgAEcHQAWG5jc2Eu
+ZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLmRlY2lzaW9udHJlZS5jb250aW51b3VzLkRlY2lz
+aW9uVHJlZVBhcmFtU3BhY2VHZW5lcmF0b3J0AAhGaW5hbCBEVHNxAH4ABHB0AE9uY3NhLmQyay5t
+b2R1bGVzLmNvcmUucHJlZGljdGlvbi5kZWNpc2lvbnRyZWUuY29udGludW91cy5EZWNpc2lvblRy
+ZWVJbmR1Y2VyT3B0dAAQRGVsaW1pdGVkIFBhcnNlcnNxAH4ABHB0ADluY3NhLmQyay5tb2R1bGVz
+LmNvcmUuaW8uZmlsZS5pbnB1dC5DcmVhdGVEZWxpbWl0ZWRQYXJzZXJ0AAhGaWxlbmFtZXNxAH4A
+BHB0ADJuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5JbnB1dDFGaWxlTmFtZXQA
+G05lc3RlZENvbnREVF9BdmVyYWdlIFNjb3Jlc3NxAH4ABHB0ADhuY3NhLmQyay5tb2R1bGVzLmNv
+cmUudHJhbnNmb3JtLnRhYmxlLkF2ZXJhZ2VNb2RlbFNjb3Jlc3QALk5lc3RlZENvbnREVF9EZWNp
+c2lvbiBUcmVlIEluZHVjZXIgT3B0aW1pemFibGVzcQB+AARwcQB+AD90ABFDaG9vc2UgQXR0cmli
+dXRlc3NxAH4ABHB0ADpuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmF0dHJpYnV0ZS5D
+aG9vc2VBdHRyaWJ1dGVzdAAYTmVzdGVkQ29udERUX011bHRpUHVzaGVyc3EAfgAEcHQAKW5jc2Eu
+ZDJrLm1vZHVsZXMuY29yZS5jb250cm9sLk11bHRpUHVzaGVydAAOQ3JlYXRlIEV4YW1wbGVzcQB+
+AARwdAAsbmNzYS5kMmsubW9kdWxlcy5jb3JlLm9wdGltaXplLkNyZWF0ZUV4YW1wbGV0AAtBcHBs
+eSBTY2FsZXNxAH4ABHB0ADNuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLkFwcGx5VHJh
+bnNmb3JtYXRpb250ACNOZXN0ZWRDb250RFRfU2ltcGxlIE1vZGVsIEV2YWx1YXRvcnNxAH4ABHB0
+ADNuY3NhLmQyay5tb2R1bGVzLmNvcmUub3B0aW1pemUuU2ltcGxlTW9kZWxFdmFsdWF0b3J4" label="ContinuousDecTreePO.itn">
+    <annotation><![CDATA[<p>
+      Model building algorithms often have many parameters which must be set 
+      intelligently for the algorithm to perform well. The purpose of these 
+      parameters are often cryptic, and only really understood by the 
+      developer of the algorithm, certainly not by the end user.
+    </p>
+    <p>
+      This itinerary is the parameter optimizer. Using an optimizer, it will 
+      search the set of possible paramter settings for the model builder to 
+      find the set yielding the best results against the data given. The 
+      optimization is controlled by the <i>Equidistant Sample</i> module, the 
+      most important parameter is the number of iterations. See this module 
+      for more information.
+    </p>
+    <p>
+      The set of modules at the top of this itinerary input the data file and 
+      scale the data to a range acceptable to the model builder. In this case 
+      0 - 1 works best. The layer of modules nexted to the top do the 
+      optimization, the <i>Equidistant Sampling</i> picks points in the space 
+      we are searching, and <i>Create Example</i> merges the point data 
+      structure with it's score.
+    </p>
+    <p>
+      The <i>NestedContDT</i> nested itinerary contains the modules that will 
+      build the test models using N-Fold cross validation and the continuous 
+      decision tree algorithm. By replacing <i>Decision Tree Param Space 
+      Generator</i> and this nested itinerary, one could use a very similar 
+      itinerary to build a completely different type of model.
+    </p>
+    <p>
+      At the bottom of this itinerary, the modules there will build the final 
+      model using the best parameter point found during optimization.
+    </p>]]></annotation>
+    <module alias="Equidistant Sampling" classname="ncsa.d2k.modules.core.optimize.random.RandomGriddedSampling" xloc="157" yloc="185">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterSpace"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint">
+        <destination alias="FanOut2" index="0"/>
+      </output>
+      <output index="1" classname="java.lang.Integer">
+        <destination alias="Example Collector" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAACgAAAAE="/>
+      <property name="maxIterations" value="10"/>
+      <property name="useResolution" value="false"/>
+      <property name="seed" value="1"/>
+      <property name="trace" value="false"/>
+    </module>
+    <module alias="Catch Model" classname="ncsa.d2k.modules.core.prediction.CatchModel" xloc="343" yloc="420">
+      <input index="0" classname="ncsa.d2k.modules.PredictionModelModule"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+    </module>
+    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="298" yloc="28">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Scale" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Apply Scale" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="NestedContDT" classname="ncsa.d2k.core.modules.agenda.NestedItineraryModule" xloc="468" yloc="281">
+      <input index="0" classname="java.lang.Object"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint">
+        <destination alias="Create Example" index="1"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable"/>
+      <itinerary label="NestedContDT">
+        <module alias="NestedContDT_Decision Tree Inducer Optimizable" classname="ncsa.d2k.modules.core.prediction.decisiontree.continuous.DecisionTreeInducerOpt" xloc="530" yloc="233">
+          <input index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"/>
+          <input index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+          <input index="2" classname="ncsa.d2k.modules.core.prediction.ErrorFunction"/>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.model.Model">
+            <destination alias="NestedContDT_Simple Model Evaluator" index="1"/>
+          </output>
+          <property name="ordered" value="true"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAZA=="/>
+          <property name="_Trace" value="false"/>
+        </module>
+        <module alias="NestedContDT_FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="147" yloc="156">
+          <input index="0" classname="java.lang.Integer"/>
+          <output index="0" classname="java.lang.Integer">
+            <destination alias="NestedContDT_MultiPusher" index="1"/>
+          </output>
+          <output index="1" classname="java.lang.Integer">
+            <destination alias="NestedContDT_Average Scores" index="0"/>
+          </output>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+        </module>
+        <module alias="NestedContDT_Error Function1" classname="ncsa.d2k.modules.core.prediction.ErrorFunctionGenerator" xloc="510" yloc="17">
+          <output index="0" classname="ncsa.d2k.modules.core.prediction.ErrorFunction">
+            <destination alias="NestedContDT_Trigger Push" index="0"/>
+          </output>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+          <property name="errorFunctionName" value="Absolute"/>
+        </module>
+        <module alias="NestedContDT_MultiPusher" classname="ncsa.d2k.modules.core.control.MultiPusher" xloc="204" yloc="41">
+          <input index="0" classname="java.lang.Object"/>
+          <input index="1" classname="java.lang.Integer"/>
+          <output index="0" classname="java.lang.Object">
+            <destination alias="NestedContDT_FanOut1" index="0"/>
+          </output>
+          <property name="debug" value="false"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAZA=="/>
+          <property name="usePropNValue" value="false"/>
+          <property name="timesToFire" value="10"/>
+        </module>
+        <module alias="NestedContDT_Trigger Push" classname="ncsa.d2k.modules.core.control.TriggerPushB" xloc="612" yloc="89">
+          <input index="0" classname="java.lang.Object"/>
+          <input index="1" classname="java.lang.Object"/>
+          <output index="0" classname="java.lang.Object">
+            <destination alias="NestedContDT_Simple Model Evaluator" index="0"/>
+          </output>
+          <property name="debug" value="false"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAZA=="/>
+        </module>
+        <module alias="NestedContDT_Average Scores" classname="ncsa.d2k.modules.core.transform.table.AverageModelScores" xloc="797" yloc="89">
+          <input index="0" classname="java.lang.Integer"/>
+          <input index="1" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"/>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint">
+            <destination alias="NestedContDT" index="0"/>
+          </output>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAACg=="/>
+          <property name="verbose" value="false"/>
+          <property name="numberFolds" binaryValue="rO0ABXNyABNqYXZhLnV0aWwuQXJyYXlMaXN0eIHSHZnHYZ0DAAFJAARzaXpleHAAAAAAdwQAAADI
+eA=="/>
+        </module>
+        <module alias="NestedContDT_Simple Model Evaluator" classname="ncsa.d2k.modules.core.optimize.SimpleModelEvaluator" xloc="680" yloc="161">
+          <input index="0" classname="ncsa.d2k.modules.core.prediction.ErrorFunction"/>
+          <input index="1" classname="ncsa.d2k.modules.PredictionModelModule"/>
+          <input index="2" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint">
+            <destination alias="NestedContDT_Average Scores" index="1"/>
+          </output>
+          <output index="1" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable"/>
+          <property name="filterByPredictedOutput" value="false"/>
+          <property name="filterOutputLowerFraction" value="0.2"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAZAAAAAA="/>
+          <property name="reportAverageError" value="false"/>
+          <property name="reportLineLabel" value="SimpleModelEvaluator: "/>
+          <property name="reportEveryPrediction" value="false"/>
+          <property name="testTables" binaryValue="rO0ABXNyABNqYXZhLnV0aWwuQXJyYXlMaXN0eIHSHZnHYZ0DAAFJAARzaXpleHAAAAAAdwQAAADI
+eA=="/>
+          <property name="filterOutputUpperFraction" value="0.2"/>
+        </module>
+        <module alias="NestedContDT_FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="291" yloc="204">
+          <input index="0" classname="java.lang.Object"/>
+          <output index="0" classname="java.lang.Object">
+            <destination alias="NestedContDT_Push Error Func" index="1"/>
+          </output>
+          <output index="1" classname="java.lang.Object">
+            <destination alias="NestedContDT_Decision Tree Inducer Optimizable" index="0"/>
+          </output>
+          <output index="2" classname="java.lang.Object">
+            <destination alias="NestedContDT_Trigger Push" index="1"/>
+          </output>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAADAAAAAAAAAAAAAAAA"/>
+        </module>
+        <module alias="NestedContDT_N-Fold" classname="ncsa.d2k.modules.core.transform.table.NFoldTrainTest" xloc="36" yloc="113">
+          <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.TrainTable">
+            <destination alias="NestedContDT_Decision Tree Inducer Optimizable" index="1"/>
+          </output>
+          <output index="1" classname="ncsa.d2k.modules.core.datatype.table.TestTable">
+            <destination alias="NestedContDT_Simple Model Evaluator" index="2"/>
+          </output>
+          <output index="2" classname="java.lang.Integer">
+            <destination alias="NestedContDT_FanOut" index="0"/>
+          </output>
+          <property name="debug" value="false"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAADAAAAZAAAAGQAAAAK"/>
+          <property name="seed" value="0"/>
+          <property name="numberFolds" value="10"/>
+        </module>
+        <module alias="NestedContDT_Push Error Func" classname="ncsa.d2k.modules.core.control.TriggerPushB" xloc="412" yloc="89">
+          <input index="0" classname="java.lang.Object"/>
+          <input index="1" classname="java.lang.Object"/>
+          <output index="0" classname="java.lang.Object">
+            <destination alias="NestedContDT_Decision Tree Inducer Optimizable" index="2"/>
+          </output>
+          <property name="debug" value="false"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAZA=="/>
+        </module>
+        <module alias="NestedContDT_Error Function" classname="ncsa.d2k.modules.core.prediction.ErrorFunctionGenerator" xloc="322" yloc="17">
+          <output index="0" classname="ncsa.d2k.modules.core.prediction.ErrorFunction">
+            <destination alias="NestedContDT_Push Error Func" index="0"/>
+          </output>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+          <property name="errorFunctionName" value="Absolute"/>
+        </module>
+      </itinerary>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAACgAAAAA="/>
+      <property name="orderOutputs" value="false"/>
+      <property name="enableParallelization" value="false"/>
+    </module>
+    <module alias="Example Collector" classname="ncsa.d2k.modules.core.optimize.random.ExampleCollector" xloc="716" yloc="215">
+      <input index="0" classname="java.lang.Integer"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Example"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Example">
+        <destination alias="Final Result" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="minimize" value="true"/>
+    </module>
+    <module alias="Create Example" classname="ncsa.d2k.modules.core.optimize.CreateExample" xloc="582" yloc="219">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Example">
+        <destination alias="Example Collector" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAACg=="/>
+    </module>
+    <module alias="Final Result" classname="ncsa.d2k.modules.core.io.console.PrintExample" xloc="77" yloc="420">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Example"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Example">
+        <destination alias="Final DT" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="label" value=""/>
+    </module>
+    <module alias="Choose Attributes" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="695" yloc="41">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="FanOut1" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="windowName" value="Choose Attributes"/>
+      <property name="suppressGui" value="false"/>
+      <property name="selectedInputs" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAR0AAtzZXBhbGxlbmd0
+aHQACnNlcGFsd2lkdGh0AAtwZXRhbGxlbmd0aHQACnBldGFsd2lkdGg="/>
+      <property name="selectedOutputs" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0ABRjbGFzcz1Jcmlz
+LXZpcmdpbmljYXQAFWNsYXNzPUlyaXMtdmVyc2ljb2xvcnQAEWNsYXNzPUlyaXMtc2V0b3Nh"/>
+    </module>
+    <module alias="Filename" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="18" yloc="17">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Delimited Parser" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="fileName" value="data/UCI/iris.csv"/>
+      <property name="fileFilterExtension" value=""/>
+    </module>
+    <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="819" yloc="60">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Trigger Push2" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Final DT" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="Scalarize Nominals" classname="ncsa.d2k.modules.core.transform.attribute.ScalarizeNominals" xloc="571" yloc="41">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Choose Attributes" index="0"/>
+      </output>
+      <property name="newTypeBoolean" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Error Function" classname="ncsa.d2k.modules.core.prediction.ErrorFunctionGenerator" xloc="147" yloc="468">
+      <output index="0" classname="ncsa.d2k.modules.core.prediction.ErrorFunction">
+        <destination alias="Final DT" index="2"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="errorFunctionName" value="Absolute"/>
+    </module>
+    <module alias="FanOut2" classname="ncsa.d2k.core.modules.FanOutModule" xloc="267" yloc="264">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint">
+        <destination alias="Create Example" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint">
+        <destination alias="Trigger Push2" index="1"/>
+      </output>
+      <output index="2" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint">
+        <destination alias="NestedContDT" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAADAAAAAAAAAAAAAAAA"/>
+    </module>
+    <module alias="Scale" classname="ncsa.d2k.modules.core.transform.attribute.Scale" xloc="373" yloc="8">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Transformation">
+        <destination alias="Apply Scale" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="toMax" binaryValue="rO0ABXVyAAJbRD6mjBSrY1oeAgAAeHAAAAAEP/AAAAAAAAA/8AAAAAAAAD/wAAAAAAAAP/AAAAAA
+AAA="/>
+      <property name="windowName" value="Scale"/>
+      <property name="fromMax" binaryValue="rO0ABXVyAAJbRD6mjBSrY1oeAgAAeHAAAAAEQB+ZmZmZmZpAEZmZmZmZmkAbmZmZmZmaQAQAAAAA
+AAA="/>
+      <property name="suppressGui" value="false"/>
+      <property name="fromMin" binaryValue="rO0ABXVyAAJbRD6mjBSrY1oeAgAAeHAAAAAEQBEzMzMzMzNAAAAAAAAAAD/wAAAAAAAAP7mZmZmZ
+mZo="/>
+      <property name="indices" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAEAAAAAAAAAAEAAAACAAAAAw=="/>
+      <property name="toMin" binaryValue="rO0ABXVyAAJbRD6mjBSrY1oeAgAAeHAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAA="/>
+    </module>
+    <module alias="File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="204" yloc="17">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="FanOut" index="0"/>
+      </output>
+      <property name="useBlanks" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Decision Tree Param Space Generator" classname="ncsa.d2k.modules.core.prediction.decisiontree.continuous.DecisionTreeParamSpaceGenerator" xloc="0" yloc="200">
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterSpace">
+        <destination alias="Equidistant Sampling" index="0"/>
+      </output>
+      <output index="1" classname="java.lang.Class"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAQAAAAA="/>
+    </module>
+    <module alias="Delimited Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="97" yloc="17">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <destination alias="File To Table" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="labelsRow" value="0"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
+    </module>
+    <module alias="Apply Scale" classname="ncsa.d2k.modules.core.transform.ApplyTransformation" xloc="492" yloc="41">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Transformation"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
+        <destination alias="Scalarize Nominals" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Trigger Push2" classname="ncsa.d2k.modules.core.control.TriggerPushB" xloc="345" yloc="305">
+      <input index="0" classname="java.lang.Object"/>
+      <input index="1" classname="java.lang.Object"/>
+      <output index="0" classname="java.lang.Object">
+        <destination alias="NestedContDT" index="1"/>
+      </output>
+      <property name="debug" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAACg=="/>
+    </module>
+    <module alias="Final DT" classname="ncsa.d2k.modules.core.prediction.decisiontree.continuous.DecisionTreeInducerOpt" xloc="245" yloc="420">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable"/>
+      <input index="2" classname="ncsa.d2k.modules.core.prediction.ErrorFunction"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.model.Model">
+        <destination alias="Catch Model" index="0"/>
+      </output>
+      <property name="ordered" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="_Trace" value="false"/>
+    </module>
+  </itinerary>
+</toolkit>

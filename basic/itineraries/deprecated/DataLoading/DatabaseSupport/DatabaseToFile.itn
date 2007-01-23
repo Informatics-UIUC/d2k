@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
+dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
+AAARdwgAAAAXAAAACnQAFEF2YWlsYWJsZVRhYmxlc0lucHV0c3IAG25jc2EuZDJrLmNvcmUuUmVz
+b3VyY2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9PYmplY3Q7
+TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdAAxbmNzYS5kMmsubW9k
+dWxlcy5jb3JlLmlvLnNxbC5BdmFpbGFibGVUYWJsZXNJbnB1dHQAFVNRTEZpbHRlckNvbnN0cnVj
+dGlvbnNxAH4ABHB0ADtuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLnRhYmxlLlNRTEZp
+bHRlckNvbnN0cnVjdGlvbnQAC1NlbGVjdFRhYmxlc3EAfgAEcHQAKG5jc2EuZDJrLm1vZHVsZXMu
+Y29yZS5pby5zcWwuU2VsZWN0VGFibGV0AAdGYW5PdXQxc3EAfgAEcHQAIm5jc2EuZDJrLmNvcmUu
+bW9kdWxlcy5GYW5PdXRNb2R1bGV0AAZGYW5PdXRzcQB+AARwcQB+ABF0AAtDb25uZWN0VG9EQnNx
+AH4ABHB0AChuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLkNvbm5lY3RUb0RCdAAaQXZhaWxh
+YmxlIEF0dHJpYnV0ZXMgSW5wdXRzcQB+AARwdAA1bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLnNx
+bC5BdmFpbGFibGVBdHRyaWJ1dGVzSW5wdXR0ABFTZWxlY3QgQXR0cmlidXRlc3NxAH4ABHB0AC1u
+Y3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLlNlbGVjdEF0dHJpYnV0ZXN0ABBXcml0ZSBEQiBU
+byBGaWxlc3EAfgAEcHQAKm5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5zcWwuV3JpdGVEQlRvRmls
+ZXQAD0lucHV0IEZpbGUgTmFtZXNxAH4ABHB0ADJuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmls
+ZS5pbnB1dC5JbnB1dDFGaWxlTmFtZXg=" label="DatabaseToFile.itn">
+    <annotation><![CDATA[<p>
+      <b>DatabaseToTable</b>
+    </p>
+    <p>
+      This itinerary retrieves a data set from a database and stores it in a 
+      table, so that it can be used in the same way other modules use tables. 
+      This itinerary can be used as a nested module.
+    </p>
+    <p>
+      <b>Modules with Properties</b>
+    </p>
+    <p>
+      The following modules have properties that may need to be adjusted. The 
+      properties can be changed by double clicking on the given module.
+    </p>
+    <p>
+      <b><i>1 - ConnectToDB: </i></b>
+    </p>
+    <p>
+      This module establishes a connection to a database. See the Component 
+      Info for a description of the properties for this module.
+    </p>
+    <p>
+      <b><i>2 - AvailableTablesInput:</i></b>
+    </p>
+    <p>
+      This module retrieves a list of tables from the database. The properties 
+      associated with this table narrow the number of tables displayed. If <i> 
+      List Data Tables</i> is true then only data tables will be shown. If <i> 
+      List Data Cubes</i> is true, then only data cubes will be shown.
+    </p>
+    <p>
+      <b>Modules without Properties or User Interfaces</b>
+    </p>
+    <p>
+      <b><i>1 - AvailableFieldsInput:</i></b>
+    </p>
+    <p>
+      This module retrieves a list of fields from the database table.
+    </p>
+    <p>
+      <b><i>2 - ReadQueryResults:</i></b>
+    </p>
+    <p>
+      This module executes the query condition and retrieves the specified 
+      data from the database.
+    </p>
+    <p>
+      <b>Execution</b>
+    </p>
+    <p>
+      <b><i>1 - ConnectToDB:</i></b>
+    </p>
+    <p>
+      This module establishes a connection to a database.
+    </p>
+    <p>
+      <b><i>2 - SelectTable:</i></b>
+    </p>
+    <p>
+      This module presents a user interface for users to select a database 
+      table.
+    </p>
+    <p>
+      <b><i>3 - SelectFields:</i></b>
+    </p>
+    <p>
+      This module presents a user interface for users to select the attributes 
+      desired for the computations.
+    </p>
+    <p>
+      <b><i>4 - SQLFilterConstruction:</i></b>
+    </p>
+    <p>
+      This module presents a user interface to construct a filter expression 
+      for specifying a query condition.
+    </p>
+    <p>
+      <b><i>5 - TableViewer:</i></b>
+    </p>
+    <p>
+      This module presents a user interface that displays the contents of the 
+      table.
+    </p>
+    <p>
+      <b>Results</b>
+    </p>
+    <p>
+      The table retrieved can be used by other modules that input a table.
+    </p>]]></annotation>
+    <module alias="Available Attributes Input" classname="ncsa.d2k.modules.core.io.sql.AvailableAttributesInput" xloc="287" yloc="21">
+      <input index="0" classname="ncsa.d2k.modules.io.input.sql.ConnectionWrapper"/>
+      <input index="1" classname="java.lang.String"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
+        <destination alias="FanOut1" index="0"/>
+      </output>
+      <output index="1" classname="java.util.Vector">
+        <destination alias="Select Attributes" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="320" yloc="110">
+      <input index="0" classname="java.lang.String"/>
+      <output index="0" classname="java.lang.String">
+        <destination alias="SQLFilterConstruction" index="1"/>
+      </output>
+      <output index="1" classname="java.lang.String">
+        <destination alias="Available Attributes Input" index="1"/>
+      </output>
+      <output index="2" classname="java.lang.String">
+        <destination alias="Write DB To File" index="2"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAADAAAAAAAAAAAAAAAA"/>
+    </module>
+    <module alias="ConnectToDB" classname="ncsa.d2k.modules.core.io.sql.ConnectToDB" xloc="18" yloc="20">
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
+        <destination alias="AvailableTablesInput" index="0"/>
+      </output>
+      <property name="password" value=""/>
+      <property name="dbVendor" value=""/>
+      <property name="dbInstance" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="windowName" value="ConnectToDB"/>
+      <property name="suppressGui" value="false"/>
+      <property name="username" value=""/>
+      <property name="url" value="jdbc:oracle:thin:@sol.ncsa.uiuc.edu:1521:oracle2"/>
+      <property name="port" value=""/>
+      <property name="driver" value=""/>
+      <property name="machine" value=""/>
+    </module>
+    <module alias="SQLFilterConstruction" classname="ncsa.d2k.modules.core.transform.table.SQLFilterConstruction" xloc="515" yloc="20">
+      <input index="0" classname="ncsa.d2k.modules.io.input.sql.ConnectionWrapper"/>
+      <input index="1" classname="java.lang.String"/>
+      <output index="0" classname="java.lang.String">
+        <destination alias="Write DB To File" index="3"/>
+      </output>
+      <property name="includeMissingValues" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="lastExpression" value=""/>
+      <property name="windowName" value="SQLFilterConstruction"/>
+      <property name="queryCondition" value=""/>
+      <property name="suppressGui" value="false"/>
+    </module>
+    <module alias="SelectTable" classname="ncsa.d2k.modules.core.io.sql.SelectTable" xloc="236" yloc="204">
+      <input index="0" classname="java.util.Vector"/>
+      <output index="0" classname="java.lang.String">
+        <destination alias="FanOut" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="windowName" value="SelectTable"/>
+      <property name="suppressGui" value="false"/>
+      <property name="selectedTable" value="VERED_MISSING"/>
+    </module>
+    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="577" yloc="288">
+      <output index="0" classname="java.lang.String">
+        <destination alias="Write DB To File" index="4"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="fileName" value="C:\test2.txt"/>
+    </module>
+    <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="473" yloc="26">
+      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
+        <destination alias="SQLFilterConstruction" index="0"/>
+      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
+        <destination alias="Write DB To File" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+    </module>
+    <module alias="AvailableTablesInput" classname="ncsa.d2k.modules.core.io.sql.AvailableTablesInput" xloc="55" yloc="132">
+      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper">
+        <destination alias="Available Attributes Input" index="0"/>
+      </output>
+      <output index="1" classname="java.util.Vector">
+        <destination alias="SelectTable" index="0"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
+      <property name="dataTableOnly" value="true"/>
+      <property name="dataCubeOnly" value="false"/>
+    </module>
+    <module alias="Select Attributes" classname="ncsa.d2k.modules.core.io.sql.SelectAttributes" xloc="470" yloc="110">
+      <input index="0" classname="java.util.Vector"/>
+      <output index="0" classname="[Ljava.lang.String;">
+        <destination alias="Write DB To File" index="1"/>
+      </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="windowName" value="Select Attributes"/>
+      <property name="selectedAttributes" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5TdHJpbmc7rdJW5+kde0cCAAB4cAAAAAV0AAxTRVBBTF9MRU5H
+VEh0AAtTRVBBTF9XSURUSHQADFBFVEFMX0xFTkdUSHQAC1BFVEFMX1dJRFRIdAALRkxPV0VSX1RZ
+UEU="/>
+      <property name="suppressGui" value="false"/>
+    </module>
+    <module alias="Write DB To File" classname="ncsa.d2k.modules.core.io.sql.WriteDBToFile" xloc="656" yloc="148">
+      <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
+      <input index="1" classname="[Ljava.lang.String;"/>
+      <input index="2" classname="java.lang.String"/>
+      <input index="3" classname="java.lang.String"/>
+      <input index="4" classname="java.lang.String"/>
+      <property name="useDataTypes" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="useColumnLabels" value="true"/>
+      <property name="delimChar" value="C"/>
+    </module>
+  </itinerary>
+</toolkit>
