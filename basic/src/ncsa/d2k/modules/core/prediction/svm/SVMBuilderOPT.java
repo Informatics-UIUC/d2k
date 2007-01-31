@@ -93,7 +93,7 @@ public class SVMBuilderOPT extends ComputeModule {
 
       param.svm_type = (int) pp.getValue(SVMParameters.SVM_TYPE);
       param.kernel_type = (int) pp.getValue(SVMParameters.KERNEL_TYPE);
-      param.degree = (double) pp.getValue(SVMParameters.DEGREE);
+      param.degree = (int) pp.getValue(SVMParameters.DEGREE);
 
       /* if the user entered 0.0, default to 1/k where k is the
        * number of attributes in the input data. */

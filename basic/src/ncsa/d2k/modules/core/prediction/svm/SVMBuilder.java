@@ -154,7 +154,7 @@ public class SVMBuilder extends SVMBuilderOPT {
 
       param.svm_type = this.SvmType;
       param.kernel_type = this.KernelType;
-      param.degree = this.Degree;
+      param.degree = (int)this.Degree;
 
       /* if the user entered 0.0, default to 1/k where k is the
        * number of attributes in the input data. */
