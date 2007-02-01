@@ -16,7 +16,7 @@
 	<classpathentry kind="lib" path="lib/Jama-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/jdom.jar"/>
 	<classpathentry kind="lib" path="lib/jung-1.7.4.jar"/>
-	<classpathentry kind="lib" path="lib/libsvm.jar"/>
+	<classpathentry kind="lib" path="lib/libsvm-2.83.jar"/>
 	<classpathentry kind="lib" path="lib/mm.mysql-2.0.4-bin.jar"/>
 	<classpathentry kind="lib" path="lib/msbase.jar"/>
 	<classpathentry kind="lib" path="lib/mssqlserver.jar"/>
