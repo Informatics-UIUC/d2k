@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Vector;
 
 import javax.swing.DefaultListModel;
@@ -23,13 +24,13 @@ import ncsa.d2k.userviews.swing.JUserPane;
 /**
  * <p>Title: SelectTable</p>
  *
- * <p>Description: 
+ * <p>Description:
  *
  * <p>Copyright: Copyright (c) 2002</p>
  *
  * <p>Company: NCSA ALG</p>
  *
- * @author 
+ * @author
  *
  */
 public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
@@ -37,7 +38,7 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
 	/**
 	 * Method getModuleName().
-	 * 
+	 *
 	 * Describes the purpose of the module.
 	 *
 	 * @return <code>String</code> describing the purpose of the module.
@@ -48,7 +49,7 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
 	/**
 	 * Method getModuleInfo ().
-	 * 
+	 *
 	 * Describes the purpose of the module.
 	 *
 	 * @return <code>String</code> description of the module.
@@ -66,14 +67,16 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
           s += "If you cannot see the tables you are looking for, please report the ";
           s += "problem to your database administrator. </p>";
           s += "<p> Restrictions: ";
-          s += "Currently only Oracle, SQLServer, DB2 and MySql databases are supported.";
+          s += "Currently only Oracle, SQLServer, DB2 and MySql databases are supported.</p>" +
+              "<P>Note:<BR>When using this module in its headless mode, please " +
+              "verify the Table Name value - this module is case sensetive.";
 
           return s;
 	}
 
 	/**
 	 * Method getInputName().
-	 * 
+	 *
 	 * Returns the name of the input at the specified index.
 	 *
 	 * @param inputIndex Index of the input for which a name should be returned.
@@ -91,7 +94,7 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
 	/**
 	 * Method getInputInfo().
-	 * 
+	 *
 	 * Returns a description of the input at the specified index.
 	 *
 	 * @param inputIndex Index of the input for which a description should be returned.
@@ -104,10 +107,10 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 			default: return "No such input";
 		}
 	}
-	
+
 	/**
 	 * Method getInputTypes().
-	 * 
+	 *
 	 *	This method returns an array of strings that contains the data types for the inputs.
 	 *
 	 *	@return the data types of all inputs.
@@ -119,7 +122,7 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
 	/**
 	 * Method getOutputName()
-	 * 
+	 *
 	 * Returns the name of the output at the specified index.
 	 *
 	 * @param outputIndex Index of the output for which a name should be returned.
@@ -137,7 +140,7 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
 	/**
 	 * Method getOutputInfo().
-	 * 
+	 *
 	 * Returns a description of the output at the specified index.
 	 *
 	 * @param outputIndex Index of the output for which a description should be returned.
@@ -153,7 +156,7 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
 	/**
 	 * Method getOutputTypes().
-	 * 
+	 *
 	 *	This method returns an array of strings that contains the data types for the outputs.
 	 *
 	 *	@return the data types of all outputs.
@@ -165,7 +168,7 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
 	/**
 	 * Method getPropertiesDescription()
-	 * 
+	 *
 	 * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
 	 *
 	 * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
@@ -180,7 +183,7 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
 	/**
 	 * Method createUserView()
-	 * 
+	 *
 	 *	This method is called by D2K to get the UserView for this module.
 	 *
 	 *	@return the UserView.
@@ -191,11 +194,11 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
 	/**
 	 *  Method getFieldMapping()
-	 *  
+	 *
 	 *	This method returns an array with the names of each DSComponent in the UserView
 	 *	that has a value.  These DSComponents are then used as the outputs of this module.
 	 *
-	 * @retun java.lang.String[] 
+	 * @retun java.lang.String[]
 	 */
 	public String[] getFieldNameMapping() {
 		String[] fieldMap = {"availTablesList"};
@@ -217,7 +220,7 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
 		/**
 		 * Method initView().
-		 * 
+		 *
 		 * Called by the D2K Infrastructure to allow the view to perform initialization tasks.
 		 * This method adds the components to a Panel and then adds the Panel
 		 * to the view.
@@ -233,22 +236,22 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 	          abort.addActionListener(this);
 	          buttons.add (done);
 	          done.addActionListener(this);
-	
+
 	          JPanel b1 = new JPanel();
 	          b1.add(buttons);
-	
+
 	          availTablesList.setModel(availModel);
 	          JScrollPane jsp = new JScrollPane(availTablesList);
 	          jsp.setColumnHeaderView(new JLabel("Available Tables"));
-	
+
 	          canvasArea.add (jsp, BorderLayout.NORTH);
 	          canvasArea.add (b1, BorderLayout.SOUTH);
 	          add(canvasArea);
 		}
-	
+
 		/**
 		 * Method setInput().
-		 * 
+		 *
 		 * Called to pass the inputs received by the module to the view.
 		 * This method is called whenever an input arrives, and is responsible
 		 * for modifying the contents of any gui components that should reflect
@@ -272,11 +275,11 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 		        }
 	        availTablesList.setPrototypeCellValue(longest);
 		}
-	
-	
+
+
 		/**
 		 * Method actionPerformed().
-		 * 
+		 *
 		 */
 	    public void actionPerformed(ActionEvent e) {
 	      Object src = e.getSource();
@@ -307,24 +310,26 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
 	/**
 	 * Method doit().
-	 * 
+	 *
 	 */
 	public void doit() throws Exception {
       Vector vec = (Vector) pullInput(0);
-      HashMap available = new HashMap();
-      for(int i=0; i<vec.size(); i++)
-        available.put(((String)vec.elementAt(i)).toUpperCase(), new Integer (i));
+//      HashMap available = new HashMap();
+      HashSet available = new HashSet(vec);
 
+      /*for(int i=0; i<vec.size(); i++)
+        available.put(((String)vec.elementAt(i)).toUpperCase(), new Integer (i));
+*/
       if (selectedTable == null || selectedTable.length() == 0)
            throw new Exception (this.getAlias()+" has not been configured. Before running headless,  " +
                                 "either configure the parameters via the properties editor " +
                                 "or run with the gui and configure the parameters.");
-      if(!available.containsKey(selectedTable.toUpperCase()))
+      if(!available.contains(selectedTable))
         throw new Exception(getAlias() + ": The selected table - " + selectedTable + " was not found in the input list of available tables."+
                              " Please reconfigure the module (using the properties editor or via a GUI run ) so it can run headless.");
 
        else
-         pushOutput(selectedTable.toUpperCase(), 0);
+         pushOutput(selectedTable, 0);
 
     }
 
