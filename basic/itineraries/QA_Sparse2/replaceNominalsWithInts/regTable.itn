@@ -9,44 +9,44 @@ AA9vYmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ADRuY3NhLmQyay5tb2R1
 bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1RhYmxldAAQQWRkIEluZGV4IENvbHVt
 bnNxAH4ABHB0ADFuY3NhLmQyay5tb2R1bGVzLnByb2plY3RzLnZlcmVkLnFhLkFkZEluZGV4Q29s
 dW1udAAVVGVzdCBSZXBsYWNlIE5vbWluYWxzc3EAfgAEcHQANm5jc2EuZDJrLm1vZHVsZXMucHJv
-amVjdHMudmVyZWQucWEuVGVzdFJlcGxhY2VOb21pbmFsc3QAD0lucHV0IEZpbGUgTmFtZXNxAH4A
-BHB0ADJuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5JbnB1dDFGaWxlTmFtZXQA
-HENyZWF0ZSBEZWxpbWl0ZWQgRmlsZSBQYXJzZXJzcQB+AARwdAA5bmNzYS5kMmsubW9kdWxlcy5j
-b3JlLmlvLmZpbGUuaW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2VydAAUQXBwbHkgVHJhbnNmb3Jt
-YXRpb25zcQB+AARwdAAzbmNzYS5kMmsubW9kdWxlcy5jb3JlLnRyYW5zZm9ybS5BcHBseVRyYW5z
-Zm9ybWF0aW9udAAKQ29weSBUYWJsZXNxAH4ABHB0AC9uY3NhLmQyay5tb2R1bGVzLmNvcmUudHJh
-bnNmb3JtLnRhYmxlLkNvcHlUYWJsZXQAB0Zhbk91dDFzcQB+AARwdAAibmNzYS5kMmsuY29yZS5t
-b2R1bGVzLkZhbk91dE1vZHVsZXQAGlJlcGxhY2UgTm9taW5hbHMgV2l0aCBJbnRzc3EAfgAEcHQA
-QW5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0uYXR0cmlidXRlLlJlcGxhY2VOb21pbmFs
-c1dpdGhJbnRzeA==" label="regTable.itn">
+amVjdHMudmVyZWQucWEuVGVzdFJlcGxhY2VOb21pbmFsc3QAHENyZWF0ZSBEZWxpbWl0ZWQgRmls
+ZSBQYXJzZXJzcQB+AARwdABAbmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuQ3Jl
+YXRlRGVsaW1pdGVkUGFyc2VyRnJvbVVSTHQACkNvcHkgVGFibGVzcQB+AARwdAAvbmNzYS5kMmsu
+bW9kdWxlcy5jb3JlLnRyYW5zZm9ybS50YWJsZS5Db3B5VGFibGV0ABRBcHBseSBUcmFuc2Zvcm1h
+dGlvbnNxAH4ABHB0ADNuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLkFwcGx5VHJhbnNm
+b3JtYXRpb250ABFJbnB1dCBVUkwgb3IgUGF0aHNxAH4ABHB0ADFuY3NhLmQyay5tb2R1bGVzLmNv
+cmUuaW8uZmlsZS5pbnB1dC5JbnB1dDFGaWxlVVJMdAAHRmFuT3V0MXNxAH4ABHB0ACJuY3NhLmQy
+ay5jb3JlLm1vZHVsZXMuRmFuT3V0TW9kdWxldAAaUmVwbGFjZSBOb21pbmFscyBXaXRoIEludHNz
+cQB+AARwdABBbmNzYS5kMmsubW9kdWxlcy5jb3JlLnRyYW5zZm9ybS5hdHRyaWJ1dGUuUmVwbGFj
+ZU5vbWluYWxzV2l0aEludHN4" label="regTable.itn">
     <annotation><![CDATA[<HTML>
 </HTML>]]></annotation>
-    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="111" yloc="12">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+    <module alias="Input URL or Path" classname="ncsa.d2k.modules.core.io.file.input.Input1FileURL" xloc="22" yloc="17">
+      <output index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy">
+        <destination alias="Create Delimited File Parser" index="0"/>
+      </output>
+      <property name="userName" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="fileName" value="data/UCI/mushroom.csv"/>
+      <property name="hostURL" value=""/>
+    </module>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParserFromURL" xloc="136" yloc="17">
+      <input index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParserFromURL">
         <destination alias="Parse File To Table" index="0"/>
       </output>
       <property name="typesRow" value="1"/>
       <property name="labelsRow" value="0"/>
       <property name="hasSpecDelim" value="false"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
       <property name="hasTypes" value="true"/>
       <property name="hasLabels" value="true"/>
     </module>
-    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="276" yloc="15">
+    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="353" yloc="17">
       <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-        <destination alias="Add Index Column" index="0"/>
-      </output>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
       <property name="useBlanks" value="true"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-    </module>
-    <module alias="Apply Transformation" classname="ncsa.d2k.modules.core.transform.ApplyTransformation" xloc="497" yloc="233">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Transformation"/>
-      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-        <destination alias="Test Replace Nominals" index="0"/>
-      </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
     </module>
     <module alias="Copy Table" classname="ncsa.d2k.modules.core.transform.table.CopyTable" xloc="264" yloc="250">
@@ -54,27 +54,15 @@ c1dpdGhJbnRzeA==" label="regTable.itn">
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table">
         <destination alias="FanOut1" index="0"/>
       </output>
-      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.Table">
-        <destination alias="Test Replace Nominals" index="1"/>
-      </output>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
       <property name="deepCopy" value="true"/>
     </module>
-    <module alias="Test Replace Nominals" classname="ncsa.d2k.modules.projects.vered.qa.TestReplaceNominals" xloc="481" yloc="335">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <property name="fileOutput" value="true"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
-      <property name="fileName" value="C:\src\data\output\qa_sparse\replaceNominalsWithInts\regTable.txt"/>
-    </module>
-    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="21" yloc="21">
-      <output index="0" classname="java.lang.String">
-        <destination alias="Create Delimited File Parser" index="0"/>
-      </output>
+    <module alias="Apply Transformation" classname="ncsa.d2k.modules.core.transform.ApplyTransformation" xloc="497" yloc="233">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Transformation"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="fileName" value="C:\src\basic\data\UCI\mushroom.csv"/>
-      <property name="fileFilterExtension" value=""/>
     </module>
     <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="335" yloc="154">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
@@ -85,13 +73,6 @@ c1dpdGhJbnRzeA==" label="regTable.itn">
         <destination alias="Replace Nominals With Ints" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
-    </module>
-    <module alias="Add Index Column" classname="ncsa.d2k.modules.projects.vered.qa.AddIndexColumn" xloc="421" yloc="29">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-        <destination alias="Copy Table" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
     </module>
     <module alias="Replace Nominals With Ints" classname="ncsa.d2k.modules.core.transform.attribute.ReplaceNominalsWithInts" xloc="426" yloc="100">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>

@@ -3,28 +3,28 @@
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
   <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAARdwgAAAAXAAAADXQAF0FkZCBDbHVzdGVyIEFzc2lnbm1lbnRzc3IAG25jc2EuZDJrLmNvcmUu
-UmVzb3VyY2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9PYmpl
-Y3Q7TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdABJbmNzYS5kMmsu
+AAARdwgAAAAMAAAADXQAEUlucHV0IFVSTCBvciBQYXRoc3IAG25jc2EuZDJrLmNvcmUuUmVzb3Vy
+Y2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9PYmplY3Q7TAAP
+b2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdAAxbmNzYS5kMmsubW9kdWxl
+cy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZVVSTHQADURlbmRvZ3JhbSBWaXNzcQB+AARw
+dABJbmNzYS5kMmsubW9kdWxlcy5jb3JlLmRpc2NvdmVyeS5jbHVzdGVyLnZpcy5kZW5kb2dyYW0u
+RGVuZG9ncmFtQ2x1c3RlclZpc3QAEkNsdXN0ZXIgQXNzaWdubWVudHNxAH4ABHB0AENuY3NhLmQy
+ay5tb2R1bGVzLmNvcmUuZGlzY292ZXJ5LmNsdXN0ZXIuc2FtcGxlLkNsdXN0ZXJBc3NpZ25tZW50
+T1BUdAAcQ3JlYXRlIERlbGltaXRlZCBGaWxlIFBhcnNlcnNxAH4ABHB0AEBuY3NhLmQyay5tb2R1
+bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5DcmVhdGVEZWxpbWl0ZWRQYXJzZXJGcm9tVVJMdAAMVGFi
+bGUgVmlld2Vyc3EAfgAEcHQAJW5jc2EuZDJrLm1vZHVsZXMuY29yZS52aXMuVGFibGVWaWV3ZXJ0
+ABFDaG9vc2UgQXR0cmlidXRlc3NxAH4ABHB0ADpuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNm
+b3JtLmF0dHJpYnV0ZS5DaG9vc2VBdHRyaWJ1dGVzdAAQQ292ZXJhZ2UgU2FtcGxlcnNxAH4ABHB0
+AEFuY3NhLmQyay5tb2R1bGVzLmNvcmUuZGlzY292ZXJ5LmNsdXN0ZXIuc2FtcGxlLkNvdmVyYWdl
+U2FtcGxlck9QVHQAE1BhcnNlIEZpbGUgVG8gVGFibGVzcQB+AARwdAA0bmNzYS5kMmsubW9kdWxl
+cy5jb3JlLmlvLmZpbGUuaW5wdXQuUGFyc2VGaWxlVG9UYWJsZXQABkZhbk91dHNxAH4ABHB0ACJu
+Y3NhLmQyay5jb3JlLm1vZHVsZXMuRmFuT3V0TW9kdWxldAATQ292ZXJhZ2UgUGFyYW1ldGVyc3Nx
+AH4ABHB0AD1uY3NhLmQyay5tb2R1bGVzLmNvcmUuZGlzY292ZXJ5LmNsdXN0ZXIuc2FtcGxlLkNv
+dmVyYWdlUGFyYW1zdAAXQWRkIENsdXN0ZXIgQXNzaWdubWVudHNzcQB+AARwdABJbmNzYS5kMmsu
 bW9kdWxlcy5jb3JlLmRpc2NvdmVyeS5jbHVzdGVyLnV0aWwuQWRkQ2x1c3RlckFzc2lnbm1lbnRz
-VG9UYWJsZXQAEkNsdXN0ZXIgQXNzaWdubWVudHNxAH4ABHB0AENuY3NhLmQyay5tb2R1bGVzLmNv
-cmUuZGlzY292ZXJ5LmNsdXN0ZXIuc2FtcGxlLkNsdXN0ZXJBc3NpZ25tZW50T1BUdAATUGFyc2Ug
-RmlsZSBUbyBUYWJsZXNxAH4ABHB0ADRuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1
-dC5QYXJzZUZpbGVUb1RhYmxldAANRGVuZG9ncmFtIFZpc3NxAH4ABHB0AEluY3NhLmQyay5tb2R1
-bGVzLmNvcmUuZGlzY292ZXJ5LmNsdXN0ZXIudmlzLmRlbmRvZ3JhbS5EZW5kb2dyYW1DbHVzdGVy
-VmlzdAAQQ292ZXJhZ2UgU2FtcGxlcnNxAH4ABHB0AEFuY3NhLmQyay5tb2R1bGVzLmNvcmUuZGlz
-Y292ZXJ5LmNsdXN0ZXIuc2FtcGxlLkNvdmVyYWdlU2FtcGxlck9QVHQAB0Zhbk91dDFzcQB+AARw
-dAAibmNzYS5kMmsuY29yZS5tb2R1bGVzLkZhbk91dE1vZHVsZXQABkZhbk91dHNxAH4ABHBxAH4A
-F3QAHENyZWF0ZSBEZWxpbWl0ZWQgRmlsZSBQYXJzZXJzcQB+AARwdAA5bmNzYS5kMmsubW9kdWxl
-cy5jb3JlLmlvLmZpbGUuaW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2VydAARQ2hvb3NlIEF0dHJp
-YnV0ZXNzcQB+AARwdAA6bmNzYS5kMmsubW9kdWxlcy5jb3JlLnRyYW5zZm9ybS5hdHRyaWJ1dGUu
-Q2hvb3NlQXR0cmlidXRlc3QADFRhYmxlIFZpZXdlcnNxAH4ABHB0ACVuY3NhLmQyay5tb2R1bGVz
-LmNvcmUudmlzLlRhYmxlVmlld2VydAATQ292ZXJhZ2UgUGFyYW1ldGVyc3NxAH4ABHB0AD1uY3Nh
-LmQyay5tb2R1bGVzLmNvcmUuZGlzY292ZXJ5LmNsdXN0ZXIuc2FtcGxlLkNvdmVyYWdlUGFyYW1z
-dAAXSGllci4gQWdnbG9tLiBDbHVzdGVyZXJzcQB+AARwdABCbmNzYS5kMmsubW9kdWxlcy5jb3Jl
-LmRpc2NvdmVyeS5jbHVzdGVyLmhhYy5IaWVyQWdnbG9tQ2x1c3RlcmVyT1BUdAAPSW5wdXQgRmls
-ZSBOYW1lc3EAfgAEcHQAMm5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LklucHV0
-MUZpbGVOYW1leA==" label="CoverageClusterer.itn">
+VG9UYWJsZXQAB0Zhbk91dDFzcQB+AARwcQB+ACB0ABdIaWVyLiBBZ2dsb20uIENsdXN0ZXJlcnNx
+AH4ABHB0AEJuY3NhLmQyay5tb2R1bGVzLmNvcmUuZGlzY292ZXJ5LmNsdXN0ZXIuaGFjLkhpZXJB
+Z2dsb21DbHVzdGVyZXJPUFR4" label="CoverageClusterer.itn">
     <annotation><![CDATA[<html>
   
 </html>
@@ -48,25 +48,26 @@ MUZpbGVOYW1leA==" label="CoverageClusterer.itn">
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
       <property name="verbose" value="false"/>
     </module>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParserFromURL" xloc="136" yloc="17">
+      <input index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParserFromURL">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="labelsRow" value="0"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
+    </module>
     <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="307" yloc="16">
       <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
         <destination alias="Choose Attributes" index="0"/>
       </output>
       <property name="useBlanks" value="true"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-    </module>
-    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="114" yloc="16">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
-        <destination alias="Parse File To Table" index="0"/>
-      </output>
-      <property name="typesRow" value="1"/>
-      <property name="hasSpecDelim" value="false"/>
-      <property name="labelsRow" value="0"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="hasTypes" value="true"/>
-      <property name="hasLabels" value="true"/>
     </module>
     <module alias="Table Viewer" classname="ncsa.d2k.modules.core.vis.TableViewer" xloc="506" yloc="359">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
@@ -87,14 +88,6 @@ MUZpbGVOYW1leA==" label="CoverageClusterer.itn">
 aHQACnNlcGFsd2lkdGh0AAtwZXRhbGxlbmd0aHQACnBldGFsd2lkdGg="/>
       <property name="selectedOutputs" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAA="/>
     </module>
-    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="5" yloc="16">
-      <output index="0" classname="java.lang.String">
-        <destination alias="Create Delimited File Parser" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="fileName" value="data/UCI/iris.csv"/>
-      <property name="fileFilterExtension" value=""/>
-    </module>
     <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="254" yloc="345">
       <input index="0" classname="ncsa.d2k.modules.core.discovery.cluster.ClusterModel"/>
       <output index="0" classname="ncsa.d2k.modules.core.discovery.cluster.ClusterModel">
@@ -114,6 +107,15 @@ aHQACnNlcGFsd2lkdGh0AAtwZXRhbGxlbmd0aHQACnBldGFsd2lkdGg="/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
       <property name="checkMissingValues" value="true"/>
       <property name="verbose" value="false"/>
+    </module>
+    <module alias="Input URL or Path" classname="ncsa.d2k.modules.core.io.file.input.Input1FileURL" xloc="22" yloc="17">
+      <output index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy">
+        <destination alias="Create Delimited File Parser" index="0"/>
+      </output>
+      <property name="userName" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="fileName" value="data/UCI/iris.csv"/>
+      <property name="hostURL" value=""/>
     </module>
     <module alias="Cluster Assignment" classname="ncsa.d2k.modules.core.discovery.cluster.sample.ClusterAssignmentOPT" xloc="465" yloc="102">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.parameter.ParameterPoint"/>

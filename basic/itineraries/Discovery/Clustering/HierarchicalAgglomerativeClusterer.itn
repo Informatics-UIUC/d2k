@@ -3,28 +3,37 @@
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
   <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAARdwgAAAAXAAAACnQAF0FkZCBDbHVzdGVyIEFzc2lnbm1lbnRzc3IAG25jc2EuZDJrLmNvcmUu
+AAARdwgAAAAKAAAACnQAF0hpZXIuIEFnZ2xvbS4gQ2x1c3RlcmVyc3IAG25jc2EuZDJrLmNvcmUu
 UmVzb3VyY2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9PYmpl
-Y3Q7TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdABJbmNzYS5kMmsu
-bW9kdWxlcy5jb3JlLmRpc2NvdmVyeS5jbHVzdGVyLnV0aWwuQWRkQ2x1c3RlckFzc2lnbm1lbnRz
-VG9UYWJsZXQAF1BhcmFsbGVsIENvb3JkaW5hdGUgVmlzc3EAfgAEcHQAL25jc2EuZDJrLm1vZHVs
-ZXMuY29yZS52aXMuUGFyYWxsZWxDb29yZGluYXRlVmlzdAATUGFyc2UgRmlsZSBUbyBUYWJsZXNx
-AH4ABHB0ADRuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1Rh
-YmxldAANRGVuZG9ncmFtIFZpc3NxAH4ABHB0AEluY3NhLmQyay5tb2R1bGVzLmNvcmUuZGlzY292
-ZXJ5LmNsdXN0ZXIudmlzLmRlbmRvZ3JhbS5EZW5kb2dyYW1DbHVzdGVyVmlzdAAHRmFuT3V0MXNx
-AH4ABHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFuT3V0TW9kdWxldAAcQ3JlYXRlIERlbGlt
-aXRlZCBGaWxlIFBhcnNlcnNxAH4ABHB0ADluY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5p
-bnB1dC5DcmVhdGVEZWxpbWl0ZWRQYXJzZXJ0ABFDaG9vc2UgQXR0cmlidXRlc3NxAH4ABHB0ADpu
-Y3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmF0dHJpYnV0ZS5DaG9vc2VBdHRyaWJ1dGVz
-dAAMVGFibGUgVmlld2Vyc3EAfgAEcHQAJW5jc2EuZDJrLm1vZHVsZXMuY29yZS52aXMuVGFibGVW
-aWV3ZXJ0ABdIaWVyLiBBZ2dsb20uIENsdXN0ZXJlcnNxAH4ABHB0AD9uY3NhLmQyay5tb2R1bGVz
-LmNvcmUuZGlzY292ZXJ5LmNsdXN0ZXIuaGFjLkhpZXJBZ2dsb21DbHVzdGVyZXJ0AA9JbnB1dCBG
-aWxlIE5hbWVzcQB+AARwdAAybmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5w
-dXQxRmlsZU5hbWV4" label="HierarchicalAgglomerativeClusterer.itn">
+Y3Q7TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdAA/bmNzYS5kMmsu
+bW9kdWxlcy5jb3JlLmRpc2NvdmVyeS5jbHVzdGVyLmhhYy5IaWVyQWdnbG9tQ2x1c3RlcmVydAAH
+RmFuT3V0MXNxAH4ABHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFuT3V0TW9kdWxldAAXQWRk
+IENsdXN0ZXIgQXNzaWdubWVudHNzcQB+AARwdABJbmNzYS5kMmsubW9kdWxlcy5jb3JlLmRpc2Nv
+dmVyeS5jbHVzdGVyLnV0aWwuQWRkQ2x1c3RlckFzc2lnbm1lbnRzVG9UYWJsZXQAEUNob29zZSBB
+dHRyaWJ1dGVzc3EAfgAEcHQAOm5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0uYXR0cmli
+dXRlLkNob29zZUF0dHJpYnV0ZXN0ABNQYXJzZSBGaWxlIFRvIFRhYmxlc3EAfgAEcHQANG5jc2Eu
+ZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LlBhcnNlRmlsZVRvVGFibGV0ABFJbnB1dCBV
+Ukwgb3IgUGF0aHNxAH4ABHB0ADFuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5J
+bnB1dDFGaWxlVVJMdAAXUGFyYWxsZWwgQ29vcmRpbmF0ZSBWaXNzcQB+AARwdAAvbmNzYS5kMmsu
+bW9kdWxlcy5jb3JlLnZpcy5QYXJhbGxlbENvb3JkaW5hdGVWaXN0AB1DcmVhdGUgRGVsaW1pdGVk
+IEZpbGUgUGFyc2VyMXNxAH4ABHB0AEBuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1
+dC5DcmVhdGVEZWxpbWl0ZWRQYXJzZXJGcm9tVVJMdAAMVGFibGUgVmlld2Vyc3EAfgAEcHQAJW5j
+c2EuZDJrLm1vZHVsZXMuY29yZS52aXMuVGFibGVWaWV3ZXJ0AA1EZW5kb2dyYW0gVmlzc3EAfgAE
+cHQASW5jc2EuZDJrLm1vZHVsZXMuY29yZS5kaXNjb3ZlcnkuY2x1c3Rlci52aXMuZGVuZG9ncmFt
+LkRlbmRvZ3JhbUNsdXN0ZXJWaXN4" label="HierarchicalAgglomerativeClusterer.itn">
     <annotation><![CDATA[<html>
   
 </html>
 ]]></annotation>
+    <module alias="Input URL or Path" classname="ncsa.d2k.modules.core.io.file.input.Input1FileURL" xloc="22" yloc="17">
+      <output index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy">
+        <destination alias="Create Delimited File Parser1" index="0"/>
+      </output>
+      <property name="userName" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="fileName" value="data/UCI/iris.csv"/>
+      <property name="hostURL" value=""/>
+    </module>
     <module alias="Add Cluster Assignments" classname="ncsa.d2k.modules.core.discovery.cluster.util.AddClusterAssignmentsToTable" xloc="235" yloc="180">
       <input index="0" classname="ncsa.d2k.modules.core.discovery.cluster.ClusterModel"/>
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table">
@@ -34,20 +43,9 @@ dXQxRmlsZU5hbWV4" label="HierarchicalAgglomerativeClusterer.itn">
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
       <property name="verbose" value="false"/>
     </module>
-    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="114" yloc="16">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
-        <destination alias="Parse File To Table" index="0"/>
-      </output>
-      <property name="typesRow" value="1"/>
-      <property name="hasSpecDelim" value="false"/>
-      <property name="labelsRow" value="0"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="hasTypes" value="true"/>
-      <property name="hasLabels" value="true"/>
-    </module>
     <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="307" yloc="16">
       <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
         <destination alias="Choose Attributes" index="0"/>
       </output>
@@ -63,13 +61,31 @@ dXQxRmlsZU5hbWV4" label="HierarchicalAgglomerativeClusterer.itn">
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
       <property name="windowName" value="Table Viewer"/>
     </module>
-    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="5" yloc="16">
-      <output index="0" classname="java.lang.String">
-        <destination alias="Create Delimited File Parser" index="0"/>
+    <module alias="Create Delimited File Parser1" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParserFromURL" xloc="132" yloc="17">
+      <input index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParserFromURL">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="labelsRow" value="0"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
+    </module>
+    <module alias="Parallel Coordinate Vis" classname="ncsa.d2k.modules.core.vis.ParallelCoordinateVis" xloc="401" yloc="278">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="windowName" value="Parallel Coordinate Vis"/>
+    </module>
+    <module alias="Choose Attributes" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="431" yloc="16">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
+        <destination alias="Hier. Agglom. Clusterer" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="fileName" value="data/UCI/iris.csv"/>
-      <property name="fileFilterExtension" value=""/>
+      <property name="windowName" value="Choose Attributes"/>
+      <property name="suppressGui" value="false"/>
     </module>
     <module alias="Hier. Agglom. Clusterer" classname="ncsa.d2k.modules.core.discovery.cluster.hac.HierAgglomClusterer" xloc="32" yloc="135">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
@@ -84,20 +100,6 @@ dXQxRmlsZU5hbWV4" label="HierarchicalAgglomerativeClusterer.itn">
       <property name="verbose" value="false"/>
       <property name="distanceThreshold" value="0"/>
       <property name="clusterMethod" value="0"/>
-    </module>
-    <module alias="Choose Attributes" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="431" yloc="16">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.ExampleTable">
-        <destination alias="Hier. Agglom. Clusterer" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="windowName" value="Choose Attributes"/>
-      <property name="suppressGui" value="false"/>
-    </module>
-    <module alias="Parallel Coordinate Vis" classname="ncsa.d2k.modules.core.vis.ParallelCoordinateVis" xloc="401" yloc="278">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
-      <property name="windowName" value="Parallel Coordinate Vis"/>
     </module>
     <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="188" yloc="146">
       <input index="0" classname="ncsa.d2k.modules.core.discovery.cluster.ClusterModel"/>

@@ -3,31 +3,26 @@
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
   <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAARdwgAAAAXAAAAC3QAEkNvbXB1dGUgQ29uZmlkZW5jZXNyABtuY3NhLmQyay5jb3JlLlJlc291
-cmNlRW50cnkAAAAAAAAAAQIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0O0wA
-D29iamVjdENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQASW5jc2EuZDJrLm1vZHVs
-ZXMuY29yZS5kaXNjb3ZlcnkucnVsZWFzc29jaWF0aW9uLmFwcmlvcmkuQ29tcHV0ZUNvbmZpZGVu
-Y2V0AA9SdWxlQXNzb2NSZXBvcnRzcQB+AARwdAA/bmNzYS5kMmsubW9kdWxlcy5jb3JlLmRpc2Nv
-dmVyeS5ydWxlYXNzb2NpYXRpb24uUnVsZUFzc29jUmVwb3J0dAATUGFyc2UgRmlsZSBUbyBUYWJs
-ZXNxAH4ABHB0ADRuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVU
-b1RhYmxldAASVGFibGUgVG8gSXRlbSBTZXRzc3EAfgAEcHQAP25jc2EuZDJrLm1vZHVsZXMuY29y
-ZS5kaXNjb3ZlcnkucnVsZWFzc29jaWF0aW9uLlRhYmxlVG9JdGVtU2V0c3QAB0Zhbk91dDFzcQB+
-AARwdAAibmNzYS5kMmsuY29yZS5tb2R1bGVzLkZhbk91dE1vZHVsZXQACEZQR3Jvd3Roc3EAfgAE
-cHQAQW5jc2EuZDJrLm1vZHVsZXMuY29yZS5kaXNjb3ZlcnkucnVsZWFzc29jaWF0aW9uLmZwZ3Jv
-d3RoLkZQR3Jvd3RodAAGRmFuT3V0c3EAfgAEcHEAfgAUdAAcQ3JlYXRlIERlbGltaXRlZCBGaWxl
-IFBhcnNlcnNxAH4ABHB0ADluY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5DcmVh
-dGVEZWxpbWl0ZWRQYXJzZXJ0ABFDaG9vc2UgQXR0cmlidXRlc3NxAH4ABHB0ADpuY3NhLmQyay5t
-b2R1bGVzLmNvcmUudHJhbnNmb3JtLmF0dHJpYnV0ZS5DaG9vc2VBdHRyaWJ1dGVzdAASUnVsZSBW
-aXN1YWxpemF0aW9uc3EAfgAEcHQAN25jc2EuZDJrLm1vZHVsZXMuY29yZS5kaXNjb3ZlcnkucnVs
-ZWFzc29jaWF0aW9uLlJ1bGVWaXN0AA9JbnB1dCBGaWxlIE5hbWVzcQB+AARwdAAybmNzYS5kMmsu
-bW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV4" label="fp-growth.itn">
+AAARdwgAAAALAAAAC3QAHUNyZWF0ZSBEZWxpbWl0ZWQgRmlsZSBQYXJzZXIxc3IAG25jc2EuZDJr
+LmNvcmUuUmVzb3VyY2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFu
+Zy9PYmplY3Q7TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdABAbmNz
+YS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2VyRnJv
+bVVSTHQAEkNvbXB1dGUgQ29uZmlkZW5jZXNxAH4ABHB0AEluY3NhLmQyay5tb2R1bGVzLmNvcmUu
+ZGlzY292ZXJ5LnJ1bGVhc3NvY2lhdGlvbi5hcHJpb3JpLkNvbXB1dGVDb25maWRlbmNldAARSW5w
+dXQgVVJMIG9yIFBhdGhzcQB+AARwdAAxbmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5w
+dXQuSW5wdXQxRmlsZVVSTHQAElRhYmxlIFRvIEl0ZW0gU2V0c3NxAH4ABHB0AD9uY3NhLmQyay5t
+b2R1bGVzLmNvcmUuZGlzY292ZXJ5LnJ1bGVhc3NvY2lhdGlvbi5UYWJsZVRvSXRlbVNldHN0ABNQ
+YXJzZSBGaWxlIFRvIFRhYmxlc3EAfgAEcHQANG5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxl
+LmlucHV0LlBhcnNlRmlsZVRvVGFibGV0AAZGYW5PdXRzcQB+AARwdAAibmNzYS5kMmsuY29yZS5t
+b2R1bGVzLkZhbk91dE1vZHVsZXQAElJ1bGUgVmlzdWFsaXphdGlvbnNxAH4ABHB0ADduY3NhLmQy
+ay5tb2R1bGVzLmNvcmUuZGlzY292ZXJ5LnJ1bGVhc3NvY2lhdGlvbi5SdWxlVmlzdAAPUnVsZUFz
+c29jUmVwb3J0c3EAfgAEcHQAP25jc2EuZDJrLm1vZHVsZXMuY29yZS5kaXNjb3ZlcnkucnVsZWFz
+c29jaWF0aW9uLlJ1bGVBc3NvY1JlcG9ydHQAB0Zhbk91dDFzcQB+AARwcQB+ABd0ABFDaG9vc2Ug
+QXR0cmlidXRlc3NxAH4ABHB0ADpuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmF0dHJp
+YnV0ZS5DaG9vc2VBdHRyaWJ1dGVzdAAIRlBHcm93dGhzcQB+AARwdABBbmNzYS5kMmsubW9kdWxl
+cy5jb3JlLmRpc2NvdmVyeS5ydWxlYXNzb2NpYXRpb24uZnBncm93dGguRlBHcm93dGh4" label="fp-growth.itn">
     <annotation><![CDATA[<HTML>
 </HTML>]]></annotation>
-    <module alias="Rule Visualization" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleVis" xloc="476" yloc="107">
-      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
-      <property name="windowName" value="Rule Visualization"/>
-    </module>
     <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="129" yloc="166">
       <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"/>
       <output index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets">
@@ -38,31 +33,9 @@ bW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV4" label="fp-growth.itn">
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
     </module>
-    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="132" yloc="32">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
-        <destination alias="Parse File To Table" index="0"/>
-      </output>
-      <property name="typesRow" value="1"/>
-      <property name="hasSpecDelim" value="false"/>
-      <property name="labelsRow" value="0"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="hasTypes" value="true"/>
-      <property name="hasLabels" value="true"/>
-    </module>
-    <module alias="FPGrowth" classname="ncsa.d2k.modules.core.discovery.ruleassociation.fpgrowth.FPGrowth" xloc="206" yloc="187">
-      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"/>
-      <output index="0" classname="[[I">
-        <destination alias="Compute Confidence" index="1"/>
-      </output>
-      <property name="debug" value="false"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="verbose" value="true"/>
-      <property name="maxRuleSize" value="6"/>
-      <property name="minimumSupport" value="20.0"/>
-    </module>
     <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="309" yloc="32">
       <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
         <destination alias="Choose Attributes" index="0"/>
       </output>
@@ -75,14 +48,6 @@ bW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV4" label="fp-growth.itn">
         <destination alias="FanOut" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-    </module>
-    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="26" yloc="32">
-      <output index="0" classname="java.lang.String">
-        <destination alias="Create Delimited File Parser" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="fileName" value="data/UCI/mushroom.csv"/>
-      <property name="fileFilterExtension" value=""/>
     </module>
     <module alias="Choose Attributes" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="441" yloc="32">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
@@ -116,6 +81,43 @@ EXNwb3JlLXByaW50LWNvbG9ydAAKcG9wdWxhdGlvbnQAB2hhYml0YXQ="/>
       <property name="displayCount" value="false"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
       <property name="windowName" value="RuleAssocReport"/>
+    </module>
+    <module alias="Input URL or Path" classname="ncsa.d2k.modules.core.io.file.input.Input1FileURL" xloc="22" yloc="17">
+      <output index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy">
+        <destination alias="Create Delimited File Parser1" index="0"/>
+      </output>
+      <property name="userName" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="fileName" value="data/UCI/mushroom.csv"/>
+      <property name="hostURL" value=""/>
+    </module>
+    <module alias="Rule Visualization" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleVis" xloc="476" yloc="107">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.RuleTable"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
+      <property name="windowName" value="Rule Visualization"/>
+    </module>
+    <module alias="FPGrowth" classname="ncsa.d2k.modules.core.discovery.ruleassociation.fpgrowth.FPGrowth" xloc="206" yloc="187">
+      <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"/>
+      <output index="0" classname="[[I">
+        <destination alias="Compute Confidence" index="1"/>
+      </output>
+      <property name="debug" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="verbose" value="true"/>
+      <property name="maxRuleSize" value="6"/>
+      <property name="minimumSupport" value="20.0"/>
+    </module>
+    <module alias="Create Delimited File Parser1" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParserFromURL" xloc="132" yloc="17">
+      <input index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParserFromURL">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="labelsRow" value="0"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
     </module>
     <module alias="Compute Confidence" classname="ncsa.d2k.modules.core.discovery.ruleassociation.apriori.ComputeConfidence" xloc="302" yloc="149">
       <input index="0" classname="ncsa.d2k.modules.core.discovery.ruleassociation.ItemSets"/>

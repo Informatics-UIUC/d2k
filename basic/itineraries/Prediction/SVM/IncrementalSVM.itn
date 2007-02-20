@@ -1,30 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
-  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcqx9TOX90gE5AgAAeHIAE2phdmEu
+  <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAAjdwgAAAAOAAAAD3QAB0Zhbk91dDNzcgAbbmNzYS5kMmsuY29yZS5SZXNvdXJjZUVudHJ51S4s
-IEIDJtICAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtMAA9vYmplY3RDbGFz
-c05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFu
-T3V0TW9kdWxldAAHRmFuT3V0MnNxAH4ABHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFuT3V0
-TW9kdWxldAALQ2F0Y2ggTW9kZWxzcQB+AARwdAArbmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRp
-Y3Rpb24uQ2F0Y2hNb2RlbHQAB0Zhbk91dDFzcQB+AARwdAAibmNzYS5kMmsuY29yZS5tb2R1bGVz
-LkZhbk91dE1vZHVsZXQAEENyZWF0ZSBTVk0gTW9kZWxzcQB+AARwdAAzbmNzYS5kMmsubW9kdWxl
-cy5jb3JlLnByZWRpY3Rpb24uc3ZtLkNyZWF0ZVNWTU1vZGVsdAAXUHJlZGljdGlvbiBUYWJsZSBS
-ZXBvcnRzcQB+AARwdAAvbmNzYS5kMmsubW9kdWxlcy5jb3JlLnZpcy5QcmVkaWN0aW9uVGFibGVS
-ZXBvcnR0AA1Mb2FkIFRlc3QgU2V0c3EAfgAEcHQAMm5jc2EuZDJrLmNvcmUubW9kdWxlcy5hZ2Vu
-ZGEuTmVzdGVkSXRpbmVyYXJ5TW9kdWxldAASQ3JlYXRlIFNWTSBQcm9ibGVtc3EAfgAEcHQAMW5j
-c2EuZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLnN2bS5TVk1Qcm9iTWFrZXJ0AAZGYW5PdXRz
-cQB+AARwdAAibmNzYS5kMmsuY29yZS5tb2R1bGVzLkZhbk91dE1vZHVsZXQAJENob29zZSBBdHRy
-aWJ1dGVzIGZvciBTdHJlYW1pbmcgRGF0YXNxAH4ABHB0ADpuY3NhLmQyay5tb2R1bGVzLmNvcmUu
-dHJhbnNmb3JtLmF0dHJpYnV0ZS5DaG9vc2VBdHRyaWJ1dGVzdAAeQ2hvb3NlIEF0dHJpYnV0ZXMg
-Zm9yIHRlc3Qgc2V0c3EAfgAEcHEAfgAjdAAPRXZhbHVhdGUgTW9kZWxzc3EAfgAEcHQAL25jc2Eu
-ZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLkV2YWx1YXRlTW9kZWxzdAASTWVyZ2UgU1ZNIFBy
-b2JsZW1zc3EAfgAEcHQANW5jc2EuZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLnN2bS5NZXJn
-ZVNWTVByb2JsZW1zdAALU1ZNIEJ1aWxkZXJzcQB+AARwdAAvbmNzYS5kMmsubW9kdWxlcy5jb3Jl
-LnByZWRpY3Rpb24uc3ZtLlNWTUJ1aWxkZXJ0AB1DcmVhdGUgTW9kZWwgQ29tcGFyaXNvbiBUYWJs
-ZXNxAH4ABHB0ADtuY3NhLmQyay5tb2R1bGVzLmNvcmUucHJlZGljdGlvbi5DcmVhdGVNb2RlbENv
-bXBhcmlzb25UYWJsZXg=" label="IncrementalSVM.itn">
+AAAjdwgAAAAvAAAAEnQAHUNyZWF0ZSBNb2RlbCBDb21wYXJpc29uIFRhYmxlc3IAG25jc2EuZDJr
+LmNvcmUuUmVzb3VyY2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFu
+Zy9PYmplY3Q7TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdAA7bmNz
+YS5kMmsubW9kdWxlcy5jb3JlLnByZWRpY3Rpb24uQ3JlYXRlTW9kZWxDb21wYXJpc29uVGFibGV0
+AB9Mb2FkIFRlc3QgU2V0X0lucHV0IFVSTCBvciBQYXRoc3EAfgAEcHQAMW5jc2EuZDJrLm1vZHVs
+ZXMuY29yZS5pby5maWxlLmlucHV0LklucHV0MUZpbGVVUkx0AA9FdmFsdWF0ZSBNb2RlbHNzcQB+
+AARwdAAvbmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRpY3Rpb24uRXZhbHVhdGVNb2RlbHN0ACtM
+b2FkIFRlc3QgU2V0X0NyZWF0ZSBEZWxpbWl0ZWQgRmlsZSBQYXJzZXIxc3EAfgAEcHQAQG5jc2Eu
+ZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LkNyZWF0ZURlbGltaXRlZFBhcnNlckZyb21V
+Ukx0AAtTVk0gQnVpbGRlcnNxAH4ABHB0AC9uY3NhLmQyay5tb2R1bGVzLmNvcmUucHJlZGljdGlv
+bi5zdm0uU1ZNQnVpbGRlcnQABkZhbk91dHNxAH4ABHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMu
+RmFuT3V0TW9kdWxldAAkQ2hvb3NlIEF0dHJpYnV0ZXMgZm9yIFN0cmVhbWluZyBEYXRhc3EAfgAE
+cHQAOm5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0uYXR0cmlidXRlLkNob29zZUF0dHJp
+YnV0ZXN0ABJDcmVhdGUgU1ZNIFByb2JsZW1zcQB+AARwdAAxbmNzYS5kMmsubW9kdWxlcy5jb3Jl
+LnByZWRpY3Rpb24uc3ZtLlNWTVByb2JNYWtlcnQAC0NhdGNoIE1vZGVsc3EAfgAEcHQAK25jc2Eu
+ZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLkNhdGNoTW9kZWx0ACFMb2FkIFRlc3QgU2V0X1Bh
+cnNlIEZpbGUgVG8gVGFibGVzcQB+AARwdAA0bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUu
+aW5wdXQuUGFyc2VGaWxlVG9UYWJsZXQAB0Zhbk91dDNzcQB+AARwcQB+ABd0AAdGYW5PdXQyc3EA
+fgAEcHEAfgAXdAAHRmFuT3V0MXNxAH4ABHBxAH4AF3QAF1ByZWRpY3Rpb24gVGFibGUgUmVwb3J0
+c3EAfgAEcHQAL25jc2EuZDJrLm1vZHVsZXMuY29yZS52aXMuUHJlZGljdGlvblRhYmxlUmVwb3J0
+dAASTWVyZ2UgU1ZNIFByb2JsZW1zc3EAfgAEcHQAQG5jc2EuZDJrLm1vZHVsZXMuZGVwcmVjYXRl
+ZC5jb3JlLnByZWRpY3Rpb24uc3ZtLk1lcmdlU1ZNUHJvYmxlbXN0ABBDcmVhdGUgU1ZNIE1vZGVs
+c3EAfgAEcHQAM25jc2EuZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLnN2bS5DcmVhdGVTVk1N
+b2RlbHQADUxvYWQgVGVzdCBTZXRzcQB+AARwdAAybmNzYS5kMmsuY29yZS5tb2R1bGVzLmFnZW5k
+YS5OZXN0ZWRJdGluZXJhcnlNb2R1bGV0AB5DaG9vc2UgQXR0cmlidXRlcyBmb3IgdGVzdCBzZXRz
+cQB+AARwcQB+ABp4" label="IncrementalSVM.itn">
     <annotation><![CDATA[<p>
       <b>Incremental SVM: </b>
     </p>
@@ -133,7 +137,7 @@ Choose Attributes for test dataset </i>to suppress UI. Copy the module and
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
       <property name="windowName" value="Prediction Table Report1"/>
     </module>
-    <module alias="Merge SVM Problems" classname="ncsa.d2k.modules.core.prediction.svm.MergeSVMProblems" xloc="318" yloc="122">
+    <module alias="Merge SVM Problems" classname="ncsa.d2k.modules.deprecated.core.prediction.svm.MergeSVMProblems" xloc="318" yloc="122">
       <input index="0" classname="libsvm.svm_problem"/>
       <input index="1" classname="libsvm.svm_model"/>
       <output index="0" classname="libsvm.svm_problem">
@@ -156,7 +160,7 @@ Choose Attributes for test dataset </i>to suppress UI. Copy the module and
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
       <property name="windowName" value="Choose Attributes for Streaming Data"/>
-      <property name="supressGui" value="false"/>
+      <property name="suppressGui" value="false"/>
     </module>
     <module alias="Catch Model" classname="ncsa.d2k.modules.core.prediction.CatchModel" xloc="551" yloc="267">
       <input index="0" classname="ncsa.d2k.modules.PredictionModelModule"/>
@@ -184,7 +188,7 @@ Choose Attributes for test dataset </i>to suppress UI. Copy the module and
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
       <property name="windowName" value="Choose Attributes for test set"/>
-      <property name="supressGui" value="false"/>
+      <property name="suppressGui" value="false"/>
     </module>
     <module alias="FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="581" yloc="93">
       <input index="0" classname="libsvm.svm_model"/>
@@ -254,27 +258,30 @@ Choose Attributes for test dataset </i>to suppress UI. Copy the module and
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
     </module>
     <module alias="Load Test Set" classname="ncsa.d2k.core.modules.agenda.NestedItineraryModule" xloc="38" yloc="315">
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
         <destination alias="Choose Attributes for test set" index="0"/>
       </output>
       <itinerary label="Load Test Set">
+        <module alias="Load Test Set_Input URL or Path" classname="ncsa.d2k.modules.core.io.file.input.Input1FileURL" xloc="22" yloc="17">
+          <output index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy">
+            <destination alias="Load Test Set_Create Delimited File Parser1" index="0"/>
+          </output>
+          <property name="userName" value=""/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+        </module>
         <module alias="Load Test Set_Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="326" yloc="18">
           <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+          <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
           <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
             <destination alias="Load Test Set" index="0"/>
           </output>
           <property name="useBlanks" value="true"/>
           <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
         </module>
-        <module alias="Load Test Set_Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="23" yloc="18">
-          <output index="0" classname="java.lang.String">
-            <destination alias="Load Test Set_Create Delimited File Parser" index="0"/>
-          </output>
-          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-        </module>
-        <module alias="Load Test Set_Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="130" yloc="18">
-          <input index="0" classname="java.lang.String"/>
-          <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+        <module alias="Load Test Set_Create Delimited File Parser1" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParserFromURL" xloc="108" yloc="17">
+          <input index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy"/>
+          <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParserFromURL">
             <destination alias="Load Test Set_Parse File To Table" index="0"/>
           </output>
           <property name="typesRow" value="1"/>
@@ -286,6 +293,7 @@ Choose Attributes for test dataset </i>to suppress UI. Copy the module and
         </module>
       </itinerary>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="orderOutputs" value="false"/>
       <property name="enableParallelization" value="false"/>
     </module>
   </itinerary>

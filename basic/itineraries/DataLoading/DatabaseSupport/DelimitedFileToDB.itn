@@ -3,16 +3,16 @@
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
   <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAAIdwgAAAALAAAABXQAC0Nvbm5lY3RUb0RCc3IAG25jc2EuZDJrLmNvcmUuUmVzb3VyY2VFbnRy
-eQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9PYmplY3Q7TAAPb2JqZWN0
-Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdAAobmNzYS5kMmsubW9kdWxlcy5jb3Jl
-LmlvLnNxbC5Db25uZWN0VG9EQnQAEElucHV0IEZpbGUgTmFtZTFzcQB+AARwdAAybmNzYS5kMmsu
-bW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV0ABNQYXJzZSBGaWxlIFRv
-IFRhYmxlc3EAfgAEcHQANG5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LlBhcnNl
-RmlsZVRvVGFibGV0ABxDcmVhdGUgRGVsaW1pdGVkIEZpbGUgUGFyc2Vyc3EAfgAEcHQAOW5jc2Eu
-ZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LkNyZWF0ZURlbGltaXRlZFBhcnNlcnQADFNh
-dmVGaWxlVG9EQnNxAH4ABHB0ACluY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uc3FsLlNhdmVGaWxl
-VG9EQng=" label="DelimitedFileToDB.itn">
+AAAIdwgAAAAFAAAABXQAHUNyZWF0ZSBEZWxpbWl0ZWQgRmlsZSBQYXJzZXIxc3IAG25jc2EuZDJr
+LmNvcmUuUmVzb3VyY2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFu
+Zy9PYmplY3Q7TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdABAbmNz
+YS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2VyRnJv
+bVVSTHQAC0Nvbm5lY3RUb0RCc3EAfgAEcHQAKG5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5zcWwu
+Q29ubmVjdFRvREJ0AAxTYXZlRmlsZVRvREJzcQB+AARwdAApbmNzYS5kMmsubW9kdWxlcy5jb3Jl
+LmlvLnNxbC5TYXZlRmlsZVRvREJ0ABNQYXJzZSBGaWxlIFRvIFRhYmxlc3EAfgAEcHQANG5jc2Eu
+ZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LlBhcnNlRmlsZVRvVGFibGV0ABFJbnB1dCBV
+Ukwgb3IgUGF0aHNxAH4ABHB0ADFuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5J
+bnB1dDFGaWxlVVJMeA==" label="DelimitedFileToDB.itn">
     <annotation><![CDATA[<p>
       LoadFileToDB
     </p>
@@ -86,6 +86,13 @@ VG9EQng=" label="DelimitedFileToDB.itn">
       is executed. To view the Table that is created, use the itinerary 
       &quot;DatabaseToTable&quot;.
     </p>]]></annotation>
+    <module alias="Input URL or Path" classname="ncsa.d2k.modules.core.io.file.input.Input1FileURL" xloc="22" yloc="209">
+      <output index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy">
+        <destination alias="Create Delimited File Parser1" index="0"/>
+      </output>
+      <property name="userName" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
     <module alias="ConnectToDB" classname="ncsa.d2k.modules.core.io.sql.ConnectToDB" xloc="30" yloc="18">
       <output index="0" classname="ncsa.d2k.modules.core.io.sql.DBConnection">
         <destination alias="SaveFileToDB" index="0"/>
@@ -101,25 +108,26 @@ VG9EQng=" label="DelimitedFileToDB.itn">
       <property name="driver" value=""/>
       <property name="machine" value=""/>
     </module>
-    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="154" yloc="114">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
-        <destination alias="Parse File To Table" index="0"/>
-      </output>
-      <property name="typesRow" value="1"/>
-      <property name="hasSpecDelim" value="false"/>
-      <property name="labelsRow" value="0"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="hasTypes" value="true"/>
-      <property name="hasLabels" value="true"/>
-    </module>
     <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="350" yloc="114">
       <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
         <destination alias="SaveFileToDB" index="1"/>
       </output>
       <property name="useBlanks" value="true"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+    <module alias="Create Delimited File Parser1" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParserFromURL" xloc="132" yloc="209">
+      <input index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParserFromURL">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="labelsRow" value="0"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
     </module>
     <module alias="SaveFileToDB" classname="ncsa.d2k.modules.core.io.sql.SaveFileToDB" xloc="509" yloc="21">
       <input index="0" classname="ncsa.d2k.modules.core.io.sql.ConnectionWrapper"/>
@@ -129,12 +137,6 @@ VG9EQng=" label="DelimitedFileToDB.itn">
       <property name="isOracle" value="false"/>
       <property name="suppressGui" value="false"/>
       <property name="createNewTable" value="false"/>
-    </module>
-    <module alias="Input File Name1" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="19" yloc="114">
-      <output index="0" classname="java.lang.String">
-        <destination alias="Create Delimited File Parser" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
     </module>
   </itinerary>
 </toolkit>

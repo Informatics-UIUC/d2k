@@ -3,14 +3,14 @@
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
   <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAAIdwgAAAALAAAAA3QAD0lucHV0IEZpbGUgTmFtZXNyABtuY3NhLmQyay5jb3JlLlJlc291cmNl
-RW50cnkAAAAAAAAAAQIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0O0wAD29i
-amVjdENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAMm5jc2EuZDJrLm1vZHVsZXMu
-Y29yZS5pby5maWxlLmlucHV0LklucHV0MUZpbGVOYW1ldAAaUGFyc2UgRmlsZSB0byBQYWdpbmcg
-VGFibGVzcQB+AARwdAA6bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuUGFyc2VG
-aWxlVG9QYWdpbmdUYWJsZXQAHENyZWF0ZSBEZWxpbWl0ZWQgRmlsZSBQYXJzZXJzcQB+AARwdAA5
-bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2Vy
-eA==" label="DelimitedFileToPagingTable.itn">
+AAAIdwgAAAAFAAAAA3QAGlBhcnNlIEZpbGUgdG8gUGFnaW5nIFRhYmxlc3IAG25jc2EuZDJrLmNv
+cmUuUmVzb3VyY2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9P
+YmplY3Q7TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdAA6bmNzYS5k
+MmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuUGFyc2VGaWxlVG9QYWdpbmdUYWJsZXQAHENy
+ZWF0ZSBEZWxpbWl0ZWQgRmlsZSBQYXJzZXJzcQB+AARwdABAbmNzYS5kMmsubW9kdWxlcy5jb3Jl
+LmlvLmZpbGUuaW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2VyRnJvbVVSTHQAEUlucHV0IFVSTCBv
+ciBQYXRoc3EAfgAEcHQAMW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LklucHV0
+MUZpbGVVUkx4" label="DelimitedFileToPagingTable.itn">
     <annotation><![CDATA[<p>
       <b>Delimited File to Paging Table</b>
     </p>
@@ -81,28 +81,28 @@ eA==" label="DelimitedFileToPagingTable.itn">
       module to the output of the Parse File To Paging Table module prior to 
       execution.  
     </p>]]></annotation>
-    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="130" yloc="18">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+    <module alias="Input URL or Path" classname="ncsa.d2k.modules.core.io.file.input.Input1FileURL" xloc="22" yloc="17">
+      <output index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy">
+        <destination alias="Create Delimited File Parser" index="0"/>
+      </output>
+      <property name="userName" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParserFromURL" xloc="136" yloc="17">
+      <input index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParserFromURL">
         <destination alias="Parse File to Paging Table" index="0"/>
       </output>
       <property name="typesRow" value="1"/>
-      <property name="hasSpecDelim" value="false"/>
       <property name="labelsRow" value="0"/>
+      <property name="hasSpecDelim" value="false"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
       <property name="hasTypes" value="true"/>
       <property name="hasLabels" value="true"/>
     </module>
-    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="23" yloc="18">
-      <output index="0" classname="java.lang.String">
-        <destination alias="Create Delimited File Parser" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="fileName" value=""/>
-      <property name="fileFilterExtension" value=""/>
-    </module>
     <module alias="Parse File to Paging Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToPagingTable" xloc="328" yloc="18">
       <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
       <property name="useBlanks" value="true"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>

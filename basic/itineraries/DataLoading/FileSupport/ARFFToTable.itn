@@ -3,13 +3,13 @@
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
   <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAAIdwgAAAALAAAAA3QAF0NyZWF0ZSBBUkZGIEZpbGUgUGFyc2Vyc3IAG25jc2EuZDJrLmNvcmUu
-UmVzb3VyY2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9PYmpl
-Y3Q7TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdAA0bmNzYS5kMmsu
-bW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuQ3JlYXRlQVJGRlBhcnNlcnQAE1BhcnNlIEZpbGUg
-VG8gVGFibGVzcQB+AARwdAA0bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuUGFy
-c2VGaWxlVG9UYWJsZXQAD0lucHV0IEZpbGUgTmFtZXNxAH4ABHB0ADJuY3NhLmQyay5tb2R1bGVz
-LmNvcmUuaW8uZmlsZS5pbnB1dC5JbnB1dDFGaWxlTmFtZXg=" label="ARFFToTable.itn">
+AAAIdwgAAAAFAAAAA3QAGENyZWF0ZSBBUkZGIEZpbGUgUGFyc2VyMXNyABtuY3NhLmQyay5jb3Jl
+LlJlc291cmNlRW50cnkAAAAAAAAAAQIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2Jq
+ZWN0O0wAD29iamVjdENsYXNzTmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAO25jc2EuZDJr
+Lm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LkNyZWF0ZUFSRkZQYXJzZXJGcm9tVVJMdAATUGFy
+c2UgRmlsZSBUbyBUYWJsZXNxAH4ABHB0ADRuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5p
+bnB1dC5QYXJzZUZpbGVUb1RhYmxldAARSW5wdXQgVVJMIG9yIFBhdGhzcQB+AARwdAAxbmNzYS5k
+MmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZVVSTHg=" label="ARFFToTable.itn">
     <annotation><![CDATA[<p>
       <b>ARFF to Table</b>
     </p>
@@ -78,25 +78,25 @@ LmNvcmUuaW8uZmlsZS5pbnB1dC5JbnB1dDFGaWxlTmFtZXg=" label="ARFFToTable.itn">
       module to the output of the Parse File To Table module prior to 
       execution.
     </p>]]></annotation>
-    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="326" yloc="18">
-      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
-      <property name="useBlanks" value="true"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-    </module>
-    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="23" yloc="18">
-      <output index="0" classname="java.lang.String">
-        <destination alias="Create ARFF File Parser" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="fileName" value=""/>
-      <property name="fileFilterExtension" value=""/>
-    </module>
-    <module alias="Create ARFF File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateARFFParser" xloc="145" yloc="18">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.ARFFFileParser">
+    <module alias="Create ARFF File Parser1" classname="ncsa.d2k.modules.core.io.file.input.CreateARFFParserFromURL" xloc="145" yloc="17">
+      <input index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.ARFFFileParserFromURL">
         <destination alias="Parse File To Table" index="0"/>
       </output>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+    <module alias="Input URL or Path" classname="ncsa.d2k.modules.core.io.file.input.Input1FileURL" xloc="22" yloc="17">
+      <output index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy">
+        <destination alias="Create ARFF File Parser1" index="0"/>
+      </output>
+      <property name="userName" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+    </module>
+    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="326" yloc="18">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <property name="useBlanks" value="true"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
     </module>
   </itinerary>

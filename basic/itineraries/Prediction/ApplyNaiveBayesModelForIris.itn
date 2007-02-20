@@ -3,18 +3,18 @@
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
   <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAAIdwgAAAALAAAAB3QAE1BhcnNlIEZpbGUgVG8gVGFibGVzcgAbbmNzYS5kMmsuY29yZS5SZXNv
+AAALdwgAAAAPAAAAB3QAE1BhcnNlIEZpbGUgVG8gVGFibGVzcgAbbmNzYS5kMmsuY29yZS5SZXNv
 dXJjZUVudHJ5AAAAAAAAAAECAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtM
 AA9vYmplY3RDbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0ADRuY3NhLmQyay5tb2R1
-bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1RhYmxldAAPSW5wdXQgRmlsZSBOYW1l
-c3EAfgAEcHQAMm5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LklucHV0MUZpbGVO
-YW1ldAAGRmFuT3V0c3EAfgAEcHQAIm5jc2EuZDJrLmNvcmUubW9kdWxlcy5GYW5PdXRNb2R1bGV0
-AA9OYWl2ZSBCYXllcyBWaXNzcQB+AARwdAA5bmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRpY3Rp
-b24ubmFpdmViYXllcy5OYWl2ZUJheWVzVmlzdAAXUHJlZGljdGlvbiBUYWJsZSBSZXBvcnRzcQB+
-AARwdAAvbmNzYS5kMmsubW9kdWxlcy5jb3JlLnZpcy5QcmVkaWN0aW9uVGFibGVSZXBvcnR0ABxD
-cmVhdGUgRGVsaW1pdGVkIEZpbGUgUGFyc2Vyc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMuY29y
-ZS5pby5maWxlLmlucHV0LkNyZWF0ZURlbGltaXRlZFBhcnNlcnQADFRhYmxlIFZpZXdlcnNxAH4A
-BHB0ACVuY3NhLmQyay5tb2R1bGVzLmNvcmUudmlzLlRhYmxlVmlld2VyeA==" label="ApplyNaiveBayesModelForIris.itn">
+bGVzLmNvcmUuaW8uZmlsZS5pbnB1dC5QYXJzZUZpbGVUb1RhYmxldAAcQ3JlYXRlIERlbGltaXRl
+ZCBGaWxlIFBhcnNlcnNxAH4ABHB0AEBuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1
+dC5DcmVhdGVEZWxpbWl0ZWRQYXJzZXJGcm9tVVJMdAARSW5wdXQgVVJMIG9yIFBhdGhzcQB+AARw
+dAAxbmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZVVSTHQABkZh
+bk91dHNxAH4ABHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFuT3V0TW9kdWxldAAPTmFpdmUg
+QmF5ZXMgVmlzc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLm5haXZl
+YmF5ZXMuTmFpdmVCYXllc1Zpc3QAF1ByZWRpY3Rpb24gVGFibGUgUmVwb3J0c3EAfgAEcHQAL25j
+c2EuZDJrLm1vZHVsZXMuY29yZS52aXMuUHJlZGljdGlvblRhYmxlUmVwb3J0dAAMVGFibGUgVmll
+d2Vyc3EAfgAEcHQAJW5jc2EuZDJrLm1vZHVsZXMuY29yZS52aXMuVGFibGVWaWV3ZXJ4" label="ApplyNaiveBayesModelForIris.itn">
     <annotation><![CDATA[<p>
       <b>Naive Bayesian Analysis </b>
     </p>
@@ -122,6 +122,15 @@ BHB0ACVuY3NhLmQyay5tb2R1bGVzLmNvcmUudmlzLlRhYmxlVmlld2VyeA==" label="ApplyNaiveB
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
       <property name="windowName" value="PredictionTableReport"/>
     </module>
+    <module alias="Input URL or Path" classname="ncsa.d2k.modules.core.io.file.input.Input1FileURL" xloc="22" yloc="17">
+      <output index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy">
+        <destination alias="Create Delimited File Parser" index="0"/>
+      </output>
+      <property name="userName" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="fileName" value="data/UCI/iris.csv"/>
+      <property name="hostURL" value=""/>
+    </module>
     <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="206" yloc="171">
       <input index="0" classname="java.lang.Object"/>
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.PredictionTable">
@@ -132,23 +141,24 @@ BHB0ACVuY3NhLmQyay5tb2R1bGVzLmNvcmUudmlzLlRhYmxlVmlld2VyeA==" label="ApplyNaiveB
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
     </module>
-    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="307" yloc="16">
-      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
-      <property name="useBlanks" value="true"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-    </module>
-    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="138" yloc="16">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParserFromURL" xloc="136" yloc="17">
+      <input index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParserFromURL">
         <destination alias="Parse File To Table" index="0"/>
       </output>
       <property name="typesRow" value="1"/>
-      <property name="hasSpecDelim" value="false"/>
       <property name="labelsRow" value="0"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
       <property name="hasTypes" value="true"/>
       <property name="hasLabels" value="true"/>
+    </module>
+    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="307" yloc="16">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <property name="useBlanks" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
     </module>
     <module alias="Table Viewer" classname="ncsa.d2k.modules.core.vis.TableViewer" xloc="324" yloc="184">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
@@ -156,14 +166,6 @@ BHB0ACVuY3NhLmQyay5tb2R1bGVzLmNvcmUudmlzLlRhYmxlVmlld2VyeA==" label="ApplyNaiveB
       <property name="maxFractionDigits" value="-1"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
       <property name="windowName" value="Table Viewer"/>
-    </module>
-    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="29" yloc="16">
-      <output index="0" classname="java.lang.String">
-        <destination alias="Create Delimited File Parser" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="fileName" value="data/UCI/iris.csv"/>
-      <property name="fileFilterExtension" value=""/>
     </module>
     <module alias="Naive Bayes Vis" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesVis" xloc="316" yloc="256">
       <input index="0" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"/>

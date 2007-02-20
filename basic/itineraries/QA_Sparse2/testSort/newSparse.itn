@@ -3,23 +3,32 @@
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
   <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAAmdwgAAAAKAAAACXQABkZhbk91dHNyABtuY3NhLmQyay5jb3JlLlJlc291cmNlRW50cnkAAAAA
-AAAAAQIAAkwADGNhY2hlZE9iamVjdHQAEkxqYXZhL2xhbmcvT2JqZWN0O0wAD29iamVjdENsYXNz
-TmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwcHQAIm5jc2EuZDJrLmNvcmUubW9kdWxlcy5GYW5P
-dXRNb2R1bGV0AAxDb252ZXJ0VGFibGVzcQB+AARwdAAxbmNzYS5kMmsubW9kdWxlcy5jb3JlLmRh
-dGF0eXBlLnRhYmxlLkNvbnZlcnRUYWJsZXQAE1BhcnNlIEZpbGUgVG8gVGFibGVzcQB+AARwdAA0
-bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuUGFyc2VGaWxlVG9UYWJsZXQACnNv
-cnQgZmlyc3RzcQB+AARwdAAvbmNzYS5kMmsubW9kdWxlcy5jb3JlLnRyYW5zZm9ybS50YWJsZS5T
-b3J0VGFibGV0ABpTcGFyc2VUYWJsZUZhY3RvcnlJbmplY3RvcnNxAH4ABHB0AEduY3NhLmQyay5t
-b2R1bGVzLmNvcmUuZGF0YXR5cGUudGFibGUuc3BhcnNlMi5TcGFyc2VUYWJsZUZhY3RvcnlJbmpl
-Y3RvcnQAD0lucHV0IEZpbGUgTmFtZXNxAH4ABHB0ADJuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8u
-ZmlsZS5pbnB1dC5JbnB1dDFGaWxlTmFtZXQAEEFkZCBJbmRleCBDb2x1bW5zcQB+AARwdAAxbmNz
-YS5kMmsubW9kdWxlcy5wcm9qZWN0cy52ZXJlZC5xYS5BZGRJbmRleENvbHVtbnQAHENyZWF0ZSBE
-ZWxpbWl0ZWQgRmlsZSBQYXJzZXJzcQB+AARwdAA5bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZp
-bGUuaW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2VydAAJVGVzdCBTb3J0c3EAfgAEcHQAK25jc2Eu
-ZDJrLm1vZHVsZXMucHJvamVjdHMudmVyZWQucWEuVGVzdFNvcnR4" label="newSparse.itn">
+AAAmdwgAAAAJAAAACXQACnNvcnQgZmlyc3RzcgAbbmNzYS5kMmsuY29yZS5SZXNvdXJjZUVudHJ5
+AAAAAAAAAAECAAJMAAxjYWNoZWRPYmplY3R0ABJMamF2YS9sYW5nL09iamVjdDtMAA9vYmplY3RD
+bGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHB0AC9uY3NhLmQyay5tb2R1bGVzLmNvcmUu
+dHJhbnNmb3JtLnRhYmxlLlNvcnRUYWJsZXQAE1BhcnNlIEZpbGUgVG8gVGFibGVzcQB+AARwdAA0
+bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuUGFyc2VGaWxlVG9UYWJsZXQAEEFk
+ZCBJbmRleCBDb2x1bW5zcQB+AARwdAAxbmNzYS5kMmsubW9kdWxlcy5wcm9qZWN0cy52ZXJlZC5x
+YS5BZGRJbmRleENvbHVtbnQAGlNwYXJzZVRhYmxlRmFjdG9yeUluamVjdG9yc3EAfgAEcHQAR25j
+c2EuZDJrLm1vZHVsZXMuY29yZS5kYXRhdHlwZS50YWJsZS5zcGFyc2UyLlNwYXJzZVRhYmxlRmFj
+dG9yeUluamVjdG9ydAAMQ29udmVydFRhYmxlc3EAfgAEcHQAMW5jc2EuZDJrLm1vZHVsZXMuY29y
+ZS5kYXRhdHlwZS50YWJsZS5Db252ZXJ0VGFibGV0AAlUZXN0IFNvcnRzcQB+AARwdAArbmNzYS5k
+MmsubW9kdWxlcy5wcm9qZWN0cy52ZXJlZC5xYS5UZXN0U29ydHQAEUlucHV0IFVSTCBvciBQYXRo
+c3EAfgAEcHQAMW5jc2EuZDJrLm1vZHVsZXMuY29yZS5pby5maWxlLmlucHV0LklucHV0MUZpbGVV
+Ukx0AAZGYW5PdXRzcQB+AARwdAAibmNzYS5kMmsuY29yZS5tb2R1bGVzLkZhbk91dE1vZHVsZXQA
+HUNyZWF0ZSBEZWxpbWl0ZWQgRmlsZSBQYXJzZXIxc3EAfgAEcHQAQG5jc2EuZDJrLm1vZHVsZXMu
+Y29yZS5pby5maWxlLmlucHV0LkNyZWF0ZURlbGltaXRlZFBhcnNlckZyb21VUkx4" label="newSparse.itn">
     <annotation><![CDATA[<HTML>
 </HTML>]]></annotation>
+    <module alias="Input URL or Path" classname="ncsa.d2k.modules.core.io.file.input.Input1FileURL" xloc="22" yloc="17">
+      <output index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy">
+        <destination alias="Create Delimited File Parser1" index="0"/>
+      </output>
+      <property name="userName" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="fileName" value="data\UCI\iris_missing.csv"/>
+      <property name="hostURL" value=""/>
+    </module>
     <module alias="FanOut" classname="ncsa.d2k.core.modules.FanOutModule" xloc="137" yloc="249">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.TableFactory">
@@ -29,9 +38,7 @@ ZDJrLm1vZHVsZXMucHJvamVjdHMudmVyZWQucWEuVGVzdFNvcnR4" label="newSparse.itn">
     </module>
     <module alias="sort first" classname="ncsa.d2k.modules.core.transform.table.SortTable" xloc="431" yloc="301">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-        <destination alias="Test Sort" index="0"/>
-      </output>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
       <property name="numberOfSorts" value="5"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
       <property name="sortOrderNames" binaryValue="rO0ABXVyABNbTGphdmEubGFuZy5TdHJpbmc7rdJW5+kde0cCAAB4cAAAAAN0AApzZXBhbHdpZHRo
@@ -39,42 +46,26 @@ dAALcGV0YWxsZW5ndGh0AAtzZXBhbGxlbmd0aA=="/>
       <property name="suppressGui" value="true"/>
       <property name="reorderColumns" value="true"/>
     </module>
-    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="111" yloc="12">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
+    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="473" yloc="17">
+      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <property name="useBlanks" value="true"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Create Delimited File Parser1" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParserFromURL" xloc="156" yloc="41">
+      <input index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParserFromURL">
         <destination alias="Parse File To Table" index="0"/>
       </output>
       <property name="typesRow" value="1"/>
       <property name="labelsRow" value="0"/>
       <property name="hasSpecDelim" value="false"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
       <property name="hasTypes" value="true"/>
       <property name="hasLabels" value="true"/>
     </module>
-    <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="276" yloc="15">
-      <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-        <destination alias="Add Index Column" index="0"/>
-      </output>
-      <property name="useBlanks" value="true"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-    </module>
-    <module alias="Test Sort" classname="ncsa.d2k.modules.projects.vered.qa.TestSort" xloc="541" yloc="150">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <property name="fileOutput" value="true"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
-      <property name="fileName" value="C:\src\data\output\qa_sparse\sort\newSparse.txt"/>
-    </module>
-    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="16" yloc="27">
-      <output index="0" classname="java.lang.String">
-        <destination alias="Create Delimited File Parser" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
-      <property name="fileName" value="C:\src\basic\data\UCI\iris_missing.csv"/>
-      <property name="fileFilterExtension" value=""/>
-    </module>
-    <module alias="ConvertTable" classname="ncsa.d2k.modules.core.datatype.table.ConvertTable" xloc="238" yloc="209">
+    <module alias="ConvertTable" classname="ncsa.d2k.modules.core.transform.table.ConvertTable" xloc="238" yloc="209">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
       <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table">
@@ -82,14 +73,7 @@ dAALcGV0YWxsZW5ndGh0AAtzZXBhbGxlbmd0aA=="/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
     </module>
-    <module alias="Add Index Column" classname="ncsa.d2k.modules.projects.vered.qa.AddIndexColumn" xloc="421" yloc="29">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-        <destination alias="ConvertTable" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-    </module>
-    <module alias="SparseTableFactoryInjector" classname="ncsa.d2k.modules.core.datatype.table.sparse2.SparseTableFactoryInjector" xloc="4" yloc="171">
+    <module alias="SparseTableFactoryInjector" classname="ncsa.d2k.modules.core.datatype.table.sparse.SparseTableFactoryInjector" xloc="4" yloc="171">
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.TableFactory">
         <destination alias="FanOut" index="0"/>
       </output>

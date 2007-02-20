@@ -3,29 +3,29 @@
 <toolkit xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance" xsi:noNamespaceSchemaLocation="itinerary.xsd">
   <itinerary resman="rO0ABXNyAB1uY3NhLmQyay5jb3JlLlJlc291cmNlTWFuYWdlcgAAAAAAAAABAgAAeHIAE2phdmEu
 dXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAA
-AAARdwgAAAAOAAAAD3QAEUNob29zZSBBdHRyaWJ1dGVzc3IAG25jc2EuZDJrLmNvcmUuUmVzb3Vy
-Y2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9PYmplY3Q7TAAP
-b2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdAA6bmNzYS5kMmsubW9kdWxl
-cy5jb3JlLnRyYW5zZm9ybS5hdHRyaWJ1dGUuQ2hvb3NlQXR0cmlidXRlc3QAB0Zhbk91dDFzcQB+
-AARwdAAibmNzYS5kMmsuY29yZS5tb2R1bGVzLkZhbk91dE1vZHVsZXQAC0NhdGNoIE1vZGVsc3EA
-fgAEcHQAK25jc2EuZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLkNhdGNoTW9kZWx0AA9JbnB1
-dCBGaWxlIE5hbWVzcQB+AARwdAAybmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQu
-SW5wdXQxRmlsZU5hbWV0ABdQcmVkaWN0aW9uIFRhYmxlIFJlcG9ydHNxAH4ABHB0AC9uY3NhLmQy
-ay5tb2R1bGVzLmNvcmUudmlzLlByZWRpY3Rpb25UYWJsZVJlcG9ydHQAD0NyZWF0ZSBCaW4gVHJl
-ZXNxAH4ABHB0ADVuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmJpbm5pbmcuQ3JlYXRl
-QmluVHJlZXQADkJpbiBBdHRyaWJ1dGVzc3EAfgAEcHQANW5jc2EuZDJrLm1vZHVsZXMuY29yZS50
-cmFuc2Zvcm0uYmlubmluZy5CaW5BdHRyaWJ1dGVzdAAGRmFuT3V0c3EAfgAEcHEAfgALdAAYQ3Jl
-YXRlIE5haXZlIEJheWVzIE1vZGVsc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMuY29yZS5wcmVk
-aWN0aW9uLm5haXZlYmF5ZXMuQ3JlYXRlTkJNb2RlbHQAEVNpbXBsZSBUcmFpbiBUZXN0c3EAfgAE
-cHQANW5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0udGFibGUuU2ltcGxlVHJhaW5UZXN0
-dAANTW9kZWwgUHJlZGljdHNxAH4ABHB0AC1uY3NhLmQyay5tb2R1bGVzLmNvcmUucHJlZGljdGlv
-bi5Nb2RlbFByZWRpY3R0ABNQYXJzZSBGaWxlIFRvIFRhYmxlc3EAfgAEcHQANG5jc2EuZDJrLm1v
-ZHVsZXMuY29yZS5pby5maWxlLmlucHV0LlBhcnNlRmlsZVRvVGFibGV0AB9QcmVwYXJlIE1vZGVs
-IEZvciBWaXN1YWxpemF0aW9uc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0
-aW9uLm5haXZlYmF5ZXMuUHJlcGFyZUZvclZpc3QAD05haXZlIEJheWVzIFZpc3NxAH4ABHB0ADlu
-Y3NhLmQyay5tb2R1bGVzLmNvcmUucHJlZGljdGlvbi5uYWl2ZWJheWVzLk5haXZlQmF5ZXNWaXN0
-ABxDcmVhdGUgRGVsaW1pdGVkIEZpbGUgUGFyc2Vyc3EAfgAEcHQAOW5jc2EuZDJrLm1vZHVsZXMu
-Y29yZS5pby5maWxlLmlucHV0LkNyZWF0ZURlbGltaXRlZFBhcnNlcng=" label="NaiveBayes.itn">
+AAARdwgAAAAOAAAAD3QAHUNyZWF0ZSBEZWxpbWl0ZWQgRmlsZSBQYXJzZXIxc3IAG25jc2EuZDJr
+LmNvcmUuUmVzb3VyY2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFu
+Zy9PYmplY3Q7TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdABAbmNz
+YS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2VyRnJv
+bVVSTHQAC0NhdGNoIE1vZGVsc3EAfgAEcHQAK25jc2EuZDJrLm1vZHVsZXMuY29yZS5wcmVkaWN0
+aW9uLkNhdGNoTW9kZWx0AAdGYW5PdXQxc3EAfgAEcHQAIm5jc2EuZDJrLmNvcmUubW9kdWxlcy5G
+YW5PdXRNb2R1bGV0ABFDaG9vc2UgQXR0cmlidXRlc3NxAH4ABHB0ADpuY3NhLmQyay5tb2R1bGVz
+LmNvcmUudHJhbnNmb3JtLmF0dHJpYnV0ZS5DaG9vc2VBdHRyaWJ1dGVzdAAPQ3JlYXRlIEJpbiBU
+cmVlc3EAfgAEcHQANW5jc2EuZDJrLm1vZHVsZXMuY29yZS50cmFuc2Zvcm0uYmlubmluZy5DcmVh
+dGVCaW5UcmVldAAXUHJlZGljdGlvbiBUYWJsZSBSZXBvcnRzcQB+AARwdAAvbmNzYS5kMmsubW9k
+dWxlcy5jb3JlLnZpcy5QcmVkaWN0aW9uVGFibGVSZXBvcnR0AA5CaW4gQXR0cmlidXRlc3NxAH4A
+BHB0ADVuY3NhLmQyay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLmJpbm5pbmcuQmluQXR0cmlidXRl
+c3QABkZhbk91dHNxAH4ABHBxAH4ADnQAE1BhcnNlIEZpbGUgVG8gVGFibGVzcQB+AARwdAA0bmNz
+YS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuUGFyc2VGaWxlVG9UYWJsZXQADU1vZGVs
+IFByZWRpY3RzcQB+AARwdAAtbmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRpY3Rpb24uTW9kZWxQ
+cmVkaWN0dAARU2ltcGxlIFRyYWluIFRlc3RzcQB+AARwdAA1bmNzYS5kMmsubW9kdWxlcy5jb3Jl
+LnRyYW5zZm9ybS50YWJsZS5TaW1wbGVUcmFpblRlc3R0ABhDcmVhdGUgTmFpdmUgQmF5ZXMgTW9k
+ZWxzcQB+AARwdAA5bmNzYS5kMmsubW9kdWxlcy5jb3JlLnByZWRpY3Rpb24ubmFpdmViYXllcy5D
+cmVhdGVOQk1vZGVsdAAfUHJlcGFyZSBNb2RlbCBGb3IgVmlzdWFsaXphdGlvbnNxAH4ABHB0ADlu
+Y3NhLmQyay5tb2R1bGVzLmNvcmUucHJlZGljdGlvbi5uYWl2ZWJheWVzLlByZXBhcmVGb3JWaXN0
+ABFJbnB1dCBVUkwgb3IgUGF0aHNxAH4ABHB0ADFuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmls
+ZS5pbnB1dC5JbnB1dDFGaWxlVVJMdAAPTmFpdmUgQmF5ZXMgVmlzc3EAfgAEcHQAOW5jc2EuZDJr
+Lm1vZHVsZXMuY29yZS5wcmVkaWN0aW9uLm5haXZlYmF5ZXMuTmFpdmVCYXllc1Zpc3g=" label="NaiveBayes.itn">
     <annotation><![CDATA[<p>
       <b>Naive Bayesian Analysis </b>
     </p>
@@ -205,31 +205,12 @@ Y29yZS5pby5maWxlLmlucHV0LkNyZWF0ZURlbGltaXRlZFBhcnNlcng=" label="NaiveBayes.itn"
     </module>
     <module alias="Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="326" yloc="18">
       <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
       <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
         <destination alias="Choose Attributes" index="0"/>
       </output>
       <property name="useBlanks" value="true"/>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-    </module>
-    <module alias="Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="130" yloc="18">
-      <input index="0" classname="java.lang.String"/>
-      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
-        <destination alias="Parse File To Table" index="0"/>
-      </output>
-      <property name="typesRow" value="1"/>
-      <property name="hasSpecDelim" value="false"/>
-      <property name="labelsRow" value="0"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="hasTypes" value="true"/>
-      <property name="hasLabels" value="true"/>
-    </module>
-    <module alias="Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="23" yloc="18">
-      <output index="0" classname="java.lang.String">
-        <destination alias="Create Delimited File Parser" index="0"/>
-      </output>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-      <property name="fileName" value="data/UCI/iris.csv"/>
-      <property name="fileFilterExtension" value=""/>
     </module>
     <module alias="Choose Attributes" classname="ncsa.d2k.modules.core.transform.attribute.ChooseAttributes" xloc="519" yloc="18">
       <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
@@ -305,6 +286,15 @@ P+ZmZmZmZmb/8AAAAAAAAHNxAH4AAgAAAANxAH4AIXQACygwLjcgOiAxLjNdP/TMzMzMzMw/5mZm
 ZmZmZnNxAH4AAgAAAANxAH4AIXQACygxLjMgOiAxLjldP/5mZmZmZmY/9MzMzMzMzHNxAH4AAgAA
 AANxAH4AIXQACygxLjkgOiAuLi5df/AAAAAAAAA//mZmZmZmZg=="/>
     </module>
+    <module alias="Input URL or Path" classname="ncsa.d2k.modules.core.io.file.input.Input1FileURL" xloc="22" yloc="17">
+      <output index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy">
+        <destination alias="Create Delimited File Parser1" index="0"/>
+      </output>
+      <property name="userName" value=""/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="fileName" value="data/UCI/iris.csv"/>
+      <property name="hostURL" value=""/>
+    </module>
     <module alias="Prepare Model For Visualization" classname="ncsa.d2k.modules.core.prediction.naivebayes.PrepareForVis" xloc="357" yloc="238">
       <input index="0" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel"/>
       <output index="0" classname="ncsa.d2k.modules.core.prediction.naivebayes.NaiveBayesModel">
@@ -319,6 +309,18 @@ AANxAH4AIXQACygxLjkgOiAuLi5df/AAAAAAAAA//mZmZmZmZg=="/>
         <destination alias="Prediction Table Report" index="0"/>
       </output>
       <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+    </module>
+    <module alias="Create Delimited File Parser1" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParserFromURL" xloc="132" yloc="17">
+      <input index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy"/>
+      <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParserFromURL">
+        <destination alias="Parse File To Table" index="0"/>
+      </output>
+      <property name="typesRow" value="1"/>
+      <property name="labelsRow" value="0"/>
+      <property name="hasSpecDelim" value="false"/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="hasTypes" value="true"/>
+      <property name="hasLabels" value="true"/>
     </module>
     <module alias="Create Naive Bayes Model" classname="ncsa.d2k.modules.core.prediction.naivebayes.CreateNBModel" xloc="549" yloc="155">
       <input index="0" classname="ncsa.d2k.modules.core.transform.binning.BinTree"/>

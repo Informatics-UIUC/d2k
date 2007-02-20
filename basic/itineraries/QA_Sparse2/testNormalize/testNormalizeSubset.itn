@@ -8,49 +8,51 @@ cmUuUmVzb3VyY2VFbnRyeQAAAAAAAAABAgACTAAMY2FjaGVkT2JqZWN0dAASTGphdmEvbGFuZy9P
 YmplY3Q7TAAPb2JqZWN0Q2xhc3NOYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7eHBwdAAzbmNzYS5k
 MmsubW9kdWxlcy5jb3JlLnRyYW5zZm9ybS5hdHRyaWJ1dGUuTm9ybWFsaXpldAAmbmV3U3BhcnNl
 X0NyZWF0ZSBEZWxpbWl0ZWQgRmlsZSBQYXJzZXJzcQB+AARwdAA5bmNzYS5kMmsubW9kdWxlcy5j
-b3JlLmlvLmZpbGUuaW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2VydAAccmVnVGFibGVfUGFyc2Ug
-RmlsZSBUbyBUYWJsZXNxAH4ABHB0ADRuY3NhLmQyay5tb2R1bGVzLmNvcmUuaW8uZmlsZS5pbnB1
-dC5QYXJzZUZpbGVUb1RhYmxldAAdbmV3U3BhcnNlX1BhcnNlIEZpbGUgVG8gVGFibGVzcQB+AARw
-cQB+AA50ABFuZXdTcGFyc2VfRmFuT3V0NHNxAH4ABHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMu
-RmFuT3V0TW9kdWxldAAXcmVnVGFibGVfVGVzdCBOb3JtYWxpemVzcQB+AARwdAAwbmNzYS5kMmsu
-bW9kdWxlcy5wcm9qZWN0cy52ZXJlZC5xYS5UZXN0Tm9ybWFsaXpldAAlcmVnVGFibGVfQ3JlYXRl
+b3JlLmlvLmZpbGUuaW5wdXQuQ3JlYXRlRGVsaW1pdGVkUGFyc2VydAAdbmV3U3BhcnNlX1BhcnNl
+IEZpbGUgVG8gVGFibGVzcQB+AARwdAA0bmNzYS5kMmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5w
+dXQuUGFyc2VGaWxlVG9UYWJsZXQAHHJlZ1RhYmxlX1BhcnNlIEZpbGUgVG8gVGFibGVzcQB+AARw
+cQB+AA50ABdyZWdUYWJsZV9UZXN0IE5vcm1hbGl6ZXNxAH4ABHB0ADBuY3NhLmQyay5tb2R1bGVz
+LnByb2plY3RzLnZlcmVkLnFhLlRlc3ROb3JtYWxpemV0ABFuZXdTcGFyc2VfRmFuT3V0NHNxAH4A
+BHB0ACJuY3NhLmQyay5jb3JlLm1vZHVsZXMuRmFuT3V0TW9kdWxldAAlcmVnVGFibGVfQ3JlYXRl
 IERlbGltaXRlZCBGaWxlIFBhcnNlcnNxAH4ABHBxAH4AC3QAE3JlZ1RhYmxlX0NvcHkgVGFibGVz
 cQB+AARwdAAvbmNzYS5kMmsubW9kdWxlcy5jb3JlLnRyYW5zZm9ybS50YWJsZS5Db3B5VGFibGV0
-ABFuZXdTcGFyc2VfRmFuT3V0MXNxAH4ABHBxAH4AE3QAD25ld1N1YnNldFNwYXJzZXNxAH4ABHB0
-ADJuY3NhLmQyay5jb3JlLm1vZHVsZXMuYWdlbmRhLk5lc3RlZEl0aW5lcmFyeU1vZHVsZXQAGXJl
-Z1RhYmxlX0FkZCBJbmRleCBDb2x1bW5zcQB+AARwdAAxbmNzYS5kMmsubW9kdWxlcy5wcm9qZWN0
-cy52ZXJlZC5xYS5BZGRJbmRleENvbHVtbnQAFm5ld1NwYXJzZV9Db252ZXJ0VGFibGVzcQB+AARw
-dAAybmNzYS5kMmsubW9kdWxlcy5jb3JlLnRyYW5zZm9ybS50YWJsZS5Db252ZXJ0VGFibGV0AA5D
-b21wYXJlIFRhYmxlc3NxAH4ABHB0ADBuY3NhLmQyay5tb2R1bGVzLnByb2plY3RzLnZlcmVkLnFh
-LkNvbXBhcmVUYWJsZXN0ABByZWdUYWJsZV9GYW5PdXQxc3EAfgAEcHEAfgATdAAkbmV3U3BhcnNl
+ABFuZXdTcGFyc2VfRmFuT3V0MXNxAH4ABHBxAH4AFnQADkNvbXBhcmUgVGFibGVzc3EAfgAEcHQA
+MG5jc2EuZDJrLm1vZHVsZXMucHJvamVjdHMudmVyZWQucWEuQ29tcGFyZVRhYmxlc3QAFm5ld1Nw
+YXJzZV9Db252ZXJ0VGFibGVzcQB+AARwdAAybmNzYS5kMmsubW9kdWxlcy5jb3JlLnRyYW5zZm9y
+bS50YWJsZS5Db252ZXJ0VGFibGV0ABlyZWdUYWJsZV9BZGQgSW5kZXggQ29sdW1uc3EAfgAEcHQA
+MW5jc2EuZDJrLm1vZHVsZXMucHJvamVjdHMudmVyZWQucWEuQWRkSW5kZXhDb2x1bW50AA9uZXdT
+dWJzZXRTcGFyc2VzcQB+AARwdAAybmNzYS5kMmsuY29yZS5tb2R1bGVzLmFnZW5kYS5OZXN0ZWRJ
+dGluZXJhcnlNb2R1bGV0ABByZWdUYWJsZV9GYW5PdXQxc3EAfgAEcHEAfgAWdAAkbmV3U3BhcnNl
 X1NwYXJzZVRhYmxlRmFjdG9yeUluamVjdG9yc3EAfgAEcHQAR25jc2EuZDJrLm1vZHVsZXMuY29y
 ZS5kYXRhdHlwZS50YWJsZS5zcGFyc2UyLlNwYXJzZVRhYmxlRmFjdG9yeUluamVjdG9ydAAabmV3
-U3BhcnNlX0FkZCBJbmRleCBDb2x1bW5zcQB+AARwcQB+ACN0ABRuZXdTcGFyc2VfQ29weSBUYWJs
-ZXNxAH4ABHBxAH4AG3QAGW5ld1NwYXJzZV9JbnB1dCBGaWxlIE5hbWVzcQB+AARwdAAybmNzYS5k
-MmsubW9kdWxlcy5jb3JlLmlvLmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV0ABhuZXdTcGFyc2Vf
-VGVzdCBOb3JtYWxpemVzcQB+AARwcQB+ABZ0AB5uZXdTcGFyc2VfQXBwbHkgVHJhbnNmb3JtYXRp
-b25zcQB+AARwdAAzbmNzYS5kMmsubW9kdWxlcy5jb3JlLnRyYW5zZm9ybS5BcHBseVRyYW5zZm9y
-bWF0aW9udAAdcmVnVGFibGVfQXBwbHkgVHJhbnNmb3JtYXRpb25zcQB+AARwcQB+ADp0ABhyZWdU
-YWJsZV9JbnB1dCBGaWxlIE5hbWVzcQB+AARwcQB+ADV0AA5yZWdTdWJzZXRUYWJsZXNxAH4ABHBx
-AH4AIHQAGXJlZ1RhYmxlX05vcm1hbGl6ZSBWYWx1ZXNzcQB+AARwcQB+AAh4" label="testNormalizeSubset.itn">
+U3BhcnNlX0FkZCBJbmRleCBDb2x1bW5zcQB+AARwcQB+ACZ0ABRuZXdTcGFyc2VfQ29weSBUYWJs
+ZXNxAH4ABHBxAH4AG3QAGG5ld1NwYXJzZV9UZXN0IE5vcm1hbGl6ZXNxAH4ABHBxAH4AE3QAGW5l
+d1NwYXJzZV9JbnB1dCBGaWxlIE5hbWVzcQB+AARwdAAybmNzYS5kMmsubW9kdWxlcy5jb3JlLmlv
+LmZpbGUuaW5wdXQuSW5wdXQxRmlsZU5hbWV0ABhyZWdUYWJsZV9JbnB1dCBGaWxlIE5hbWVzcQB+
+AARwcQB+ADd0AB1yZWdUYWJsZV9BcHBseSBUcmFuc2Zvcm1hdGlvbnNxAH4ABHB0ADNuY3NhLmQy
+ay5tb2R1bGVzLmNvcmUudHJhbnNmb3JtLkFwcGx5VHJhbnNmb3JtYXRpb250AB5uZXdTcGFyc2Vf
+QXBwbHkgVHJhbnNmb3JtYXRpb25zcQB+AARwcQB+ADx0ABlyZWdUYWJsZV9Ob3JtYWxpemUgVmFs
+dWVzc3EAfgAEcHEAfgAIdAAOcmVnU3Vic2V0VGFibGVzcQB+AARwcQB+ACl4" label="testNormalizeSubset.itn">
     <annotation><![CDATA[<HTML>
 </HTML>]]></annotation>
-    <module alias="Compare Tables" classname="ncsa.d2k.modules.projects.vered.qa.CompareTables" xloc="225" yloc="96">
-      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
-      <property name="fileOutput" value="true"/>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAAA"/>
-      <property name="fileName" value="C:\src\data\output\qa_sparse\normalize\compareSubsetTables.txt"/>
-      <property name="testInsOuts" value="false"/>
-      <property name="testLabels" value="true"/>
-      <property name="isBinnedTable" value="false"/>
-      <property name="scalar" value="false"/>
-    </module>
     <module alias="newSubsetSparse" classname="ncsa.d2k.core.modules.agenda.NestedItineraryModule" xloc="40" yloc="33">
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-        <destination alias="Compare Tables" index="0"/>
-      </output>
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
       <itinerary label="newSubsetSparse">
+        <module alias="newSubsetSparse_Create Delimited File Parser1" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParserFromURL" xloc="108" yloc="41">
+          <input index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy"/>
+          <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParserFromURL">
+            <destination alias="newSubsetSparse_Parse File To Table" index="0"/>
+          </output>
+          <property name="typesRow" value="1"/>
+          <property name="labelsRow" value="0"/>
+          <property name="hasSpecDelim" value="false"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+          <property name="hasTypes" value="true"/>
+          <property name="hasLabels" value="true"/>
+        </module>
         <module alias="newSubsetSparse_Sample Table Rows" classname="ncsa.d2k.modules.core.transform.table.SampleTableRows" xloc="220" yloc="289">
           <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
           <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table">
@@ -65,23 +67,23 @@ AH4AIHQAGXJlZ1RhYmxlX05vcm1hbGl6ZSBWYWx1ZXNzcQB+AARwcQB+AAh4" label="testNormali
         <module alias="newSubsetSparse_Apply Transformation" classname="ncsa.d2k.modules.core.transform.ApplyTransformation" xloc="522" yloc="230">
           <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Transformation"/>
           <input index="1" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
-          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-            <destination alias="newSubsetSparse" index="0"/>
-          </output>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
           <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
         </module>
-        <module alias="newSubsetSparse_SparseTableFactoryInjector" classname="ncsa.d2k.modules.core.datatype.table.sparse2.SparseTableFactoryInjector" xloc="26" yloc="107">
+        <module alias="newSubsetSparse_SparseTableFactoryInjector" classname="ncsa.d2k.modules.core.datatype.table.sparse.SparseTableFactoryInjector" xloc="26" yloc="107">
           <output index="0" classname="ncsa.d2k.modules.core.datatype.table.TableFactory">
             <destination alias="newSubsetSparse_ConvertTable" index="1"/>
           </output>
           <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
         </module>
-        <module alias="newSubsetSparse_Add Index Column" classname="ncsa.d2k.modules.projects.vered.qa.AddIndexColumn" xloc="421" yloc="29">
-          <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
-          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-            <destination alias="newSubsetSparse_ConvertTable" index="0"/>
+        <module alias="newSubsetSparse_Input URL or Path" classname="ncsa.d2k.modules.core.io.file.input.Input1FileURL" xloc="22" yloc="17">
+          <output index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy">
+            <destination alias="newSubsetSparse_Create Delimited File Parser1" index="0"/>
           </output>
-          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
+          <property name="userName" value=""/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+          <property name="fileName" value="data\UCI\iris_missing.csv"/>
+          <property name="hostURL" value=""/>
         </module>
         <module alias="newSubsetSparse_Normalize Values" classname="ncsa.d2k.modules.core.transform.attribute.Normalize" xloc="430" yloc="119">
           <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
@@ -93,23 +95,10 @@ AH4AIHQAGXJlZ1RhYmxlX05vcm1hbGl6ZSBWYWx1ZXNzcQB+AARwcQB+AAh4" label="testNormali
 aHQACnNlcGFsd2lkdGh0AAtwZXRhbGxlbmd0aHQACnBldGFsd2lkdGh0AAxJbmRleCBjb2x1bW4="/>
           <property name="suppressGui" value="true"/>
         </module>
-        <module alias="newSubsetSparse_Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="111" yloc="12">
-          <input index="0" classname="java.lang.String"/>
-          <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
-            <destination alias="newSubsetSparse_Parse File To Table" index="0"/>
-          </output>
-          <property name="typesRow" value="1"/>
-          <property name="labelsRow" value="0"/>
-          <property name="hasSpecDelim" value="false"/>
-          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-          <property name="hasTypes" value="true"/>
-          <property name="hasLabels" value="true"/>
-        </module>
         <module alias="newSubsetSparse_Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="276" yloc="15">
           <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
-          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-            <destination alias="newSubsetSparse_Add Index Column" index="0"/>
-          </output>
+          <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
           <property name="useBlanks" value="true"/>
           <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
         </module>
@@ -123,14 +112,6 @@ aHQACnNlcGFsd2lkdGh0AAtwZXRhbGxlbmd0aHQACnBldGFsd2lkdGh0AAxJbmRleCBjb2x1bW4="/>
           </output>
           <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
         </module>
-        <module alias="newSubsetSparse_Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="21" yloc="21">
-          <output index="0" classname="java.lang.String">
-            <destination alias="newSubsetSparse_Create Delimited File Parser" index="0"/>
-          </output>
-          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-          <property name="fileName" value="C:\src\basic\data\UCI\iris_missing.csv"/>
-          <property name="fileFilterExtension" value=""/>
-        </module>
         <module alias="newSubsetSparse_ConvertTable" classname="ncsa.d2k.modules.core.transform.table.ConvertTable" xloc="222" yloc="137">
           <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
           <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
@@ -140,15 +121,25 @@ aHQACnNlcGFsd2lkdGh0AAtwZXRhbGxlbmd0aHQACnBldGFsd2lkdGh0AAxJbmRleCBjb2x1bW4="/>
           <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
         </module>
       </itinerary>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
       <property name="orderOutputs" value="false"/>
       <property name="enableParallelization" value="false"/>
     </module>
     <module alias="regSubsetTable" classname="ncsa.d2k.core.modules.agenda.NestedItineraryModule" xloc="38" yloc="143">
-      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-        <destination alias="Compare Tables" index="1"/>
-      </output>
+      <input index="0" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
+      <input index="1" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
+      <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
+      <output index="1" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
       <itinerary label="regSubsetTable">
+        <module alias="regSubsetTable_Input URL or Path" classname="ncsa.d2k.modules.core.io.file.input.Input1FileURL" xloc="22" yloc="41">
+          <output index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy">
+            <destination alias="regSubsetTable_Create Delimited File Parser1" index="0"/>
+          </output>
+          <property name="userName" value=""/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+          <property name="fileName" value="data\UCI\iris_missing.csv"/>
+          <property name="hostURL" value=""/>
+        </module>
         <module alias="regSubsetTable_FanOut1" classname="ncsa.d2k.core.modules.FanOutModule" xloc="404" yloc="223">
           <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Table"/>
           <output index="0" classname="ncsa.d2k.modules.core.datatype.table.Table">
@@ -158,25 +149,6 @@ aHQACnNlcGFsd2lkdGh0AAtwZXRhbGxlbmd0aHQACnBldGFsd2lkdGh0AAxJbmRleCBjb2x1bW4="/>
             <destination alias="regSubsetTable_Apply Transformation" index="1"/>
           </output>
           <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
-        </module>
-        <module alias="regSubsetTable_Create Delimited File Parser" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParser" xloc="111" yloc="12">
-          <input index="0" classname="java.lang.String"/>
-          <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParser">
-            <destination alias="regSubsetTable_Parse File To Table" index="0"/>
-          </output>
-          <property name="typesRow" value="1"/>
-          <property name="labelsRow" value="0"/>
-          <property name="hasSpecDelim" value="false"/>
-          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-          <property name="hasTypes" value="true"/>
-          <property name="hasLabels" value="true"/>
-        </module>
-        <module alias="regSubsetTable_Add Index Column" classname="ncsa.d2k.modules.projects.vered.qa.AddIndexColumn" xloc="421" yloc="29">
-          <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
-          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-            <destination alias="regSubsetTable_Sample Table Rows" index="0"/>
-          </output>
-          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
         </module>
         <module alias="regSubsetTable_Normalize Values" classname="ncsa.d2k.modules.core.transform.attribute.Normalize" xloc="430" yloc="119">
           <input index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
@@ -201,30 +173,31 @@ aHQACnNlcGFsd2lkdGh0AAtwZXRhbGxlbmd0aHQACnBldGFsd2lkdGh0AAxJbmRleCBjb2x1bW4="/>
         </module>
         <module alias="regSubsetTable_Parse File To Table" classname="ncsa.d2k.modules.core.io.file.input.ParseFileToTable" xloc="276" yloc="15">
           <input index="0" classname="ncsa.d2k.modules.core.io.file.input.FlatFileParser"/>
-          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-            <destination alias="regSubsetTable_Add Index Column" index="0"/>
-          </output>
+          <input index="1" classname="ncsa.d2k.modules.core.datatype.table.TableFactory"/>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
           <property name="useBlanks" value="true"/>
           <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
         </module>
-        <module alias="regSubsetTable_Input File Name" classname="ncsa.d2k.modules.core.io.file.input.Input1FileName" xloc="21" yloc="21">
-          <output index="0" classname="java.lang.String">
-            <destination alias="regSubsetTable_Create Delimited File Parser" index="0"/>
+        <module alias="regSubsetTable_Create Delimited File Parser1" classname="ncsa.d2k.modules.core.io.file.input.CreateDelimitedParserFromURL" xloc="108" yloc="89">
+          <input index="0" classname="ncsa.d2k.modules.core.io.proxy.DataObjectProxy"/>
+          <output index="0" classname="ncsa.d2k.modules.core.io.file.input.DelimitedFileParserFromURL">
+            <destination alias="regSubsetTable_Parse File To Table" index="0"/>
           </output>
-          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
-          <property name="fileName" value="C:\src\basic\data\UCI\iris_missing.csv"/>
-          <property name="fileFilterExtension" value=""/>
+          <property name="typesRow" value="1"/>
+          <property name="labelsRow" value="0"/>
+          <property name="hasSpecDelim" value="false"/>
+          <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+          <property name="hasTypes" value="true"/>
+          <property name="hasLabels" value="true"/>
         </module>
         <module alias="regSubsetTable_Apply Transformation" classname="ncsa.d2k.modules.core.transform.ApplyTransformation" xloc="522" yloc="230">
           <input index="0" classname="ncsa.d2k.modules.core.datatype.table.Transformation"/>
           <input index="1" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
-          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable">
-            <destination alias="regSubsetTable" index="0"/>
-          </output>
+          <output index="0" classname="ncsa.d2k.modules.core.datatype.table.MutableTable"/>
           <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAQ=="/>
         </module>
       </itinerary>
-      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAABAAAAAA=="/>
+      <property name="outputCounts" binaryValue="rO0ABXVyAAJbSU26YCZ26rKlAgAAeHAAAAACAAAAAAAAAAA="/>
       <property name="orderOutputs" value="false"/>
       <property name="enableParallelization" value="false"/>
     </module>
