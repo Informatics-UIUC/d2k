@@ -142,12 +142,19 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       org.apache.log4j.Level ll = D2KLogger.logger.getEffectiveLevel();
       java.util.logging.Level l = convertLevel(ll);
       setJavaUtilLogger(l);
-
+      
+      String uc = System.getProperty("ncsa.d2k.modules.core.io.proxy.DISABLE_READ_CACHE");
+      
+      if (uc != null) {
+    	 usingCache = false;
+     }
+     if (usingCache) {
       try {
          cache = DataObjectCacheManagerFactory.getCacheManager();
       } catch (DataObjectProxyException dopex) {
          String msg = "Error initializing Cache Manager";
          D2KLogger.logger.fatal(msg, dopex);
+      }
       }
 
       mURL = url;
@@ -247,7 +254,15 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
        * Delete the files inside temp data directory. For all of the files which
        * can not be deleted, delete then on exit.
        */
+      if (tempDataDir == null) {
+
+          try {
+             setTempDataDir();
+          } catch (DataObjectProxyException d) { }
+       }
+       
       if (tempDataDir != null) {
+    	  
          boolean isTempDataDel = deleteDir(tempDataDir);
 
          if (!isTempDataDel) {
@@ -435,7 +450,7 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       if (tempFilesCreated == null) {
          tempFilesCreated = new Vector();
       }
-
+      
       /*
        * For future use, save the path of the newly created files into a Vector.
        * Not needed when using the cache.
@@ -1105,7 +1120,6 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     * @throws DataObjectProxyException
     */
    public InputStream getLocalInputStream() throws DataObjectProxyException {
-
       if (this.isCollection()) {
 
          /* can't download this! */
@@ -1115,8 +1129,23 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
 
       InputStream is = null;
       String copyTo = null; // in this case, allocate a local temp file
+      
+     if (usingCache) {
       localCopy = cache.getCachedCopy(this, copyTo, true);
-
+      } else {
+      if (copyTo != null) {
+          // the local file name was specified
+       	localCopy = new File(copyTo);
+       	D2KLogger.logger.info("Load "+this.getURL()+" into "+copyTo);
+       	this.readFile(localCopy);
+          
+        } else {
+       	 D2KLogger.logger.info("Load "+this.getURL()+" into temp");
+           // create temporary name for local copy    
+       	 localCopy = this.readFile(null);
+       	 
+        }
+      }
       try {
          is = new FileInputStream(localCopy);
       } catch (Exception e) {
