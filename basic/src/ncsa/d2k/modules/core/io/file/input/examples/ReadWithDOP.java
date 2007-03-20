@@ -133,11 +133,6 @@ public class ReadWithDOP extends InputModule {
          System.out.println("Exception: " + ioex);
       }
       System.out.println("Read "+_tableLength+" lines from "+_dop.getURL());
-      Logger lg = D2KLogger.logger;
-      lg.info("Info");
-      lg.debug("Debug");
-      lg.error("Error");
-      lg.fatal("Fatal");
       
    }
    
@@ -199,6 +194,8 @@ public class ReadWithDOP extends InputModule {
       readFromLocalCopy(dop);
       
       readFile(dop,null);
+      
+      dop.close();
       
       /*
        * 'readFile(dop,destfile)' would read into local file
