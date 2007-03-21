@@ -79,19 +79,19 @@ public class Scale extends HeadlessUIModule {
    //~ Instance fields *********************************************************
 
    /** max to scale from. */
-   private double[] from_max;
+   protected double[] from_max;
 
    /** min to scale from. */
-   private double[] from_min;
+   protected double[] from_min;
 
    /** indices of the columns to scale. */
-   private int[] indices;
+   protected int[] indices;
 
    /** max to scale to. */
-   private double[] to_max;
+   protected double[] to_max;
 
    /** min to scale to. */
-   private double[] to_min;
+   protected double[] to_min;
 
    //~ Methods *****************************************************************
 
