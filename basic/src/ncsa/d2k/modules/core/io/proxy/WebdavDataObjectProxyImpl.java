@@ -886,7 +886,7 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       File parentDir = new File(System.getProperty("user.dir"));
 
       if (parentDir.canWrite()) {
-         tempDataDir = new File("d2kTempData");
+         tempDataDir = new File(parentDir + File.separator + "d2kTempData");
       } else {
          parentDir = new File(System.getProperty("user.home"));
 
