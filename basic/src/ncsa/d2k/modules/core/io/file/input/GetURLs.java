@@ -287,6 +287,9 @@ protected Vector urlsVector= null;
 
        DataObjectProxy dop = (DataObjectProxy) pullInput(0);
        urlsVector = dop.getChildrenURLs(depth);
+       if(debug){
+         System.out.println(this.getAlias() + ": the returned urls --\n" +urlsVector.toString());
+       }
 
 
      }
