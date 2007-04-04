@@ -250,9 +250,13 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       }
 
       /* Non cache version called only if 'useCache' is off */
+      if (localCopy != null && localCopy.exists()) {
+		localCopy.delete();
+	  	localCopy = null;
+	   }
       /*
        * Delete the files inside temp data directory. For all of the files which
-       * can not be deleted, delete then on exit.
+       * can not be deleted, delete them on exit.
        */
       if (tempDataDir == null) {
 
@@ -261,7 +265,7 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
           } catch (DataObjectProxyException d) { }
        }
        
-      if (tempDataDir != null) {
+/*      if (tempDataDir != null) {
     	  
          boolean isTempDataDel = deleteDir(tempDataDir);
 
@@ -273,7 +277,7 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
             }
          }
 
-      }
+      }*/
    } // end method cleanUp
 
 
@@ -633,11 +637,13 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
                    */
                   if (!(walker.toString().equals(url.toString()))) {
                      tempdop = tempdop.resetDataObjectProxy(walker);
+                  } else {
+                	  continue;
                   }
                } catch (Exception ex) {
                   this.handleExceptions(ex);
                }
-
+      
                /*
                 * If the walker is not a collection (directory), just add url in
                 * childrenURLs
@@ -1694,5 +1700,14 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       }
 
    } // end method uploadDir
+   
+   public void finalize() {
+	   if (usingCache == false) {
+		   if (localCopy != null && localCopy.exists()) {
+			   localCopy.delete();
+			   localCopy = null;
+		   }
+	   }
+   }
 
 } // end class WebdavDataObjectProxyImpl
