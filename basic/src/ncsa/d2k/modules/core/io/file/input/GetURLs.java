@@ -286,9 +286,9 @@ protected Vector urlsVector= null;
       if(urlsVector == null && this.getInputPipeSize(0)>0){
 
        DataObjectProxy dop = (DataObjectProxy) pullInput(0);
-       urlsVector = dop.getChildrenURLs(depth);
-       Set urls = new HashSet(urlsVector);
-       urlsVector = new Vector(urls);
+       urlsVector = dop.getChildrenURLs(depth, true);
+//       Set urls = new HashSet(urlsVector);
+  //     urlsVector = new Vector(urls);
        if(debug){
          System.out.println(this.getAlias() + ": the returned urls --\n" +urlsVector.toString());
        }
