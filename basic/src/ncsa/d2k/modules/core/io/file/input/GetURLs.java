@@ -18,7 +18,7 @@ import ncsa.d2k.modules.core.io.proxy.DataObjectProxy;
  * put your documentation comment here
  */
 public class GetURLs extends InputModule
-        implements CommonPropertyLabels {
+         {
     //==============
     // Data Members
     //==============
@@ -178,8 +178,10 @@ public class GetURLs extends InputModule
                 "Depth of recursing when retrieving URLs.");
         pds[1] = new PropertyDescription("extensions", "File Extensions to Filter On",
                 "A comma delimited list of file extensions that will be used to fiter those files chosen for output.");
-        pds[2] = new PropertyDescription("verbose", VERBOSE_prop_label, VERBOSE_prop_label);
-                pds[3] = new PropertyDescription("debug", this.DEBUG_prop_label, this.DEBUG_prop_desc);
+        pds[2] = new PropertyDescription("verbose", "Output Verbose Messges",
+            "When this feature is set to true the module operates in verbose mode.");
+                pds[3] = new PropertyDescription("debug", "Output Debug Messages",
+                                                             "When this feature is set to true the module outpus debug messages to stdout.");
 
         return  pds;
     }
