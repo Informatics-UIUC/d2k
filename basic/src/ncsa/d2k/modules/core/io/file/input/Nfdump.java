@@ -159,6 +159,7 @@ public class Nfdump extends InputModule {
                     // Create/manipulate the desired fields for output.
                     try {
                         int i = 0;
+                        Long m;
                         
                         parts = pl[i].split("-");
                         startYear = parts[0];
@@ -174,10 +175,10 @@ public class Nfdump extends InputModule {
                         
                         durationSeconds = pl[i];
                         i++;
-                        if (pl[i].equals("M") || pl[i].equals("G") || pl[i].equals("T")) {
-                            durationSeconds += pl[i];
+                        m = checkForMultiplier(pl[i]);
+                        durationSeconds = String.format("%.3f", Double.valueOf(durationSeconds) * m);
+                        if (m != 1)
                             i++;
-                        }
                         
                         proto = pl[i];
                         i++;
@@ -205,47 +206,46 @@ public class Nfdump extends InputModule {
                         
                         packets = pl[i];
                         i++;
-                        if (pl[i].equals("M") || pl[i].equals("G") || pl[i].equals("T")) {
-                            packets += pl[i];
+                        m = checkForMultiplier(pl[i]);
+                        packets = String.format("%.0f", Double.valueOf(packets) * m);
+                        if (m != 1)
                             i++;
-                        }
                         
                         bytes = pl[i];
                         i++;
-                        if (pl[i].equals("M") || pl[i].equals("G") || pl[i].equals("T")) {
-                            bytes += pl[i];
+                        m = checkForMultiplier(pl[i]);
+                        bytes = String.format("%.0f", Double.valueOf(bytes) * m);
+                        if (m != 1)
                             i++;
-                        }
 
                         packetsPerSecond = pl[i];
                         i++;
-                        if (pl[i].equals("M") || pl[i].equals("G") || pl[i].equals("T")) {
-                            packetsPerSecond += pl[i];
+                        m = checkForMultiplier(pl[i]);
+                        packetsPerSecond = String.format("%.0f", Double.valueOf(packetsPerSecond) * m);
+                        if (m != 1)
                             i++;
-                        }
 
                         bitsPerSecond = pl[i];
                         i++;
-                        if (pl[i].equals("M") || pl[i].equals("G") || pl[i].equals("T")) {
-                            bitsPerSecond += pl[i];
+                        m = checkForMultiplier(pl[i]);
+                        bitsPerSecond = String.format("%.0f", Double.valueOf(bitsPerSecond) * m);
+                        if (m != 1)
                             i++;
-                        }
                         
                         bytesPerSecond = pl[i];
                         i++;
-                        if (pl[i].equals("M") || pl[i].equals("G") || pl[i].equals("T")) {
-                            bytesPerSecond += pl[i];
+                        m = checkForMultiplier(pl[i]);
+                        bytesPerSecond = String.format("%.0f", Double.valueOf(bytesPerSecond) * m);
+                        if (m != 1)
                             i++;
-                        }
 
                         flows = pl[i];
                         i++;
-                        
                         if (i < pl.length) {
-                            if (pl[i].equals("M") || pl[i].equals("G") || pl[i].equals("T")) {
-                                flows += pl[i];
+                            m = checkForMultiplier(pl[i]);
+                            flows = String.format("%.0f", Double.valueOf(flows) * m);
+                            if (m != 1)
                                 i++;
-                            }
                         }
                         
 //                        System.out.println("startYear: " + startYear);
@@ -310,6 +310,16 @@ public class Nfdump extends InputModule {
             }
             System.out.println("NfdumpStdoutThread:  Done.");
         }
+    }
+    
+    private Long checkForMultiplier(String s) {
+        if (s.equals("M"))
+            return 1000000L;
+        if (s.equals("G"))
+            return 1000000000L;
+        if (s.equals("T"))
+            return 1000000000000L;
+        return 1L;
     }
     
     public String getCacheDir() {
