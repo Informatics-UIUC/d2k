@@ -102,6 +102,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
+import ncsa.d2k.modules.core.util.*;
 
 
 public class BuildQuery extends HeadlessUIModule {
@@ -578,6 +579,9 @@ public class BuildQuery extends HeadlessUIModule {
 
          return et;
       } // end method createAllMeta
+      
+      private D2KModuleLogger myLogger = 
+   	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
       private ExampleTable createSelectedMeta() {
          int selected = selectedAttributes.getRowCount();
@@ -679,7 +683,7 @@ public class BuildQuery extends HeadlessUIModule {
 
                }
 
-               System.out.println("countQry is " + countQry);
+               myLogger.debug("countQry is " + countQry);
 
                Statement countStmt = con.createStatement();
                ResultSet countSet = countStmt.executeQuery(countQry);
@@ -691,7 +695,7 @@ public class BuildQuery extends HeadlessUIModule {
                JOptionPane.showMessageDialog(msgBoard,
                                              e.getMessage(), "Error",
                                              JOptionPane.ERROR_MESSAGE);
-               System.out.println("Error occurred in createSelectedMeta. " + e);
+               myLogger.error("Error occurred in createSelectedMeta. " + e);
             }
          } // end if
 
@@ -960,14 +964,14 @@ public class BuildQuery extends HeadlessUIModule {
                                              "You must select at least one attribute.",
                                              "Error",
                                              JOptionPane.ERROR_MESSAGE);
-               System.out.println("No columns are selected");
+               myLogger.error("No columns are selected");
                jtp.setSelectedIndex(0);
             } else if (!isOutputOK()) {
                JOptionPane.showMessageDialog(msgBoard,
                                              "You can only select one output column.",
                                              "Error",
                                              JOptionPane.ERROR_MESSAGE);
-               System.out.println("No columns are selected");
+               myLogger.error("No columns are selected");
                jtp.setSelectedIndex(0);
             } else {
                initialized = false;
@@ -1159,7 +1163,7 @@ public class BuildQuery extends HeadlessUIModule {
                      try {
 
                         if (tableName == null || tableName.length() == 0) {
-                           System.out.println("No table is available.");
+                        	myLogger.error("No table is available.");
                         } else {
                            Connection con = cw.getConnection();
                            DatabaseMetaData dbmd = con.getMetaData();
@@ -1328,7 +1332,7 @@ public class BuildQuery extends HeadlessUIModule {
                                                       "You must select at least one attribute.",
                                                       "Error",
                                                       JOptionPane.ERROR_MESSAGE);
-                        System.out.println("No columns are selected");
+                        myLogger.error("No columns are selected");
                      } else {
                         retVal = new String[selectedAttributes.getRowCount()];
 
@@ -1582,7 +1586,7 @@ public class BuildQuery extends HeadlessUIModule {
                                                          "You must select at least one attribute.",
                                                          "Error",
                                                          JOptionPane.ERROR_MESSAGE);
-                           System.out.println("No columns are selected");
+                           myLogger.error("No columns are selected");
                         } else {
                            retVal =
                               new String[selectedAttributes.getRowCount()];
@@ -1667,7 +1671,7 @@ public class BuildQuery extends HeadlessUIModule {
       public void printVector(Vector v) {
 
          for (int i = 0; i < v.size(); i++) {
-            System.out.println("vector " + i + ": " + v.get(i));
+        	 myLogger.debug("vector " + i + ": " + v.get(i));
          }
       }
 

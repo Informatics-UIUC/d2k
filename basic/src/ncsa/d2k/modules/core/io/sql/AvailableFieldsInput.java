@@ -53,9 +53,12 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.Vector;
+import ncsa.d2k.modules.core.util.*;
 
 
 public class AvailableFieldsInput extends InputModule {
+
+	private D2KModuleLogger myLogger;
 
    //~ Instance fields *********************************************************
 
@@ -64,6 +67,9 @@ public class AvailableFieldsInput extends InputModule {
 
    //~ Methods *****************************************************************
 
+   public void beginExecution() {
+		  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
    /**
     * Performs the main work of the module.
     *
@@ -77,7 +83,7 @@ public class AvailableFieldsInput extends InputModule {
          /* JOptionPane.showMessageDialog(msgBoard,
           *         "No table is selected.", "Error",
           * JOptionPane.ERROR_MESSAGE);*/
-         System.out.println("No table is selected");
+    	  myLogger.error("No table is selected");
 
       } else {
          ConnectionWrapper cw = (ConnectionWrapper) this.pullInput(0);

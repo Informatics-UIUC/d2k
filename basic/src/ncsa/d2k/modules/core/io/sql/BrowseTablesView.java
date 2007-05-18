@@ -72,6 +72,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.Vector;
+import ncsa.d2k.modules.core.util.*;
+
 
 
 /**
@@ -81,6 +83,9 @@ import java.util.Vector;
  * @version $Revision$, $Date$
  */
 public class BrowseTablesView extends JD2KFrame implements ActionListener {
+
+	   private D2KModuleLogger myLogger = 
+		   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    //~ Instance fields *********************************************************
 
@@ -138,10 +143,9 @@ public class BrowseTablesView extends JD2KFrame implements ActionListener {
 
                if (lsm.isSelectionEmpty()) {
                   selectedRow = -1;
-                  System.out.println("No Selected Rows........");
+                  myLogger.debug("No Selected Rows........");
                } else {
                   selectedRow = lsm.getMinSelectionIndex();
-                  // System.out.println("Selected Row........"+selectedRow);
                }
             }
          });
@@ -185,10 +189,9 @@ public class BrowseTablesView extends JD2KFrame implements ActionListener {
 
                if (lsm.isSelectionEmpty()) {
                   selectedRow = -1;
-                  System.out.println("No Selected Rows........");
+                  myLogger.debug("No Selected Rows........");
                } else {
-                  selectedRow = lsm.getMinSelectionIndex();
-                  // System.out.println("Selected Row........"+selectedRow);
+                  selectedRow = lsm.getMinSelectionIndex();;
                }
             }
          });
@@ -236,7 +239,7 @@ public class BrowseTablesView extends JD2KFrame implements ActionListener {
          JOptionPane.showMessageDialog(msgBoard,
                                        "SQL error: " + ex.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
-         System.out.println("SQL error in displayQueryResults for query.");
+         myLogger.error("SQL error in displayQueryResults for query.");
       }
    } /* end of displayQueryResult */
 
@@ -257,7 +260,7 @@ public class BrowseTablesView extends JD2KFrame implements ActionListener {
          JOptionPane.showMessageDialog(msgBoard,
                                        "SQL error: " + ex.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
-         System.out.println("SQL error in displayQueryResults for ResultSet.");
+         myLogger.error("SQL error in displayQueryResults for ResultSet.");
       }
    } /* end of displayQueryResult */
 

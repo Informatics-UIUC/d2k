@@ -22,6 +22,7 @@ import ncsa.d2k.core.modules.UserView;
 import ncsa.d2k.core.modules.ViewModule;
 import ncsa.d2k.userviews.swing.JUserPane;
 import ncsa.gui.Constrain;
+import ncsa.d2k.modules.core.util.*;
 
 
 
@@ -839,6 +840,7 @@ public void initView(ViewModule mod) {
 
 
 
+
         /**
 
     This method is called when inputs arrive to the ViewModule.
@@ -989,12 +991,10 @@ public void setInput(Object input, int index) {
                   }
 
                   else {
-                    System.out.println("no match driver");
-                      //pushOutput(null, 0);
+                	  myLogger.debug("no match driver");
                     viewDone("Done");
                   }
 
-                  //viewDone("Done");
 
         }
 
@@ -1023,7 +1023,11 @@ public void setInput(Object input, int index) {
 
 
 //	headless conversion support
+    private D2KModuleLogger myLogger;
 
+    public void beginExecution() {
+    	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+    }
 		  /**
  * Performs the main work of the module.
  */
@@ -1058,7 +1062,7 @@ public void doit() throws Exception{
 			if ( getDriver().equals("oracle.jdbc.driver.OracleDriver")) {
 
 				setUrl("jdbc:oracle:thin:@"+getMachine()+":"+getPort()+":"+getDbInstance());
-				System.out.println("URL :" + getUrl());
+				myLogger.debug("URL :" + getUrl());
 				OracleDBConnection oc = new OracleDBConnection(getUrl().trim(),
 						getDriver().trim(),
 						getUsername().trim(),
@@ -1088,7 +1092,7 @@ public void doit() throws Exception{
 			  setUrl("jdbc:microsoft:sqlserver://"+getMachine()+":"+getPort()+";"
 					   +"DatabaseName="+getDbInstance());
 
-				System.out.println("URL :" + getUrl());
+			  myLogger.debug("URL :" + getUrl());
 				SQLServerDBConnection sc = new SQLServerDBConnection(getUrl().trim(),
 						getDriver().trim(),
 						getUsername().trim(),
@@ -1104,7 +1108,7 @@ public void doit() throws Exception{
 
 			  setUrl("jdbc:db2://" + getMachine() + ":" + getPort() + "/" + getDbInstance());
 
-             System.out.println("URL :" + getUrl());
+			  myLogger.debug("URL :" + getUrl());
 				DB2DBConnection dc = new DB2DBConnection(getUrl().trim(),
 						getDriver().trim(),
 						getUsername().trim(),
@@ -1116,7 +1120,7 @@ public void doit() throws Exception{
 			}
 
 			else {
-			  System.out.println("no match driver");
+				myLogger.debug("no match driver");
 				pushOutput(null, 0);
 			  }
 

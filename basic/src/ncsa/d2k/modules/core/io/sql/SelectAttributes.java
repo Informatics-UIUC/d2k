@@ -18,6 +18,7 @@ import ncsa.d2k.core.modules.UserView;
 import ncsa.d2k.core.modules.ViewModule;
 import ncsa.d2k.modules.core.transform.StaticMethods;
 import ncsa.d2k.userviews.swing.JUserPane;
+import ncsa.d2k.modules.core.util.*;
 
 /**
  * <p>Title: SelectAttributes</p>
@@ -162,6 +163,12 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
 	public String[] getFieldNameMapping() {
 		return null;
 	}
+	
+	   private D2KModuleLogger myLogger;
+	   
+	   public void beginExecution() {
+		  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+	   }
 
 	/**
 	 *	Private class  SelectAttributeView() 
@@ -244,7 +251,7 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
                                           JOptionPane.showMessageDialog(msgBoard,
                                                     "You must select at least one attribute.", "Error",
                                                     JOptionPane.ERROR_MESSAGE);
-                                          System.out.println("No columns are selected");
+                                          myLogger.error("No columns are selected");
                                         }
                                         else {
                                           for(int i = 0; i < retVal.length; i++) {
