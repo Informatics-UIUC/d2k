@@ -3,6 +3,7 @@ package ncsa.d2k.modules.core.io.file.input;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.BasicTableFactory;
+import ncsa.d2k.modules.core.util.*;
 
 /**
  * Given a FlatFileReader, create a TableImpl initialized with its contents.
@@ -23,16 +24,38 @@ public class ParseFileToTable extends InputModule {
     public boolean getUseBlanks() {
         return useBlanks;
     }
+    
+    private D2KModuleLogger myLogger =
+        D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+    public void beginExecution() {
+    	myLogger.setLoggingLevel(moduleLoggingLevel);
+    }
 
+    private int moduleLoggingLevel=
+    	D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass())
+    	.getLoggingLevel();
+
+    public int getmoduleLoggingLevel(){
+    	return moduleLoggingLevel;
+    }
+
+    public void setmoduleLoggingLevel(int level){
+    	moduleLoggingLevel = level;
+    }
+    
     /**
  * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects for each property of the module.
  *
  * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code> objects.
  */
 public PropertyDescription [] getPropertiesDescriptions () {
-        PropertyDescription[] retVal = new PropertyDescription[1];
+        PropertyDescription[] retVal = new PropertyDescription[2];
         retVal[0] = new PropertyDescription("useBlanks", "Set Blanks to be Missing Values",
             "When true, any blank entries in the file will be set as missing values in the table.");
+        
+        retVal[1] = 
+            new PropertyDescription("moduleLoggingLevel", "Module Logging Level",
+            "The logging level of this modules"+"\n 0=DEBUG; 1=INFO; 2=WARN; 3=ERROR; 4=FATAL; 5=OFF");
         return retVal;
     }
 
@@ -161,7 +184,9 @@ public boolean isReady() {
  */
 public void doit() throws Exception {
         FlatFileParser fle = (FlatFileParser)pullInput(0);
-
+        
+        myLogger.setLoggingLevel(moduleLoggingLevel);
+        
         TableFactory tf = null;
         if(isInputPipeConnected(1))
             tf = (TableFactory)pullInput(1);

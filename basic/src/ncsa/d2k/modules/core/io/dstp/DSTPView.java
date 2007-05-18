@@ -21,6 +21,7 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.db.*;
 import ncsa.d2k.modules.core.datatype.table.db.dstp.*;
 import ncsa.d2k.userviews.swing.*;
+import ncsa.d2k.modules.core.util.*;
 
 /**
  *
@@ -220,6 +221,9 @@ public class DSTPView
       addServerInfoToTree(_select.getServerName());
     }
   }
+  
+  private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
   private void parseMetaData(DSTPConnection conn) {
     try {
@@ -242,7 +246,7 @@ public class DSTPView
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
       Document doc = sb.build(bais);
 
-      System.out.println("Metadata parsed and document built ...");
+      myLogger.info("Metadata parsed and document built ...");
 
       Iterator cats = doc.getRootElement().getChildren("CATEGORY").iterator();
 

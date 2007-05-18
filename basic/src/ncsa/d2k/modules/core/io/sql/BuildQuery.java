@@ -102,7 +102,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
-import ncsa.d2k.modules.core.util.*;
+import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
 
 
 public class BuildQuery extends HeadlessUIModule {
@@ -684,6 +684,7 @@ public class BuildQuery extends HeadlessUIModule {
                }
 
                myLogger.debug("countQry is " + countQry);
+               //System.out.println("countQry is " + countQry);
 
                Statement countStmt = con.createStatement();
                ResultSet countSet = countStmt.executeQuery(countQry);
@@ -695,7 +696,7 @@ public class BuildQuery extends HeadlessUIModule {
                JOptionPane.showMessageDialog(msgBoard,
                                              e.getMessage(), "Error",
                                              JOptionPane.ERROR_MESSAGE);
-               myLogger.error("Error occurred in createSelectedMeta. " + e);
+               System.out.println("Error occurred in createSelectedMeta. " + e);
             }
          } // end if
 
@@ -965,6 +966,7 @@ public class BuildQuery extends HeadlessUIModule {
                                              "Error",
                                              JOptionPane.ERROR_MESSAGE);
                myLogger.error("No columns are selected");
+               //System.out.println("No columns are selected");
                jtp.setSelectedIndex(0);
             } else if (!isOutputOK()) {
                JOptionPane.showMessageDialog(msgBoard,
@@ -972,6 +974,7 @@ public class BuildQuery extends HeadlessUIModule {
                                              "Error",
                                              JOptionPane.ERROR_MESSAGE);
                myLogger.error("No columns are selected");
+               //System.out.println("No columns are selected");
                jtp.setSelectedIndex(0);
             } else {
                initialized = false;
@@ -1164,6 +1167,7 @@ public class BuildQuery extends HeadlessUIModule {
 
                         if (tableName == null || tableName.length() == 0) {
                         	myLogger.error("No table is available.");
+                           //System.out.println("No table is available.");
                         } else {
                            Connection con = cw.getConnection();
                            DatabaseMetaData dbmd = con.getMetaData();
@@ -1333,6 +1337,7 @@ public class BuildQuery extends HeadlessUIModule {
                                                       "Error",
                                                       JOptionPane.ERROR_MESSAGE);
                         myLogger.error("No columns are selected");
+                        //System.out.println("No columns are selected");
                      } else {
                         retVal = new String[selectedAttributes.getRowCount()];
 
@@ -1587,6 +1592,7 @@ public class BuildQuery extends HeadlessUIModule {
                                                          "Error",
                                                          JOptionPane.ERROR_MESSAGE);
                            myLogger.error("No columns are selected");
+                           //System.out.println("No columns are selected");
                         } else {
                            retVal =
                               new String[selectedAttributes.getRowCount()];
@@ -1672,6 +1678,7 @@ public class BuildQuery extends HeadlessUIModule {
 
          for (int i = 0; i < v.size(); i++) {
         	 myLogger.debug("vector " + i + ": " + v.get(i));
+            //System.out.println("vector " + i + ": " + v.get(i));
          }
       }
 

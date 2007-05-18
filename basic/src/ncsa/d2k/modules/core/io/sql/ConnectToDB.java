@@ -22,7 +22,7 @@ import ncsa.d2k.core.modules.UserView;
 import ncsa.d2k.core.modules.ViewModule;
 import ncsa.d2k.userviews.swing.JUserPane;
 import ncsa.gui.Constrain;
-import ncsa.d2k.modules.core.util.*;
+import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
 
 
 
@@ -992,9 +992,12 @@ public void setInput(Object input, int index) {
 
                   else {
                 	  myLogger.debug("no match driver");
+                    //System.out.println("no match driver");
+                      //pushOutput(null, 0);
                     viewDone("Done");
                   }
 
+                  //viewDone("Done");
 
         }
 
@@ -1063,6 +1066,7 @@ public void doit() throws Exception{
 
 				setUrl("jdbc:oracle:thin:@"+getMachine()+":"+getPort()+":"+getDbInstance());
 				myLogger.debug("URL :" + getUrl());
+				//System.out.println("URL :" + getUrl());
 				OracleDBConnection oc = new OracleDBConnection(getUrl().trim(),
 						getDriver().trim(),
 						getUsername().trim(),
@@ -1093,6 +1097,7 @@ public void doit() throws Exception{
 					   +"DatabaseName="+getDbInstance());
 
 			  myLogger.debug("URL :" + getUrl());
+				//System.out.println("URL :" + getUrl());
 				SQLServerDBConnection sc = new SQLServerDBConnection(getUrl().trim(),
 						getDriver().trim(),
 						getUsername().trim(),
@@ -1109,6 +1114,7 @@ public void doit() throws Exception{
 			  setUrl("jdbc:db2://" + getMachine() + ":" + getPort() + "/" + getDbInstance());
 
 			  myLogger.debug("URL :" + getUrl());
+             //System.out.println("URL :" + getUrl());
 				DB2DBConnection dc = new DB2DBConnection(getUrl().trim(),
 						getDriver().trim(),
 						getUsername().trim(),
@@ -1121,6 +1127,7 @@ public void doit() throws Exception{
 
 			else {
 				myLogger.debug("no match driver");
+			  //System.out.println("no match driver");
 				pushOutput(null, 0);
 			  }
 

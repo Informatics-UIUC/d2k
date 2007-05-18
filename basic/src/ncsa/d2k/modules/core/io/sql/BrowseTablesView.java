@@ -72,7 +72,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.Vector;
-import ncsa.d2k.modules.core.util.*;
+import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
 
 
 
@@ -144,8 +144,10 @@ public class BrowseTablesView extends JD2KFrame implements ActionListener {
                if (lsm.isSelectionEmpty()) {
                   selectedRow = -1;
                   myLogger.debug("No Selected Rows........");
+                  //System.out.println("No Selected Rows........");
                } else {
                   selectedRow = lsm.getMinSelectionIndex();
+                  // System.out.println("Selected Row........"+selectedRow);
                }
             }
          });
@@ -190,8 +192,10 @@ public class BrowseTablesView extends JD2KFrame implements ActionListener {
                if (lsm.isSelectionEmpty()) {
                   selectedRow = -1;
                   myLogger.debug("No Selected Rows........");
+                  //System.out.println("No Selected Rows........");
                } else {
-                  selectedRow = lsm.getMinSelectionIndex();;
+                  selectedRow = lsm.getMinSelectionIndex();
+                  // System.out.println("Selected Row........"+selectedRow);
                }
             }
          });
@@ -239,7 +243,7 @@ public class BrowseTablesView extends JD2KFrame implements ActionListener {
          JOptionPane.showMessageDialog(msgBoard,
                                        "SQL error: " + ex.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
-         myLogger.error("SQL error in displayQueryResults for query.");
+         System.out.println("SQL error in displayQueryResults for query.");
       }
    } /* end of displayQueryResult */
 
@@ -260,7 +264,7 @@ public class BrowseTablesView extends JD2KFrame implements ActionListener {
          JOptionPane.showMessageDialog(msgBoard,
                                        "SQL error: " + ex.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
-         myLogger.error("SQL error in displayQueryResults for ResultSet.");
+         System.out.println("SQL error in displayQueryResults for ResultSet.");
       }
    } /* end of displayQueryResult */
 

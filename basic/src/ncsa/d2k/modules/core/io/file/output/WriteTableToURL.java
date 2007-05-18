@@ -49,6 +49,7 @@ import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.io.proxy.DataObjectProxy;
 import ncsa.d2k.modules.core.io.proxy.DataObjectProxyException;
+import ncsa.d2k.modules.core.util.*;
 
 import java.beans.PropertyVetoException;
 import java.io.FileWriter;
@@ -88,7 +89,25 @@ public class WriteTableToURL extends OutputModule {
    boolean useDataTypes = true;
 
    //~ Methods *****************************************************************
+   private D2KModuleLogger myLogger = 
+       D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   
+   public void beginExecution() {
+	   myLogger.setLoggingLevel(moduleLoggingLevel);
+	   }
+   
+   private int moduleLoggingLevel=
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass())
+	   .getLoggingLevel();
 
+   public int getmoduleLoggingLevel(){
+	   return moduleLoggingLevel;
+	   }
+   
+   public void setmoduleLoggingLevel(int level){
+	   moduleLoggingLevel = level;
+	   }
+   
    /**
     * Get the datatype of a column.
     *
@@ -245,6 +264,8 @@ public class WriteTableToURL extends OutputModule {
     * @throws IOException              Error writing local file.
     */
    public void doit() throws Exception {
+	      myLogger.setLoggingLevel(moduleLoggingLevel);
+	      
 	   setAddDefaultMeta(false);
 	  
       DataObjectProxy dataobj;
@@ -447,7 +468,7 @@ public class WriteTableToURL extends OutputModule {
     */
    public PropertyDescription[] getPropertiesDescriptions() {
 
-      PropertyDescription[] descriptions = new PropertyDescription[3];
+      PropertyDescription[] descriptions = new PropertyDescription[4];
 
       descriptions[0] =
          new PropertyDescription("delimChar",
@@ -464,6 +485,9 @@ public class WriteTableToURL extends OutputModule {
          new PropertyDescription("useDataTypes",
                                  "Write Data Types",
                                  "Controls whether the table's column data types are written to the file.");
+      descriptions[3] = 
+          new PropertyDescription("moduleLoggingLevel", "Module Logging Level",
+                  "The logging level of this modules"+"\n 0=DEBUG; 1=INFO; 2=WARN; 3=ERROR; 4=FATAL; 5=OFF");
 
       return descriptions;
 

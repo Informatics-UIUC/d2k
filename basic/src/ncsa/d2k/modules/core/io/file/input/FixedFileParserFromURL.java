@@ -52,6 +52,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.LineNumberReader;
+import ncsa.d2k.modules.core.util.*;
+
 
 
 /**
@@ -102,6 +104,9 @@ public class FixedFileParserFromURL implements FlatFileParser {
 
    /** Enable verbose messages. */
    boolean debug = false;
+   
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    //~ Constructors ************************************************************
 
@@ -225,14 +230,16 @@ public class FixedFileParserFromURL implements FlatFileParser {
       } // end for
 
       if (debug) {
-         System.out.println("LL: " + lineLength);
-         System.out.println("NR: " + _tableLength);
-         System.out.println("NC: " + this._noOfColumns);
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("LL: " + lineLength);
+    	  myLogger.debug("NR: " + _tableLength);
+    	  myLogger.debug("NC: " + this._noOfColumns);
 
          for (int i = 0; i < this._columnBegin.length; i++) {
-            System.out.println("BEGIN: " + _columnBegin[i]);
-            System.out.println("END: " + _columnEnd[i]);
+       	  myLogger.debug("BEGIN: " + _columnBegin[i]);
+    	  myLogger.debug("END: " + _columnEnd[i]);
          }
+         myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       _reader.setLineNumber(0);
@@ -255,7 +262,9 @@ public class FixedFileParserFromURL implements FlatFileParser {
       ParsedLine pl = new ParsedLine();
 
       if (debug) {
-         System.out.println("noOfColumns:" + _noOfColumns);
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("noOfColumns:" + _noOfColumns);
+          myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       char[][] retVal = new char[_noOfColumns][];
@@ -277,8 +286,10 @@ public class FixedFileParserFromURL implements FlatFileParser {
       int lineLength = ln.length();
 
       if (debug) {
-         System.out.println("parse line: " + row + " " + ln + " lenght : " +
-                            ln.length());
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("parse line: " + row + " " + ln + " lenght : " +
+                  ln.length());
+          myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       for (int col = 0; col < _noOfColumns; col++) {
@@ -293,7 +304,9 @@ public class FixedFileParserFromURL implements FlatFileParser {
          }
 
          if (debug) {
-            System.out.println("b:" + trueBegin + " e:" + trueEnd);
+       	  myLogger.setDebugLoggingLevel();//temp set to debug
+       	  myLogger.debug("b:" + trueBegin + " e:" + trueEnd);
+          myLogger.resetLoggingLevel();//re-set level to original level
          }
 
          char[] element =
@@ -301,7 +314,9 @@ public class FixedFileParserFromURL implements FlatFileParser {
                .toCharArray();
 
          if (debug) {
-            System.out.println(new String(element) + "!");
+       	  myLogger.setDebugLoggingLevel();//temp set to debug
+       	  myLogger.debug(new String(element) + "!");
+          myLogger.resetLoggingLevel();//re-set level to original level
          }
 
          retVal[col] = element;

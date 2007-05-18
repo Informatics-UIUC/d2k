@@ -52,15 +52,21 @@ import ncsa.gui.Constrain;
 
 import javax.swing.AbstractAction;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JEditorPane;
+import java.awt.Dimension;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import ncsa.d2k.modules.core.util.*;
+import ncsa.d2k.preferences.UserPreferences;
+import ncsa.gui.JOutlinePanel;
 
 
 /**
@@ -93,8 +99,34 @@ public class CreateDelimitedParserFromURL extends InputModule {
 
    /** Description of field typesRow. */
    private int typesRow = 1;
-
+   
+   /** the fontstyle tags. */
+   final String fontstyle =
+      "<font size=\"" +
+      UserPreferences.thisPreference.getFontSize() +
+      "\" face=\"Arial,Helvetica,SansSerif \">";
+   
+   /** the end of the font style. */
+   final String endfontstyle = "</font>";
+   
    //~ Methods *****************************************************************
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   public void beginExecution() {
+	   myLogger.setLoggingLevel(moduleLoggingLevel);
+   }
+
+   private int moduleLoggingLevel=
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass())
+	   .getLoggingLevel();
+   
+   public int getmoduleLoggingLevel(){
+	   return moduleLoggingLevel;
+   }
+
+   public void setmoduleLoggingLevel(int level){
+	   moduleLoggingLevel = level;
+   }
 
    /**
     * Description of method doit.
@@ -106,6 +138,8 @@ public class CreateDelimitedParserFromURL extends InputModule {
       DataObjectProxy dataobj = (DataObjectProxy) pullInput(0);
       DelimitedFileParserFromURL df;
 
+      myLogger.setLoggingLevel(moduleLoggingLevel);
+      
       int lbl = -1;
 
       if (getHasLabels()) {
@@ -286,7 +320,7 @@ public class CreateDelimitedParserFromURL extends InputModule {
     * @return Description of return value.
     */
    public PropertyDescription[] getPropertiesDescriptions() {
-      PropertyDescription[] retVal = new PropertyDescription[3];
+      PropertyDescription[] retVal = new PropertyDescription[4];
       retVal[0] =
          new PropertyDescription("labelsRow", "Labels Row",
                                  "This is the index of the labels row in the file, or -1 if there is no labels row.");
@@ -296,7 +330,9 @@ public class CreateDelimitedParserFromURL extends InputModule {
       retVal[2] =
          new PropertyDescription("specDelim", "Delimiter",
                                  "The delimiter of this file if it is different than space, tab '|' or '='");
-
+      retVal[3] = 
+    	  new PropertyDescription("moduleLoggingLevel", "Module Logging Level",
+          "The logging level of this modules");
       return retVal;
    }
 
@@ -380,6 +416,7 @@ public class CreateDelimitedParserFromURL extends InputModule {
       boolean typChange = false;
       JLabel typlbl;
       JTextField typrow;
+      private JComboBox logginglevelcb;
 
       private PropEdit() {
 
@@ -479,7 +516,43 @@ public class CreateDelimitedParserFromURL extends InputModule {
                   }
                }
             });
+         
+         String[] loglevelEnum = {"DEBUG","INFO","WARN","ERROR","FATAL","OFF"};
+         logginglevelcb = new JComboBox(loglevelEnum);
+         logginglevelcb.setEditable(false);
+         logginglevelcb.setSelectedIndex(moduleLoggingLevel);
+         
+         JOutlinePanel loggingLevelPanel = new JOutlinePanel("Module Logging Level");
+         loggingLevelPanel.setLayout(new GridBagLayout());
+         
+         StringBuffer tp = new StringBuffer("<html>");
+         tp.append(fontstyle);
+         tp.append("The Logging Level");
+         tp.append(endfontstyle);
+         tp.append("</html>");
 
+         
+         JEditorPane jta5 =
+             new JEditorPane("text/html", tp.toString()) {
+                static private final long serialVersionUID = 1L;
+
+                // we can no longer have a horizontal scrollbar if we are always
+                // set to the same width as our parent....may need to be fixed.
+                public Dimension getPreferredSize() {
+                   Dimension d = this.getMinimumSize();
+
+                   return new Dimension(100, d.height);
+                }
+             };         
+             jta5.setBackground(loggingLevelPanel.getBackground());
+
+             Constrain.setConstraints(loggingLevelPanel, jta5, 0, 0, 2, 1,
+            		 GridBagConstraints.HORIZONTAL,
+                     GridBagConstraints.CENTER, 0, 0);
+             Constrain.setConstraints(loggingLevelPanel, logginglevelcb, 0, 1, 1, 1,
+                     GridBagConstraints.HORIZONTAL,
+                     GridBagConstraints.CENTER, 0, 0);
+             
          // add the components for delimited properties
          setLayout(new GridBagLayout());
 
@@ -519,6 +592,9 @@ public class CreateDelimitedParserFromURL extends InputModule {
                                   GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.WEST,
                                   1, 1);
+         Constrain.setConstraints(this, loggingLevelPanel, 0, 6, 1, 1,
+				  GridBagConstraints.HORIZONTAL,
+				  GridBagConstraints.CENTER, 1, 1);
       }
 
       public boolean updateModule() throws Exception {
@@ -608,7 +684,12 @@ public class CreateDelimitedParserFromURL extends InputModule {
                }
             }
          }
-
+         String f0 = Integer.toString(logginglevelcb.getSelectedIndex());
+         if (Integer.parseInt(f0) != getmoduleLoggingLevel()){
+        	 setmoduleLoggingLevel(Integer.parseInt(f0));
+        	 didChange = true;
+         }
+         
          return didChange;
       } // end method updateModule
    } // end class PropEdit

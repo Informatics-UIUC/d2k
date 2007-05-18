@@ -8,12 +8,13 @@ import  java.awt.*;
 import  javax.swing.*;
 import  javax.swing.tree.*;
 import  javax.swing.event.*;
-import  java.util.*;
 
 //===============
 // Other Imports
 //===============
-import backend.*;
+
+import ncsa.d2k.modules.core.util.*;
+
 
 /**
  *
@@ -103,6 +104,8 @@ public class DSTPTreePanel extends JPanel implements MouseInputListener {
         m_tree.addMouseMotionListener(this);
    }
 
+    private D2KModuleLogger myLogger = 
+ 	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
   //=========================================
   // Interface Implementation: MouseListener
@@ -116,13 +119,13 @@ public class DSTPTreePanel extends JPanel implements MouseInputListener {
       } catch (Exception e){
         return;
       }
-      System.out.println("saw a dbl click");
+      myLogger.debug("saw a dbl click");
       if (ob != null){
-        System.out.println("clicked on node returned non null user object");
+    	  myLogger.debug("clicked on node returned non null user object");
         if (ob instanceof DSTPTreeNodeData){
           try {
             DSTPTreeNodeData ndata = (DSTPTreeNodeData)ob;
-            System.out.println("it is a DSTPTreeNodeData");
+            myLogger.debug("it is a DSTPTreeNodeData");
             MetaNode node = ndata.getNode();
             m_view.setChosenNode(node);
           } catch (Exception e){

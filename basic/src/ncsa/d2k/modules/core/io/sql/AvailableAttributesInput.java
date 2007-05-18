@@ -53,7 +53,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.Vector;
-import ncsa.d2k.modules.core.util.*;
+import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
 
 
 
@@ -85,6 +85,8 @@ public class AvailableAttributesInput extends InputModule {
           *         "No table is selected.", "Error",
           * JOptionPane.ERROR_MESSAGE);*/
     	  myLogger.error("No table is selected");
+         //System.out.println("No table is selected");
+
       } else {
          ConnectionWrapper cw = (ConnectionWrapper) this.pullInput(0);
          Connection con = cw.getConnection();

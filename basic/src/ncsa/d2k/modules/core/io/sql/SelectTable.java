@@ -19,7 +19,7 @@ import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.core.modules.UserView;
 import ncsa.d2k.core.modules.ViewModule;
 import ncsa.d2k.userviews.swing.JUserPane;
-import ncsa.d2k.modules.core.util.*;
+import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
 
 /**
  * <p>Title: SelectTable</p>
@@ -291,6 +291,7 @@ public class SelectTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 	               JOptionPane.showMessageDialog(msgBoard,
 	                  "You must select a table. ", "Error", JOptionPane.ERROR_MESSAGE);
 	               myLogger.error("No table is selected. ");
+	               //System.out.println("No table is selected. ");
 	             }
 	             else {
 	               //headless conversion support

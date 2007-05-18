@@ -14,9 +14,6 @@ import ncsa.d2k.core.modules.*;
 import java.io.*;
 import java.util.*;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
 import javax.swing.tree.*;
 
 //JDOM
@@ -24,13 +21,11 @@ import org.jdom.*;
 import org.jdom.input.*;
 //DSTP Client
 import backend.*;
-//import ncsa.d2k.core.modules.*;
-import ncsa.d2k.modules.core.datatype.table.db.*;
 import ncsa.d2k.modules.core.datatype.table.db.dstp.*;
-import ncsa.d2k.userviews.swing.*;
 
 
 import ncsa.d2k.modules.core.transform.StaticMethods;
+import ncsa.d2k.modules.core.util.*;
 
 /**
  *
@@ -116,6 +111,7 @@ public PropertyDescription[] getPropertiesDescriptions() {
     return descriptions;
   }
 
+private D2KModuleLogger myLogger;
 
   /**
      Code to execute before doit.
@@ -127,6 +123,7 @@ public void beginExecution() {
     if (m_view != null) {
       m_view.reset(this.getServerName());
     }
+    myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
   }
 
   /**
@@ -287,7 +284,7 @@ public String getInputInfo(int parm1) {
   }
 
   public void abort() {
-    System.out.println("Aborting: ParseDSTPToDBTable");
+	  myLogger.fatal("Aborting: ParseDSTPToDBTable");
     viewAbort();
   }
 

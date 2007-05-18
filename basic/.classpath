@@ -14,7 +14,6 @@
 	<classpathentry kind="lib" path="lib/db2java.zip"/>
 	<classpathentry kind="lib" path="lib/dstpclient.jar"/>
 	<classpathentry kind="lib" path="lib/Jama-1.0.1.jar"/>
-	<classpathentry kind="lib" path="lib/jdom.jar"/>
 	<classpathentry kind="lib" path="lib/jung-1.7.4.jar"/>
 	<classpathentry kind="lib" path="lib/libsvm-2.83.jar"/>
 	<classpathentry kind="lib" path="lib/mm.mysql-2.0.4-bin.jar"/>
@@ -41,5 +40,10 @@
 	<classpathentry kind="lib" path="lib/classes12.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl-2.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/sam-webdavlib.jar"/>
+	<classpathentry kind="lib" path="lib/jdom-1.0.jar"/>
+	<classpathentry kind="lib" path="/home/mcgrath/java3D/jre/lib/ext/j3daudio.jar"/>
+	<classpathentry kind="lib" path="/home/mcgrath/java3D/jre/lib/ext/j3dcore.jar"/>
+	<classpathentry kind="lib" path="/home/mcgrath/java3D/jre/lib/ext/j3dutils.jar"/>
+	<classpathentry kind="lib" path="/home/mcgrath/java3D/jre/lib/ext/vecmath.jar"/>
 	<classpathentry kind="output" path="modules"/>
 </classpath>

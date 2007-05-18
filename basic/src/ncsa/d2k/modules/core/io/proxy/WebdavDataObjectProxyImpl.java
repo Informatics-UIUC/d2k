@@ -73,6 +73,7 @@ import java.util.TimeZone;
 import java.util.Vector;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -142,19 +143,12 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       org.apache.log4j.Level ll = D2KLogger.logger.getEffectiveLevel();
       java.util.logging.Level l = convertLevel(ll);
       setJavaUtilLogger(l);
-      
-      String uc = System.getProperty("ncsa.d2k.modules.core.io.proxy.DISABLE_READ_CACHE");
-      
-      if (uc != null) {
-    	 usingCache = false;
-     }
-     if (usingCache) {
+
       try {
          cache = DataObjectCacheManagerFactory.getCacheManager();
       } catch (DataObjectProxyException dopex) {
          String msg = "Error initializing Cache Manager";
          D2KLogger.logger.fatal(msg, dopex);
-      }
       }
 
       mURL = url;
@@ -250,23 +244,11 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       }
 
       /* Non cache version called only if 'useCache' is off */
-      if (localCopy != null && localCopy.exists()) {
-		localCopy.delete();
-	  	localCopy = null;
-	   }
       /*
        * Delete the files inside temp data directory. For all of the files which
-       * can not be deleted, delete them on exit.
+       * can not be deleted, delete then on exit.
        */
-      if (tempDataDir == null) {
-
-          try {
-             setTempDataDir();
-          } catch (DataObjectProxyException d) { }
-       }
-       
-/*      if (tempDataDir != null) {
-    	  
+      if (tempDataDir != null) {
          boolean isTempDataDel = deleteDir(tempDataDir);
 
          if (!isTempDataDel) {
@@ -277,7 +259,7 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
             }
          }
 
-      }*/
+      }
    } // end method cleanUp
 
 
@@ -314,6 +296,9 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
          return java.util.logging.Level.INFO;
       }
    }
+   
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    /**
     * Create all the components of a path pu/rest.
@@ -412,7 +397,7 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
                   if (se.getStatusCode() == 405 || se.getStatusCode() == 409) {
 
                      /* already exists? */
-                     System.out.println("405 or 409 " + se.getStatusCode());
+                	  myLogger.warn("405 or 409 " + se.getStatusCode());
                   }
 
                   se.printStackTrace();
@@ -454,7 +439,7 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       if (tempFilesCreated == null) {
          tempFilesCreated = new Vector();
       }
-      
+
       /*
        * For future use, save the path of the newly created files into a Vector.
        * Not needed when using the cache.
@@ -637,13 +622,11 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
                    */
                   if (!(walker.toString().equals(url.toString()))) {
                      tempdop = tempdop.resetDataObjectProxy(walker);
-                  } else {
-                	  continue;
                   }
                } catch (Exception ex) {
                   this.handleExceptions(ex);
                }
-      
+
                /*
                 * If the walker is not a collection (directory), just add url in
                 * childrenURLs
@@ -892,7 +875,7 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       File parentDir = new File(System.getProperty("user.dir"));
 
       if (parentDir.canWrite()) {
-         tempDataDir = new File(parentDir + File.separator + "d2kTempData");
+         tempDataDir = new File("d2kTempData");
       } else {
          parentDir = new File(System.getProperty("user.home"));
 
@@ -1126,6 +1109,7 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
     * @throws DataObjectProxyException
     */
    public InputStream getLocalInputStream() throws DataObjectProxyException {
+
       if (this.isCollection()) {
 
          /* can't download this! */
@@ -1135,23 +1119,8 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
 
       InputStream is = null;
       String copyTo = null; // in this case, allocate a local temp file
-      
-     if (usingCache) {
       localCopy = cache.getCachedCopy(this, copyTo, true);
-      } else {
-      if (copyTo != null) {
-          // the local file name was specified
-       	localCopy = new File(copyTo);
-       	D2KLogger.logger.info("Load "+this.getURL()+" into "+copyTo);
-       	this.readFile(localCopy);
-          
-        } else {
-       	 D2KLogger.logger.info("Load "+this.getURL()+" into temp");
-           // create temporary name for local copy    
-       	 localCopy = this.readFile(null);
-       	 
-        }
-      }
+
       try {
          is = new FileInputStream(localCopy);
       } catch (Exception e) {
@@ -1700,14 +1669,5 @@ public class WebdavDataObjectProxyImpl extends DataObjectProxy {
       }
 
    } // end method uploadDir
-   
-   public void finalize() {
-	   if (usingCache == false) {
-		   if (localCopy != null && localCopy.exists()) {
-			   localCopy.delete();
-			   localCopy = null;
-		   }
-	   }
-   }
 
 } // end class WebdavDataObjectProxyImpl

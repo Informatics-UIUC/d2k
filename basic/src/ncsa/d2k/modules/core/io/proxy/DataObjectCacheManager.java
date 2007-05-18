@@ -68,6 +68,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -322,20 +323,23 @@ public class DataObjectCacheManager {
       }
    }
 
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+
    /**
     * Print a record for debugging.
     *
     * @param record Teh record to print.
     */
    private void printDataObejctCacheRecord(DataObjectCacheRecord record) {
-      System.out.println("***************************************");
-      System.out.println("Record ID : " + record.getRid());
-      System.out.println("Local File: " + record.getLocalFile());
-      System.out.println("URL       : " + record.getURL());
-      System.out.println("User Name : " + record.getUsername());
-      System.out.println("Etag      : " + record.getETag());
-      System.out.println("Created   : " + record.getCalendar());
-      System.out.println("\n");
+	   myLogger.debug("***************************************");
+	   myLogger.debug("Record ID : " + record.getRid());
+	   myLogger.debug("Local File: " + record.getLocalFile());
+	   myLogger.debug("URL       : " + record.getURL());
+	   myLogger.debug("User Name : " + record.getUsername());
+	   myLogger.debug("Etag      : " + record.getETag());
+	   myLogger.debug("Created   : " + record.getCalendar());
+	   myLogger.debug("\n");
    }
 
    /**

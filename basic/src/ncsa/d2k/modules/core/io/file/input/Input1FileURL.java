@@ -63,6 +63,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.JComboBox;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -71,6 +72,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.net.URL;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -196,11 +198,39 @@ public class Input1FileURL extends InputModule {
     * @throws Exception                Misc. error.
     * @throws DataObjectProxyException Error in creating proxy.
     */
-   public void doit() throws Exception {
+ 
+   private D2KModuleLogger myLogger = 
+	                       D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   public void beginExecution() {
+		  myLogger.setLoggingLevel(moduleLoggingLevel);
+   }
+   
+   private int moduleLoggingLevel=
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass())
+	   .getLoggingLevel();
+   
+   public int getmoduleLoggingLevel(){
+	   return moduleLoggingLevel;
+   }
+
+   public void setmoduleLoggingLevel(int level){
+	   moduleLoggingLevel = level;
+   }
+     
+   
+   public void doit() throws Exception {      	   
       String fn = getFileName();
       String hosturl = getHostURL();
       URL url;
 
+      myLogger.setLoggingLevel(moduleLoggingLevel);
+     
+      myLogger.debug(this.getAlias()+": Here is some DEBUG-test");
+      myLogger.info(this.getAlias()+": Here is some INFO-test");
+      myLogger.warn(this.getAlias()+": Here is some WARN-test");
+      myLogger.error(this.getAlias()+": Here is some ERROR-test");
+      myLogger.fatal(this.getAlias()+"; Here is some FATAL-test");
+      
       if (fn == null || fn.length() == 0) {
          throw new DataObjectProxyException(getAlias() +
                                             ": No file name was given.");
@@ -357,7 +387,7 @@ public class Input1FileURL extends InputModule {
     * @return The PropertyDescriptions for properties the user may update.
     */
    public PropertyDescription[] getPropertiesDescriptions() {
-      PropertyDescription[] pds = new PropertyDescription[4];
+      PropertyDescription[] pds = new PropertyDescription[5];
 
       pds[0] =
          new PropertyDescription("fileName",
@@ -372,6 +402,9 @@ public class Input1FileURL extends InputModule {
       pds[3] =
          new PropertyDescription("password", "Password",
                                  "The user password to access the object, if needed.");
+      pds[4] =
+    	 new PropertyDescription("moduleLoggingLevel", "Module Logging Level",
+    			                 "The logging level of this modules");  
 
       return pds;
    }
@@ -450,6 +483,9 @@ public class Input1FileURL extends InputModule {
       private JPasswordField passwordjpf;
       private String prophost;
       private JTextField usernamejtf;
+      private JComboBox logginglevelcb;
+      
+      public JComboBox getLoggerComboBox(){return logginglevelcb;}
 
       private PropEdit() {
          setLayout(new GridBagLayout());
@@ -474,6 +510,14 @@ public class Input1FileURL extends InputModule {
          passwordjpf = new JPasswordField(10);
          passwordjpf.setEchoChar('*');
          passwordjpf.setText(getPassword());
+
+         /*
+          * Set module logging level
+          */
+         String[] loglevelEnum = {"DEBUG","INFO","WARN","ERROR","FATAL","OFF"};
+         logginglevelcb = new JComboBox(loglevelEnum);
+         logginglevelcb.setEditable(false);
+         logginglevelcb.setSelectedIndex(moduleLoggingLevel);
 
          JOutlinePanel namePanel = new JOutlinePanel("File Name");
          namePanel.setLayout(new GridBagLayout());
@@ -610,6 +654,38 @@ public class Input1FileURL extends InputModule {
                                   GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 0, 0);
 
+         JOutlinePanel loggingLevelPanel = new JOutlinePanel("Module Logging Level");
+         loggingLevelPanel.setLayout(new GridBagLayout());
+         
+         tp = new StringBuffer("<html>");
+         tp.append(fontstyle);
+         tp.append("The Logging Level");
+         tp.append(endfontstyle);
+         tp.append("</html>");
+         
+         JEditorPane jta5 =
+             new JEditorPane("text/html", tp.toString()) {
+                static private final long serialVersionUID = 1L;
+
+                // we can no longer have a horizontal scrollbar if we are always
+                // set to the same width as our parent....may need to be fixed.
+                public Dimension getPreferredSize() {
+                   Dimension d = this.getMinimumSize();
+
+                   return new Dimension(450, d.height);
+                }
+             };         
+
+             jta5.setBackground(loggingLevelPanel.getBackground());
+
+             Constrain.setConstraints(loggingLevelPanel, jta5, 0, 0, 2, 1,
+            		 GridBagConstraints.HORIZONTAL,
+                     GridBagConstraints.CENTER, 0, 0);
+
+             Constrain.setConstraints(loggingLevelPanel, logginglevelcb, 0, 1, 1, 1,
+                     GridBagConstraints.HORIZONTAL,
+                     GridBagConstraints.CENTER, 0, 0);
+                     
          Constrain.setConstraints(this, namePanel, 0, 0, 3, 1,
                                   GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 1, 0);
@@ -622,7 +698,9 @@ public class Input1FileURL extends InputModule {
          Constrain.setConstraints(this, passwordPanel, 0, 3, 3, 1,
                                   GridBagConstraints.HORIZONTAL,
                                   GridBagConstraints.CENTER, 1, 0);
-
+         Constrain.setConstraints(this, loggingLevelPanel, 0, 4, 3, 1,
+                 				  GridBagConstraints.HORIZONTAL,
+                 				  GridBagConstraints.CENTER, 1, 0);   
 
          b0.addActionListener(new AbstractAction() {
                public void actionPerformed(ActionEvent e) {
@@ -722,7 +800,6 @@ public class Input1FileURL extends InputModule {
             setUserName(f0);
             didChange = true;
          }
-
          /*
           * Use passwordjpf.getPassword.toString will not give the password text
           */
@@ -741,6 +818,11 @@ public class Input1FileURL extends InputModule {
             didChange = true;
          }
 
+         f0 = Integer.toString(logginglevelcb.getSelectedIndex());
+         if (Integer.parseInt(f0) != getmoduleLoggingLevel()){
+        	 setmoduleLoggingLevel(Integer.parseInt(f0));
+        	 didChange = true;
+         }     
          return didChange;
       } // end method updateModule
 
@@ -788,4 +870,4 @@ public class Input1FileURL extends InputModule {
 
    } // end class PropEdit
 
-} // end class Input1FileURL
+} // end class InputFileURL
