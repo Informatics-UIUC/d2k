@@ -54,6 +54,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashSet;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -985,6 +986,9 @@ public final class LongColumn extends MissingValuesColumn
       internal = doSort(internal, 0, internal.length - 1, t);
    }
 
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+
    /**
     * Sort the elements in this column starting with row 'begin' up to row
     * 'end', and swap the rows in the table we are a part of.
@@ -998,7 +1002,7 @@ public final class LongColumn extends MissingValuesColumn
    public void sort(MutableTable t, int begin, int end) {
 
       if (end > internal.length - 1) {
-         System.err.println(" end index was out of bounds");
+    	  myLogger.error(" end index was out of bounds");
          end = internal.length - 1;
       }
 

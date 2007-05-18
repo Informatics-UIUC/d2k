@@ -57,6 +57,8 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import ncsa.d2k.modules.core.util.*;
+
 
 
 /**
@@ -1008,6 +1010,9 @@ public class StringColumn extends MissingValuesColumn implements TextualColumn {
    public void sort(MutableTable t) {
       rowIndicies = doSort(rowIndicies, 0, rowIndicies.length - 1, t);
    }
+   
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    /**
     * Description of method sort.
@@ -1019,7 +1024,7 @@ public class StringColumn extends MissingValuesColumn implements TextualColumn {
    public void sort(MutableTable t, int begin, int end) {
 
       if (end > rowIndicies.length - 1) {
-         System.err.println(" end index was out of bounds");
+    	  myLogger.error(" end index was out of bounds");
          end = rowIndicies.length - 1;
       }
 

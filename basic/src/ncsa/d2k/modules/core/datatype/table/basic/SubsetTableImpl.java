@@ -47,6 +47,8 @@ package ncsa.d2k.modules.core.datatype.table.basic;
 import ncsa.d2k.modules.core.datatype.table.Column;
 import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 import ncsa.d2k.modules.core.datatype.table.Table;
+import ncsa.d2k.modules.core.util.*;
+
 
 
 /**
@@ -158,6 +160,9 @@ public class SubsetTableImpl extends MutableTableImpl {
 
    //~ Methods *****************************************************************
 
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+
    /**
     * Return a compressed representation of the column identified by the index
     * passed in..
@@ -177,7 +182,7 @@ public class SubsetTableImpl extends MutableTableImpl {
       try {
          compressedColumn = (Column) Class.forName(columnClass).newInstance();
       } catch (Exception e) {
-         System.out.println(e);
+    	  myLogger.fatal(e);
       }
 
       // create a new column
@@ -380,7 +385,7 @@ public class SubsetTableImpl extends MutableTableImpl {
          try {
             expandedColumn = (Column) Class.forName(columnClass).newInstance();
          } catch (Exception e) {
-            System.out.println(e);
+        	 myLogger.fatal(e);
          }
 
          expandedColumn.addRows(numRows);

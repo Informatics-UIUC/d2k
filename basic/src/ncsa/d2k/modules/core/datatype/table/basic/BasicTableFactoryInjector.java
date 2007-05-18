@@ -46,6 +46,8 @@ package ncsa.d2k.modules.core.datatype.table.basic;
 
 
 import ncsa.d2k.core.modules.InputModule;
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -67,7 +69,23 @@ public class BasicTableFactoryInjector extends InputModule {
    public BasicTableFactoryInjector() { }
 
    //~ Methods *****************************************************************
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
+   private int moduleLoggingLevel=
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass())
+	   .getLoggingLevel();
+   
+   public int getmoduleLoggingLevel(){
+	   return moduleLoggingLevel;
+   }
+
+   public void setmoduleLoggingLevel(int level){
+	   moduleLoggingLevel = level;
+   }   
+   public void beginExecution() {
+	   myLogger.setLoggingLevel(moduleLoggingLevel);
+   }
    /**
     * Performs the main work of the module. In this case, creates a new <code>
     * BasicTableFactory</code> then pushes it out on the first output.
@@ -82,8 +100,8 @@ public class BasicTableFactoryInjector extends InputModule {
                          0);
       } catch (Exception ex) {
          ex.printStackTrace();
-         System.out.println(ex.getMessage());
-         System.out.println("ERROR: BasicTableFactoryInjector.doit()");
+         myLogger.error(ex.getMessage()+"\n"
+        		 +"ERROR: BasicTableFactoryInjector.doit()");
          throw ex;
       }
    }
@@ -183,5 +201,22 @@ public class BasicTableFactoryInjector extends InputModule {
       };
 
       return out;
+   }
+   
+   /**
+    * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    * objects for each property of the module.
+    *
+    * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    *         objects.
+    */
+   public PropertyDescription[] getPropertiesDescriptions() {
+      PropertyDescription[] pds = new PropertyDescription[1];
+
+      pds[0] = 
+          new PropertyDescription("moduleLoggingLevel", "Module Logging Level",
+                  "The logging level of this modules"+"\n 0=DEBUG; 1=INFO; 2=WARN; 3=ERROR; 4=FATAL; 5=OFF");
+
+      return pds;
    }
 } // end class BasicTableFactoryInjector
