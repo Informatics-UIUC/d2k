@@ -78,6 +78,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Vector;
+import ncsa.d2k.modules.core.util.*;
+
 
 
 /**
@@ -190,9 +192,12 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
     * Creates a new SQLGetBarChartFromCube object.
     */
    public SQLGetBarChartFromCube() { }
-
+   private D2KModuleLogger myLogger;
+   
    //~ Methods *****************************************************************
-
+   public void beginExecution() {
+		  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+	   }
 
    /**
     * Close and finish execution
@@ -234,7 +239,7 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
                                           "There is no any code book in the database",
                                           "Error",
                                           JOptionPane.ERROR_MESSAGE);
-            System.out.println("There is no any code book in the database.");
+            myLogger.error("There is no any code book in the database.");
          } else {
             bt = new BrowseTables(cw, v);
             btw = new BrowseTablesView(bt, v);
@@ -771,7 +776,7 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
                                              "You must choose a code book or deselect 'Use Code Book'.",
                                              "Error",
                                              JOptionPane.ERROR_MESSAGE);
-               System.out.println("There is no code book selected.");
+               myLogger.error("There is no code book selected.");
             } else if (
                        cubeTableName.getText().length() > 0 &&
                           retVal.length > 0 &&
@@ -817,14 +822,14 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
                                              "There is no cube table selected.",
                                              "Error",
                                              JOptionPane.ERROR_MESSAGE);
-               System.out.println("There is no table selected.");
+               myLogger.error("There is no table selected.");
             } else if (retVal.length <= 0) { // The user has not chosen any
                                              // features
                JOptionPane.showMessageDialog(null,
                                              "You must select some attributes.",
                                              "Error",
                                              JOptionPane.ERROR_MESSAGE);
-               System.out.println("There are no attributes selected.");
+               myLogger.error("There are no attributes selected.");
             } else if (
                        cubeTableName.getText().toString().indexOf("_CUBE") <
                           0) {
@@ -832,7 +837,7 @@ public class SQLGetBarChartFromCube extends HeadlessUIModule {
                                              "To display a chart, you must select a cube table rather than a data table.",
                                              "Error",
                                              JOptionPane.ERROR_MESSAGE);
-               System.out.println("A cube table is selected instead of a data table.");
+               myLogger.error("A cube table is selected instead of a data table.");
             }
          } else if (src == cancelBtn) {
             cubeTableName.setText(NOTHING);

@@ -69,8 +69,13 @@ public abstract class AddResource extends DataPrepModule {
     * Creates a new AddResource object.
     */
    public AddResource() { }
+   private D2KModuleLogger myLogger;
 
    //~ Methods *****************************************************************
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    /**
     * Get the prepObject. Must be overridden.
@@ -91,7 +96,7 @@ public abstract class AddResource extends DataPrepModule {
          this.setResource(rscID, obj);
          pushOutput(obj, 0);
       } else {
-         System.out.println("Could not initialize the resource");
+    	  myLogger.error("Could not initialize the resource");
       }
    }
 

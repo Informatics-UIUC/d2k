@@ -66,6 +66,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -93,8 +94,13 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
 
    /** Reorder columns based on order of attributes used. */
    private boolean reorderColumns = false;
+   private D2KModuleLogger myLogger;
+   
 
    //~ Methods *****************************************************************
+   public void beginExecution() {
+		  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+	   }
 
    /**
     * figure out the cascading sort order according to sortOrderNames.
@@ -110,8 +116,8 @@ public class SortTable extends ncsa.d2k.core.modules.HeadlessUIModule {
       HashMap columns = StaticMethods.getAvailableAttributes(table);
 
       if (columns.size() == 0) {
-         System.out.println(getAlias() +
-                            ": Warning - The input table has no columns.");
+    	  myLogger.warn(getAlias() +
+                  ": Warning - The input table has no columns.");
       }
 
       // VG - with new code to reorder columns the sorted order has to

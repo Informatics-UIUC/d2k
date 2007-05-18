@@ -5,7 +5,6 @@ import ncsa.d2k.core.modules.ReentrantComputeModule;
 import ncsa.d2k.core.modules.PropertyDescription;
 
 
-
 /**
  * InputFileName allows the user to input the name of a single file. The file
  * name is input in the properties editor.

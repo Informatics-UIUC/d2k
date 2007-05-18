@@ -43,6 +43,7 @@
  *
  */
 package ncsa.d2k.modules.core.transform.summarization;
+import ncsa.d2k.modules.core.util.*;
 
 
 import ncsa.d2k.core.modules.ComputeModule;
@@ -1237,8 +1238,8 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
 
             JOptionPane.ERROR_MESSAGE);
 
-            System.out.println("Can't find the non-binning item in the baseHeadTbl for " +
-                               val);
+            myLogger.error("Can't find the non-binning item in the baseHeadTbl for " +
+                    val);
 
             return (-1); // not found the item
 
@@ -1269,8 +1270,8 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
 
          JOptionPane.ERROR_MESSAGE);
 
-         System.out.println("Can't find the binning item in the baseHeadTbl for " +
-                            val);
+         myLogger.error("Can't find the binning item in the baseHeadTbl for " +
+                 val);
 
          return (-1); // not found the item
 
@@ -1446,8 +1447,8 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
 
                JOptionPane.ERROR_MESSAGE);
 
-               System.out.println("Attribute " + fieldNames[col] +
-                                  " needs to be binned.");
+               myLogger.error("Attribute " + fieldNames[col] +
+                       " needs to be binned.");
 
                return (0);
 
@@ -1891,20 +1892,16 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
     */
    protected void printBaseHeadTbl() {
 
-      System.out.println("base head table: ");
+	   myLogger.debug("base head table: ");
+      //System.out.println("base head table: ");
 
       for (int i = 0; i < baseHeadTbl.size(); i++) {
-
-         System.out.print("The head " + i + " is " +
-                          ((Head) baseHeadTbl.get(i)).value + ", ");
-
-         System.out.print(((Head) baseHeadTbl.get(i)).valueCnt + ", ");
-
-         System.out.print(((Head) baseHeadTbl.get(i)).columnOrder + ", ");
-
-         System.out.print(((Head) baseHeadTbl.get(i)).firstNode + ", ");
-
-         System.out.println(((Head) baseHeadTbl.get(i)).currNode);
+    	  myLogger.debug("The head " + i + " is " +
+                  ((Head) baseHeadTbl.get(i)).value + ", ");
+    	  myLogger.debug(((Head) baseHeadTbl.get(i)).valueCnt + ", ");
+    	  myLogger.debug(((Head) baseHeadTbl.get(i)).columnOrder + ", ");
+    	  myLogger.debug(((Head) baseHeadTbl.get(i)).firstNode + ", ");
+    	  myLogger.debug(((Head) baseHeadTbl.get(i)).currNode);
 
       }
 
@@ -1916,24 +1913,19 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
     */
    protected void printColumnList() {
 
-      System.out.println("column list: ");
+	   myLogger.debug("column list: ");
 
       for (int i = 0; i < columnList.size(); i++) {
-
-         System.out.println("The i " + i + " column is " +
-                            ((Column) columnList.get(i)).columnName);
-
-         System.out.println("             " +
-                            ((Column) columnList.get(i)).uniqCnt);
-
-         System.out.println("             " +
-                            ((Column) columnList.get(i)).startIdx);
-
-         System.out.println("             " +
-                            ((Column) columnList.get(i)).dataType);
-
-         System.out.println("             " +
-                            ((Column) columnList.get(i)).isBinned);
+    	  myLogger.debug("The i " + i + " column is " +
+                  ((Column) columnList.get(i)).columnName);
+    	  myLogger.debug("             " +
+                  ((Column) columnList.get(i)).uniqCnt);
+    	  myLogger.debug("             " +
+                  ((Column) columnList.get(i)).startIdx);
+    	  myLogger.debug("             " +
+                  ((Column) columnList.get(i)).dataType);
+    	  myLogger.debug("             " +
+                  ((Column) columnList.get(i)).isBinned);
 
       }
 
@@ -1944,21 +1936,16 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
     * Print out contents for debugging.
     */
    protected void printHTree() {
-
-      System.out.println("hTree: ");
+	   myLogger.debug("hTree: ");
+      //System.out.println("hTree: ");
 
       for (int i = 0; i < hTree.size(); i++) {
-
-         System.out.print(i + " item in hTree is " +
-                          ((Node) hTree.get(i)).headIdx + ", ");
-
-         System.out.print(((Node) hTree.get(i)).nodeCnt + ", ");
-
-         System.out.print(((Node) hTree.get(i)).parentIdx + ", ");
-
-         System.out.print(((Node) hTree.get(i)).firstChildIdx + ", ");
-
-         System.out.println(((Node) hTree.get(i)).sameValueIdx);
+    	  myLogger.debug(i + " item in hTree is " +
+                  ((Node) hTree.get(i)).headIdx + ", ");
+    	  myLogger.debug(((Node) hTree.get(i)).nodeCnt + ", ");
+    	  myLogger.debug(((Node) hTree.get(i)).parentIdx + ", ");
+    	  myLogger.debug(((Node) hTree.get(i)).firstChildIdx + ", ");
+    	  myLogger.debug(((Node) hTree.get(i)).sameValueIdx);
 
       }
 
@@ -1972,11 +1959,18 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
     */
    protected void printLocalHeadTbl(ArrayList localHeadTable) {
 
-      System.out.println("local head table: ");
+	   myLogger.debug("local head table: ");
 
       for (int i = 0; i < localHeadTable.size(); i++) {
+    	  myLogger.debug(i + " item: " +
+                  ((LocalHead) localHeadTable.get(i)).value +
 
-         System.out.println(i + " item: " +
+                  ", " + ((LocalHead) localHeadTable.get(i)).headIdx +
+
+                  ", " + ((LocalHead) localHeadTable.get(i)).valueCnt +
+
+                  ", " + ((LocalHead) localHeadTable.get(i)).columnOrder);
+         /*System.out.println(i + " item: " +
                             ((LocalHead) localHeadTable.get(i)).value +
 
             ", " + ((LocalHead) localHeadTable.get(i)).headIdx +
@@ -1984,6 +1978,7 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
             ", " + ((LocalHead) localHeadTable.get(i)).valueCnt +
 
             ", " + ((LocalHead) localHeadTable.get(i)).columnOrder);
+            */
 
       }
 
@@ -1995,15 +1990,13 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
     */
    protected void printPrefixList() {
 
-      System.out.println("prefixList is: ");
+	   myLogger.debug("prefixList is: ");
 
       for (int i = 0; i < prefixList.length; i++) {
-
-         System.out.print(prefixList[i] + ", ");
+    	  myLogger.debug(prefixList[i] + ", ");
 
       }
-
-      System.out.println("...");
+      myLogger.debug("...");
 
    }
 
@@ -2280,8 +2273,7 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
 
 
          JOptionPane.ERROR_MESSAGE);
-
-         System.out.println("Too many fields have been selected.");
+         myLogger.error("Too many fields have been selected.");
 
          return false;
 
@@ -2520,13 +2512,13 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
 
          }
 
-         System.out.println("Error 1 in calculate parent index");
+         myLogger.error("Error 1 in calculate parent index");
 
          return (-1); // should never reach here
 
       } // end if-else
 
-      System.out.println("Error 2 in calculate parent index");
+      myLogger.error("Error 2 in calculate parent index");
 
       return (-1); // should never reach here
 
@@ -2596,6 +2588,11 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
 
    } // end method updSameValue
 
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    /**
     * Performs the main work of the module.
@@ -2616,8 +2613,7 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
       fieldNames = (String[]) pullInput(2);
 
       if (tableName.indexOf("_CUBE") >= 0) {
-
-         System.out.println("The user has selected a cube to build a new cube.");
+    	  myLogger.debug("The user has selected a cube to build a new cube.");
 
          rightInput = false;
 
@@ -2739,8 +2735,7 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
 
 
                      JOptionPane.ERROR_MESSAGE);
-
-                     System.out.println("There is no rule discovered.");
+                     myLogger.error("There is no rule discovered.");
 
                   }
 
@@ -2753,8 +2748,7 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
 
 
                   JOptionPane.ERROR_MESSAGE);
-
-                  System.out.println("fail to build a cube table.");
+                  myLogger.error("fail to build a cube table.");
 
                }
 
@@ -2767,8 +2761,7 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
 
 
                JOptionPane.ERROR_MESSAGE);
-
-               System.out.println("fail to build a HTree.");
+               myLogger.debug("fail to build a HTree.");
 
             }
 
@@ -2787,8 +2780,7 @@ public class NewSQLHTree extends ComputeModule implements java.io.Serializable {
 
 
          JOptionPane.ERROR_MESSAGE);
-
-         System.out.println("There is no data in the data table or a wrong table is selected.");
+         myLogger.error("There is no data in the data table or a wrong table is selected.");
 
       }
 

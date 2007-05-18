@@ -65,6 +65,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Vector;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -101,8 +102,13 @@ public class FilterConstruction extends HeadlessUIModule {
     * "Supress User Interface Display" is set to true. Validation of the
     * expression is done during run time. */
    private String expression;
+   private D2KModuleLogger myLogger;
+   
 
    //~ Methods *****************************************************************
+   public void beginExecution() {
+		  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+	   }
 
    /**
     * Get the help text.
@@ -171,8 +177,9 @@ public class FilterConstruction extends HeadlessUIModule {
       }
 
       if (availableColumns.size() == 0) {
-         System.out.println(getAlias() + ": Warning - Table " +
-                            table.getLabel() + " has no columns.");
+    	  myLogger.warn(getAlias() + ": Warning - Table " +
+                  table.getLabel() + " has no columns.");
+       
          /*System.out.println("The transformation will be an empty one");
           * boolean[] val = new boolean[0]; pushOutput(new
           * FilterTransformation(val, false), 0);return;*/

@@ -55,6 +55,7 @@ import ncsa.d2k.modules.core.transform.table.gui.properties
    import java.beans.PropertyVetoException;
    import java.util.ArrayList;
    import java.util.Random;
+   import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -104,8 +105,13 @@ public class SampleTableRows extends DataPrepModule {
 
    /** The seed for the random number generator. */
    private int seed = 0;
-
+   private D2KModuleLogger myLogger;
+   
+ 
    //~ Methods *****************************************************************
+   public void beginExecution() {
+		  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+	   }
 
    /**
     * Performs the main work of the module.
@@ -132,8 +138,8 @@ public class SampleTableRows extends DataPrepModule {
                              numRows + "). \n" + "Use a smaller sample size.");
       }
 
-      System.out.println("Sampling " + realN + " rows from a table " +
-                         "of " + orig.getNumRows() + " rows.");
+      myLogger.debug("Sampling " + realN + " rows from a table " +
+              "of " + orig.getNumRows() + " rows.");
 
       /* only use the first N rows */
       if (samplingMethod == SEQUENTIAL) {

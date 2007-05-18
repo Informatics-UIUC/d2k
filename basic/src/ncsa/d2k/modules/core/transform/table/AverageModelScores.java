@@ -52,6 +52,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.DoubleColumn;
 import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
 
 import java.util.ArrayList;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -107,7 +108,8 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
 
    /** number of points in solution space. */
    private int solutionSpaceDimensions = 0;
-
+   private D2KModuleLogger myLogger;
+   
    //~ Methods *****************************************************************
 
    /**
@@ -117,6 +119,7 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
       folds = new ArrayList(200);
       this.numberFolds = -1;
       counter = 0;
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
    }
 
    /**
@@ -198,13 +201,17 @@ public class AverageModelScores extends ncsa.d2k.core.modules.DataPrepModule {
          ExampleTable eti = new MutableTableImpl(cols).toExampleTable();
 
          if (this.getVerbose()) {
-            System.out.println("\nAverageModelScores for " + this.numberFolds +
-                               " folds.");
+        	 myLogger.setDebugLoggingLevel();//temp set to debug
+        	 myLogger.debug("\nAverageModelScores for " + this.numberFolds +
+                     " folds.");
+        	 myLogger.resetLoggingLevel();//re-set level to original level
 
             for (int i = 0, n = eti.getNumColumns(); i < n; i++) {
-               System.out.println(eti.getColumnLabel(i) + " -- avg error: " +
-                                  eti.getDouble(0, i) + " avg correct: " +
-                                  (1 - eti.getDouble(0, i)));
+            	myLogger.setDebugLoggingLevel();//temp set to debug
+            	myLogger.debug(eti.getColumnLabel(i) + " -- avg error: " +
+                        eti.getDouble(0, i) + " avg correct: " +
+                        (1 - eti.getDouble(0, i)));
+            	myLogger.resetLoggingLevel();//re-set level to original level
             }
 
             System.out.println();

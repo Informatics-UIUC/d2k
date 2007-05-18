@@ -61,7 +61,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyVetoException;
 import java.util.Random;
-
+import ncsa.d2k.modules.core.util.*;
 
 /**
  * SimpleTrainTest.java The user to select a percentage of the table to be train
@@ -97,8 +97,13 @@ public class SimpleTrainTest extends DataPrepModule {
 
    /** percent of dataset to use to train the model. */
    private int trainPercent = 50;
+   private D2KModuleLogger myLogger;
+   
 
    //~ Methods *****************************************************************
+   public void beginExecution() {
+		  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+	   }
 
    /**
     * Performs the main work of the module.
@@ -160,28 +165,30 @@ public class SimpleTrainTest extends DataPrepModule {
       random = null;
 
       if (debug) {
-         System.out.println("test set");
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("test set");
 
          for (int i = 0; i < test.length; i++) {
 
             if (i > 0) {
-               System.out.print(",");
+            	myLogger.debug(",");
             }
 
-            System.out.print(test[i]);
+            myLogger.debug(test[i]);
          }
 
          // do the train assignment, from the end of the array of indices.
-         System.out.println("train set");
+         myLogger.debug("train set");
 
          for (int i = 0; i < train.length; i++) {
 
             if (i > 0) {
-               System.out.print(",");
+            	myLogger.debug(",");
             }
 
-            System.out.print(train[i]);
+            myLogger.debug(train[i]);
          }
+         myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       ExampleTable et = orig.toExampleTable();

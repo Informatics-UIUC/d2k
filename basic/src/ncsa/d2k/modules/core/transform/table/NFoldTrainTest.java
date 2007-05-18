@@ -51,6 +51,7 @@ import ncsa.d2k.modules.core.datatype.table.Table;
 
 import java.beans.PropertyVetoException;
 import java.util.Random;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -182,13 +183,17 @@ public class NFoldTrainTest extends ncsa.d2k.core.modules.DataPrepModule {
       }
 
       if (debug) {
-         System.out.println(getAlias() + ": Indicies after randomization: ");
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug(getAlias() + ": Indicies after randomization: ");
 
          for (int j = 0; j < numRows; j++) {
-            System.out.println(indices[j]);
+        	 myLogger.debug(indices[j]);
          }
+         myLogger.resetLoggingLevel();//re-set level to original level
       }
    } // end method setup
+
+   private D2KModuleLogger myLogger;
 
    /**
     * Reset variables when we begin execution.
@@ -198,6 +203,7 @@ public class NFoldTrainTest extends ncsa.d2k.core.modules.DataPrepModule {
       breaks = null;
       table = null;
       indices = null;
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
    }
 
 
@@ -250,20 +256,22 @@ public class NFoldTrainTest extends ncsa.d2k.core.modules.DataPrepModule {
                        numRows - breaks[numFires + 1]);
 
       if (debug) {
-         System.out.println(getAlias() + ": Fold " + numFires);
-         System.out.println(getAlias() + ": Test Set size:  " +
-                            testSize + " and indicies: ");
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug(getAlias() + ": Fold " + numFires);
+    	  myLogger.debug(getAlias() + ": Test Set size:  " +
+                  testSize + " and indicies: ");
 
          for (int j = 0; j < testSize; j++) {
-            System.out.println(testing[j]);
+        	 myLogger.debug(testing[j]);
          }
 
-         System.out.println(getAlias() + ": Train Set size:  " +
-                            trainSize + " and indicies: ");
+         myLogger.debug(getAlias() + ": Train Set size:  " +
+                 trainSize + " and indicies: ");
 
          for (int j = 0; j < trainSize; j++) {
-            System.out.println(training[j]);
+        	 myLogger.debug(training[j]);
          }
+         myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       // now create a new vertical table.
