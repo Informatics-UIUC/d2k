@@ -53,6 +53,8 @@ import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import ncsa.d2k.modules.core.util.*;
+
 
 
 /**
@@ -125,6 +127,9 @@ public class ADTree extends Node {
    }
 
    //~ Methods *****************************************************************
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+;
 
    /**
     * Expands 'node' by adding a VarNode for 'index'
@@ -137,13 +142,13 @@ public class ADTree extends Node {
    private HashMap expandNode(int index, Node node) {
 
       if (debug2) {
-         System.out.println("EXPANDNODE " + index + " " + node);
+    	  myLogger.debug("EXPANDNODE " + index + " " + node);;
       }
 
       HashMap previousVarNode = node.getVarNode(index - 1);
 
       if (debug2) {
-         System.out.println("previousVarNode is " + previousVarNode);
+    	  myLogger.debug("previousVarNode is " + previousVarNode);
       }
 
       Iterator values = previousVarNode.values().iterator();
@@ -157,7 +162,7 @@ public class ADTree extends Node {
          HashMap hmc = currNode.getVarNode(index);
 
          if (debug2) {
-            System.out.println("hmc is " + hmc);
+        	 myLogger.debug("hmc is " + hmc);
          }
 
          hm = node.addHashMaps(hm, hmc);
@@ -166,7 +171,9 @@ public class ADTree extends Node {
       node.putVarNode(index, hm);
 
       if (debug1) {
-         System.out.println("EXPANDED NODE IS " + node);
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("EXPANDED NODE IS " + node);
+          myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       return hm;
@@ -231,12 +238,14 @@ public class ADTree extends Node {
 
       if (debug1) {
 
-         System.out.println(" MAIN COUNT : " + node.count + " " + node);
-         System.out.println("values are ");
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug(" MAIN COUNT : " + node.count + " " + node);
+    	  myLogger.debug("values are ");
 
          for (int j = 0; j < values.length; j++) {
-            System.out.print(values[j] + " ");
+        	 myLogger.debug(values[j] + " ");
          }
+         myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       for (int j = 1; j <= values.length; j++) {
@@ -247,11 +256,11 @@ public class ADTree extends Node {
             node.putVarNode(j, hm);
 
             if (debug2) {
-               System.out.println("created and inserted hashmap for  " +
-                                  values[j -
-                                         1] +
-                                  " with j=" +
-                                  j);
+            	myLogger.debug("created and inserted hashmap for  " +
+                        values[j -
+                               1] +
+                        " with j=" +
+                        j);
             }
          }
 
@@ -264,11 +273,11 @@ public class ADTree extends Node {
             varNode.put(values[j - 1], node);
 
             if (debug2) {
-               System.out.println("hm does not contain key " +
-                                  values[j -
-                                         1] +
-                                  " inserted it j =" +
-                                  j);
+            	myLogger.debug("hm does not contain key " +
+                        values[j -
+                               1] +
+                        " inserted it j =" +
+                        j);
             }
          }
 
@@ -292,7 +301,9 @@ public class ADTree extends Node {
       node.count++;
 
       if (debug1) {
-         System.out.println(" MAIN COUNT : " + node.count + " " + node);
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug(" MAIN COUNT : " + node.count + " " + node);
+          myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       int len = values.size();
@@ -306,10 +317,10 @@ public class ADTree extends Node {
             node.putVarNode(j, hm);
 
             if (debug2) {
-               System.out.println("created and inserted hashmap for  " +
-                                  value +
-                                  " with j=" +
-                                  j);
+            	myLogger.debug("created and inserted hashmap for  " +
+                        value +
+                        " with j=" +
+                        j);
             }
          }
 
@@ -322,10 +333,10 @@ public class ADTree extends Node {
             varNode.put(value, node);
 
             if (debug2) {
-               System.out.println("hm does not contain key " +
-                                  value +
-                                  " inserted it j =" +
-                                  j);
+            	myLogger.debug("hm does not contain key " +
+                        value +
+                        " inserted it j =" +
+                        j);
             }
          }
 
@@ -371,7 +382,7 @@ public class ADTree extends Node {
    public void expandFirstOnly(Node node) {
 
       int lastKey = ((Integer) node.getVarNodes().lastKey()).intValue();
-      System.out.println("FIRST ONLY LASTKEY IS " + lastKey);
+      myLogger.debug("FIRST ONLY LASTKEY IS " + lastKey);
 
       HashMap hm = node.getVarNode(lastKey);
       Iterator values = hm.values().iterator();
@@ -459,11 +470,13 @@ public class ADTree extends Node {
          varNode = node.getVarNode(index);
 
          if (varNode == null) {
-            System.err.println("ADTree is not expanded: Trying to " +
-                               "expand");
+        	 myLogger.error("ADTree is not expanded: Trying to " +
+                     "expand");
 
             if (debug1) {
-               System.out.println("node to expand " + node);
+            	myLogger.setDebugLoggingLevel();//temp set to debug
+            	myLogger.debug("node to expand " + node);
+                myLogger.resetLoggingLevel();//re-set level to original level
             }
 
             expand(node);
@@ -501,16 +514,16 @@ public class ADTree extends Node {
       Integer firstKey = (Integer) varNodes.firstKey();
 
       if (firstKey.intValue() > attribute[0]) {
-         System.err.println("cannot get the desired count from this tree");
+    	  myLogger.error("cannot get the desired count from this tree");
       }
 
       for (int i = 0; i < len; i++) {
-         System.out.println("attribute[i] " + attribute[i]);
-         System.out.println("values[i] " + values[i]);
+    	  myLogger.debug("attribute[i] " + attribute[i]+"\n"
+    			  +"values[i] " + values[i]);
          varNode = node.getVarNode(attribute[i]);
 
          if (varNode == null) {
-            System.err.println("ADTree is not expanded: Trying to expand");
+        	 myLogger.error("ADTree is not expanded: Trying to expand");
             expand(node);
             varNode = node.getVarNode(attribute[i]);
          }
@@ -725,8 +738,10 @@ public class ADTree extends Node {
          node.count++;
 
          if (debug1) {
-            System.out.println(" MAIN COUNT : " + node.count + " " +
-                               this);
+        	 myLogger.setDebugLoggingLevel();//temp set to debug
+        	 myLogger.debug(" MAIN COUNT : " + node.count + " " +
+                     this);
+             myLogger.resetLoggingLevel();//re-set level to original level
          }
 
          for (int j = 1; j <= noOfAttributes; j++) {
@@ -737,9 +752,9 @@ public class ADTree extends Node {
                node.putVarNode(j, hm);
 
                if (debug2) {
-                  System.out.println("created and inserted hashmap for" +
-                                     "  " + vt.getString(i, j - 1) +
-                                     " with j=" + j);
+            	   myLogger.debug("created and inserted hashmap for" +
+                           "  " + vt.getString(i, j - 1) +
+                           " with j=" + j);
                }
             }
 
@@ -752,10 +767,10 @@ public class ADTree extends Node {
                varNode.put(vt.getString(i, j - 1), node);
 
                if (debug2) {
-                  System.out.println("hm does not contain key " +
-                                     vt.getString(i, j - 1) +
-                                     " inserted it j =" +
-                                     j);
+            	   myLogger.debug("hm does not contain key " +
+                           vt.getString(i, j - 1) +
+                           " inserted it j =" +
+                           j);
                }
             }
 
@@ -808,7 +823,9 @@ public class ADTree extends Node {
    public void setLabel(int index, String value) {
 
       if (debug1) {
-         System.out.println("set labels " + index + " " + value);
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("set labels " + index + " " + value);
+          myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       labels[index] = value;

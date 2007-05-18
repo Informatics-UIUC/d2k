@@ -57,6 +57,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.ExampleTableImpl;
 import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
 
 import java.io.Serializable;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -491,6 +492,8 @@ public class ParameterPointImpl extends ExampleImpl implements Serializable,
       return this.getTable().getObject(row, column);
    }
 
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    /**
     * Get the parameter index of that corresponds to the given name.
@@ -511,7 +514,9 @@ public class ParameterPointImpl extends ExampleImpl implements Serializable,
       }
 
       Exception e = new Exception();
-      System.out.println("Error!  Can not find name (" + name + ").  ");
+      myLogger.setErrorLoggingLevel();
+      myLogger.error("Error!  Can not find name (" + name + ").  ");
+      myLogger.resetLoggingLevel();
       throw e;
    }
 

@@ -47,6 +47,7 @@ package ncsa.d2k.modules.core.datatype.model;
 import ncsa.d2k.modules.PredictionModelModule;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import ncsa.d2k.modules.core.datatype.table.PredictionTable;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -84,6 +85,8 @@ public class Model extends PredictionModelModule
    }
 
    //~ Methods *****************************************************************
+   private D2KModuleLogger myLogger=
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    /**
     * Evaluate the model. Overridden by implementer.
@@ -96,7 +99,9 @@ public class Model extends PredictionModelModule
     * @throws Exception If exception occurs, exception is thrown.
     */
    public double[] evaluate(ExampleTable exampleSet, int e) throws Exception {
-      System.out.println("must override this method");
+	   myLogger.setErrorLoggingLevel();
+	   myLogger.error("must override this method");
+	   myLogger.resetLoggingLevel();
       throw new Exception();
    }
 
@@ -199,7 +204,9 @@ public class Model extends PredictionModelModule
     * @throws Exception If exception occurs, exception is thrown.
     */
    public void print(ModelPrintOptions options) throws Exception {
-      System.out.println("must override this method");
+	   myLogger.setErrorLoggingLevel();
+	   myLogger.error("must override this method");
+	   myLogger.resetLoggingLevel();
       throw new Exception();
    }
 
