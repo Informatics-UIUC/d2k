@@ -45,6 +45,7 @@
 package ncsa.d2k.modules.core.datatype.table.sparse.primitivehash;
 
 import ncsa.d2k.modules.core.datatype.table.sparse.ObjectComparator;
+import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
 
 
 /**
@@ -115,6 +116,8 @@ public class Element implements Comparable {
    }
 
    //~ Methods *****************************************************************
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    /**
     * Compares for equality with another element.
@@ -126,10 +129,15 @@ public class Element implements Comparable {
    public int compareTo(Object obj) {
 
       if (obj instanceof Element) {
-         System.out.println("WARNING: Cannot compare object " +
+    	  myLogger.setWarnLoggingLevel();
+    	  myLogger.warn("WARNING: Cannot compare object " +
                             "of type Element to object of type " +
                             obj.getClass().getName());
-
+    	  myLogger.resetLoggingLevel();
+         /*System.out.println("WARNING: Cannot compare object " +
+                            "of type Element to object of type " +
+                            obj.getClass().getName());
+                            */
          return -1;
       }
 
@@ -169,10 +177,15 @@ public class Element implements Comparable {
       String otherObjectClass = otherObj.getClass().getName();
 
       if (!myObjectClass.equals(otherObjectClass)) {
-         System.out.println("WARNING: Cannot compare object " +
+    	  myLogger.setWarnLoggingLevel();
+    	  myLogger.warn("WARNING: Cannot compare object " +
                             "of type " + myObjectClass + " to object of type " +
                             otherObjectClass);
-
+    	  myLogger.resetLoggingLevel();
+    	  /*System.out.println("WARNING: Cannot compare object " +
+                            "of type " + myObjectClass + " to object of type " +
+                            otherObjectClass);
+                            */
          return -1;
       }
 

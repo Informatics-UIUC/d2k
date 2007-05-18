@@ -54,7 +54,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashSet;
-import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -1003,7 +1003,6 @@ public final class LongColumn extends MissingValuesColumn
 
       if (end > internal.length - 1) {
     	  myLogger.error(" end index was out of bounds");
-         //System.err.println(" end index was out of bounds");
          end = internal.length - 1;
       }
 

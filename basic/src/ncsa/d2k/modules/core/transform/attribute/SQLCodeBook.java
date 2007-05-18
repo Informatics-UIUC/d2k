@@ -57,6 +57,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -96,6 +97,8 @@ public class SQLCodeBook {
    public SQLCodeBook(ConnectionWrapper cw, String bookName) {
       codeBook = getCodeBook(cw, bookName);
    }
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    //~ Methods *****************************************************************
 
@@ -130,7 +133,7 @@ public class SQLCodeBook {
          JOptionPane.showMessageDialog(null,
                                        e.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
-         System.out.println("Error to get count in getCodeBook.");
+         myLogger.error("Error to get count in getCodeBook.");
       }
 
       if (codeCount > 0) {
@@ -169,7 +172,7 @@ public class SQLCodeBook {
             JOptionPane.showMessageDialog(null,
                                           e.getMessage(), "Error",
                                           JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error to get code in getCodeBook.");
+            myLogger.error("Error to get code in getCodeBook.");
          }
       } // end if
 

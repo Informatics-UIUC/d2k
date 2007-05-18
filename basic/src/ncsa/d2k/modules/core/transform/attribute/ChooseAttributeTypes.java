@@ -60,6 +60,7 @@ import java.awt.event.ActionListener;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -149,6 +150,11 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
     *         the order the results should appear in the outputs.
     */
    protected String[] getFieldNameMapping() { return null; }
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    /**
     * headless conversion support. If the table is in the same format as the
@@ -175,8 +181,8 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
       }
 
       if (availableColumns.size() == 0) {
-         System.out.println(getAlias() +
-                            ": Warning - The input table has no columns. It will be output as is.");
+    	  myLogger.warn(getAlias() +
+                  ": Warning - The input table has no columns. It will be output as is.");
          // pushOutput(_table, 0);
          // return;
       }
@@ -196,9 +202,9 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
             _table.setColumnIsNominal(false, index);
 
             if (!_table.isColumnNumeric(index)) {
-               System.out.println(getAlias() + ": Column " + scalarColumns[i] +
-                                  " was selected as scalar, but " +
-                                  "this column is not numeric. Continuing anyway.");
+            	myLogger.warn(getAlias() + ": Column " + scalarColumns[i] +
+                        " was selected as scalar, but " +
+                        "this column is not numeric. Continuing anyway.");
             }
 
          } // if contains
@@ -221,9 +227,9 @@ public class ChooseAttributeTypes extends HeadlessUIModule {
             _table.setColumnIsNominal(true, index);
 
             if (_table.isColumnNumeric(index)) {
-               System.out.println(getAlias() + ": Column " + nominalColumns[i] +
-                                  " was selected as nominal, but " +
-                                  "this column is numeric. Continuing anyway.");
+            	myLogger.warn(getAlias() + ": Column " + nominalColumns[i] +
+                        " was selected as nominal, but " +
+                        "this column is numeric. Continuing anyway.");
             }
 
          } // if contains

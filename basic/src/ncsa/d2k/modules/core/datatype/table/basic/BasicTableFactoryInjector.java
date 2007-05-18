@@ -47,7 +47,7 @@ package ncsa.d2k.modules.core.datatype.table.basic;
 
 import ncsa.d2k.core.modules.InputModule;
 import ncsa.d2k.core.modules.PropertyDescription;
-import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -102,8 +102,6 @@ public class BasicTableFactoryInjector extends InputModule {
          ex.printStackTrace();
          myLogger.error(ex.getMessage()+"\n"
         		 +"ERROR: BasicTableFactoryInjector.doit()");
-         //System.out.println(ex.getMessage());
-         //System.out.println("ERROR: BasicTableFactoryInjector.doit()");
          throw ex;
       }
    }

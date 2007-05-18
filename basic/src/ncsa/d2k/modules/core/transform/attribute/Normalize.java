@@ -62,6 +62,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -82,6 +83,11 @@ public class Normalize extends HeadlessUIModule {
 
    /** lables of the attributes to normalize */
    private String[] numericLabels;
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    //~ Methods *****************************************************************
 
@@ -129,7 +135,7 @@ public class Normalize extends HeadlessUIModule {
         }
 
         if (availableNumericColumns.size() == 0) {
-            System.out.println(getAlias() + ": Warning - Table " +
+        	myLogger.warn(getAlias() + ": Warning - Table " +
                     _table.getLabel() +
                     " has no numeric columns. The transformation will be " +
                     "an empty one");
@@ -138,7 +144,7 @@ public class Normalize extends HeadlessUIModule {
 
 
         if (numericLabels.length == 0) {
-            System.out.println(getAlias() +
+        	myLogger.warn(getAlias() +
                     ": no numeric columns were selected. " +
                     "the transformation will be an empty one.\n");
             pushOutput(new NormalizingTransformation(transform), 0);

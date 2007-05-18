@@ -57,7 +57,7 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
+import ncsa.d2k.modules.core.util.*;
 
 
 
@@ -1025,7 +1025,6 @@ public class StringColumn extends MissingValuesColumn implements TextualColumn {
 
       if (end > rowIndicies.length - 1) {
     	  myLogger.error(" end index was out of bounds");
-         //System.err.println(" end index was out of bounds");
          end = rowIndicies.length - 1;
       }
 

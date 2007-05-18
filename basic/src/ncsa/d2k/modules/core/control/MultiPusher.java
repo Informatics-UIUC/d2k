@@ -47,6 +47,7 @@ package ncsa.d2k.modules.core.control;
 import ncsa.d2k.core.modules.PropertyDescription;
 import java.beans.PropertyVetoException;
 
+import ncsa.d2k.modules.core.util.*;
 
 /**
  * Pushes the input object out N times, where N is a property or input.
@@ -93,6 +94,9 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
     * used only for debugging.
     */
    int totalFires = 0;
+   
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    //~ Methods *****************************************************************
 
@@ -101,7 +105,22 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
     * <In this case, initializes the counters and calls beginExecution() on the
     * superclass.
     */
+
+
+   private int moduleLoggingLevel=
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass())
+	   .getLoggingLevel();
+   
+   public int getmoduleLoggingLevel(){
+	   return moduleLoggingLevel;
+   }
+
+   public void setmoduleLoggingLevel(int level){
+	   moduleLoggingLevel = level;
+   }
+  
    public void beginExecution() {
+	  myLogger.setLoggingLevel(moduleLoggingLevel);
       numFires = 0;
       totalFires = 0;
       super.beginExecution();
@@ -128,12 +147,14 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
       pushOutput(obj, 0);
       numFires++;
       totalFires++;
-
+ 
       if (debug) {
-         System.out.println(this.getAlias() + " current numFires:" +
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug(this.getAlias() + " current numFires:" +
                             numFires +
                             "/" + N + ", total number fires this execution:" +
                             totalFires);
+          myLogger.resetLoggingLevel();//re-set level to original level               
       }
 
       if (numFires == N) {
@@ -298,7 +319,7 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
     *         objects.
     */
    public PropertyDescription[] getPropertiesDescriptions() {
-      PropertyDescription[] pds = new PropertyDescription[3];
+      PropertyDescription[] pds = new PropertyDescription[4];
       pds[0] =
          new PropertyDescription("usePropNValue",
                                  "Use the value of \"N\" from the " +
@@ -324,6 +345,9 @@ public class MultiPusher extends ncsa.d2k.core.modules.DataPrepModule
                                  "the number of times the module has " +
                                  "fired, every " +
                                  "time it is fired.");
+      pds[3] = 
+    	  new PropertyDescription("moduleLoggingLevel", "Module Logging Level",
+            "The logging level of this modules");
 
       return pds;
    } // end method getPropertiesDescriptions

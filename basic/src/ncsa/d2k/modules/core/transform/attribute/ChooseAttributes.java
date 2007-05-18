@@ -67,6 +67,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -109,7 +110,11 @@ public class ChooseAttributes extends HeadlessUIModule {
     *         the order the results should appear in the outputs.
     */
    protected String[] getFieldNameMapping() { return null; }
-
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
    /**
     * headless conversion support. If the table is in the same format as the
     * last successful execution, push out the same selected attributes.
@@ -138,9 +143,9 @@ public class ChooseAttributes extends HeadlessUIModule {
       String[] selectedNames;
 
       if (selected.length == 0) {
-         System.out.println(getAlias() +
-                            ": Warning - No input attributes were selected. Skipping " +
-                            "setting of input attributes.");
+    	  myLogger.warn(getAlias() +
+                  ": Warning - No input attributes were selected. Skipping " +
+                  "setting of input attributes.");
       } else {
 
          // vered - test that all columns are really in the map
@@ -175,9 +180,9 @@ public class ChooseAttributes extends HeadlessUIModule {
       int[] outputFeatures = new int[0];
 
       if (selected == null || selected.length == 0) {
-         System.out.println(getAlias() +
-                            ": Warning - No output attributes were selected. Skipping " +
-                            "setting of output attributes.");
+    	  myLogger.warn(getAlias() +
+                  ": Warning - No output attributes were selected. Skipping " +
+                  "setting of output attributes.");
       } else {
          selectedNames = new String[selected.length];
 

@@ -58,6 +58,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -369,6 +370,12 @@ public class ChooseAttributeNames
    public void setSelectedAttributes(Object[] att) {
       selectedAttributes = (String[]) att;
    }
+   
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    //~ Inner Classes ***********************************************************
 
@@ -490,7 +497,7 @@ public class ChooseAttributeNames
                                                    "You must select at least one attribute.",
                                                    "Error",
                                                    JOptionPane.ERROR_MESSAGE);
-                     System.out.println("No columns are selected");
+                     myLogger.error("No columns are selected");
                   } else {
 
                      for (int i = 0; i < retVal.length; i++) {

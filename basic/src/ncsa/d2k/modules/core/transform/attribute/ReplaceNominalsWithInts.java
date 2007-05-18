@@ -49,6 +49,7 @@ import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.table.MutableTable;
 import ncsa.d2k.modules.core.datatype.table.transformations
           .ReplaceNominalsWithIntsTransform;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -68,6 +69,11 @@ public class ReplaceNominalsWithInts extends ComputeModule {
     * printed to the console.
     */
    private boolean _printMapping = false;
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    //~ Methods *****************************************************************
 
@@ -86,7 +92,9 @@ public class ReplaceNominalsWithInts extends ComputeModule {
 
 
       if (_printMapping) {
-         System.out.println(transform.toMappingString(mt));
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug(transform.toMappingString(mt));
+          myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       pushOutput(transform, 0);

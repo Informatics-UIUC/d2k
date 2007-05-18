@@ -5,6 +5,7 @@ import ncsa.d2k.core.modules.ReentrantComputeModule;
 import ncsa.d2k.core.modules.PropertyDescription;
 
 
+
 /**
  * InputFileName allows the user to input the name of a single file. The file
  * name is input in the properties editor.
@@ -15,8 +16,11 @@ import ncsa.d2k.core.modules.PropertyDescription;
 public class StringToURL extends ReentrantComputeModule {
 
    //~ Instance fields *********************************************************
-
-
+	   private D2KModuleLogger myLogger;
+	   
+	   public void beginExecution() {
+		  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+	   }
 
    //~ Methods *****************************************************************
 
@@ -30,8 +34,8 @@ public class StringToURL extends ReentrantComputeModule {
        String str = (String) pullInput(0);
 
        if (str == null || str.length() == 0) {
-         System.out.println(getAlias() +
-                            ": The input string is either null or empty.");
+    	   myLogger.fatal(getAlias() +
+                   ": The input string is either null or empty.");
          return;
        }
 
