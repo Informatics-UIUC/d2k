@@ -13,6 +13,7 @@ import gnu.trove.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
+import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
 
 /**
  * SparseTable is a type of Table that is sparsely populated.
@@ -627,17 +628,29 @@ public abstract class SparseTable
   public int getRowNumEntries(int position) {
     return ( (TIntArrayList) _rows.get(position)).size();
   }
+  
+  private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
   //XIAOLEI
   public void print() {
-    System.out.print("---------------------------------------");
-    System.out.println("---------------------------------------");
+	  myLogger.setPatternlayout("%m");
+	  myLogger.debug("---------------------------------------");
+	  myLogger.setPatternlayout("%m%n");
+	  myLogger.debug("---------------------------------------");
+    //System.out.print("---------------------------------------");
+    //System.out.println("---------------------------------------");
     int my_rows = getNumRows();
-    System.out.println(my_rows + " rows total.");
-    System.out.println(_numRows + " rows total.");
-    System.out.println(_numColumns + " columns total.");
+    myLogger.debug(my_rows + " rows total.");
+    myLogger.debug(_numRows + " rows total.");
+    myLogger.debug(_numColumns + " columns total.");
+    //System.out.println(my_rows + " rows total.");
+    //System.out.println(_numRows + " rows total.");
+    //System.out.println(_numColumns + " columns total.");
+    myLogger.setPatternlayout("%m%n");
     for (int i = 0; i < my_rows; i++) {
-      System.out.print(i + ": ");
+    	myLogger.debug(i + ": ");
+      //System.out.print(i + ": ");
       /*
        //int[] my_cols = getRowIndices(i);
        int[] my_cols = getRowIndices(my_rows[i]);
@@ -648,13 +661,21 @@ public abstract class SparseTable
        System.out.println();
        */
       for (int j = 0; j < _numColumns; j++) {
-        System.out.print(j + "(");
-        System.out.print(getDouble(i, j) + ") ");
+    	  myLogger.debug(j + "(");
+    	  myLogger.debug(getDouble(i, j) + ")");
+        //System.out.print(j + "(");
+        //System.out.print(getDouble(i, j) + ") ");
       }
-      System.out.println();
+      myLogger.setPatternlayout("%m%n");
+      myLogger.debug("");
+      //System.out.println();
     }
-    System.out.print("---------------------------------------");
-    System.out.println("---------------------------------------");
+	  myLogger.setPatternlayout("%m");
+	  myLogger.debug("---------------------------------------");
+	  myLogger.setPatternlayout("%m%n");
+	  myLogger.debug("---------------------------------------");
+    //System.out.print("---------------------------------------");
+    //System.out.println("---------------------------------------");
   }
 
   /**

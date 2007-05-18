@@ -13,6 +13,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.basic.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 import ncsa.d2k.modules.core.datatype.table.sparse.primitivehash.*;
+import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
 
 /**
  * Title:        Sparse Table
@@ -1631,6 +1632,8 @@ throw new UnsupportedOperationException("reorderRows(VIntIntHashMap newOrder) is
 
 
     }
+    private D2KModuleLogger myLogger = 
+ 	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
     /**
      * Sorts rows no. <code>begin</code> through <code>end</code> of this Table
@@ -1657,10 +1660,15 @@ throw new UnsupportedOperationException("reorderRows(VIntIntHashMap newOrder) is
         if (end < begin) {
             //throw  new java.lang.RuntimeException("End parameter, " + end +
               //      ", is less than begin, " + begin);
-              System.out.println("SparseMutableTable: WARNING - sortByColumn was " +
+        	myLogger.warn("SparseMutableTable: WARNING - sortByColumn was " +
+                    "called with end argument = " + end +
+                    " which is less than the beging argument = " + begin +
+                    ". Doing nothing.");
+              /*System.out.println("SparseMutableTable: WARNING - sortByColumn was " +
                                  "called with end argument = " + end +
                                  " which is less than the beging argument = " + begin +
                                  ". Doing nothing.");
+                                 */
               return;
         }
         try{

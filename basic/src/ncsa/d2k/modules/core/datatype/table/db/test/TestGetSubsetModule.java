@@ -46,6 +46,7 @@ package ncsa.d2k.modules.core.datatype.table.db.test;
 
 import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.modules.core.datatype.table.Table;
+import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
 
 
 /**
@@ -58,8 +59,25 @@ import ncsa.d2k.modules.core.datatype.table.Table;
  */
 
 public class TestGetSubsetModule extends ComputeModule {
+	private D2KModuleLogger myLogger =
+		D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+	private int moduleLoggingLevel=
+		D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass())
+		.getLoggingLevel();
 
    //~ Methods *****************************************************************
+	   
+	   public int getmoduleLoggingLevel(){
+		   return moduleLoggingLevel;
+	   }
+
+	   public void setmoduleLoggingLevel(int level){
+		   moduleLoggingLevel = level;
+	   }	
+	   
+	   public void beginExecution() {
+		   myLogger.setLoggingLevel(moduleLoggingLevel);
+	   }
 
    /**
     * Performs the main work of the module. In this case, retrieves a <code>
@@ -78,9 +96,12 @@ public class TestGetSubsetModule extends ComputeModule {
 
       Table sTable = table.getSubset(begin, len);
 
-      System.out.println("Test get subset modules:");
-      System.out.println("Subsetting the table from row no. " + begin);
-      System.out.println("Number of rows in the set:" + len);
+      myLogger.debug("Test get subset modules:");
+      myLogger.debug("Subsetting the table from row no. " + begin);
+      myLogger.debug("Number of rows in the set:" + len);
+      //System.out.println("Test get subset modules:");
+      //System.out.println("Subsetting the table from row no. " + begin);
+      //System.out.println("Number of rows in the set:" + len);
 
       pushOutput(sTable, 0);
 

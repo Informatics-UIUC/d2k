@@ -51,6 +51,8 @@ import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import ncsa.d2k.modules.core.datatype.table.PredictionExample;
 import ncsa.d2k.modules.core.datatype.table.Row;
 import ncsa.d2k.modules.core.datatype.table.Table;
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
 
 
 /**
@@ -63,7 +65,13 @@ import ncsa.d2k.modules.core.datatype.table.Table;
  * @version $Revision$, $Date$
  */
 public class TestGetRowModule extends ComputeModule {
+	private D2KModuleLogger myLogger =
+		D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
+	private int moduleLoggingLevel=
+		D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass())
+		.getLoggingLevel();
+	
    //~ Constructors ************************************************************
 
    /**
@@ -72,6 +80,19 @@ public class TestGetRowModule extends ComputeModule {
    public TestGetRowModule() { }
 
    //~ Methods *****************************************************************
+
+   
+   public int getmoduleLoggingLevel(){
+	   return moduleLoggingLevel;
+   }
+
+   public void setmoduleLoggingLevel(int level){
+	   moduleLoggingLevel = level;
+   }   
+   
+   public void beginExecution() {
+	   myLogger.setLoggingLevel(moduleLoggingLevel);
+   }
 
    /**
     * Performs the main work of the module. In this case, retrieves a <code>
@@ -90,19 +111,25 @@ public class TestGetRowModule extends ComputeModule {
       int numColumns = table.getNumColumns();
       int numRows = table.getNumRows();
 
-      System.out.println("Table type: " + table.getClass().getName());
-      System.out.println("\nPrinting content of the table. " +
-                         "Accessing via row\n\n");
+      myLogger.debug("Table type: " + table.getClass().getName());
+      myLogger.debug("\nPrinting content of the table. " +
+              "Accessing via row\n\n");
+      //System.out.println("Table type: " + table.getClass().getName());
+      //System.out.println("\nPrinting content of the table. " +
+      //                   "Accessing via row\n\n");
 
       for (int i = 0; i < numRows; i++) {
          row.setIndex(i);
-         System.out.println("Content of row no. " + i);
+         myLogger.debug("Content of row no. " + i);
+         //System.out.println("Content of row no. " + i);
 
          for (int j = 0; j < numColumns; j++) {
-            System.out.print(row.getString(j) + "\t");
+        	 myLogger.debug(row.getString(j) + "\t");
+            //System.out.print(row.getString(j) + "\t");
          }
 
-         System.out.println();
+         myLogger.debug("\n");
+         //System.out.println();
       }
 
       int inputs;
@@ -112,39 +139,51 @@ public class TestGetRowModule extends ComputeModule {
          Example ex = (Example) row;
          inputs = ((ExampleTable) table).getNumInputFeatures();
          outputs = ((ExampleTable) table).getNumOutputFeatures();
-         System.out.println("\nThis row is an Example. " +
+         myLogger.debug("\nThis row is an Example. " +
                             "Going over the input features and output features.");
+         //System.out.println("\nThis row is an Example. " +
+         //                 "Going over the input features and output features.");
 
          for (int i = 0; i < numRows; i++) {
             ex.setIndex(i);
-            System.out.println("\nContent of input features of row no. " + i);
+            myLogger.debug("\nContent of input features of row no. " + i);
+            //System.out.println("\nContent of input features of row no. " + i);
 
             for (int j = 0; j < inputs; j++) {
-               System.out.print(ex.getInputString(j) + "\t");
+            	myLogger.debug(ex.getInputString(j) + "\t");
+               //System.out.print(ex.getInputString(j) + "\t");
             }
 
-            System.out.println();
-            System.out.println("Content of output features of row no. " + i);
+            myLogger.debug("\n");
+            myLogger.debug("Content of output features of row no. " + i);
+            //System.out.println();
+            //System.out.println("Content of output features of row no. " + i);
 
             for (int j = 0; j < outputs; j++) {
-               System.out.print(ex.getOutputString(j) + "\t");
+            	myLogger.debug(ex.getOutputString(j) + "\t");
+               //System.out.print(ex.getOutputString(j) + "\t");
             }
 
-            System.out.println();
+            myLogger.debug("\n");
+            //System.out.println();
          }
 
       }
 
       if (row instanceof PredictionExample) {
          PredictionExample pEx = (PredictionExample) row;
-         System.out.println("\nThis row is a PredictionExample. " +
-                            "Setting values in prediction columns");
+         myLogger.debug("\nThis row is a PredictionExample. " +
+                 "Setting values in prediction columns");
+         //System.out.println("\nThis row is a PredictionExample. " +
+         //                   "Setting values in prediction columns");
 
          // assuming number of prediction features equals to number fo otput
          // features.
          for (int i = 0; i < numRows; i++) {
-            System.out.println("\nPopulating row # " + i +
-                               " of the prediction columns");
+        	 myLogger.debug("\nPopulating row # " + i +
+                     " of the prediction columns");
+            //System.out.println("\nPopulating row # " + i +
+            //                   " of the prediction columns");
             pEx.setIndex(i);
 
             for (int j = 0; j < outputs; j++) {
@@ -365,4 +404,20 @@ public class TestGetRowModule extends ComputeModule {
    }
 
 
+   /**
+    * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    * objects for each property of the module.
+    *
+    * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    *         objects.
+    */
+   public PropertyDescription[] getPropertiesDescriptions() {
+      PropertyDescription[] pds = new PropertyDescription[1];
+
+      pds[0] = 
+          new PropertyDescription("moduleLoggingLevel", "Module Logging Level",
+                  "The logging level of this modules"+"\n 0=DEBUG; 1=INFO; 2=WARN; 3=ERROR; 4=FATAL; 5=OFF");
+
+      return pds;
+   }
 } // end class TestGetRowModule

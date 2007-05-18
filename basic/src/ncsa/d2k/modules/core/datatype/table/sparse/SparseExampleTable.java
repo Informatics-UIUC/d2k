@@ -15,6 +15,7 @@ import ncsa.d2k.modules.core.datatype.table.sparse.columns.*;
 import gnu.trove.*;
 
 import java.util.*;
+import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
 
 /**
  * SparseExampleTable is identical to SparseTable with a few addtions:
@@ -2105,6 +2106,9 @@ public class SparseExampleTable
     }
   }
 
+  private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+
   //VERED: added this method, for testing purposes
   public boolean equals(Object set) {
     SparseExampleTable _set = (SparseExampleTable) set;
@@ -2112,11 +2116,13 @@ public class SparseExampleTable
     int[] _inputs = _set.getInputFeatures();
     int[] _outputs = _set.getOutputFeatures();
     if (!Arrays.equals(_inputs, this.inputColumns)) {
-      System.out.println("incompatibility of input features sets");
+    	myLogger.debug("incompatibility of input features sets");
+    	//System.out.println("incompatibility of input features sets");
       return false;
     }
     if (!Arrays.equals(_outputs, this.outputColumns)) {
-      System.out.println("incompatibility of output features sets");
+    	myLogger.debug("incompatibility of output features sets");
+      //System.out.println("incompatibility of output features sets");
       return false;
     }
     for (int i = 0; i < getNumRows(); i++) {
@@ -2125,13 +2131,17 @@ public class SparseExampleTable
       int[] thisOutputs = this.getOutputFeatures(i);
       _outputs = _set.getOutputFeatures(i);
       if (!Arrays.equals(_inputs, thisInputs)) {
-        System.out.println("incompatibility of input features sets for row # "
+    	  myLogger.debug("incompatibility of input features sets for row # "
                            + i);
+        //System.out.println("incompatibility of input features sets for row # "
+        //                   + i);
         return false;
       }
       if (!Arrays.equals(_outputs, thisOutputs)) {
-        System.out.println("incompatibility of output features sets for row # "
+    	  myLogger.debug("incompatibility of output features sets for row # "
                            + i);
+        //System.out.println("incompatibility of output features sets for row # "
+        //                   + i);
         return false;
       }
     } //for

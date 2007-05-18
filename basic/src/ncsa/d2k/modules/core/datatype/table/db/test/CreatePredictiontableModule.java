@@ -46,6 +46,8 @@ package ncsa.d2k.modules.core.datatype.table.db.test;
 
 import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
+import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
+import ncsa.d2k.core.modules.PropertyDescription;
 
 
 /**
@@ -59,6 +61,23 @@ import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 public class CreatePredictiontableModule extends ComputeModule {
 
    //~ Methods *****************************************************************
+	   private D2KModuleLogger myLogger = 
+		   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+	   public void beginExecution() {
+		   myLogger.setLoggingLevel(moduleLoggingLevel);
+	   }
+
+	   private int moduleLoggingLevel=
+		   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass())
+		   .getLoggingLevel();
+	   
+	   public int getmoduleLoggingLevel(){
+		   return moduleLoggingLevel;
+	   }
+
+	   public void setmoduleLoggingLevel(int level){
+		   moduleLoggingLevel = level;
+	   }
 
    /**
     * Performs the main work of the module. In this case, pulls the <code>
@@ -215,5 +234,21 @@ public class CreatePredictiontableModule extends ComputeModule {
 
    }
 
+   /**
+    * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    * objects for each property of the module.
+    *
+    * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    *         objects.
+    */
+   public PropertyDescription[] getPropertiesDescriptions() {
+      PropertyDescription[] pds = new PropertyDescription[1];
+
+      pds[0] = 
+          new PropertyDescription("moduleLoggingLevel", "Module Logging Level",
+                  "The logging level of this modules"+"\n 0=DEBUG; 1=INFO; 2=WARN; 3=ERROR; 4=FATAL; 5=OFF");
+
+      return pds;
+   }
 
 } // end class CreatePredictiontableModule
