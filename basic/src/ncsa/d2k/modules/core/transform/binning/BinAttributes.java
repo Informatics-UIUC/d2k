@@ -80,6 +80,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -134,6 +135,12 @@ public class BinAttributes extends HeadlessUIModule {
     *         module.
     */
    protected UserView createUserView() { return new BinColumnsView(); }
+   
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    /**
     * headless conversion support.  Push out a bin transform based on the
@@ -680,9 +687,9 @@ public class BinAttributes extends HeadlessUIModule {
                }
 
                // vered - debug
-               System.out.println("curIdx = " + curIdx +
-                                  " and points to element " +
-                                  data[curIdx]);
+               myLogger.debug("curIdx = " + curIdx +
+                       " and points to element " +
+                       data[curIdx]);
                // end debug
 
                while (!done) {

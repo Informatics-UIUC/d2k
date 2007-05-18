@@ -7,6 +7,7 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -147,6 +148,12 @@ public class SQLCreateBinTree extends DataPrepModule {
     public String getModuleName() {
         return "SQL Create Bin Tree";
 	}
+    
+    private D2KModuleLogger myLogger;
+    
+    public void beginExecution() {
+ 	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+    }
 
     /**
      * Performs the main work of the module.
@@ -242,13 +249,14 @@ public class SQLCreateBinTree extends DataPrepModule {
 
                         //vered - debug
                         if (bn == null)
-                            System.out.println("bn is null");
+                        	myLogger.debug("bn is null");
                         else if (bn[k] == null)
-                            System.out.println("bn[k] is null");
+                        	myLogger.debug("bn[k] is null");
                         if (an == null)
-                            System.out.println("an is null");
+                        	myLogger.debug("an is null");
                         else if (an[j] == null)
-                            System.out.println("an[j] is null");
+                        	myLogger.debug("an[j] is null");
+
                         //end debug
 
                         if (bn[k].equals("Unknown"))
@@ -268,7 +276,11 @@ public class SQLCreateBinTree extends DataPrepModule {
                                         + "\' AND "
                                         + condition;
 
-                        if (debug) System.out.println("BIN Query: " + query);
+                        if (debug){
+                      	  myLogger.setDebugLoggingLevel();//temp set to debug
+                      	  myLogger.debug("BIN Query: " + query);
+                          myLogger.resetLoggingLevel();//re-set level to original level
+                        }
                         ResultSet count =
                                 stmt.executeQuery(
                                         "SELECT COUNT(*)  FROM "
@@ -310,7 +322,9 @@ public class SQLCreateBinTree extends DataPrepModule {
 
         long endTime = System.currentTimeMillis();
         if (debug) {
-            System.out.println("time in msec " + (endTime - startTime));
+      	  myLogger.setDebugLoggingLevel();//temp set to debug
+      	  myLogger.debug("time in msec " + (endTime - startTime));
+          myLogger.resetLoggingLevel();//re-set level to original level
             bt.printAll();
         }
         pushOutput(bt, 0);

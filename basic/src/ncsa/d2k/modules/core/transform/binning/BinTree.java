@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -409,6 +410,8 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
       } catch (AttributeNotFoundException e) { }
    }
 
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
     /**
      * Compares the specified object with this map for equality.  Returns
@@ -438,7 +441,7 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
         if (obj instanceof BinTree) {
             return equals((BinTree) obj);
         } else {
-            System.out.println("the second object is not of type BinTree");
+        	myLogger.error("the second object is not of type BinTree");
 
             return false;
 
@@ -459,7 +462,7 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 
       if (!attributeList.equals(bt.attributeList)) {
          retVal = false;
-         System.out.println("attribute List are not equal!");
+         myLogger.equals("attribute List are not equal!");
       }
 
       Arrays.sort(attributeNames);
@@ -467,7 +470,7 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 
       if (!Arrays.equals(attributeNames, bt.attributeNames)) {
          retVal = false;
-         System.out.println("attribute Names are not equal!");
+         myLogger.error("attribute Names are not equal!");
       }
 
       Arrays.sort(classNames);
@@ -475,27 +478,27 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 
       if (!Arrays.equals(classNames, bt.classNames)) {
          retVal = false;
-         System.out.println("class Names are not equal!");
+         myLogger.error("class Names are not equal!");
       }
 
       if (!classTotals.equals(bt.classTotals)) {
          retVal = false;
-         System.out.println("class totals are not equal!");
+         myLogger.error("class totals are not equal!");
       }
 
       if (!defaultTree.equals(bt.defaultTree)) {
          retVal = false;
-         System.out.println("default trees are not equal!");
+         myLogger.error("default trees are not equal!");
       }
 
       if (this.totalClassified != bt.totalClassified) {
          retVal = false;
-         System.out.println("total classified are not equal!");
+         myLogger.error("total classified are not equal!");
       }
 
       if (this.unknownClasses != bt.unknownClasses) {
          retVal = false;
-         System.out.println("unknown classes are not equal!");
+         myLogger.error("unknown classes are not equal!");
       }
 
 
@@ -857,29 +860,29 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
     * Print the contents
     */
    public void printAll() {
-      System.out.println("UNKNOWN CLASSES: " + unknownClasses);
+	   myLogger.error("UNKNOWN CLASSES: " + unknownClasses);
 
       Iterator i = keySet().iterator();
 
       while (i.hasNext()) {
          String key = (String) i.next();
-         System.out.println("CLASS: " + key);
+         myLogger.error("CLASS: " + key);
 
          ClassTree cb = (ClassTree) get(key);
-         System.out.println("UNKNOWN ATTR: " + getNumUnknownAttributes(key));
+         myLogger.error("UNKNOWN ATTR: " + getNumUnknownAttributes(key));
          cb.printAll();
       }
 
-      System.out.println("CLASS TOTALS");
+      myLogger.error("CLASS TOTALS");
       i = classTotals.keySet().iterator();
 
       while (i.hasNext()) {
          String key = (String) i.next();
-         System.out.print("CLASS: " + key);
-         System.out.println(getClassTotal(key));
+         myLogger.error("CLASS: " + key);
+         myLogger.error(getClassTotal(key));
       }
 
-      System.out.println("TOTAL CLASSIFIED: " + getTotalClassified());
+      myLogger.error("TOTAL CLASSIFIED: " + getTotalClassified());
    }
 
    /**
@@ -1167,17 +1170,17 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
 
          while (i.hasNext()) {
             String key = (String) i.next();
-            System.out.println("ATTR: " + key);
+            myLogger.error("ATTR: " + key);
 
             BinList bl = (BinList) get(key);
             Iterator it = bl.keySet().iterator();
 
             while (it.hasNext()) {
                String bname = (String) it.next();
-               System.out.print("BIN: " + bname);
+               myLogger.error("BIN: " + bname);
 
                Bin b = (Bin) bl.get(bname);
-               System.out.println(" COUNT: " + b.tally);
+               myLogger.error(" COUNT: " + b.tally);
             }
          }
       }
@@ -2086,14 +2089,14 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
             Iterator i = items.listIterator();
 
             while (i.hasNext()) {
-               System.out.print("(");
+            	myLogger.debug("(");
 
                Evaluate ev = (Evaluate) i.next();
                ev.print();
-               System.out.print(")");
+               myLogger.debug(")");
 
                if (i.hasNext()) {
-                  System.out.print(" && ");
+            	   myLogger.debug(" && ");
                }
             }
 
@@ -2665,14 +2668,14 @@ public class BinTree extends HashMap implements Serializable, Cloneable {
             Iterator i = items.listIterator();
 
             while (i.hasNext()) {
-               System.out.print("(");
+            	myLogger.debug("(");
 
                Evaluate ev = (Evaluate) i.next();
                ev.print();
-               System.out.print(")");
+               myLogger.debug(")");
 
                if (i.hasNext()) {
-                  System.out.print(" || ");
+            	   myLogger.debug(" || ");
                }
             }
          }

@@ -5,6 +5,7 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.util.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.table.transformations.*;
+import ncsa.d2k.modules.core.util.*;
 
 /**
  * <p>Overview:
@@ -136,6 +137,11 @@ public class CreateBinTree extends DataPrepModule {
     public String getModuleName() {
         return "Create Bin Tree";
 	}
+    private D2KModuleLogger myLogger;
+    
+    public void beginExecution() {
+ 	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+    }
 
     /**
      * Performs the main work of the module.
@@ -256,10 +262,14 @@ public class CreateBinTree extends DataPrepModule {
         //	}
 
         long endTime = System.currentTimeMillis();
-        if (debug)
-            System.out.println("time in msec " + (endTime - startTime));
-        if (debug)
+        if (debug){
+      	  myLogger.setDebugLoggingLevel();//temp set to debug
+      	  myLogger.debug("time in msec " + (endTime - startTime));
+          myLogger.resetLoggingLevel();//re-set level to original level
+        }
+        if (debug){
             tree.printAll();
+        }
         pushOutput(tree, 0);
 
     }

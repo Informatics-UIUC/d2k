@@ -52,6 +52,7 @@ import ncsa.d2k.modules.core.datatype.table.transformations.BinTransform;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -81,8 +82,13 @@ public class ADTCreateBinTree extends DataPrepModule {
     * created BinTree will be printed.
     */
    private boolean debug;
-
+   
+   private D2KModuleLogger myLogger;
+   
    //~ Methods *****************************************************************
+   public void beginExecution() {
+		  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+	   }
 
    /**
     * Performs the main work of the module.
@@ -180,8 +186,10 @@ public class ADTCreateBinTree extends DataPrepModule {
                // int s = adt.getCount(adt,pairs);
 
                if (debug) {
-                  System.out.println("COUNT(class: " + cn[i] +
-                                     " ,att:" + condition + ")=" + s);
+             	  myLogger.setDebugLoggingLevel();//temp set to debug
+             	  myLogger.debug("COUNT(class: " + cn[i] +
+                          " ,att:" + condition + ")=" + s);
+                  myLogger.resetLoggingLevel();//re-set level to original level
                }
 
                b.setTally(s);
@@ -194,8 +202,7 @@ public class ADTCreateBinTree extends DataPrepModule {
             if (bl != null) {
                bl.setTotal(binListTotal);
             }
-            // System.out.println("totalClassified " + totalClassified + "
-            // classTotal " + classTotal + " binListTotal " + binListTotal);
+
 
          } // end for
 
@@ -210,7 +217,9 @@ public class ADTCreateBinTree extends DataPrepModule {
       long endTime = System.currentTimeMillis();
 
       if (debug) {
-         System.out.println("time in msec " + (endTime - startTime));
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("time in msec " + (endTime - startTime));
+          myLogger.resetLoggingLevel();//re-set level to original level
          bt.printAll();
       }
 

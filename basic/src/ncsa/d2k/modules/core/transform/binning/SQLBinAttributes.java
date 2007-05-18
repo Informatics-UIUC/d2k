@@ -80,6 +80,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -145,6 +146,12 @@ public class SQLBinAttributes extends HeadlessUIModule {
 
    /** database connection */
    private ConnectionWrapper wrapper;
+   
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    //~ Methods *****************************************************************
 
@@ -163,7 +170,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
     * @throws Exception when something goes wrong
     */
    public void doit() throws Exception {
-      System.out.println("in do it");
+	   myLogger.debug("in do it");
 
       // pulling input so that this module will be executed only once.
       wrapper = (ConnectionWrapper) pullInput(0);
@@ -186,8 +193,8 @@ public class SQLBinAttributes extends HeadlessUIModule {
       HashMap colMap = StaticMethods.getAvailableAttributes(wrapper, tableName);
 
       if (colMap.size() == 0) {
-         System.out.println(getAlias() + ": Warning - Table " + tableName +
-                            " has no columns.");
+    	  myLogger.warn(getAlias() + ": Warning - Table " + tableName +
+                  " has no columns.");
 
       }
 
@@ -1189,7 +1196,7 @@ public class SQLBinAttributes extends HeadlessUIModule {
 
          for (int i = 0; i < vals.length; i++) {
             vals[i] = sel[i].toString();
-            System.out.println(vals[i]);
+            myLogger.debug(vals[i]);
          }
 
          return new TextualBinDescriptor(idx, name, vals,
