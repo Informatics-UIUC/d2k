@@ -47,6 +47,7 @@ package ncsa.d2k.modules.core.prediction;
 import ncsa.d2k.modules.core.datatype.parameter.ParameterPoint;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import ncsa.d2k.modules.core.datatype.table.PredictionTable;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -120,6 +121,9 @@ public class ErrorFunction implements java.io.Serializable {
    public ErrorFunction(ParameterPoint parameterPoint) {
       this.errorFunctionIndex = (int) parameterPoint.getValue(0);
    }
+   
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    //~ Methods *****************************************************************
 
@@ -204,7 +208,7 @@ public class ErrorFunction implements java.io.Serializable {
    public double evaluate(ExampleTable actualExamples, int exampleIndex,
                           PredictionTable predictedExamples) throws Exception {
 
-      int numInputs = actualExamples.getNumInputFeatures();
+//      int numInputs = actualExamples.getNumInputFeatures();
       int numOutputs = actualExamples.getNumOutputFeatures();
 
       double error = Double.NaN;
@@ -323,8 +327,8 @@ public class ErrorFunction implements java.io.Serializable {
          break;
 
          default: {
-            System.out.println("errorFunctionIndex (" + errorFunctionIndex +
-                               ") not recognized");
+        	 myLogger.debug("errorFunctionIndex (" + errorFunctionIndex +
+                     ") not recognized");
             error = Double.NaN;
          }
 

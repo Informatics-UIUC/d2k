@@ -50,6 +50,7 @@ import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.model.Model;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import ncsa.d2k.modules.core.datatype.table.PredictionTable;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -65,8 +66,14 @@ public class ApplyFunctionInducerWithBoosting extends OrderedReentrantModule {
 
    /** The number of models to generate. */
    private int NumberOfRounds = 100;
+   
+   private D2KModuleLogger myLogger;
 
    //~ Methods *****************************************************************
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    /**
     * Performs the main work of the module.
@@ -103,7 +110,7 @@ public class ApplyFunctionInducerWithBoosting extends OrderedReentrantModule {
 
       for (int i = 0; i < NumberOfRounds; i++) {
 
-         System.out.println("Round number " + (i + 1));
+    	  myLogger.debug("Round number " + (i + 1));
          model = FunctionInducer.generateModel(examples, ErrorFunction);
 
          ///////////////////////////
@@ -129,7 +136,7 @@ public class ApplyFunctionInducerWithBoosting extends OrderedReentrantModule {
          ////////////////////////////////
 
          int NumExamples = examples.getNumRows();
-         int numInputs = examples.getNumInputFeatures();
+ //        int numInputs = examples.getNumInputFeatures();
          int NumOutputs = examples.getNumOutputFeatures();
 
          // PredictionTable predictionTable = model.predict(examples.copy());

@@ -52,6 +52,7 @@ import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import ncsa.d2k.modules.core.prediction.evaluators.Utility;
 
 import java.util.Random;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -82,6 +83,11 @@ public class ApplyFunctionInducerWithBagging extends OrderedReentrantModule {
    private int RandomSeed = 123;
 
    //~ Methods *****************************************************************
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    /**
     * Performs the main work of the module.
@@ -112,12 +118,6 @@ public class ApplyFunctionInducerWithBagging extends OrderedReentrantModule {
 
       int NumExamples = Examples.getNumRows();
 
-      // examples = OriginalExamples;
-
-      // !!! do i need this?
-      // exampleSet = (ExampleTable) exampleSet.copy();
-
-      Model model = null;
       Model[] models = new Model[NumberOfModelsInEnsemble];
 
       RandomNumberGenerator = new Random(RandomSeed);
@@ -131,7 +131,6 @@ public class ApplyFunctionInducerWithBagging extends OrderedReentrantModule {
 
       for (int i = 0; i < NumberOfModelsInEnsemble; i++) {
 
-         // System.out.println("Round number " + (i + 1));
 
          ///////////////////////////////////////////
          // create random subsample to learn from //
@@ -150,7 +149,6 @@ public class ApplyFunctionInducerWithBagging extends OrderedReentrantModule {
 
          for (int e = 0; e < NumSubSampleExamples; e++) {
             SubSampleExampleIndicies[e] = RandomizedIndices[e];
-            // System.out.println(SubSampleExampleIndicies[e]);
          }
 
          ExampleTable CurrentTrainExamples;
@@ -162,7 +160,7 @@ public class ApplyFunctionInducerWithBagging extends OrderedReentrantModule {
             CurrentTrainExamples =
                (ExampleTable) Examples.getSubset(SubSampleExampleIndicies);
          } else {
-            System.out.println("Warning!  Inefficient example table.");
+        	 myLogger.warn("Warning!  Inefficient example table.");
             Examples.setTrainingSet(SubSampleExampleIndicies);
             CurrentTrainExamples = (ExampleTable) Examples.getTrainTable();
          }

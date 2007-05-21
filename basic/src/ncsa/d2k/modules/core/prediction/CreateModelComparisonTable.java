@@ -57,6 +57,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -114,6 +115,8 @@ public class CreateModelComparisonTable extends ComputeModule {
 
    /** the performance table. */
    private MutableTable tbl;
+   
+   private D2KModuleLogger myLogger;
 
    //~ Methods *****************************************************************
 
@@ -148,15 +151,10 @@ public class CreateModelComparisonTable extends ComputeModule {
       for (int i = 0; i < outputs.length; i++) {
 
 
-         int outCol = outputs[i];
-         int predCol = preds[i];
-
          for (int j = 0; j < pt.getNumRows(); j++) {
 
             if (pt.getInt(j, outputs[i]) == 1) {
                numPos++; // counting the actual positive classes
-
-               // System.out.println("found true in row # " + j);
             }
 
             // if prediction is correct...
@@ -209,6 +207,7 @@ public class CreateModelComparisonTable extends ComputeModule {
       cols[RECALL].setLabel("Recall");
       tbl.addColumns(cols);
       counter = 0;
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    }
 
@@ -224,9 +223,9 @@ public class CreateModelComparisonTable extends ComputeModule {
       }
 
       if (fileName == null) {
-         System.out.println(getAlias() +
-                            ": Output File Name property was not set!" +
-                            " Cannot save the comparison table to output file.");
+    	  myLogger.debug(getAlias() +
+                  ": Output File Name property was not set!" +
+                  " Cannot save the comparison table to output file.");
 
          return;
 
@@ -239,19 +238,19 @@ public class CreateModelComparisonTable extends ComputeModule {
       try {
          file = new FileOutputStream(fileName);
       } catch (FileNotFoundException e) {
-         System.out.println(getAlias() + ": Could not open file: " + fileName +
+         myLogger.error(getAlias() + ": Could not open file: " + fileName +
                             "\nTable could not be saved\n");
          e.printStackTrace();
 
          return;
       } catch (SecurityException e) {
-         System.out.println(getAlias() + ": Could not open file: " + fileName +
+    	  myLogger.error(getAlias() + ": Could not open file: " + fileName +
                             "\nTable could not be saved\n");
          e.printStackTrace();
 
          return;
       } catch (Exception e) {
-         System.out.println(getAlias() + ": Could not open file: " + fileName +
+    	  myLogger.error(getAlias() + ": Could not open file: " + fileName +
                             "\nTable could not be saved\n");
          e.printStackTrace();
 
@@ -264,7 +263,7 @@ public class CreateModelComparisonTable extends ComputeModule {
          out.flush();
          out.close();
       } catch (IOException e) {
-         System.out.println(getAlias() + ": Unable to serialize object " +
+    	  myLogger.error(getAlias() + ": Unable to serialize object " +
                             "\nTable could not be saved");
          e.printStackTrace();
       }

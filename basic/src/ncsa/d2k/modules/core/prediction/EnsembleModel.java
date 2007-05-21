@@ -49,6 +49,7 @@ import ncsa.d2k.modules.core.datatype.model.ModelPrintOptions;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 
 import java.text.DecimalFormat;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -110,6 +111,9 @@ public class EnsembleModel extends Model implements java.io.Serializable {
 
       this.models = ModelsCopy;
    }
+   
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    //~ Methods *****************************************************************
 
@@ -191,12 +195,12 @@ public class EnsembleModel extends Model implements java.io.Serializable {
    public void print(ModelPrintOptions options) throws Exception {
 
       Format.setMaximumFractionDigits(options.MaximumFractionDigits);
-      System.out.println("Ensemble with " + numModels + " models");
+      myLogger.debug("Ensemble with " + numModels + " models");
 
       for (int m = 0; m < numModels; m++) {
          this.models[m].print(options);
 
-         System.out.println();
+         myLogger.debug("");
       }
 
    }
