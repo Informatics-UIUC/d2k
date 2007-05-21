@@ -51,6 +51,7 @@ import ncsa.d2k.modules.core.datatype.table.Table;
 
 import java.util.ArrayList;
 import java.util.Random;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -97,6 +98,11 @@ public class SampleTableRowsOPT extends DataPrepModule {
    boolean useFirst;
 
    //~ Methods *****************************************************************
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    /**
     * Performs the main work of the module: Sample <codE>N</code> rows from the
@@ -137,8 +143,10 @@ public class SampleTableRowsOPT extends DataPrepModule {
       }
 
       if (verbose_) {
-         System.out.println("Sampling " + N + " rows from a table of " +
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("Sampling " + N + " rows from a table of " +
                             orig.getNumRows() + " rows.");
+    	  myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       // only keep the first N rows
@@ -180,8 +188,10 @@ public class SampleTableRowsOPT extends DataPrepModule {
       } // end if
 
       if (verbose_) {
-         System.out.println("Sampled table contains " + newTable.getNumRows() +
-                            " rows.");
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("Sampled table contains " + newTable.getNumRows() +
+                  " rows.");
+          myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       pushOutput(newTable, 0);

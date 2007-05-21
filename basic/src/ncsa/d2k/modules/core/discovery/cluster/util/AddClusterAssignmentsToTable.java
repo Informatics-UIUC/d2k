@@ -60,6 +60,7 @@ import ncsa.d2k.modules.core.discovery.cluster.ClusterModel;
 import ncsa.d2k.modules.core.discovery.cluster.hac.HAC;
 
 import java.util.ArrayList;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -120,7 +121,11 @@ public class AddClusterAssignmentsToTable extends DataPrepModule {
    private boolean _verbose = false;
 
    //~ Methods *****************************************************************
-
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
    /**
     * Performs the main work of the module: This module adds an attribute to
     * each example in the table contained in the input <i>Cluster Model</i>. ";
@@ -191,9 +196,11 @@ public class AddClusterAssignmentsToTable extends DataPrepModule {
             }
 
             if (getVerbose()) {
-               System.out.println(getAlias() + ": Cluster " +
+          	  myLogger.setDebugLoggingLevel();//temp set to debug
+          	  myLogger.debug(getAlias() + ": Cluster " +
                                   tc.getClusterLabel() + " containing " +
                                   tc.getSize() + " elements.");
+              myLogger.resetLoggingLevel();//re-set level to original level
             }
          }
 
@@ -207,7 +214,7 @@ public class AddClusterAssignmentsToTable extends DataPrepModule {
 
          if (!exceptionFlag) {
             ex.printStackTrace();
-            System.out.println("EXCEPTION: " + getAlias() + ": " +
+            myLogger.error("EXCEPTION: " + getAlias() + ": " +
                                ex.getMessage());
          }
 

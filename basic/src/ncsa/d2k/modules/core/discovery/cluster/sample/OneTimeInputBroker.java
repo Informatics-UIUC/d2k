@@ -47,6 +47,7 @@ package ncsa.d2k.modules.core.discovery.cluster.sample;
 
 import ncsa.d2k.core.modules.DataPrepModule;
 import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -125,7 +126,9 @@ public class OneTimeInputBroker extends DataPrepModule {
          Object out = this.pullInput(1);
 
          if (getVerbose()) {
-            System.out.println("Input Broker pushing: " + this.getAlias());
+        	 myLogger.setDebugLoggingLevel();//temp set to debug
+        	 myLogger.debug("Input Broker pushing: " + this.getAlias());
+        	 myLogger.resetLoggingLevel();//re-set level to original level
          }
 
          pushOutput(m_readOnce, 0);
@@ -134,18 +137,21 @@ public class OneTimeInputBroker extends DataPrepModule {
       } catch (Exception ex) {
          ex.printStackTrace();
          System.out.println(ex.getMessage());
-         System.out.println("ERROR: OnetimeInputBroker.doit()");
+         myLogger.error("ERROR: OnetimeInputBroker.doit()");
          throw ex;
       }
    }
 
-
+   private D2KModuleLogger myLogger;
    /**
     * Called by the D2K Infrastructure before the itinerary begins to execute.
     * Nulls the one time input object.
     */
 
-   public void beginExecution() { m_readOnce = null; }
+   public void beginExecution() {
+	   myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+	   m_readOnce = null; 
+	   }
 
 
    /**

@@ -57,6 +57,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
 import ncsa.d2k.modules.core.discovery.cluster.ClusterModel;
 
 import java.util.ArrayList;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -96,6 +97,11 @@ public class CreateTableOfClusterCentroids extends DataPrepModule {
    private boolean _verbose = false;
 
    //~ Methods *****************************************************************
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    /**
     * Performs the main work of the module: The module takes as input a
@@ -162,9 +168,11 @@ public class CreateTableOfClusterCentroids extends DataPrepModule {
          }
 
          if (getVerbose()) {
-            System.out.println("CreateTableOfClusterCentroids: "
-                               + "Outputting table with " +
-                               newtab.getNumRows() + " rows.");
+       	  myLogger.setDebugLoggingLevel();//temp set to debug
+       	  myLogger.debug("CreateTableOfClusterCentroids: "
+                  + "Outputting table with " +
+                  newtab.getNumRows() + " rows.");
+          myLogger.resetLoggingLevel();//re-set level to original level
          }
 
          this.pushOutput(newtab, 0);
@@ -172,7 +180,7 @@ public class CreateTableOfClusterCentroids extends DataPrepModule {
       } catch (Exception ex) {
          ex.printStackTrace();
          System.out.println(ex.getMessage());
-         System.out.println("EXCEPTION: CreateTableOfClusterCentroids.doit()");
+         myLogger.error("EXCEPTION: CreateTableOfClusterCentroids.doit()");
          throw ex;
       }
 

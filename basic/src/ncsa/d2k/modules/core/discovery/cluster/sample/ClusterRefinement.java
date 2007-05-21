@@ -63,6 +63,7 @@ import ncsa.d2k.modules.core.discovery.cluster.util.TableMissingValuesException;
 
 import java.util.ArrayList;
 import java.beans.PropertyVetoException;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -253,6 +254,8 @@ public class ClusterRefinement {
       return true;
    }
 
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    /**
     * Takes a set of centroids and a table and repeatedly assigns table rows to
@@ -407,18 +410,22 @@ public class ClusterRefinement {
          }
 
          if (getVerbose()) {
-            System.out.println("\n>>> BEGINNING ASSIGNMENT REFINEMENT ... ");
+       	  myLogger.setDebugLoggingLevel();//temp set to debug
+       	  myLogger.debug("\n>>> BEGINNING ASSIGNMENT REFINEMENT ... ");
+          myLogger.resetLoggingLevel();//re-set level to original level
          }
 
          for (int i = 0, n = m_numAssignments; i < n; i++) {
 
             // assign each element to one of k clusters
             if (getVerbose()) {
-               System.out.println("ClusterRefinement -- assigning entities " +
-                                  "pass " + (i + 1) + " out of " +
-                                  m_numAssignments +
-                                  " :: " +
-                                  centers.size() + " input.");
+             	  myLogger.setDebugLoggingLevel();//temp set to debug
+               	  myLogger.debug("ClusterRefinement -- assigning entities " +
+                          "pass " + (i + 1) + " out of " +
+                          m_numAssignments +
+                          " :: " +
+                          centers.size() + " input.");
+                  myLogger.resetLoggingLevel();//re-set level to original level
             }
 
             ArrayList oldCenters = centers;
@@ -428,9 +435,11 @@ public class ClusterRefinement {
             if (evaluation(oldCenters, centers)) {
 
                if (getVerbose()) {
-                  System.out.println("New assignment has not changed " +
-                                     "significantly, assignments stopped at " +
-                                     (i + 1) + " iterations.");
+              	  myLogger.setDebugLoggingLevel();//temp set to debug
+               	  myLogger.debug("New assignment has not changed " +
+                          "significantly, assignments stopped at " +
+                          (i + 1) + " iterations.");
+                  myLogger.resetLoggingLevel();//re-set level to original level
                }
 
                break;
@@ -443,7 +452,9 @@ public class ClusterRefinement {
          }
 
          if (getVerbose()) {
-            System.out.println(">>> ASSIGNMENT REFINEMENT COMPLETE\n");
+         	  myLogger.setDebugLoggingLevel();//temp set to debug
+           	  myLogger.debug(">>> ASSIGNMENT REFINEMENT COMPLETE\n");
+              myLogger.resetLoggingLevel();//re-set level to original level
          }
 
          model = new ClusterModel(initEntities, centers, null);
@@ -459,10 +470,12 @@ public class ClusterRefinement {
          long end = System.currentTimeMillis();
 
          if (getVerbose()) {
-            System.out.println("\nEND EXEC -- " + getAlias() + " -- " +
-                               numCenters +
-                               " built in " + (end - m_start) / 1000 +
-                               " seconds\n");
+        	  myLogger.setDebugLoggingLevel();//temp set to debug
+           	  myLogger.debug("\nEND EXEC -- " + getAlias() + " -- " +
+                      numCenters +
+                      " built in " + (end - m_start) / 1000 +
+                      " seconds\n");
+              myLogger.resetLoggingLevel();//re-set level to original level
          }
 
       } catch (Exception ex) {

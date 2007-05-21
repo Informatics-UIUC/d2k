@@ -56,6 +56,7 @@ import ncsa.d2k.modules.core.discovery.cluster.util.TableMissingValuesException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -188,12 +189,15 @@ public class FractionationSamplerOPT extends ComputeModule
       }
 
       if (getVerbose()) {
-         System.out.println("FractionationSamplerOPT.clusterSort(...) -- " +
-                            "number of clusters to sort: " +
-                            size);
-         System.out.println("FractionationSamplerOPT.clusterSort(...) -- " +
-                            "number of clusters sorted: " +
-                            clusters.size());
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("FractionationSamplerOPT.clusterSort(...) -- " +
+                  "number of clusters to sort: " +
+                  size);
+    	  myLogger.debug("FractionationSamplerOPT.clusterSort(...) -- " +
+                  "number of clusters sorted: " +
+                  clusters.size());
+          myLogger.resetLoggingLevel();//re-set level to original level
+
       }
 
       return clusters;
@@ -223,12 +227,14 @@ public class FractionationSamplerOPT extends ComputeModule
          retClusters.add(clusters);
 
          if (getVerbose()) {
-            System.out.println("FractionationSamplerOPT.partitionClusters(...) " +
-                               "-- number of clusters to partition: " +
-                               size);
-            System.out.println("FractionationSamplerOPT.partitionClusters(...) " +
-                               "-- number of partitions made: " +
-                               retClusters.size());
+        	 myLogger.setDebugLoggingLevel();//temp set to debug
+        	 myLogger.debug("FractionationSamplerOPT.partitionClusters(...) " +
+                     "-- number of clusters to partition: " +
+                     size);
+        	 myLogger.debug("FractionationSamplerOPT.partitionClusters(...) " +
+                     "-- number of partitions made: " +
+                     retClusters.size());
+        	 myLogger.resetLoggingLevel();//re-set level to original level
          }
 
          return retClusters;
@@ -271,12 +277,14 @@ public class FractionationSamplerOPT extends ComputeModule
       } // end while
 
       if (getVerbose()) {
-         System.out.println("FractionationSamplerOPT.partitionClusters(...) -- " +
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("FractionationSamplerOPT.partitionClusters(...) -- " +
                             "number of clusters to partition: " +
                             size);
-         System.out.println("FractionationSamplerOPT.partitionClusters(...) -- " +
+    	  myLogger.debug("FractionationSamplerOPT.partitionClusters(...) -- " +
                             "number of partitions made: " +
                             retClusters.size());
+    	  myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       return retClusters;
@@ -309,7 +317,7 @@ public class FractionationSamplerOPT extends ComputeModule
 
       // check to see if we should stop and send output to the refinery
       if (m_clusters != null) {
-         System.out.println("Size:       " + m_clusters.size() + " " +
+    	  myLogger.debug("Size:       " + m_clusters.size() + " " +
                             m_lastSize);
 
          if (
@@ -433,13 +441,14 @@ public class FractionationSamplerOPT extends ComputeModule
       }
    } // end method doit
 
-
+   private D2KModuleLogger myLogger;
    /**
     * Called by the D2K Infrastructure before the itinerary begins to execute.
     * Sets all objects to either null or empty collections. Sets counters to -1.
     */
 
    public void beginExecution() {
+	   myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
       m_clustersHold = null;
       m_clusters = null;
       _pushing = new ArrayList();

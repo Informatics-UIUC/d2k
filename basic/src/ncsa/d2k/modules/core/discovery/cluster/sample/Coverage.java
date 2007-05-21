@@ -7,6 +7,7 @@ import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.discovery.cluster.*;
 import ncsa.d2k.modules.core.discovery.cluster.hac.*;
 import ncsa.d2k.modules.core.discovery.cluster.util.*;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -150,6 +151,9 @@ public class Coverage {
     this.setCutOff(cutoff);
     this.setCheckMissingValues(check);
   }
+  
+  private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
   /**
    * This module selects a sample set of the input table rows such that
@@ -196,15 +200,14 @@ public class Coverage {
 
       itable = sample(itable, maxdist);
 
-      System.out.println("Input table contained " + initsz + " rows.");
-      System.out.println("Sampled table created with " + itable.getNumRows() +
+      myLogger.debug("Input table contained " + initsz + " rows.");
+      myLogger.debug("Sampled table created with " + itable.getNumRows() +
                          " rows.");
-
     }
     catch (Exception ex) {
       ex.printStackTrace();
       System.out.println(ex.getMessage());
-      System.out.println("ERROR: CoverageSampler.doit()");
+      myLogger.error("ERROR: CoverageSampler.doit()");
       throw ex;
     }
     return itable;
@@ -278,12 +281,13 @@ public class Coverage {
         }
       }
       if (Math.IEEEremainder(i, 1000) == 0) {
-        System.out.println("CoveragSampler.sample() -- Rows Processed: " +
-                           i);
+    	  myLogger.debug("CoveragSampler.sample() -- Rows Processed: " +
+                  i);
       }
     }//for i
 
-    System.out.println("Found " + part1.size() + " samples.");
+    myLogger.debug("Found " + part1.size() + " samples.");
+    //System.out.println("Found " + part1.size() + " samples.");
 
 //keeps will be the subset indices for the returned table.
     int[] keeps = new int[Math.min(part1.size(), this.getMaxNumCenters())];
@@ -297,7 +301,7 @@ public class Coverage {
 //create the subset table.
     Table newTable = orig.getSubset(keeps);
 
-    System.out.println("Returning " + newTable.getNumRows() + " samples.");
+    myLogger.debug("Returning " + newTable.getNumRows() + " samples.");
     return newTable;
   }
 
