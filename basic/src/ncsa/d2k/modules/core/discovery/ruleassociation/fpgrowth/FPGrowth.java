@@ -54,6 +54,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -252,7 +253,7 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
 
       // trim the list
       ArrayList headers = new ArrayList();
-      boolean b = true;
+//      boolean b = true;
 
       for (Iterator it = tfeats.iterator(); it.hasNext();) {
          FeatureTableElement fte = (FeatureTableElement) it.next();
@@ -434,7 +435,7 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
 
          ItemSets iss = (ItemSets) this.pullInput(0);
          HashMap sNames = iss.unique;
-         int[] targetIndices = iss.targetIndices;
+ //        int[] targetIndices = iss.targetIndices;
          String[] nameAry = iss.names;
          int numExamples = iss.numExamples;
 
@@ -474,11 +475,11 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
 
          FPProcess(prob);
 
-         System.out.println("\n\n" + _patterns.size() +
-                            " patterns discovered.");
+         myLogger.info("\n\n" + _patterns.size() +
+                 " patterns discovered.");
 
          long stop = System.currentTimeMillis();
-         System.out.println((stop - start) / 1000 + " seconds");
+         myLogger.info((stop - start) / 1000 + " seconds");;
 
 
          int numpatsout = 0;
@@ -503,8 +504,8 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
                continue;
             }
 
-            System.out.println("Number of frequent " + keys[i] + "-patterns: " +
-                               tiihm.get(keys[i]));
+            myLogger.info("Number of frequent " + keys[i] + "-patterns: " +
+                    tiihm.get(keys[i]));
          }
 
          // CONVERT TO FORMAT USED BY COMPUTE CONFIDENCE MODULE
@@ -535,8 +536,8 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
          }
 
          if (totnum != ocnt) {
-            System.out.println("Error: counts not right for total patterns output -- expected " +
-                               totnum + " -- produced " + ocnt);
+        	 myLogger.equals("Error: counts not right for total patterns output -- expected " +
+                     totnum + " -- produced " + ocnt);
          }
 
          if (_patterns.size() > 0) {
@@ -551,11 +552,15 @@ public class FPGrowth extends ncsa.d2k.core.modules.ComputeModule {
       }
    } // end method doit
 
+   private D2KModuleLogger myLogger;
    /**
     * Called by the D2K Infrastructure before the itinerary begins to execute.
     * Nulls the objects references.
     */
-   public void beginExecution() { _patterns = null; }
+   public void beginExecution() {
+	   _patterns = null; 
+	   myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    /**
     * Called by the D2K Infrastructure after the itinerary completes execution.

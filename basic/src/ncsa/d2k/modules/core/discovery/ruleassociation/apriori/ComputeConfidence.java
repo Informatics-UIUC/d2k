@@ -63,6 +63,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
+import ncsa.d2k.modules.core.util.*;
+
 
 
 /**
@@ -144,6 +146,11 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule {
    String targetItem = "";
 
    //~ Methods *****************************************************************
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    /**
     * Performs the main work of the module.
@@ -201,34 +208,31 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule {
       // get the bit map indicating what items were bought for each example.
       boolean[][] itemFlags = iss.getItemFlags();
       Vector finalRules = new Vector();
-      MutableIntegerArray[] documentMap = (MutableIntegerArray[]) iss.userData;
+ //     MutableIntegerArray[] documentMap = (MutableIntegerArray[]) iss.userData;
       iss.userData = null;
 
       if (debug) {
-         System.out.println("ComputeConfidence-> number of items: " + numItems);
-         System.out.println("ComputeConfidence-> number of frequent item sets: " +
-                            numFis);
-         System.out.println("ComputeConfidence-> number of examples: " +
-                            numExamples);
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("ComputeConfidence-> number of items: " + numItems);
+    	  myLogger.debug("ComputeConfidence-> number of frequent item sets: " +
+                  numFis);
+    	  myLogger.debug("ComputeConfidence-> number of examples: " +
+                  numExamples);
+          myLogger.resetLoggingLevel();//re-set level to original level
+    	  
       }
 
 ///////////////////////////////////////
 // Compute the confidence for each Rule.
 //
-// int previousAttrCnt = 0;
       for (int i = 0; i < numFis; i++) {
          int[] currentRule = fis[i];
          int ruleLen = currentRule.length - 1;
 
          if (showProgress) {
-// if ( previousAttrCnt != ruleLen ) {
             if ((i % 250) == 0) {
-               System.out.println("Processed " + i + " rules out of " + numFis +
-                                  ".");
-//                                  System.out.println( getAlias() +
-//                      ": Beginning to compute confidence for frequent itemsets
-// containing " + (ruleLen) +                                              "
-// attributes. ");                               previousAttrCnt = ruleLen;
+            	myLogger.info("Processed " + i + " rules out of " + numFis +
+                        ".");
             }
          }
 
@@ -312,27 +316,29 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule {
       } // end for
 
       if (debug) {
-
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
          for (int i = 0; i < finalRules.size(); i++) {
             int[] rule = (int[]) finalRules.elementAt(i);
-            System.out.print("ComputeConfidence -> " + items[rule[0]]);
+            myLogger.debug("ComputeConfidence -> " + items[rule[0]]);
 
             for (int k = 1; k < rule.length - 2; k++) {
-               System.out.print("," + items[rule[k]]);
+            	myLogger.debug("," + items[rule[k]]);
             }
 
-            System.out.println("->" + rule[rule.length - 2] + "," +
-                               rule[rule.length - 1]);
+            myLogger.debug("->" + rule[rule.length - 2] + "," +
+                    rule[rule.length - 1]);
          }
-
+         myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       if (showProgress || debug) {
-         System.out.println(getAlias() +
-                            ": A total of " +
-                            finalRules.size() +
-                            " rules were found that met the specified Minimum Confidence of " +
-                            getConfidence() + "%.");
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug(getAlias() +
+                  ": A total of " +
+                  finalRules.size() +
+                  " rules were found that met the specified Minimum Confidence of " +
+                  getConfidence() + "%.");
+         myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       if (finalRules.size() == 0) {
@@ -486,10 +492,13 @@ public class ComputeConfidence extends ncsa.d2k.core.modules.ComputeModule {
       pushOutput(rt, 0);
 
       if (showProgress || debug) {
-         System.out.println(getAlias() +
-                            ": Elapsed Wallclock time was " +
-                            (System.currentTimeMillis() - startTime) / 1000.00 +
-                            " Seconds");
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug(getAlias() +
+                  ": Elapsed Wallclock time was " +
+                  (System.currentTimeMillis() - startTime) / 1000.00 +
+                  " Seconds");
+          myLogger.resetLoggingLevel();//re-set level to original level
+
       }
    } // end method doit
 

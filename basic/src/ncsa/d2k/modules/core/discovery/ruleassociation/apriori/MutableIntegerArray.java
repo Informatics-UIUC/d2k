@@ -45,6 +45,7 @@
 package ncsa.d2k.modules.core.discovery.ruleassociation.apriori;
 
 import java.io.Serializable;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -164,6 +165,8 @@ final class MutableIntegerArray implements Serializable {
       System.arraycopy(addMe.getArray(), 0, integers, 0, addMe.count);
       this.count = addMe.count;
    }
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    /**
     * count the items these two sorted mutable integer arrays share.
@@ -177,9 +180,11 @@ final class MutableIntegerArray implements Serializable {
       int intersectionCount = 0;
 
       if (debug) {
-         System.out.println("Count-----");
-         System.out.println("set a:" + this.toString());
-         System.out.println("set b:" + addMe.toString());
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("Count-----");
+    	  myLogger.debug("set a:" + this.toString());
+    	  myLogger.debug("set b:" + addMe.toString());
+          myLogger.resetLoggingLevel();//re-set level to original level
       }
 
 done:
@@ -202,7 +207,9 @@ done:
       }
 
       if (debug) {
-         System.out.println("result:" + intersectionCount);
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("result:" + intersectionCount);
+          myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       return intersectionCount;
@@ -262,9 +269,12 @@ done:
    final void intersection(MutableIntegerArray addMe, MutableIntegerArray mia) {
 
       if (debug) {
-         System.out.println("Intersection-----");
-         System.out.println("set a:" + this.toString());
-         System.out.println("set b:" + addMe.toString());
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("Intersection-----");
+    	  myLogger.debug("set a:" + this.toString());
+    	  myLogger.debug("set b:" + addMe.toString());
+          myLogger.resetLoggingLevel();//re-set level to original level
+
       }
 
       // reset tmp.
@@ -272,7 +282,7 @@ done:
 
       // compute the max possible size of the intersection, and create
       // a mia to hold it.
-      int size = addMe.count < this.count ? addMe.count : this.count;
+ //     int size = addMe.count < this.count ? addMe.count : this.count;
 
       // These are for the addMe array.
       int othersIndex = 0;
@@ -303,7 +313,10 @@ done:
       mia.count = newCount;
 
       if (debug) {
-         System.out.println("result:" + mia.toString());
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("result:" + mia.toString());
+          myLogger.resetLoggingLevel();//re-set level to original level
+
       }
    } // end method intersection
 
@@ -327,8 +340,8 @@ done:
    public void setResizeFacotr(double factor) {
 
       if (factor <= 1) {
-         System.out.println("Resieze Factor must be greater than 1. setting the Resize Factor to the default value: " +
-                            DEFAULT_RESIZE_FACTOR);
+    	  myLogger.info("Resieze Factor must be greater than 1. setting the Resize Factor to the default value: " +
+                  DEFAULT_RESIZE_FACTOR);
          resizeFactor = DEFAULT_RESIZE_FACTOR;
 
          return;

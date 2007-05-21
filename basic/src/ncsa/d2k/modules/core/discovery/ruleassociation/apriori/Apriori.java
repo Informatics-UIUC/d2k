@@ -51,6 +51,7 @@ import java.beans.PropertyVetoException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -226,16 +227,18 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule {
       }
 
       if (showProgress || debug) {
-         System.out.println(getAlias() +
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug(getAlias() +
                             ": A total of " +
                             finalRuleCount +
                             " frequent itemsets were found that met the specified Minimum Support of " +
                             getMinimumSupport() +
                             "%.");
-         System.out.println(getAlias() +
-                            ": Elapsed wallclock time was " +
-                            (System.currentTimeMillis() - startTime) / 1000.0 +
-                            " seconds");
+    	  myLogger.debug(getAlias() +
+                  ": Elapsed wallclock time was " +
+                  (System.currentTimeMillis() - startTime) / 1000.0 +
+                  " seconds");
+          myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       if (finalRules == null) {
@@ -307,7 +310,9 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule {
       int oldSize = results.size(); // Since the list will grow.
 
       if (debug) {
-         System.out.println("Apriori -> Valid Sets Possible : " + numSets);
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("Apriori -> Valid Sets Possible : " + numSets);
+          myLogger.resetLoggingLevel();//re-set level to original level
 
          // We construct new rules from existing rules of size (cardinality-1).
       }
@@ -323,7 +328,7 @@ public class Apriori extends ncsa.d2k.core.modules.ComputeModule {
          MutableIntegerArray mia = lrs.mia;
 
 // Add each item we have to the current rule
-nextrule:
+//nextrule:
          for (
               int ruleIndex = 0, itemIndex = 0;
                  itemIndex < items.length;
@@ -448,22 +453,26 @@ nextrule:
 
       if (showProgress || debug) {
          int newSets = results.size() - oldSize;
-         System.out.println(getAlias() +
+         myLogger.setDebugLoggingLevel();//temp set to debug
+         myLogger.debug(getAlias() +
                             ": Identified " +
                             newSets +
                             " frequent itemsets with " +
                             cardinality +
                             " items that met the support criteria.");
+         myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       return rules;
    } // end method generatePossibleRules
-
+   
+   private D2KModuleLogger myLogger;
    /**
     * Called by the D2K Infrastructure before the itinerary begins to execute.
     * Sets the start time for computing
     */
    public void beginExecution() {
+	   myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
       startTime = System.currentTimeMillis();
       results = new ArrayList();
    }
@@ -500,18 +509,20 @@ nextrule:
          nameList = iss.names;
 
          if (debug) {
-
+       	  myLogger.setDebugLoggingLevel();//temp set to debug
             for (int i = 0; i < nameList.length; i++) {
-               System.out.println("Apriori -> " + i + ":" + nameList[i]);
+            	myLogger.debug("Apriori -> " + i + ":" + nameList[i]);
+               //System.out.println("Apriori -> " + i + ":" + nameList[i]);
             }
+            myLogger.debug("Apriori -> --------------------------");
+            myLogger.debug("Apriori -> number of examples : " +
+                    numExamples);
+            myLogger.debug("Apriori -> cutoff : " + cutoff);
+            myLogger.debug("Apriori -> number of unique items : " +
+                    numItems);
+            myLogger.debug("Apriori -> --------------------------");
 
-            System.out.println("Apriori -> --------------------------");
-            System.out.println("Apriori -> number of examples : " +
-                               numExamples);
-            System.out.println("Apriori -> cutoff : " + cutoff);
-            System.out.println("Apriori -> number of unique items : " +
-                               numItems);
-            System.out.println("Apriori -> --------------------------");
+            myLogger.resetLoggingLevel();//re-set level to original level
          }
 
          boolean[][] itemFlags = iss.getItemFlags();
@@ -568,17 +579,20 @@ nextrule:
       }
 
       if (debug) {
-         System.out.println("APriori -> currentItemIndices count: " +
-                            currentItemIndices.length);
-         System.out.print("APriori ->{");
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("APriori -> currentItemIndices count: " +
+                  currentItemIndices.length);
+    	  myLogger.debug("APriori ->{");
+
 
          for (int i = 0; i < currentItemIndices.length - 1; i++) {
-            System.out.print(nameList[currentItemIndices[i]] + ",");
+        	 myLogger.debug(nameList[currentItemIndices[i]] + ",");
          }
+         myLogger.debug(nameList[currentItemIndices[currentItemIndices.length -
+                                                    1]] +
+                                                    "}");
+   	  myLogger.resetLoggingLevel();//re-set level to original level
 
-         System.out.println(nameList[currentItemIndices[currentItemIndices.length -
-                                                        1]] +
-                            "}");
       }
 
       // Generate all the new possible rules and compute their support values.
@@ -599,7 +613,9 @@ nextrule:
       // In the first round, we will discard any rule that does not contain a
       // target value.
       if (debug) {
-         System.out.println("APriori -> new frequent itemsets: " + newRules);
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("APriori -> new frequent itemsets: " + newRules);
+          myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       attributeCount++;
@@ -635,7 +651,10 @@ nextrule:
       }
 
       if (debug) {
-         System.out.println();
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug("");
+          myLogger.resetLoggingLevel();//re-set level to original level
+
       }
    } // end method doit
 
@@ -647,10 +666,12 @@ nextrule:
       super.endExecution();
 
       if (showProgress || debug) {
-         System.out.println(getAlias() +
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug(getAlias() +
                             ": Total Elapsed Wallclock Time was " +
                             (System.currentTimeMillis() - startTime) / 1000.0 +
                             " Seconds");
+          myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       results = null;
