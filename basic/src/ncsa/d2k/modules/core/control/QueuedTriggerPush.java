@@ -47,7 +47,7 @@ package ncsa.d2k.modules.core.control;
 import ncsa.d2k.core.modules.DataPrepModule;
 import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.util.QuickQueue;
-
+import ncsa.d2k.modules.core.util.*;
 
 /**
  * Pushes the first input it receives on input 0, but will not push subsequent
@@ -72,13 +72,31 @@ public class QueuedTriggerPush extends DataPrepModule {
    /** Controls debug messages. */
    protected boolean debug;
 
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+
    //~ Methods *****************************************************************
 
+   private int moduleLoggingLevel=
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass())
+	   .getLoggingLevel();
+   
+   public int getmoduleLoggingLevel(){
+	   return moduleLoggingLevel;
+   }
+
+   public void setmoduleLoggingLevel(int level){
+	   moduleLoggingLevel = level;
+   }
    /**
     * Called by the D2K Infrastructure before the itinerary begins to execute.
     * In this case, initializes the queue.
     */
-   public void beginExecution() { queue = new QuickQueue(); }
+
+   public void beginExecution(){
+	   myLogger.setLoggingLevel(moduleLoggingLevel);
+	   queue = new QuickQueue();
+   }
 
    /**
     * If first time, just pull input 0 and push it, subsequent runs, pull input
@@ -110,11 +128,12 @@ public class QueuedTriggerPush extends DataPrepModule {
     * In this case, resets the queue.
     */
    public void endExecution() {
-
       if (queue.getSize() > 0) {
-         System.out.println(this.getAlias() + ": There were " +
-                            queue.getSize() + " items still in the " +
-                            "queue.");
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug(this.getAlias() + ": There were " +
+                  queue.getSize() + " items still in the " +
+                  "queue.");
+          myLogger.resetLoggingLevel();//re-set level to original level
       }
 
       queue = new QuickQueue();
@@ -272,7 +291,7 @@ public class QueuedTriggerPush extends DataPrepModule {
     *         objects.
     */
    public PropertyDescription[] getPropertiesDescriptions() {
-      PropertyDescription[] pds = new PropertyDescription[1];
+      PropertyDescription[] pds = new PropertyDescription[2];
       pds[0] =
          new PropertyDescription("debug",
                                  "Generate Debug Output",
@@ -281,6 +300,9 @@ public class QueuedTriggerPush extends DataPrepModule {
                                  "will write verbose debug " +
                                  "information to " +
                                  "the console.");
+      pds[1] = 
+         new PropertyDescription("moduleLoggingLevel", "Module Logging Level",
+                  "The logging level of this modules"+"\n 0=DEBUG; 1=INFO; 2=WARN; 3=ERROR; 4=FATAL; 5=OFF");
 
       return pds;
    }

@@ -47,7 +47,7 @@ package ncsa.d2k.modules.core.control;
 
 import ncsa.d2k.core.modules.DataPrepModule;
 import ncsa.d2k.core.modules.PropertyDescription;
-
+import ncsa.d2k.modules.core.util.*;
 
 /**
  * Take in an object once, saves it, and then pushes it out every time an object
@@ -75,11 +75,27 @@ public class TriggerPushB extends DataPrepModule {
 
    //~ Methods *****************************************************************
 
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+
+   private int moduleLoggingLevel=
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass())
+	   .getLoggingLevel();
+   
+   public int getmoduleLoggingLevel(){
+	   return moduleLoggingLevel;
+   }
+
+   public void setmoduleLoggingLevel(int level){
+	   moduleLoggingLevel = level;
+   }
    /**
     * Called by the D2K Infrastructure before the itinerary begins to execute.
     * In this case, initialize the variables, and call the superclass.
     */
    public void beginExecution() {
+	   myLogger.setLoggingLevel(moduleLoggingLevel);
+
       waitingForObject = true;
       totalFires = 0;
       super.beginExecution();
@@ -100,14 +116,15 @@ public class TriggerPushB extends DataPrepModule {
          waitingForObject = false;
 
       }
-
       totalFires++;
 
       if (this.getFlags()[1] > 0) {
          pullInput(1);
 
          if (debug) {
-            System.out.println("TriggerPushB: " + totalFires);
+        	 myLogger.setDebugLoggingLevel();//temp set to debug
+        	 myLogger.debug("TriggerPushB: " + totalFires);
+             myLogger.resetLoggingLevel();//re-set level to original level
          }
 
          pushOutput(theObject, 0);
@@ -117,7 +134,9 @@ public class TriggerPushB extends DataPrepModule {
          theObject = pullInput(0);
 
          if (debug) {
-            System.out.println("TriggerPushB: New object");
+        	 myLogger.setDebugLoggingLevel();//temp set to debug
+        	 myLogger.debug("TriggerPushB: New object");
+             myLogger.resetLoggingLevel();//re-set level to original level
          }
       }
 
@@ -292,13 +311,16 @@ public class TriggerPushB extends DataPrepModule {
     *         objects.
     */
    public PropertyDescription[] getPropertiesDescriptions() {
-      PropertyDescription[] pds = new PropertyDescription[1];
+      PropertyDescription[] pds = new PropertyDescription[2];
       pds[0] =
          new PropertyDescription("debug",
                                  "Generate Debug Output",
                                  "If this property is true, the " +
                                  "module will write verbose debug " +
                                  "information to the console.");
+      pds[1] = 
+          new PropertyDescription("moduleLoggingLevel", "Module Logging Level",
+                  "The logging level of this modules"+"\n 0=DEBUG; 1=INFO; 2=WARN; 3=ERROR; 4=FATAL; 5=OFF");
 
       return pds;
    }

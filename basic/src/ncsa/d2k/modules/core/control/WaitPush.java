@@ -45,7 +45,8 @@
 package ncsa.d2k.modules.core.control;
 
 import ncsa.d2k.core.modules.DataPrepModule;
-
+import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
 
 /**
  * Push the first input it receives on input 0, but will not push subsequent
@@ -62,13 +63,30 @@ public class WaitPush extends DataPrepModule {
    protected boolean firstTime = true;
 
    //~ Methods *****************************************************************
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+
+   private int moduleLoggingLevel=
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass())
+	   .getLoggingLevel();
+   
+   public int getmoduleLoggingLevel(){
+	   return moduleLoggingLevel;
+   }
+
+   public void setmoduleLoggingLevel(int level){
+	   moduleLoggingLevel = level;
+   }
 
    /**
     * Called by the D2K Infrastructure before the itinerary begins to execute.
     * In this case, flags the first execution.
     */
-   public void beginExecution() { firstTime = true; }
-
+   public void beginExecution() { 
+	   myLogger.setLoggingLevel(moduleLoggingLevel);
+	   firstTime = true;
+   }
+   
    /**
     * Performs the main work of the module. In this case, if this is the first
     * time the module has fired, just pull input 0 and push it, subsequent runs,
@@ -244,5 +262,21 @@ public class WaitPush extends DataPrepModule {
 
       return false;
    }
+   
+   /**
+    * Returns an array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    * objects for each property of the module.
+    *
+    * @return An array of <code>ncsa.d2k.core.modules.PropertyDescription</code>
+    *         objects.
+    */
+   public PropertyDescription[] getPropertiesDescriptions() {
+      PropertyDescription[] pds = new PropertyDescription[1];
 
+      pds[0] = 
+          new PropertyDescription("moduleLoggingLevel", "Module Logging Level",
+                  "The logging level of this modules"+"\n 0=DEBUG; 1=INFO; 2=WARN; 3=ERROR; 4=FATAL; 5=OFF");
+
+      return pds;
+   }
 } // end class WaitPush
