@@ -53,6 +53,7 @@ import ncsa.d2k.modules.core.datatype.table.Table;
 
 import java.beans.PropertyVetoException;
 import java.util.Random;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -170,11 +171,14 @@ public class ModelingParametersEvaluator extends ComputeModule {
       }
    }
 
+   private D2KModuleLogger myLogger;
+
    /**
     * Called by the D2K Infrastructure before the itinerary begins to execute.
     * Resets.
     */
    public void beginExecution() {
+	   myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
       InitialExecution = true;
       reset();
    }
@@ -211,7 +215,7 @@ public class ModelingParametersEvaluator extends ComputeModule {
                }
 
                if (NumTrainExamples + 1 > numExamples) {
-                  System.out.println("NumTrainExamples + 1 > numExamples");
+            	   myLogger.debug("NumTrainExamples + 1 > numExamples");
                   throw new Exception();
                }
 

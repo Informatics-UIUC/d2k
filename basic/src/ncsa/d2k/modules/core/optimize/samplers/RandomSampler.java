@@ -52,6 +52,7 @@ import ncsa.d2k.modules.core.datatype.table.ColumnTypes;
 
 import java.beans.PropertyVetoException;
 import java.util.Random;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -172,13 +173,14 @@ public class RandomSampler extends ComputeModule {
                                                                    point);
 
       if (trace) {
-         System.out.println("RandomSampling: Pushed point " + pointsPushed +
-                            " " + parameterPoint);
-
+    	  myLogger.debug("RandomSampling: Pushed point " + pointsPushed +
+                  " " + parameterPoint);
       }
 
       this.pushOutput(parameterPoint, 0);
    } // end method pushParameterPoint
+
+   private D2KModuleLogger myLogger;
 
    /**
     * Called by the D2K Infrastructure before the itinerary begins to execute.
@@ -188,7 +190,8 @@ public class RandomSampler extends ComputeModule {
    public void beginExecution() {
       pointsPushed = -1;
       randomNumberGenerator = new Random(seed);
-   }
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+}
 
    /**
     * Performs the main work of the module.

@@ -49,6 +49,7 @@ import ncsa.d2k.modules.core.datatype.parameter.impl.ParameterPointImpl;
 
 import java.beans.PropertyVetoException;
 import java.util.Random;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -158,12 +159,14 @@ public class GriddedSampler extends RandomSampler {
                                                                    point);
 
       if (trace) {
-         System.out.println("Equidistant Sampling Pushed point " +
-                            pointsPushed + " " + parameterPoint);
+    	  myLogger.debug("Equidistant Sampling Pushed point " +
+                  pointsPushed + " " + parameterPoint);
       }
 
       this.pushOutput(parameterPoint, 0);
    } // end method pushParameterPoint
+   
+   private D2KModuleLogger myLogger;
 
    /**
     * Called by the D2K Infrastructure before the itinerary begins to execute.
@@ -172,6 +175,7 @@ public class GriddedSampler extends RandomSampler {
    public void beginExecution() {
       super.beginExecution();
       multiplier = null;
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
    }
 
    /**

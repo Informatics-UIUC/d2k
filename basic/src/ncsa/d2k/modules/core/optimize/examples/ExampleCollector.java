@@ -53,6 +53,7 @@ import ncsa.d2k.modules.core.datatype.table.TableFactory;
 import ncsa.d2k.modules.core.datatype.table.basic.BasicTableFactory;
 
 import java.util.ArrayList;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -83,25 +84,27 @@ public class ExampleCollector extends ncsa.d2k.core.modules.ComputeModule {
     * @param ex    The example.
     */
    private void printExample(String label, Example ex) {
-      System.out.println(label);
-      System.out.println("  Inputs");
+	   myLogger.debug(label);
+	   myLogger.debug("  Inputs");
 
       ExampleTable et = (ExampleTable) ex.getTable();
       int ni = et.getNumInputFeatures();
       int no = et.getNumOutputFeatures();
 
       for (int i = 0; i < ni; i++) {
-         System.out.println("    " + et.getInputName(i) + " = " +
-                            ex.getInputDouble(i));
+    	  myLogger.debug("    " + et.getInputName(i) + " = " +
+                  ex.getInputDouble(i));
       }
 
-      System.out.println("  Outputs");
+      myLogger.debug("  Outputs");
 
       for (int i = 0; i < no; i++) {
-         System.out.println("    " + et.getOutputName(i) + " = " +
-                            ex.getOutputDouble(i));
+    	  myLogger.debug("    " + et.getOutputName(i) + " = " +
+                  ex.getOutputDouble(i));
       }
    }
+
+   private D2KModuleLogger myLogger;
 
    /**
     * Called by the D2K Infrastructure before the itinerary begins to execute.
@@ -111,6 +114,7 @@ public class ExampleCollector extends ncsa.d2k.core.modules.ComputeModule {
    public void beginExecution() {
       n = 0;
       examples = new ArrayList();
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
    }
 
    /**
@@ -136,7 +140,7 @@ public class ExampleCollector extends ncsa.d2k.core.modules.ComputeModule {
 
       Object tmp = this.pullInput(1);
       examples.add(tmp);
-      System.out.println("EXAMPLE (" + tmp.getClass().getName() + "): " + n);
+      myLogger.debug("EXAMPLE (" + tmp.getClass().getName() + "): " + n);
       n--;
 
       if (n == 0) {

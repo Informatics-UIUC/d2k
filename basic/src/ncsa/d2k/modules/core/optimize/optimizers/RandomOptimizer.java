@@ -59,6 +59,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.MutableTableImpl;
 
 import java.beans.PropertyVetoException;
 import java.util.Random;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -188,11 +189,15 @@ public class RandomOptimizer extends ComputeModule
       return et;
    } // end method getTable
 
+   private D2KModuleLogger myLogger;
+
    /**
     * Called by the D2K Infrastructure before the itinerary begins to execute.
     * Initialize the data structures.
     */
    public void beginExecution() {
+	   
+	   myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
       InitialExecution = true;
       ExampleData = null;
@@ -332,8 +337,8 @@ public class RandomOptimizer extends ComputeModule
          }
 
          if (BiasSpace.getNumParameters() == 0) {
-            System.out.println("Halting execution of optimizer after on " +
-                               "iteration because numParameters = 0.  ");
+        	 myLogger.debug("Halting execution of optimizer after on " +
+                     "iteration because numParameters = 0.  ");
             stop = true;
          }
       }
@@ -345,15 +350,15 @@ public class RandomOptimizer extends ComputeModule
 
          if (Trace) {
 
-            System.out.println("Optimization Completed");
-            System.out.println("  Number of Experiments = " + NumExamples);
-
-            System.out.println("NumExamples............ " + NumExamples);
-            System.out.println("ObjectiveScoreDirection....... " +
-                               ObjectiveScoreDirection);
-            System.out.println("BestUtility............ " + BestUtility);
-            System.out.println("BestExampleNumber...... " +
-                               (BestExampleIndex + 1));
+        	 myLogger.debug("Optimization Completed");
+        	 myLogger.debug("  Number of Experiments = " + NumExamples);
+        	 
+        	 myLogger.debug("NumExamples............ " + NumExamples);
+        	 myLogger.debug("ObjectiveScoreDirection....... " +
+                     ObjectiveScoreDirection);
+        	 myLogger.debug("BestUtility............ " + BestUtility);
+        	 myLogger.debug("BestExampleNumber...... " +
+                     (BestExampleIndex + 1));
          }
 
          // add example to set
