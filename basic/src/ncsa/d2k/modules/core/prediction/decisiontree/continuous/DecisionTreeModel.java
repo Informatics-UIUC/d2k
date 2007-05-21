@@ -51,6 +51,7 @@ import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTModel;
 import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTNode;
 
 import java.text.DecimalFormat;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -91,6 +92,9 @@ public class DecisionTreeModel extends Model implements java.io.Serializable,
       super(examples);
       this.decisionTree = decisionTree;
    }
+   
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    //~ Methods *****************************************************************
 
@@ -255,20 +259,18 @@ public class DecisionTreeModel extends Model implements java.io.Serializable,
 
          double outputSTD = Math.sqrt(outputVarianceSum / numExamples);
 
-         System.out.print(" (min=" + Format.format(outputValueMin) +
-                          " max=" + Format.format(outputValueMax) +
-                          " std=" + Format.format(outputSTD) +
-                          " d=" + node.depth +
-
-                          // " index=" + node.index +
-                          ")" +
-                          " [P:" + numExamples +
-                          " ERR:" + Format.format(node.error / numExamples));
+         myLogger.error(" (min=" + Format.format(outputValueMin) +
+                 " max=" + Format.format(outputValueMax) +
+                 " std=" + Format.format(outputSTD) +
+                 " d=" + node.depth +
+                 ")" +
+                 " [P:" + numExamples +
+                 " ERR:" + Format.format(node.error / numExamples));
 
          if (!leafNode) {
-            System.out.print(" ERR_REDUCT:" +
-                             Format.format(node.bestErrorReduction /
-                                              numExamples) +
+        	 myLogger.error(" ERR_REDUCT:" +
+        			 Format.format(node.bestErrorReduction /
+        					 numExamples) +
                              " FEATURE:" +
                              this.getInputFeatureName(splitIndex));
          }

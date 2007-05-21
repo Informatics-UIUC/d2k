@@ -48,6 +48,7 @@ import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 
 import java.beans.PropertyVetoException;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -64,9 +65,13 @@ import java.beans.PropertyVetoException;
  * @version $Revision$, $Date$
  */
 public class C45TreeBuilder extends C45TreeBuilderOPT {
-
+	   private D2KModuleLogger myLogger;
+	   
    //~ Methods *****************************************************************
-
+	   public void beginExecution() {
+		   myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+		   }
+	   
    /**
     * Performs the main work of the module.
     *
@@ -90,8 +95,8 @@ public class C45TreeBuilder extends C45TreeBuilderOPT {
       }
 
       if (outputs.length > 1) {
-         System.out.println("Only one output feature is allowed.");
-         System.out.println("Building tree for only the first output variable.");
+    	  myLogger.warn("Only one output feature is allowed.");
+    	  myLogger.warn("Building tree for only the first output variable.");
       }
 
       if (table.isColumnScalar(outputs[0])) {

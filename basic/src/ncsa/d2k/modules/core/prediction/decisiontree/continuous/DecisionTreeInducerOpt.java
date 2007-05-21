@@ -57,6 +57,7 @@ import ncsa.d2k.modules.core.prediction.FunctionInducerOpt;
 import ncsa.d2k.modules.core.prediction.mean.continuous.MeanOutputModel;
 import ncsa.d2k.modules.core.prediction.regression.continuous
           .StepwiseLinearInducerOpt;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -243,6 +244,9 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
       node.outputMins = outputMins;
       node.outputMaxs = outputMaxs;
    } // end method calculateOutputMeansMinsMaxs
+   
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    /**
     * Create the decision tree
@@ -268,17 +272,17 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
       calculateOutputMeansMinsMaxs(RootNode);
 
       if (_Trace) {
-         System.out.println("calculating average outputs");
+    	  myLogger.info("calculating average outputs");
       }
 
       if (_Trace) {
-         System.out.println("creating initial tree");
+    	  myLogger.info("creating initial tree");
       }
 
       createModel(RootNode);
 
       if (_Trace) {
-         System.out.println("evaluating initial tree");
+    	  myLogger.info("evaluating initial tree");
       }
 
       evaluateModel(RootNode);
@@ -293,7 +297,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
       }
 
       if (_Trace) {
-         System.out.println("recursive partitioning");
+    	  myLogger.info("recursive partitioning");
       }
 
       recursiveDecomposition(RootNode, depth);
@@ -511,7 +515,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
       node.error = error;
 
       if (_Trace) {
-         System.out.println("node.error = " + node.error);
+    	  myLogger.error("node.error = " + node.error);;
       }
    }
 
@@ -733,7 +737,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
       double parentError = node.error;
 
       if (_Trace) {
-         System.out.println("creating decompositions");
+    	  myLogger.info("creating decompositions");
       }
 
       Decomposition[] decompositions = createDecompositions(node);
@@ -764,7 +768,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
       // bestChildNode2.examples.allocateExamplePointers(numExamples);
 
       if (_Trace) {
-         System.out.println("evaluating decompositions");
+    	  myLogger.info("evaluating decompositions");
       }
 
       for (
@@ -788,8 +792,8 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
          }
 
          if (_Trace) {
-            System.out.println("numNode1Examples = " + numNode1Examples);
-            System.out.println("numNode2Examples = " + numNode2Examples);
+        	 myLogger.debug("numNode1Examples = " + numNode1Examples);
+        	 myLogger.debug("numNode2Examples = " + numNode2Examples);
          }
 
          if (
@@ -817,9 +821,9 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
          double errorReduction = parentError - error1 - error2;
 
          if (_Trace) {
-            System.out.println("error1 = " + error1);
-            System.out.println("error2 = " + error2);
-            System.out.println("errorReduction = " + errorReduction);
+        	 myLogger.error("error1 = " + error1);
+        	 myLogger.error("error2 = " + error2);
+        	 myLogger.error("errorReduction = " + errorReduction);
          }
 
          if (
@@ -842,7 +846,7 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
       } // end for
 
       if (_Trace) {
-         System.out.println("bestErrorReduction = " + bestErrorReduction);
+    	  myLogger.error("bestErrorReduction = " + bestErrorReduction);
       }
 
       if (!SaveNodeExamples) {
@@ -856,10 +860,10 @@ public class DecisionTreeInducerOpt extends FunctionInducerOpt {
       if ((bestErrorReduction > MinErrorReduction * RootNode.numExamples)) {
 
          if (_Trace) {
-            System.out.println("bestDecomposition.inputIndex = " +
-                               bestDecomposition.inputIndex);
-            System.out.println("bestDecomposition.value      = " +
-                               bestDecomposition.value);
+        	 myLogger.debug("bestDecomposition.inputIndex = " +
+                     bestDecomposition.inputIndex);
+        	 myLogger.debug("bestDecomposition.value      = " +
+                     bestDecomposition.value);
          }
 
          node.decomposition = bestDecomposition;

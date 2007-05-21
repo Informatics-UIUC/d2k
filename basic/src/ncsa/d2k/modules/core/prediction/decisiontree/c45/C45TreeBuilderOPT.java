@@ -56,6 +56,7 @@ import java.beans.PropertyVetoException;
    import java.util.HashMap;
    import java.util.HashSet;
    import java.util.Iterator;
+   import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -730,20 +731,7 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
    private EntrSplit numericGain(Table t, int attCol, int outCol,
                                  int[] examples) {
 
-      // if(debug)  System.out.println("Calc numericGain:
-      // "+t.getColumnLabel(attCol)+" size: "+examples.length+" out:
-      // "+t.getColumnLabel(outCol));
-      double gain = outputInfo(t, outCol, examples);
-
-      // double splitVal = findSplitValue(attCol, examples);
       EntrSplit splitVal = findSplitValue(t, attCol, outCol, examples);
-      // double numEntr = numericAttributeEntropy(table, splitVal.splitValue,
-      // examples,
-      // attCol, outputs[0]);
-
-      // gain -= splitVal.gain; if(useGainRatio) { double spliter =
-      // splitInfo(table, attCol, splitVal.splitValue, examples); gain /=
-      // spliter; }
 
       return splitVal;
    }
@@ -799,7 +787,6 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
    private double splitInfo(Table t, int colNum, double splitVal,
                             int[] examples) {
       int numRows = examples.length;
-      double[] probs;
 
       int[] tallies;
 
@@ -850,6 +837,12 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
       // calculate the information given by the branches
       return info(tallies);
    } // end method splitInfo
+   
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    /**
     * Build a decision tree. let examples(v) be those examples with A = v. if
@@ -905,7 +898,9 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
       if (allSame) {
 
          if (debug) {
-            System.out.println("***The values were all the same: " + s);
+       	  myLogger.setDebugLoggingLevel();//temp set to debug
+       	  myLogger.debug("***The values were all the same: " + s);
+          myLogger.resetLoggingLevel();//re-set level to original level
          }
 
          root = new CategoricalDecisionTreeNode(s);
@@ -921,8 +916,10 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
 
          // make a leaf
          if (debug) {
-            System.out.println("***Attributes empty.  Creating new Leaf with most common output value: " +
-                               mostCommon);
+          	  myLogger.setDebugLoggingLevel();//temp set to debug
+           	  myLogger.debug("***Attributes empty.  Creating new Leaf with most common output value: " +
+                      mostCommon);
+              myLogger.resetLoggingLevel();//re-set level to original level
          }
 
          root = new CategoricalDecisionTreeNode(mostCommon);
@@ -1063,7 +1060,9 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
          root = new CategoricalDecisionTreeNode(val);
 
          if (debug) {
-            System.out.println("creating new CategoricalDTN: " + val);
+        	 myLogger.setDebugLoggingLevel();//temp set to debug
+        	 myLogger.debug("creating new CategoricalDTN: " + val);
+        	 myLogger.resetLoggingLevel();//re-set level to original level
          }
       }
 
@@ -1079,11 +1078,6 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
       return debug;
    }
 
-   /*private boolean useGainRatio = true;
-    * public void setUseGainRatio(boolean b) { useGainRatio = b; } public
-    * boolean getUseGainRatio() { return useGainRatio;}*/
-
-/*  private int minimumRecordsPerLeaf = 2; */
 
    /**
     * get the minimum ratio per leaf.
@@ -1163,8 +1157,8 @@ public class C45TreeBuilderOPT extends ReentrantComputeModule {
       }
 
       if (outputs.length > 1) {
-         System.out.println("Only one output feature is allowed.");
-         System.out.println("Building tree for only the first output variable.");
+    	  myLogger.warn("Only one output feature is allowed.");
+    	  myLogger.warn("Building tree for only the first output variable.");
       }
 
       if (table.isColumnScalar(outputs[0])) {

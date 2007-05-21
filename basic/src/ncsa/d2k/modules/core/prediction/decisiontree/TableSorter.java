@@ -57,6 +57,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 import java.util.Vector;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -145,6 +146,9 @@ public class TableSorter extends AbstractTableModel
       JTableHeader th = tableView.getTableHeader();
       th.addMouseListener(listMouseListener);
    }
+   
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    /**
     * Check that the length of indexes is the same as the row count of the model
@@ -152,7 +156,7 @@ public class TableSorter extends AbstractTableModel
    public void checkModel() {
 
       if (indexes.length != model.getRowCount()) {
-         System.err.println("Sorter not informed of a change in model.");
+    	  myLogger.error("Sorter not informed of a change in model.");
       }
    }
 

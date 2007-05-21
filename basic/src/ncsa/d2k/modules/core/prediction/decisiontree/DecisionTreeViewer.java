@@ -67,6 +67,7 @@ import ncsa.d2k.modules.core.prediction.decisiontree.rainforest
    import java.io.IOException;
    import java.text.NumberFormat;
    import java.util.ArrayList;
+   import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -187,6 +188,9 @@ public class DecisionTreeViewer extends VisModule {
       return (100 * (double) aNode.getTotal() / (double) total);
    }
 
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+
    /**
     * print contents of array list.
     *
@@ -195,12 +199,12 @@ public class DecisionTreeViewer extends VisModule {
    private void printArrayList(ArrayList al) {
 
       if (al.size() == 0) {
-         System.out.println("No value in ArrayList");
+    	  myLogger.debug("No value in ArrayList");
       } else {
-         System.out.println("ArrayList is: ");
+    	  myLogger.debug("ArrayList is: ");
 
          for (int i = 0; i < al.size(); i++) {
-            System.out.println(al.get(i));
+        	 myLogger.debug(al.get(i));
          }
       }
 
@@ -215,20 +219,20 @@ public class DecisionTreeViewer extends VisModule {
    private void printRule(ArrayList al) {
 
       if (al.size() == 0) {
-         System.out.println("No value in ArrayList");
+    	  myLogger.debug("No value in ArrayList");
       } else {
-         System.out.println("ArrayList is: ");
+    	  myLogger.debug("ArrayList is: ");
 
          for (int i = 0; i < al.size(); i++) {
             rule aRule = (rule) al.get(i);
-            System.out.println("Left rule : " + aRule.leftRule);
-            System.out.println("Right rule : " + aRule.rightRule);
-            System.out.println("Coverage : " + aRule.coverage);
-            System.out.println("Accuracy : " + aRule.accuracy);
+            myLogger.debug("Left rule : " + aRule.leftRule);
+            myLogger.debug("Right rule : " + aRule.rightRule);
+            myLogger.debug("Coverage : " + aRule.coverage);
+            myLogger.debug("Accuracy : " + aRule.accuracy);
          }
       }
 
-      System.out.println();
+      myLogger.debug("");
    }
 
    /**
@@ -383,8 +387,6 @@ public class DecisionTreeViewer extends VisModule {
     * Add the rules to treeList.
     */
    protected void displayRules() {
-      String leftRule;
-      String rightRule;
 
       // layout of ruleList is: column 1: left handside rule (if rule),
       // column 2: symbol "-->",
@@ -468,7 +470,7 @@ public class DecisionTreeViewer extends VisModule {
     */
    protected void writeToFile() {
       JFileChooser chooser = new JFileChooser();
-      String delimiter = "\t";
+ //     String delimiter = "\t";
       String newLine = "\n";
       String fileName;
       int retVal = chooser.showSaveDialog(null);
