@@ -60,6 +60,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -179,6 +180,11 @@ public class SVMBuilder extends SVMBuilderOPT {
 
       return param;
    } // end method createParameters
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    /**
     * Performs the main work of the module.
@@ -200,8 +206,8 @@ public class SVMBuilder extends SVMBuilderOPT {
          String error_msg = svm.svm_check_parameter(prob, param);
 
          if (error_msg != null) {
-            System.out.println("ERROR: SVMBuilder.doit()");
-            System.err.print(error_msg + "\n");
+        	 myLogger.error("ERROR: SVMBuilder.doit()");
+        	 myLogger.equals(error_msg + "\n");
          }
 
          /* build the actual SVM */
@@ -212,7 +218,7 @@ public class SVMBuilder extends SVMBuilderOPT {
       } catch (Exception ex) {
          ex.printStackTrace();
          System.out.println(ex.getMessage());
-         System.out.println("ERROR: SVMBuilder.doit()");
+         myLogger.error("ERROR: SVMBuilder.doit()");
          throw ex;
       }
    } // end method doit

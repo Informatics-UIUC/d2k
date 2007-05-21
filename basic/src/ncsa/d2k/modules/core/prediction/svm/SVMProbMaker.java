@@ -51,6 +51,7 @@ import ncsa.d2k.core.modules.DataPrepModule;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 
 import java.util.Vector;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -125,8 +126,8 @@ public class SVMProbMaker extends DataPrepModule {
 
          /* there should only be 1 output feature */
          if (outputs.length > 1) {
-            System.out.println("Only one output feature is allowed.");
-            System.out.println("Building SVM for only the first output variable.");
+        	 myLogger.error("Only one output feature is allowed.");
+        	 myLogger.error("Building SVM for only the first output variable.");
          } else if (outputs.length == 0 || inputs.length == 0) {
 
             // vered - 02-23-04: throwing and exception instead of outputing a
@@ -222,11 +223,14 @@ public class SVMProbMaker extends DataPrepModule {
          throw ex;
       }
    } // end method doit
+   private D2KModuleLogger myLogger;
 
    /**
     * Called by the D2K Infrastructure before the itinerary begins to execute.
     */
-   public void beginExecution() { }
+   public void beginExecution() {
+	   myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    /**
     * Called by the D2K Infrastructure after the itinerary completes execution.

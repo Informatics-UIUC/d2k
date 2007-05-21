@@ -51,6 +51,7 @@ import libsvm.svm_problem;
 
 import ncsa.d2k.core.modules.ComputeModule;
 import ncsa.d2k.modules.core.datatype.parameter.ParameterPoint;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -139,8 +140,8 @@ public class SVMBuilderOPT extends ComputeModule {
          String error_msg = svm.svm_check_parameter(prob, param);
 
          if (error_msg != null) {
-            System.out.println("ERROR: SVMBuilder.doit()");
-            System.err.print(error_msg + "\n");
+        	 myLogger.error("ERROR: SVMBuilder.doit()");
+        	 myLogger.error(error_msg + "\n");
             System.exit(1);
          }
 
@@ -152,15 +153,18 @@ public class SVMBuilderOPT extends ComputeModule {
       } catch (Exception ex) {
          ex.printStackTrace();
          System.out.println(ex.getMessage());
-         System.out.println("ERROR: SVMBuilder.doit()");
+         myLogger.error("ERROR: SVMBuilder.doit()");
          throw ex;
       }
    } // end method doit
+   private D2KModuleLogger myLogger;
 
    /**
     * Called by the D2K Infrastructure before the itinerary begins to execute.
     */
-   public void beginExecution() { }
+   public void beginExecution() {
+	   myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    /**
     * Called by the D2K Infrastructure after the itinerary completes execution.
