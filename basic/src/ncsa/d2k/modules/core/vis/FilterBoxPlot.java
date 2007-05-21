@@ -13,6 +13,7 @@ import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
 
 import ncsa.d2k.modules.core.transform.StaticMethods;
+import ncsa.d2k.modules.core.util.*;
 
 /**
  * This module creates a box-and-whisker plot of scalar <code>Table</code> data
@@ -395,6 +396,11 @@ public void setInput(Object object, int input) {
    public void setMin(Object _min){min = (double[])_min;}
    public Object getMin(){return min;}
 
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    /**
  * Performs the main work of the module.
@@ -408,16 +414,16 @@ public void doit () throws Exception {
          throw new Exception(this.getAlias()+" has not been configured. Before running headless, run with the gui and configure the parameters.");
 
      if( attributes.length == 0){
-       System.out.println(getAlias()+": No attributes were chosed to be filtered. " +
-                          "The transformation will be an empty one");
+    	 myLogger.fatal(getAlias()+": No attributes were chosed to be filtered. " +
+                 "The transformation will be an empty one");
         pushOutput(new BooleanFilterTransformation(flags), 0);
         return;
      }//if attributes
 
     HashMap scalarMap = StaticMethods.getScalarAttributes(_table);
     if(scalarMap.size() == 0){
-      System.out.println(getAlias()+": Warning - Table " + _table.getLabel() +
-                         " has no scalar columns.");
+    	myLogger.fatal(getAlias()+": Warning - Table " + _table.getLabel() +
+                " has no scalar columns.");
       //pushOutput(new BooleanFilterTransformation(flags), 0);
         //return;
     }//if scalar map

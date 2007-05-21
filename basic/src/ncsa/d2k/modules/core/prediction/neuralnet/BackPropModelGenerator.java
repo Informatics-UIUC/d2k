@@ -3,6 +3,8 @@ package ncsa.d2k.modules.core.prediction.neuralnet;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.datatype.table.*;
 import ncsa.d2k.modules.core.datatype.parameter.*;
+import ncsa.d2k.modules.core.util.*;
+
 
 /**
  * <p><b>Overview</b>: This Module trains and outputs a feed-forward, multi-
@@ -108,6 +110,8 @@ public class BackPropModelGenerator
         wipeFields();
         super.endExecution();
     }
+    
+    private D2KModuleLogger myLogger;
 
     /**
      * Called by the D2K Infrastructure before the itinerary begins to execute.
@@ -116,6 +120,7 @@ public class BackPropModelGenerator
     public void beginExecution() {
         wipeFields();
         super.beginExecution();
+  	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
     }
 
     /**
@@ -140,7 +145,9 @@ public class BackPropModelGenerator
      */
     public void doit() throws Exception {
         if (debug) {
-            System.out.println(getAlias() + ":Firing");
+      	  myLogger.setDebugLoggingLevel();//temp set to debug
+      	  myLogger.debug(getAlias() + ":Firing");
+          myLogger.resetLoggingLevel();//re-set level to original level
         }
         ExampleTable trainData = (ExampleTable) pullInput(0);
         int[] outputs = trainData.getOutputFeatures();

@@ -9,6 +9,7 @@ import ncsa.d2k.modules.core.datatype.parameter.*;
 
 import java.io.Serializable;
 import java.util.Random;
+import ncsa.d2k.modules.core.util.*;
 
 /**
 	<html>
@@ -339,7 +340,12 @@ public class BackPropModel extends PredictionModelModule
 	protected int[] outputFeatures;
     /** the number of outputs */
     protected int numOutputs;
-
+    
+    private D2KModuleLogger myLogger;
+    
+    public void beginExecution() {
+ 	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+    }
     /**
      * Pull in the ExampleTable, pass it to the predict() method,
      * and push out the PredictionTable returned by predict();
@@ -347,7 +353,9 @@ public class BackPropModel extends PredictionModelModule
      */
     public void doit() throws Exception {
         if (debug) {
-            System.out.println(getAlias() + ":Firing");
+      	  myLogger.setDebugLoggingLevel();//temp set to debug
+      	  myLogger.debug(getAlias() + ":Firing");
+          myLogger.resetLoggingLevel();//re-set level to original level
         }
         super.doit();
 	}
@@ -733,10 +741,10 @@ public class BackPropModel extends PredictionModelModule
 			 io="Input";
 		else
 			 io="Output";
-		System.out.println("** BackPropModel Construction: "+io+" Feature Column"+
-		colIdx+", *"+data.getColumnLabel(colIdx)+"* was not of a supported type"+
-		" and was removed from the training data. See ModuleInfo for valid"+
-		" types.");
+		myLogger.debug("** BackPropModel Construction: "+io+" Feature Column"+
+				colIdx+", *"+data.getColumnLabel(colIdx)+"* was not of a supported type"+
+				" and was removed from the training data. See ModuleInfo for valid"+
+				" types.");
 	}
 
 	/**
@@ -751,8 +759,8 @@ public class BackPropModel extends PredictionModelModule
 			 io="Input";
 		else
 			 io="Output";
-		System.out.println("** BackPropModel Construction: There are no valid"+
-		io+ " Features. The model building process is being aborted.");
+		myLogger.debug("** BackPropModel Construction: There are no valid"+
+				io+ " Features. The model building process is being aborted.");
 	}
 
 

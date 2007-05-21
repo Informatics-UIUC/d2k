@@ -47,6 +47,7 @@ package ncsa.d2k.modules.core.prediction.instancebased;
 import ncsa.d2k.modules.core.datatype.model.Model;
 import ncsa.d2k.modules.core.datatype.model.ModelPrintOptions;
 import ncsa.d2k.modules.core.datatype.table.ExampleTable;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -152,6 +153,9 @@ public class InstanceBasedModel extends Model implements java.io.Serializable {
       this.trainExampleSet = (ExampleTable) exampleSet.copy();
 
    }
+   
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    //~ Methods *****************************************************************
 
@@ -168,8 +172,6 @@ public class InstanceBasedModel extends Model implements java.io.Serializable {
         int numInputs = trainExampleSet.getNumInputFeatures();
         int numOutputs = trainExampleSet.getNumOutputFeatures();
 
-        double bestDistance = Double.POSITIVE_INFINITY;
-        int bestExampleIndex = Integer.MIN_VALUE;
 
         int actualNeighborhoodSize = NeighborhoodSize;
 
@@ -267,13 +269,13 @@ public class InstanceBasedModel extends Model implements java.io.Serializable {
      * @throws Exception If exception occurs, exception is thrown.
      */
     public void print(ModelPrintOptions printOptions) throws Exception {
-        System.out.println("Instance Based Control Parameters:");
-        System.out.println("  NeighborhoodSize       = " + NeighborhoodSize);
-        System.out.println("  DistanceWeightingPower = " +
+    	myLogger.debug("Instance Based Control Parameters:");
+    	myLogger.debug("  NeighborhoodSize       = " + NeighborhoodSize);
+    	myLogger.debug("  DistanceWeightingPower = " +
                 DistanceWeightingPower);
-        System.out.println("  ZeroDistanceWeight      = " + ZeroDistanceWeight);
-        System.out.println("Example Set Attributes");
-        System.out.println("  NumExamples            = " +
+    	myLogger.debug("  ZeroDistanceWeight      = " + ZeroDistanceWeight);
+    	myLogger.debug("Example Set Attributes");
+    	myLogger.debug("  NumExamples            = " +
                 trainExampleSet.getNumRows());
     }
 

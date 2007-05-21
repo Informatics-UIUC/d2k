@@ -16,10 +16,14 @@ import ncsa.d2k.core.modules.*;
 import ncsa.d2k.modules.core.vis.pgraph.nodes.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.d2k.modules.core.vis.pgraph.*;
+import ncsa.d2k.modules.core.util.*;
 
 public class PGraphUI extends UIModule {
 
    private PGView pgview;
+   
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    public UserView createUserView() { return pgview = new PGView(); }
    public String[] getFieldNameMapping() { return null; }
@@ -801,7 +805,7 @@ public void setInput(Object o, int i) {
 
          }
          else {
-            System.out.println("Please run a cluster algorithm first.");
+        	 myLogger.fatal("Please run a cluster algorithm first.");
          }
 
       }

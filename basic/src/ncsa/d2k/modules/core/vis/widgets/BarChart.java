@@ -16,6 +16,7 @@ import java.text.NumberFormat;
 
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.datatype.table.Column;
+import ncsa.d2k.modules.core.util.*;
 
 public class BarChart extends Chart
     implements MouseListener, MouseMotionListener {
@@ -63,10 +64,17 @@ public class BarChart extends Chart
   boolean resize = true;
   Rectangle2D.Double rectangle;
   protected Rectangle2D.Double[]  barBoundary;    //array to keep rectangle boundary infomation
+  
+  private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
   public BarChart(Table table, DataSet set, GraphSettings settings) {
     super(table, set, settings);
-    if ( debug ) System.out.println("BarChart - Constructor " );
+    if ( debug ){
+    	myLogger.setDebugLoggingLevel();//temp set to debug
+    	myLogger.debug("BarChart - Constructor ");
+    	myLogger.resetLoggingLevel();//re-set level to original level
+    }
     addMouseListener(this);
     setBackground(Color.white);
 
@@ -78,7 +86,11 @@ public class BarChart extends Chart
 
  public void setInitialVariable( Table table, DataSet set, GraphSettings settings )
  {
-   if ( debug ) System.out.println("BarChart - setInitialVariable()");
+   if ( debug ){
+	   myLogger.setDebugLoggingLevel();//temp set to debug
+	   myLogger.debug("BarChart - setInitialVariable()");
+	   myLogger.resetLoggingLevel();//re-set level to original levele()");
+   }
    title = settings.title;
    xlabel = settings.xaxis;
    ylabel = settings.yaxis;

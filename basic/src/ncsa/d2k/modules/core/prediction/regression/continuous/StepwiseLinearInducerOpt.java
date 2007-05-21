@@ -53,6 +53,7 @@ import ncsa.d2k.modules.core.datatype.table.ExampleTable;
 import ncsa.d2k.modules.core.datatype.table.PredictionTable;
 import ncsa.d2k.modules.core.prediction.ErrorFunction;
 import ncsa.d2k.modules.core.prediction.FunctionInducerOpt;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -102,6 +103,10 @@ public class StepwiseLinearInducerOpt extends FunctionInducerOpt {
    /** When true, a stepwise regression procedure is followed, otherwise normal
     * regression is used on all features. */
    boolean UseStepwise = false;
+   
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+
 
    //~ Methods *****************************************************************
 
@@ -142,7 +147,7 @@ public class StepwiseLinearInducerOpt extends FunctionInducerOpt {
          //
 
          if (_Trace) {
-            System.out.println("Found transpose");
+        	 myLogger.info("Found transpose");
          }
 
          double[][] firstProductDouble =
@@ -184,7 +189,7 @@ public class StepwiseLinearInducerOpt extends FunctionInducerOpt {
                        numSelectedInputs + 1);
 
          if (_Trace) {
-            System.out.println("Found firstproduct");
+        	 myLogger.info("Found firstproduct");
          }
 
          boolean exceptionflag = false;
@@ -215,11 +220,11 @@ public class StepwiseLinearInducerOpt extends FunctionInducerOpt {
          }
 
          if (_Trace) {
-            System.out.println("Found inverse");
+        	 myLogger.info("Found inverse");
          }
 
          if (_Trace) {
-            System.out.println("Found secondproduct");
+        	 myLogger.info("Found secondproduct");
          }
 
          double[][] thirdProductDouble = new double[numSelectedInputs + 1][1];
@@ -258,7 +263,7 @@ public class StepwiseLinearInducerOpt extends FunctionInducerOpt {
          } // end for
 
          if (_Trace) {
-            System.out.println("Found thirdproduct");
+        	 myLogger.info("Found thirdproduct");
          }
 
          double[] b = new double[numSelectedInputs + 1];
@@ -268,7 +273,7 @@ public class StepwiseLinearInducerOpt extends FunctionInducerOpt {
             weights[outputIndex][i] = b[i];
 
             if (_Trace) {
-               System.out.println("w[" + (i + 1) + "] = " + b[i]);
+            	myLogger.info("w[" + (i + 1) + "] = " + b[i]);
             }
          }
 
@@ -276,7 +281,7 @@ public class StepwiseLinearInducerOpt extends FunctionInducerOpt {
          weights[outputIndex][numSelectedInputs] = b[numSelectedInputs];
 
          if (_Trace) {
-            System.out.println("offset  = " + b[numSelectedInputs]);
+        	 myLogger.info("offset  = " + b[numSelectedInputs]);
          }
       } // end for
 
@@ -321,9 +326,7 @@ public class StepwiseLinearInducerOpt extends FunctionInducerOpt {
       }
 
 
-      int numExamples = examples.getNumRows();
       int numInputs = examples.getNumInputFeatures();
-      int numOutputs = examples.getNumOutputFeatures();
 
       boolean[] selectedInputs = new boolean[numInputs];
 
@@ -342,8 +345,6 @@ public class StepwiseLinearInducerOpt extends FunctionInducerOpt {
 
          for (int roundIndex = 0; roundIndex < NumRounds; roundIndex++) {
 
-            // System.out.println("roundIndex = " + roundIndex);
-            // System.out.println("NumRounds = " + NumRounds);
             double bestError = Double.POSITIVE_INFINITY;
             int bestV = 0;
 

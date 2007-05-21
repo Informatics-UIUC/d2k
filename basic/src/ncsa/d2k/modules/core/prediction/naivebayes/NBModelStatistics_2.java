@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -89,6 +90,11 @@ public class NBModelStatistics_2 extends ComputeModule {
 
    /** the naive bayes model */
    private NaiveBayesModel nbModel;
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    //~ Methods *****************************************************************
 
@@ -355,7 +361,9 @@ public class NBModelStatistics_2 extends ComputeModule {
       writer.write("\n");
 
       if(debug){
-                System.out.println(writer.toString());
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug(writer.toString());
+          myLogger.resetLoggingLevel();//re-set level to original level
          }
       // process each combination of bins
       for (int idx = 0; idx < allCombos.size(); idx++) {
@@ -364,7 +372,9 @@ public class NBModelStatistics_2 extends ComputeModule {
          String str = process_2(lst, attributeToIndexMap);
          writer.write(str);
          if(debug){
-           System.out.println(str);
+       	  myLogger.setDebugLoggingLevel();//temp set to debug
+       	  myLogger.debug(str);
+          myLogger.resetLoggingLevel();//re-set level to original level
          }
       }
 
