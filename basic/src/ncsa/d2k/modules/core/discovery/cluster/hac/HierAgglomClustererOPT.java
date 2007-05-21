@@ -55,6 +55,7 @@ import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.parameter.ParameterPoint;
 import ncsa.d2k.modules.core.datatype.table.Table;
 import ncsa.d2k.modules.core.discovery.cluster.sample.ClusterParameterDefns;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -121,6 +122,7 @@ public class HierAgglomClustererOPT extends OrderedReentrantModule
       this.pushOutput(hac.buildModel((Table) this.pullInput(1)), 0);
    }
 
+   private D2KModuleLogger myLogger;
    /**
     * Called by the D2K Infrastructure before the itinerary begins to execute.
     */
@@ -128,7 +130,10 @@ public class HierAgglomClustererOPT extends OrderedReentrantModule
    public void beginExecution() {
 
       if (getVerbose()) {
-         System.out.println(getAlias() + ": Beginning execution. ");
+    	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+    	  myLogger.setDebugLoggingLevel();//temp set to debug
+    	  myLogger.debug(getAlias() + ": Beginning execution. ");
+          myLogger.resetLoggingLevel();//re-set level to original level
       }
    }
 

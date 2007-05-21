@@ -70,6 +70,7 @@ import ncsa.d2k.modules.core.discovery.cluster.util.TableCluster;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -154,6 +155,8 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    }
 
    //~ Methods *****************************************************************
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    /**
     * Performs the main work of the module. Outputs this model, to be used by
@@ -169,7 +172,7 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public Table copy() {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".copy() -- Model does not contain table" +
                             " data -- will return null");
 
@@ -190,7 +193,7 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public Table copy(int[] rows) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".copy(int [] rows) -- Model does not contain" +
                             " table data -- will return null");
 
@@ -212,7 +215,7 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public Table copy(int start, int len) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".copy(int start, int len) -- Model does " +
                             " not contain table data -- will return null");
 
@@ -242,7 +245,7 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public boolean getBoolean(int row, int column) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getBoolean(...) -- Model does not contain " +
                             "table data and will return false");
 
@@ -263,9 +266,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public byte getByte(int row, int column) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getByte(...) -- Model does not contain " +
                             "table data and will return Byte.MIN_VALUE");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getByte(...) -- Model does not contain " +
+                            "table data and will return Byte.MIN_VALUE");
+                            */
 
          return Byte.MIN_VALUE;
       } else {
@@ -284,9 +291,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public byte[] getBytes(int row, int column) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getBytes(...) -- Model does not contain " +
                             "table data and will return null");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getBytes(...) -- Model does not contain " +
+                            "table data and will return null");
+                            */
 
          return null;
       } else {
@@ -305,9 +316,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public char getChar(int row, int column) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getChar(...) -- Model does not contain " +
                             "table data and will return Character.MIN_VALUE");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getChar(...) -- Model does not contain " +
+                            "table data and will return Character.MIN_VALUE");
+                            */
 
          return Character.MIN_VALUE;
       } else {
@@ -326,9 +341,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public char[] getChars(int row, int column) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getChars(...) -- Model does not contain " +
                             "table data and will return null");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getChars(...) -- Model does not contain " +
+                            "table data and will return null");
+                            */
 
          return null;
       } else {
@@ -354,9 +373,12 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public Column getColumn(int position) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getColumn(...) -- Model does not contain"
                            + " table data.");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getColumn(...) -- Model does not contain"
+                           + " table data.");*/
 
          return null;
       } else {
@@ -374,9 +396,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public String getColumnComment(int position) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getColumnComment(...) -- Model does not " +
                             "contain table data -- will return null");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getColumnComment(...) -- Model does not " +
+                            "contain table data -- will return null");
+                            */
 
          return null;
       } else {
@@ -394,9 +420,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public String getColumnLabel(int position) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getColumnLabel(...) -- Model does not " +
                             "contain table data -- will return null");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getColumnLabel(...) -- Model does not " +
+                            "contain table data -- will return null");
+                            */
 
          return null;
       } else {
@@ -414,9 +444,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public int getColumnType(int position) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getColumnType(...) -- Model does not contain " +
                             " table data and will return Integer.MIN_VALUE");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getColumnType(...) -- Model does not contain " +
+                            " table data and will return Integer.MIN_VALUE");
+                            */
 
          return Integer.MIN_VALUE;
       } else {
@@ -432,9 +466,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public String getComment() {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getComment() -- Model does not contain table" +
                             " data -- will return null");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getComment() -- Model does not contain table" +
+                            " data -- will return null");
+                            */
 
          return null;
       } else {
@@ -453,9 +491,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public double getDouble(int row, int column) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getDouble(...) -- Model does not contain " +
                             "table data and will return Double.MIN_VALUE");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getDouble(...) -- Model does not contain " +
+                            "table data and will return Double.MIN_VALUE");
+                            */
 
          return Double.MIN_VALUE;
       } else {
@@ -474,9 +516,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public float getFloat(int row, int column) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getFloat(...) -- Model does not contain " +
                             "table data and will return Float.MIN_VALUE");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getFloat(...) -- Model does not contain " +
+                            "table data and will return Float.MIN_VALUE");
+                            */
 
          return Float.MIN_VALUE;
       } else {
@@ -535,9 +581,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public int getInt(int row, int column) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getInt(...) -- Model does not contain " +
                             "table data and will return Integer.MIN_VALUE");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getInt(...) -- Model does not contain " +
+                            "table data and will return Integer.MIN_VALUE");
+                            */
 
          return Integer.MIN_VALUE;
       } else {
@@ -553,9 +603,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public String getLabel() {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getLabel() -- Model does not contain table" +
                             " data -- will return null");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getLabel() -- Model does not contain table" +
+                            " data -- will return null");
+                            */
 
          return null;
       } else {
@@ -574,9 +628,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public long getLong(int row, int column) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getLong(...) -- Model does not contain table " +
                             "data and will return Long.MIN_VALUE");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getLong(...) -- Model does not contain table " +
+                            "data and will return Long.MIN_VALUE");
+                            */
 
          return Long.MIN_VALUE;
       } else {
@@ -705,9 +763,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public int getNumColumns() {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getNumColumns() -- Model does not contain " +
                             " table data -- will return Integer.MIN_VALUE");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getNumColumns() -- Model does not contain " +
+                            " table data -- will return Integer.MIN_VALUE");
+                            */
 
          return Integer.MIN_VALUE;
       } else {
@@ -723,9 +785,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public int getNumEntries() {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getNumEntries() -- Model does not contain " +
                             " table data -- will return Integer.MIN_VALUE");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getNumEntries() -- Model does not contain " +
+                            " table data -- will return Integer.MIN_VALUE");
+                            */
 
          return Integer.MIN_VALUE;
       } else {
@@ -741,9 +807,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public int getNumRows() {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getNumRows() -- Model does not contain table" +
                             " data -- will return Integer.MIN_VALUE");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getNumRows() -- Model does not contain table" +
+                            " data -- will return Integer.MIN_VALUE");
+                            */
 
          return Integer.MIN_VALUE;
       } else {
@@ -766,9 +836,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public Object getObject(int row, int column) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() + ".getObject(...) --  " +
+    	  myLogger.error("ERROR: " + getAlias() + ".getObject(...) --  " +
                             "Model does not contain table data and will " +
                             "return null");
+         /*System.out.println("ERROR: " + getAlias() + ".getObject(...) --  " +
+                            "Model does not contain table data and will " +
+                            "return null");
+                            */
 
          return null;
       } else {
@@ -852,9 +926,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public Row getRow() {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getRow(...) -- Model does not contain "
                             + " table data.");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getRow(...) -- Model does not contain "
+                            + " table data.");
+                            */
 
          return null;
       } else {
@@ -873,9 +951,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public short getShort(int row, int column) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getShort(...) -- Model does not contain " +
                             "table data and will return Short.MIN_VALUE");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getShort(...) -- Model does not contain " +
+                            "table data and will return Short.MIN_VALUE");
+                            */
 
          return Short.MIN_VALUE;
       } else {
@@ -894,9 +976,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public String getString(int row, int column) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getString(...) -- Model does not contain " +
                             "table data and will return \"\"");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getString(...) -- Model does not contain " +
+                            "table data and will return \"\"");
+                            */
 
          return "";
       } else {
@@ -914,9 +1000,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public Table getSubset(int[] rows) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getSubset(...) -- Model does not contain table" +
                             " data and will return null");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getSubset(...) -- Model does not contain table" +
+                            " data and will return null");
+                            */
 
          return null;
       } else {
@@ -935,9 +1025,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public Table getSubset(int start, int len) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getSubset(...) -- Model does not contain" +
                             " table data -- will return null");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getSubset(...) -- Model does not contain" +
+                            " table data -- will return null");
+                            */
 
          return null;
       } else {
@@ -955,9 +1049,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public Table getSubsetByReference(int[] rows) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getSubsetByReference(...) -- Model does not " +
                             "contain table data and will return null");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getSubsetByReference(...) -- Model does not " +
+                            "contain table data and will return null");
+                            */
 
          return null;
       } else {
@@ -977,9 +1075,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public Table getSubsetByReference(int start, int len) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getSubsetByReference(...) -- Model does not " +
                             "contain table data and will return null");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getSubsetByReference(...) -- Model does not " +
+                            "contain table data and will return null");
+                            */
 
          return null;
       } else {
@@ -1007,9 +1109,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public TableFactory getTableFactory() {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".getTableFactory() -- Model does not contain" +
                             " table data -- will return null");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".getTableFactory() -- Model does not contain" +
+                            " table data -- will return null");
+                            */
 
          return null;
       } else {
@@ -1025,9 +1131,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public boolean hasMissingValues() {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".hasMissingValues() -- Model does not contain " +
                             "table data and will return false");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".hasMissingValues() -- Model does not contain " +
+                            "table data and will return false");
+                            */
 
          return false;
       } else {
@@ -1047,9 +1157,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public boolean hasMissingValues(int columnIndex) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".isValueMissing(...) -- Model does not contain" +
                             " table data and will return false");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".isValueMissing(...) -- Model does not contain" +
+                            " table data and will return false");
+                            */
 
          return false;
       } else {
@@ -1081,9 +1195,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public boolean isColumnNominal(int position) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".isColumnNominal(...) -- Model does not " +
                             " contain table data -- will return false");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".isColumnNominal(...) -- Model does not " +
+                            " contain table data -- will return false");
+                            */
 
          return false;
       } else {
@@ -1101,9 +1219,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public boolean isColumnNumeric(int position) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".isColumnNumeric(...) -- Model does not contain " +
                             " table data and will return false");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".isColumnNumeric(...) -- Model does not contain " +
+                            " table data and will return false");
+                            */
 
          return false;
       } else {
@@ -1121,9 +1243,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public boolean isColumnScalar(int position) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".isColumnScalar(...) -- Model does not " +
                             " contain table data -- will return false");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".isColumnScalar(...) -- Model does not " +
+                            " contain table data -- will return false");
+                            */
 
          return false;
       } else {
@@ -1142,9 +1268,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public boolean isValueEmpty(int row, int col) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".isValueEmpty(...) -- Model does not contain " +
                             "table data and will return false");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".isValueEmpty(...) -- Model does not contain " +
+                            "table data and will return false");
+                            */
 
          return false;
       } else {
@@ -1163,9 +1293,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public boolean isValueMissing(int row, int col) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".isValueMissing(...) -- Model does not contain" +
                             " table data and will return false");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".isValueMissing(...) -- Model does not contain" +
+                            " table data and will return false");
+                            */
 
          return false;
       } else {
@@ -1182,9 +1316,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public void setColumnIsNominal(boolean value, int position) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".setColumnIsNominal(...) -- Model does " +
                             " not contain table data.");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".setColumnIsNominal(...) -- Model does " +
+                            " not contain table data.");
+                            */
       } else {
          _table.setColumnIsNominal(value, position);
       }
@@ -1199,9 +1337,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public void setColumnIsScalar(boolean value, int position) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".setColumnIsScalar(...) -- Model does not" +
                             " contain table data.");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".setColumnIsScalar(...) -- Model does not" +
+                            " contain table data.");
+                            */
       } else {
          _table.setColumnIsScalar(value, position);
       }
@@ -1215,9 +1357,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public void setComment(String comment) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".setComment(...) -- Model does not contain table "
                             + " data.");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".setComment(...) -- Model does not contain table "
+                            + " data.");
+                            */
       } else {
          _table.setComment(comment);
       }
@@ -1231,9 +1377,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public void setLabel(String labl) {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".setLabel(...) -- Model does not contain "
                             + " table data.");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".setLabel(...) -- Model does not contain "
+                            + " table data.");
+                            */
       } else {
          _table.setLabel(labl);
       }
@@ -1329,9 +1479,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public Table shallowCopy() {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".shallowCopy() -- Model does not contain table " +
                             "data and will return false");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".shallowCopy() -- Model does not contain table " +
+                            "data and will return false");
+                            */
 
          return null;
       } else {
@@ -1347,9 +1501,13 @@ public class ClusterModel extends ModelModule implements Table, Serializable {
    public ExampleTable toExampleTable() {
 
       if (_table == null) {
-         System.out.println("ERROR: " + getAlias() +
+    	  myLogger.error("ERROR: " + getAlias() +
                             ".toExampleTable() -- Model does not contain table"
                             + " data and will return null");
+         /*System.out.println("ERROR: " + getAlias() +
+                            ".toExampleTable() -- Model does not contain table"
+                            + " data and will return null");
+                            */
 
          return null;
       } else {

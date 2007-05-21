@@ -60,6 +60,7 @@ import ncsa.d2k.modules.core.discovery.cluster.ClusterModel;
 import ncsa.d2k.modules.core.discovery.cluster.util.TableCluster;
 
 import java.util.ArrayList;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -147,6 +148,12 @@ public class MinLenEncodingClusterModelEvaluator extends ComputeModule {
     *
     * @throws Exception if the input model does not contain a table.
     */
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
+
    public void doit() throws Exception {
 
       try {
@@ -242,15 +249,17 @@ public class MinLenEncodingClusterModelEvaluator extends ComputeModule {
          this.pushOutput(objectivePoint, 0);
 
          if (getVerbose()) {
-            System.out.println("MinLenEncodingClusterModelEvaluator: " +
+        	 myLogger.setDebugLoggingLevel();
+        	 myLogger.debug("MinLenEncodingClusterModelEvaluator: " +
                                "Score for this model -- " +
                                score);
+        	 myLogger.resetLoggingLevel();
          }
 
       } catch (Exception ex) {
          ex.printStackTrace();
          System.out.println(ex.getMessage());
-         System.out.println("EXCEPTION: MinLenEncodingClusterModelEvaluator." +
+         myLogger.error("EXCEPTION: MinLenEncodingClusterModelEvaluator." +
                             "doit()");
          throw ex;
       }

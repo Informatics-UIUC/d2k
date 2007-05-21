@@ -56,6 +56,7 @@ import ncsa.d2k.modules.core.discovery.cluster.util.TableMissingValuesException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeSet;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -588,6 +589,9 @@ public class HAC {
       }
    } // end method validateNonTextColumns
 
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+
    /**
     * Does the work of clustering the input table values and returns a
     * ClusterModel.
@@ -736,7 +740,7 @@ public class HAC {
                         dval[3] = new Integer(dvalcnt++);
 
                         if (!cRank.add(dval)) {
-                           System.out.println(getAlias() +
+                        	myLogger.debug(getAlias() +
                                               " (HAC): " +
                                               ">>>>>>>>>>>>>>>>>>>>> UNABLE TO ADD TO cRANK " +
                                               dval.hashCode() + " " +
@@ -749,8 +753,11 @@ public class HAC {
                } // end for
 
                if (getVerbose()) {
-                  System.out.println(getAlias() +
+             	  myLogger.setDebugLoggingLevel();//temp set to debug
+             	  myLogger.debug(getAlias() +
                                      " (HAC): INITIAL PROXIMITY MATRIX COMPLETE");
+                  myLogger.resetLoggingLevel();//re-set level to original level
+
                }
 
             } // end if
@@ -829,16 +836,16 @@ public class HAC {
                // System.out.println("Its there?: " +
                // cRank.contains(alist.get(i)));
                if (!cRank.remove(alist.get(i))) {
-                  System.out.println("We have already removed it once?: " +
-                                     cRank.contains(alist.get(i)));
-                  System.out.println("Object hash:" + alist.get(i));
-                  System.out.println(">>>>>>>>>>>>>>>>>>>>> " +
+            	   myLogger.debug("We have already removed it once?: " +
+                           cRank.contains(alist.get(i)));
+            	   myLogger.debug("Object hash:" + alist.get(i));
+            	   myLogger.debug(">>>>>>>>>>>>>>>>>>>>> " +
                                      ((Double) ((Object[]) alist.get(i))[2])
                                         .doubleValue() +
                                      " " +
                                      ((Integer) ((Object[]) alist.get(i))[3])
                                         .intValue());
-                  System.out.println();
+            	   myLogger.debug("\n");
                }
             }
 
@@ -989,8 +996,10 @@ public class HAC {
 
             for (int i = 0, n = resultClusters.size(); i < n; i++) {
                TableCluster tc = (TableCluster) resultClusters.get(i);
-               System.out.println("Cluster " + tc.getClusterLabel() +
+         	  myLogger.setDebugLoggingLevel();//temp set to debug
+         	  myLogger.debug("Cluster " + tc.getClusterLabel() +
                                   " containing " + tc.getSize() + " elements.");
+              myLogger.resetLoggingLevel();//re-set level to original level
             }
          }
          //
@@ -1004,8 +1013,6 @@ public class HAC {
       } catch (Exception ex) {
          ex.printStackTrace();
          System.out.println(ex.getMessage());
-
-         // System.out.println("EXCEPTION: HAC.doit()");
          throw ex;
       } finally {
          long end = System.currentTimeMillis();
@@ -1013,11 +1020,13 @@ public class HAC {
          if (resultClusters != null) {
 
             if (getVerbose()) {
-               System.out.println("\n" + getAlias() +
+          	  myLogger.setDebugLoggingLevel();//temp set to debug
+          	  myLogger.debug("\n" + getAlias() +
                                   " (HAC): END EXEC -- clusters built: " +
                                   resultClusters.size() + " in " +
                                   (end - m_start) /
                                      1000 + " seconds\n");
+              myLogger.resetLoggingLevel();//re-set level to original level
             }
          }
       }
