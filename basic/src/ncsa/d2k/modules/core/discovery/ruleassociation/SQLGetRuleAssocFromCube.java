@@ -25,6 +25,7 @@ import ncsa.d2k.modules.core.io.sql.*;
 import ncsa.d2k.modules.core.transform.attribute.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
+import ncsa.d2k.modules.core.util.*;
 
 public class SQLGetRuleAssocFromCube extends UIModule
         {
@@ -96,6 +97,8 @@ public class SQLGetRuleAssocFromCube extends UIModule
   private static String BLANK = "NoCodeBook";
   private static String FILLED = "WithCodeBook";
 
+  private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
   public SQLGetRuleAssocFromCube() {
   }
@@ -554,7 +557,7 @@ public void initView(ViewModule mod) {
         closeIt();
       }
     }
-
+    
     /**
      * If "Display Rule" button or "Done" button is pressed, extract rules
      * from a cube.
@@ -565,13 +568,13 @@ public void initView(ViewModule mod) {
         JOptionPane.showMessageDialog(msgBoard,
           "You must choose a code book or deselect 'Use Code Book'.", "Error",
           JOptionPane.ERROR_MESSAGE);
-        System.out.println("There is no code book selected.");
+        myLogger.debug("There is no code book selected.");
       }
       else if (tableName.getText().toString().indexOf("_CUBE")<0) {
         JOptionPane.showMessageDialog(msgBoard,
           "To extract and display rules, you must select a cube table rather than a data table.", "Error",
           JOptionPane.ERROR_MESSAGE);
-        System.out.println("A cube table is selected instead of a data table.");
+        myLogger.debug("A cube table is selected instead of a data table.");
       }
       else if (tableName.getText().length()>0) {
         // if code book is required and the code book is not retrieved yet, then get it
@@ -619,14 +622,14 @@ public void initView(ViewModule mod) {
             "There is no rule discovered. You may like to adjust " +
             "Minimum Support, Minimum Confidence and Pruning Threshold, and try again.",
             "Error", JOptionPane.ERROR_MESSAGE);
-          System.out.println("There is no rule discovered.");
+          myLogger.debug("There is no rule discovered.");
         }
       }
       else if (tableName.getText().length()<=0) { // The user has not chosen a table yet
         JOptionPane.showMessageDialog(msgBoard,
           "You must choose a table first.", "Error",
           JOptionPane.ERROR_MESSAGE);
-        System.out.println("There is no table selected.");
+        myLogger.debug("There is no table selected.");
       }
     }
 
@@ -668,7 +671,7 @@ public void initView(ViewModule mod) {
         JOptionPane.showMessageDialog(msgBoard,
           "There is no code book in the database", "Error",
           JOptionPane.ERROR_MESSAGE);
-        System.out.println("There is no any code book in the database.");
+        myLogger.debug("There is no any code book in the database.");
       }
       else {
         bt = new BrowseTables(cw, v);
@@ -689,7 +692,7 @@ public void initView(ViewModule mod) {
       JOptionPane.showMessageDialog(msgBoard,
         e.getMessage(), "Error",
         JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occurred in doBookBrowse.");
+      myLogger.error("Error occurred in doBookBrowse.");
     }
   }
 
@@ -741,7 +744,7 @@ public void initView(ViewModule mod) {
       JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occurred in getItemLabels.");
+      myLogger.error("Error occurred in getItemLabels.");
     }
   }
 
@@ -749,11 +752,6 @@ public void initView(ViewModule mod) {
    * @param aTable the name of the table
    */
   protected void getColNames(String aTable) {
-    Statement nameStmt;
-    Statement cntStmt;
-    ResultSet nameSet;
-    ResultSet cntSet;
-    int colIdx = 0;
     colNames = new ArrayList();
     colCnt = 0;
     DatabaseMetaData metadata = null;
@@ -775,7 +773,7 @@ public void initView(ViewModule mod) {
       JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occurred in getColNames.");
+      myLogger.error("Error occurred in getColNames.");
     }
   }
 
@@ -797,10 +795,8 @@ public void initView(ViewModule mod) {
     int cnt;
     int itemIdx;
     int headItemIdx;
-    int bodyItemIdx;
     double support;
-    double parentSupport;
-    double confidence;
+
     try {
       con = cw.getConnection();
       // the row with set_size=null keep the total count of the data table
@@ -809,7 +805,6 @@ public void initView(ViewModule mod) {
       totalSet = totalStmt.executeQuery(totalQry);
       totalSet.next();
       totalRow = totalSet.getInt(1);
-      //System.out.println("totalRow is " + totalRow);
 
       String cubeQry = new String("select * from " + tableName.getText() + " order by set_size");
       cubeStmt = con.createStatement ();
@@ -891,7 +886,7 @@ public void initView(ViewModule mod) {
       JOptionPane.showMessageDialog(msgBoard,
                 e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
-      System.out.println("Error occurred in extractRules.");
+      myLogger.error("Error occurred in extractRules.");
     }
   }
 
@@ -911,7 +906,7 @@ public void initView(ViewModule mod) {
     JOptionPane.showMessageDialog(msgBoard,
                 "Can find the matched item label", "Error",
                 JOptionPane.ERROR_MESSAGE);
-    System.out.println("Cannot find the matched item label.");
+    myLogger.debug("Cannot find the matched item label.");
     return (-1);
   }
 
@@ -941,11 +936,11 @@ public void initView(ViewModule mod) {
       }
     }
     // should never get to this point. Something is wrong!
-    System.out.println("Cannot find the index for the frequent item set: ");
+    myLogger.debug("Cannot find the index for the frequent item set: ");
     for (int arrayIdx = 0; arrayIdx < indexes.size(); arrayIdx++) {
-      System.out.print(indexes.get(arrayIdx) + ", ");
+    	myLogger.debug(indexes.get(arrayIdx) + ", ");
     }
-    System.out.println(" ");
+    myLogger.debug(" ");;
     return (-1);
   }
 
@@ -1113,7 +1108,6 @@ public void initView(ViewModule mod) {
   /** convert ArrayList to table
    */
   protected void convertToRuleTable() {
-    //System.out.println("the size of finalRules for association is " + finalRules.size());
     Column[] cols = new Column[4];
     cols[0] = new ObjectColumn(finalRules.size());
     cols[1] = new ObjectColumn(finalRules.size());
@@ -1124,7 +1118,6 @@ public void initView(ViewModule mod) {
     cols[2].setLabel("Support");
     cols[3].setLabel("Confidence");
     ruleTable = new MutableTableImpl(cols);
-    String tmpVal;
     for (int ruleIdx = 0; ruleIdx < finalRules.size(); ruleIdx++) {
       Rule aRule = (Rule)finalRules.get(ruleIdx);
       ruleTable.setInt(aRule.headIdx,ruleIdx,0);
@@ -1135,63 +1128,64 @@ public void initView(ViewModule mod) {
   }
 
   public void printFinalRules() {
-    System.out.println("final rules are: ");
+	  myLogger.debug("final rules are: ");
     for (int m = 0; m < finalRules.size(); m++) {
       Rule aRule = (Rule)finalRules.get(m);
-      System.out.print(aRule.headIdx + ", ");
-      System.out.print(aRule.bodyIdx + ", ");
-      System.out.print(aRule.support + ", ");
-      System.out.print(aRule.confidence + ", ");
-      System.out.println(" ----- ");
+      myLogger.debug(aRule.headIdx + ", ");
+      myLogger.debug(aRule.headIdx + ", "
+    		          +aRule.bodyIdx+ ", "
+    		          +aRule.support+ ", "
+    		          +aRule.confidence + ", ");
     }
   }
 
   public void printAllRules() {
-    System.out.println("All rules are: ");
+	  myLogger.debug("All rules are: ");
     for (int m = 0; m < allRules.size(); m++) {
       Rule aRule = (Rule)allRules.get(m);
-      System.out.print(aRule.headIdx + ", ");
-      System.out.print(aRule.bodyIdx + ", ");
-      System.out.print(aRule.support + ", ");
-      System.out.print(aRule.confidence + ", ");
-      System.out.println(" ----- ");
+      myLogger.debug(aRule.headIdx + ", "
+                     +aRule.bodyIdx + ", "
+                     +aRule.support + ", "
+                     +aRule.confidence + ", "
+                     +" ----- ");      
     }
   }
 
   public void printFreqItemSets() {
-    System.out.println("Frequent Item Sets: ");
+	  myLogger.debug("Frequent Item Sets: ");
+
     for (int m = 0; m < freqItemSets.size(); m++) {
       FreqItemSet aSet = (FreqItemSet)freqItemSets.get(m);
       for (int n = 0; n < aSet.items.size(); n++) {
-        System.out.print(aSet.items.get(n) + ", ");
+    	  myLogger.debug(aSet.items.get(n) + ", ");
       }
-      System.out.println(" ");
-      System.out.println("number of items is " + aSet.numberOfItems);
-      System.out.println("support is " + aSet.support);
+      myLogger.debug(" "
+    		  		 +"number of items is " + aSet.numberOfItems
+      				 +"support is " + aSet.support);
     }
   }
 
   public void printRuleTable() {
-    System.out.println("Rule table is: ");
+	  myLogger.debug("Rule table is: ");
     for (int m = 0; m < ruleTable.getNumRows(); m++) {
-      System.out.print(ruleTable.getInt(m,0) + ", ");
-      System.out.print(ruleTable.getInt(m,1) + ", ");
-      System.out.print(ruleTable.getDouble(m,2) + ", ");
-      System.out.println(ruleTable.getDouble(m,3));
+        myLogger.debug(ruleTable.getInt(m,0) + ", "
+        			   +ruleTable.getInt(m,1) + ", "
+        			   +ruleTable.getDouble(m,2) + ", "
+        			   +ruleTable.getDouble(m,3));
     }
   }
 
   public void printArrayList(ArrayList al) {
-    System.out.println("Array list: ");
+	  myLogger.debug("Array list: ");
     for (int i = 0; i < al.size(); i++) {
-      System.out.println("item" + i + " is " + al.get(i).toString() + ", ");
+    	myLogger.debug("item" + i + " is " + al.get(i).toString() + ", ");
     }
   }
 
   public void printItemRange() {
-    System.out.println("target item range list: ");
+	  myLogger.debug("target item range list: ");
     for (int i = 0; i < itemRange.length; i++) {
-      System.out.println("target " + i + " is " + itemRange[i][0] + " and " + itemRange[i][1]);
+    	myLogger.debug("target " + i + " is " + itemRange[i][0] + " and " + itemRange[i][1]);
     }
   }
 

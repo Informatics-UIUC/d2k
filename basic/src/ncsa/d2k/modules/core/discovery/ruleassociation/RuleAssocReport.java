@@ -18,6 +18,7 @@ import javax.swing.table.*;
 import ncsa.d2k.core.modules.*;
 import ncsa.d2k.userviews.swing.*;
 import ncsa.gui.*;
+import ncsa.d2k.modules.core.util.*;
 
 public class RuleAssocReport extends UIModule {
   File file;
@@ -356,24 +357,27 @@ public void initView(ViewModule mod) {
   protected void closeIt() {
     executionManager.moduleDone(this);
   }
+  
+  private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
   protected void printItemLabels() {
-    System.out.println("item label list in RuleAssocReport: ");
+	  myLogger.debug("item label list in RuleAssocReport: ");
     for (int i = 0; i < itemLabels.size(); i++) {
-      System.out.println("item" + i + " is " + itemLabels.get(i).toString() + ", ");
+    	myLogger.debug("item" + i + " is " + itemLabels.get(i).toString() + ", ");
     }
   }
 
   public void printFreqItemSets() {
-    System.out.println("Frequent Item Sets: ");
+	  myLogger.debug("Frequent Item Sets: ");
     for (int m = 0; m < freqItemSets.size(); m++) {
       FreqItemSet aSet = (FreqItemSet)freqItemSets.get(m);
       for (int n = 0; n < aSet.items.size(); n++) {
-        System.out.print(aSet.items.get(n) + ", ");
+    	  myLogger.debug(aSet.items.get(n) + ", ");
       }
-      System.out.println(" ");
-      System.out.println("number of items is " + aSet.numberOfItems);
-      System.out.println("support is " + aSet.support);
+      myLogger.debug(" \n"+
+    		            "number of items is " + aSet.numberOfItems +"n"+
+    		            "support is " + aSet.support);
     }
   }
 
