@@ -50,6 +50,7 @@ import ncsa.d2k.modules.core.prediction.decisiontree.ViewableDTNode;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -190,6 +191,9 @@ public abstract class DecisionForestNode implements ViewableDTNode,
          ((DecisionForestNode) children.get(i)).clear();
       }
    }
+   
+   private D2KModuleLogger myLogger = 
+	   D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
 
    /**
     * Evaluate a record from the data set. If this is a leaf, return the label
@@ -253,7 +257,7 @@ public abstract class DecisionForestNode implements ViewableDTNode,
          } // end for
 
          // should never get here
-         System.out.println("something is wrong in evaluate");
+         myLogger.fatal("something is wrong in evaluate");
 
          return node.label;
       } // end if

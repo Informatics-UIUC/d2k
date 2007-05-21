@@ -66,6 +66,7 @@ import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import ncsa.d2k.modules.core.util.*;
 
 
 /**
@@ -208,6 +209,12 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     * Creates a new SQLRainForestOPT object.
     */
    public SQLRainForestOPT() { }
+   
+   private D2KModuleLogger myLogger;
+   
+   public void beginExecution() {
+	  myLogger = D2KModuleLoggerFactory.getD2KModuleLogger(this.getClass());
+   }
 
    //~ Methods *****************************************************************
 
@@ -894,7 +901,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
          JOptionPane.showMessageDialog(null,
                                        e.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
-         System.out.println("Error occurred in createDataTable.");
+         myLogger.error("Error occurred in createDataTable.");
 
          return null;
       }
@@ -1031,7 +1038,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
          JOptionPane.showMessageDialog(null,
                                        e.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
-         System.out.println("Error occurred in extractDataFromDB.");
+         myLogger.error("Error occurred in extractDataFromDB.");
 
          return null;
       }
@@ -1164,7 +1171,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
          JOptionPane.showMessageDialog(null,
                                        e.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
-         System.out.println("Error occurred in getClassValues.");
+         myLogger.error("Error occurred in getClassValues.");
 
          return null;
       }
@@ -1215,8 +1222,6 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
    private ColSplit getHighestGainAttribute(ArrayList path, String[] availCols,
                                             NodeInfo aNodeInfo) {
 
-      // int topCol = 0;
-      ArrayList[] avcs = aNodeInfo.avcSets;
       double highestGain = Double.MIN_VALUE;
       ColSplit retVal = new ColSplit();
 
@@ -1385,7 +1390,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
          JOptionPane.showMessageDialog(null,
                                        e.getMessage(), "Error",
                                        JOptionPane.ERROR_MESSAGE);
-         System.out.println("Error occurred in getUniqValue (db mode).");
+         myLogger.error("Error occurred in getUniqValue (db mode).");
 
          return null;
       }
@@ -1613,7 +1618,6 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     * @return true if the column is a numeric column, false otherwise
     */
    private boolean isScalar(String aColName) {
-      Column column;
 
       for (int colIdx = 0; colIdx < meta.getNumColumns(); colIdx++) {
 
@@ -2014,16 +2018,16 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
    private void printArrayList(ArrayList al) {
 
       if (al.size() == 0) {
-         System.out.println("No value in ArrayList");
+    	  myLogger.error("No value in ArrayList");
       } else {
-         System.out.println("ArrayList is: ");
+    	  myLogger.debug("ArrayList is: ");
 
          for (int i = 0; i < al.size(); i++) {
-            System.out.print(al.get(i) + ",");
+        	 myLogger.debug(al.get(i) + ",");
          }
+         myLogger.debug("\n");
       }
 
-      System.out.println();
    }
 
    /**
@@ -2032,30 +2036,30 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     * @param avcs array of avc sets
     */
    private void printAvcSets(ArrayList[] avcs) {
-      System.out.println("avcs.length is " + avcs.length);
+	   myLogger.debug("avcs.length is " + avcs.length);
 
       for (int i = 0; i < avcs.length; i++) {
          ArrayList avc = avcs[i];
 
          if (avc.size() == 0) {
-            System.out.println("No value in ArrayList");
+        	 myLogger.error("No value in ArrayList");
          } else {
-            System.out.println("avcSets is: ");
+        	 myLogger.debug("avcSets is: ");
 
             for (int j = 0; j < avc.size(); j++) {
                AvcSet aSet = (AvcSet) avc.get(j);
-               System.out.println("avcSets[" + j + "]:");
-               System.out.print("  attrName - " + aSet.attrName);
-               System.out.print("  lowValue - " + aSet.lowValue);
-               System.out.print("  highValue - " + aSet.highValue);
-               System.out.print("  classLabel - " + aSet.classLabel);
-               System.out.print("  count - " + aSet.count);
-               System.out.println(" ");
+               myLogger.debug("avcSets[" + j + "]:");
+               myLogger.debug("  attrName - " + aSet.attrName);
+               myLogger.debug("  lowValue - " + aSet.lowValue);
+               myLogger.debug("  highValue - " + aSet.highValue);
+               myLogger.debug("  classLabel - " + aSet.classLabel);
+               myLogger.debug("  count - " + aSet.count);
+               myLogger.debug(" ");
             }
+            myLogger.debug("\n");
          }
       }
 
-      System.out.println();
    }
 
    /**
@@ -2066,16 +2070,16 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
    private void printIntArray(int[] intArray) {
 
       if (intArray.length == 0) {
-         System.out.println("No value in int Array");
+    	  myLogger.error("No value in int Array");
       } else {
-         System.out.println("int array is: ");
+    	  myLogger.debug("int array is: ");
 
          for (int i = 0; i < intArray.length; i++) {
-            System.out.print(intArray[i] + ",");
+        	 myLogger.debug(intArray[i] + ",");
          }
+         myLogger.debug("\n");
       }
 
-      System.out.println();
    }
 
    /**
@@ -2086,16 +2090,16 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
    private void printStringArray(String[] sa) {
 
       if (sa.length == 0) {
-         System.out.println("No value in Array");
+    	  myLogger.error("No value in Array");
       } else {
-         System.out.println("String Array is: ");
+    	  myLogger.debug("String Array is: ");
 
          for (int i = 0; i < sa.length; i++) {
-            System.out.print(sa[i] + ",");
+        	 myLogger.debug(sa[i] + ",");
          }
+         myLogger.debug("\n");
       }
 
-      System.out.println();
    }
 
    /**
@@ -2104,15 +2108,14 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
     * @param table table.
     */
    private void printTable(MutableTableImpl table) {
-      System.out.println("data table: ");
+	   myLogger.debug("data table: ");;
 
       for (int rowIdx = 0; rowIdx < table.getNumRows(); rowIdx++) {
 
          for (int colIdx = 0; colIdx < table.getNumColumns(); colIdx++) {
-            System.out.print(table.getObject(rowIdx, colIdx) + ", ");
+        	 myLogger.debug(table.getObject(rowIdx, colIdx) + ", ");;
          }
-
-         System.out.println(" ");
+         myLogger.debug("\n");
       }
    }
 
@@ -2339,7 +2342,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
       double currSplit = Double.MIN_VALUE;
       String newLowValue;
       String newHighValue;
-      String newAttrValue = " ";
+ //     String newAttrValue = " ";
       boolean done = false;
       int colIdx = getColIdx(attrName);
       ArrayList uniqValue = (ArrayList) uniqValues[colIdx];
@@ -2557,8 +2560,8 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
                                        ": You cannot choose a numeric column as the output column",
                                        "Error",
                                        JOptionPane.ERROR_MESSAGE);
-         System.out.println(getAlias() +
-                            ": You cannot choose a numeric column as the output column.");
+         myLogger.error(getAlias() +
+                 ": You cannot choose a numeric column as the output column.");
       } else {
          outputCol = outputFeatures[0];
          classColName = meta.getColumnLabel(outputCol);
@@ -2626,7 +2629,7 @@ public class SQLRainForestOPT extends ReentrantComputeModule {
             JOptionPane.showMessageDialog(null,
                                           "No data", "Error",
                                           JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error occurred in doit, no data.");
+            myLogger.error("Error occurred in doit, no data.");
          }
       } // end if
    } // end method doit
