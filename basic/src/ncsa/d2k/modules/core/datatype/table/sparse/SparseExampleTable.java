@@ -46,7 +46,7 @@ public class SparseExampleTable
   /**the indicies of the attributes that are inputs (to the model). */
   protected int[] outputColumns = new int[0];
 
-  protected SparseExampleTable() {}
+  public SparseExampleTable() {}
 
   /* Instantiate this table with the content of <codE>table</code>
    this Table and <code>table</code> will share all references.

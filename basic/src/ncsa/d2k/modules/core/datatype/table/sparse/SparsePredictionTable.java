@@ -17,13 +17,7 @@ import  java.util.*;
  * Columns, s.t. for each output Column there is a prediction Column of the same
  * type and size.
  *
- * The prediction Columns' internal representation is via a SparseMutableTable,
- * since a SparseExmapleTable is not mutable and the prediction columns are
- * needed to be mutated by their nature.
- *
- * To the end user, the outside world the prediction Columns are an integral
- * part of this table. The indices of the prediction Columns, as the outside
- * world sees them are defined by <code>predictions</code>.
+ * 
  *
  */
 public class SparsePredictionTable extends SparseSubsetTable

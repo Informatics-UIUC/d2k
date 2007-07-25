@@ -17,24 +17,8 @@ import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
 
 /**
  * SparseTable is a type of Table that is sparsely populated.
- * Thus the internal representation of SparseTable is as following:
- * each column that actually has elements in it (hereinafter "valid column") is
- * represented by a hashmap (an int to primitive type or object hashmap).
- *
- * The entries of the sparse table are the values of such hashmap and they are mapped
- * to their row number (the key).
- *
- * All the columns are being held in a nother int to object hashmap.
- * the keys are integers - the column number and the values are the hashmaps.
- *
- * SparseTable holds another int to object hashmap which represents the valid
- * rows (rows that have elements in them).
- *
- * Each row is represented by a Set of integers, which are redirections to the
- * indices of valid columns in the Table. for each element from column j in row i,
- * the redirection k to column j is part of the Set.
- *
- * Each row (a Set object) is mapped to an int, the row number, in the hashmap.
+ * Thus the internal representation uses HashMaps that map primitive types to objects or another priomitive type.
+ * This results in a relatively light weight Table, comparing to regular Table that allocates arrays for the data.
  *
  * Regarding missing values.  Missing values are treated just as they are in any other
  * table implementations.  Missing values however are not the same as "default" values
