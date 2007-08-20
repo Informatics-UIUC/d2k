@@ -27,8 +27,8 @@ YXRpb24uUnVsZUFzc29jUmVwb3J0eA==" label="apriori.itn">
       <b>Rule Association Using Apriori</b>
     </p>
     <p>
-      Apriori is one of many rule association agorithms. Rule association is 
-      an unsupervised learning approach that seeks to discover signifcant 
+      Apriori is one of many rule association algorithms. Rule association is 
+      an unsupervised learning approach that seeks to discover significant 
       relationships among attributes in a data set. The visualization of these 
       relationships are represented at two levels, structural and 
       quantitative. At the structural level, the model will indicate which 
@@ -42,7 +42,7 @@ YXRpb24uUnVsZUFzc29jUmVwb3J0eA==" label="apriori.itn">
       Two of the main quantitative measures are support and confidence. Given 
       if X, then Y. Support is the percent of the number of records that 
       contain both X and Y out of the total number of records. Confidence is 
-      the percent of the number of records taht contain both X and Y out of 
+      the percent of the number of records that contain both X and Y out of 
       the number of records that contain X.
     </p>
     <p>
@@ -158,7 +158,7 @@ Generate Verbose Output</i> property is true, then the module will write
     <p>
       Once execution has completed the status bar will disappear. The pane of 
       the Generated Visualization Session Pane and the Generated Models 
-      Session Pane will turn red when visualization and model glpyhs have been 
+      Session Pane will turn red when visualization and model glyphs have been 
       created.
     </p>
     <p>
