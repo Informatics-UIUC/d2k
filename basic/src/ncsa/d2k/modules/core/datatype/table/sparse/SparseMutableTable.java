@@ -505,7 +505,12 @@ public class SparseMutableTable extends SparseTable
       // note: this is slightly simpler than setColumn, because we know
       // the the rows sets will never have this index
 
-      AbstractSparseColumn col = getColumnAsSparse(newColumn);
+      AbstractSparseColumn col ;
+      if(newColumn instanceof AbstractSparseColumn){
+    	  col = (AbstractSparseColumn)newColumn;
+      }else{
+    	  col = getColumnAsSparse(newColumn);
+      }
 
       _columns.add(col);
       int index = _columns.size()-1;
