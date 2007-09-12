@@ -7,7 +7,7 @@
 
 # Set `TopLevelAdmin' to `yes' to create a CVS directory at the top
 # level of the new working directory when using the `cvs checkout'
-# command.
+#  command.
 # TopLevelAdmin=no
 
 LockDir=/part1/ALG/locks/d2karchive
