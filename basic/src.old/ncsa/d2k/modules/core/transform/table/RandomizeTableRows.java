@@ -10,7 +10,7 @@ import ncsa.d2k.modules.core.datatype.table.basic.*;
 */
 public class RandomizeTableRows extends ncsa.d2k.core.modules.DataPrepModule
 {
-	/**
+	/**Bruce Comment
 		This pair returns the description of the various inputs.
 		@return the description of the indexed input.
 	*/
