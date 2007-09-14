@@ -1,5 +1,5 @@
-/* 
- * $Header$
+/*
+ * $Header: /cvsroot/d2kbasic/basic/src/ncsa/d2k/modules/core/util/D2KModuleLogger.java,v 1.1 2007/05/18 15:55:09 mcgrath Exp $
  *
  * ===================================================================
  *
@@ -53,6 +53,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
+import java.io.Serializable;
 
 /**
  * Description of class D2KModuleLogger.
@@ -60,7 +61,7 @@ import org.apache.log4j.PatternLayout;
  * @author  $Author$
  * @version $Revision$, $Date$
  */
-public class D2KModuleLogger {
+public class D2KModuleLogger implements Serializable {
 
    //~ Instance fields *********************************************************
 
@@ -77,13 +78,13 @@ public class D2KModuleLogger {
    private boolean logToFile = UserPreferences.thisPreference.getLogToFile();
 
    /** Description of field myLogger. */
-   private Logger myLogger = null;
+   private transient Logger myLogger = null;
 
    /** Description of field pl. */
-   public PatternLayout pl = new PatternLayout(" %-5p %c - %m%n");
+   public transient PatternLayout pl = new PatternLayout(" %-5p %c - %m%n");
    
-   private FileAppender fapp = null;
-   private ConsoleAppender capp = null;
+   private transient FileAppender fapp = null;
+   private transient ConsoleAppender capp = null;
 
    //~ Constructors ************************************************************
 
@@ -93,7 +94,7 @@ public class D2KModuleLogger {
     *
     * @param forClass Description of parameter forClass.
     */
-   public D2KModuleLogger(Class forClass) {
+   public D2KModuleLogger(final Class forClass) {
       new D2KModuleLogger(forClass, null);
    }
 
@@ -103,7 +104,7 @@ public class D2KModuleLogger {
     * @param forClass Description of parameter forClass.
     * @param format   Description of parameter format.
     */
-   public D2KModuleLogger(Class forClass, String format) {
+   public D2KModuleLogger(final Class forClass, final String format) {
 
       if (format != null) {
          setPatternlayout(format);
@@ -121,7 +122,7 @@ public class D2KModuleLogger {
     *
     * @return Description of return value.
     */
-   private Logger initLogger(Class classname) {
+   private Logger initLogger(final Class classname) {
       myLogger = Logger.getLogger(classname);
      
       //be careful about this guy? Will it remove all setting that is previous done
@@ -132,7 +133,7 @@ public class D2KModuleLogger {
       try {
           fapp = new FileAppender(pl,
                   UserPreferences.thisPreference
-                  .getLogFileName()); 
+                  .getLogFileName());
           capp = new ConsoleAppender(pl);
          if (logToFile) {
             myLogger.addAppender(fapp);
@@ -147,68 +148,68 @@ public class D2KModuleLogger {
       return myLogger;
    } // end method initLogger
 
-   private void setLevelCase(int lc)
+   private void setLevelCase(final int lc)
    {
-	      switch (lc) {
+              switch (lc) {
 
-	         case (RootModule.DEBUG_LEVEL):
-	            myLogger.setLevel(Level.DEBUG);
-	            break;
-	         case (RootModule.INFO_LEVEL):
-	            myLogger.setLevel(Level.INFO);
-	            break;
-	         case (RootModule.WARN_LEVEL):
-	            myLogger.setLevel(Level.WARN);
-	            break;
-	         case (RootModule.ERROR_LEVEL):
-	            myLogger.setLevel(Level.ERROR);
-	            break;
-	         case (RootModule.FATAL_LEVEL):
-	            myLogger.setLevel(Level.FATAL);
-	            break;
-	         case (5)://the case for turning off logger
-	        	 myLogger.setLevel(Level.OFF);
-	            break;
-	         default:
-	            myLogger.setLevel(Level.WARN);
-	      }
+                 case (RootModule.DEBUG_LEVEL):
+                    myLogger.setLevel(Level.DEBUG);
+                    break;
+                 case (RootModule.INFO_LEVEL):
+                    myLogger.setLevel(Level.INFO);
+                    break;
+                 case (RootModule.WARN_LEVEL):
+                    myLogger.setLevel(Level.WARN);
+                    break;
+                 case (RootModule.ERROR_LEVEL):
+                    myLogger.setLevel(Level.ERROR);
+                    break;
+                 case (RootModule.FATAL_LEVEL):
+                    myLogger.setLevel(Level.FATAL);
+                    break;
+                 case (5)://the case for turning off logger
+                         myLogger.setLevel(Level.OFF);
+                    break;
+                 default:
+                    myLogger.setLevel(Level.WARN);
+              }
    }
     
-   public void setLoggingLevel(int l){
-	   loggingLevel=l;//set the level for this D2KModuleLogger class
-//	   if (l != 5){//not the case of Level.OFF
-		   setLevelCase(l);//set the level for myLogger in D2kmoduleLogger class
-//	   }
+   public void setLoggingLevel(final int l){
+           loggingLevel=l;//set the level for this D2KModuleLogger class
+//         if (l != 5){//not the case of Level.OFF
+                   setLevelCase(l);//set the level for myLogger in D2kmoduleLogger class
+//         }
    }
-	   
+           
    public int getLoggingLevel(){
-	   return loggingLevel;
+           return loggingLevel;
    }
 
    public void setDebugLoggingLevel()
    {
-	   myLogger.setLevel(Level.DEBUG);
+           myLogger.setLevel(Level.DEBUG);
    }
    public void setInfoLoggingLevel()
    {
-	   myLogger.setLevel(Level.INFO);
+           myLogger.setLevel(Level.INFO);
    }
    public void setWarnLoggingLevel()
    {
-	   myLogger.setLevel(Level.WARN);
+           myLogger.setLevel(Level.WARN);
    }
    public void setErrorLoggingLevel()
    {
-	   myLogger.setLevel(Level.ERROR);
+           myLogger.setLevel(Level.ERROR);
    }
    public void setFatalLoggingLevel()
    {
-	   myLogger.setLevel(Level.FATAL);
+           myLogger.setLevel(Level.FATAL);
    }
    
    public void resetLoggingLevel()
    {
-	      setLevelCase(loggingLevel);
+              setLevelCase(loggingLevel);
    }
    
    /**
@@ -216,21 +217,21 @@ public class D2KModuleLogger {
     *
     * @param message Description of parameter message.
     */
-   public void debug(Object message) { myLogger.debug(message); }
+   public void debug(final Object message) { myLogger.debug(message); }
 
    /**
     * Description of method info.
     *
     * @param message Description of parameter message.
     */
-   public void info(Object message) { myLogger.info(message); }
+   public void info(final Object message) { myLogger.info(message); }
 
    /**
     * Description of method warn.
     *
     * @param message Description of parameter message.
     */
-   public void warn(Object message) { myLogger.warn(message); }
+   public void warn(final Object message) { myLogger.warn(message); }
 
 
    /**
@@ -238,48 +239,48 @@ public class D2KModuleLogger {
     *
     * @param message Description of parameter message.
     */
-   public void error(Object message) { myLogger.error(message); }
+   public void error(final Object message) { myLogger.error(message); }
 
    /**
     * Description of method fatal.
     *
     * @param message Description of parameter message.
     */
-   public void fatal(Object message) { myLogger.fatal(message); }
+   public void fatal(final Object message) { myLogger.fatal(message); }
 
    /**
     * user can set layout?
     *
     * @param pattern Description of parameter pattern.
     */
-   public void setPatternlayout(String pattern) {
- 	   if (myLogger == null)//myLogger has not been initialized
-	   {
-		   pl = new PatternLayout(pattern);		   		   
-	   }
- 	   /*else myLogger has already been initialized, 
- 	    * user need to temporarily set the pattern
- 	    * The question is, how does user retrieve the previous appenders?
- 	    * Following part may not work fine at this moment,
- 	    *   or even not logical
- 	    * Need further revision
- 	    * */
- 	   else 
-	   {
-		   myLogger.removeAllAppenders();
-		   PatternLayout newpl = new PatternLayout(pattern);
-		   try {
-			   if (logToFile) {
-				   myLogger.addAppender(new FileAppender(newpl,
-						   UserPreferences.thisPreference
-						   .getLogFileName()));
-				   }
-			   if (logToConsole) {
-				   myLogger.addAppender(new ConsoleAppender(newpl));
-				   }
-			   } catch (Exception e) { }
-	   }
-    		  
+   public void setPatternlayout(final String pattern) {
+           if (myLogger == null)//myLogger has not been initialized
+           {
+                   pl = new PatternLayout(pattern);
+           }
+           /*else myLogger has already been initialized,
+            * user need to temporarily set the pattern
+            * The question is, how does user retrieve the previous appenders?
+            * Following part may not work fine at this moment,
+            *   or even not logical
+            * Need further revision
+            * */
+           else
+           {
+                   myLogger.removeAllAppenders();
+                   PatternLayout newpl = new PatternLayout(pattern);
+                   try {
+                           if (logToFile) {
+                                   myLogger.addAppender(new FileAppender(newpl,
+                                                   UserPreferences.thisPreference
+                                                   .getLogFileName()));
+                                   }
+                           if (logToConsole) {
+                                   myLogger.addAppender(new ConsoleAppender(newpl));
+                                   }
+                           } catch (Exception e) { }
+           }
+                  
       // reset pattern for the logger? look up
   //    this.setPatternlayout(pl.toString());
    }
