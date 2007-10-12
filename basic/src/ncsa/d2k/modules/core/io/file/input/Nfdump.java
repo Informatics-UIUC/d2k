@@ -380,11 +380,13 @@ public class Nfdump extends InputModule {
     }
     
     private String dirName(String s) {
-        String [] parts = s.split(java.io.File.separator);
+        /*String [] parts = s.split(java.io.File.separator);
         String dir = new String();
         for (int i = 0; i < parts.length - 1; i++) {
             dir += parts[i] + java.io.File.separator;
-        }
+        }*/
+    	int index = s.lastIndexOf(java.io.File.separator);
+    	String dir = s.substring(0, index+1);
         return dir; 
     }
 }
