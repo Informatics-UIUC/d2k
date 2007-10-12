@@ -1,5 +1,5 @@
 /*
- * $Header$
+ * $Header: /cvsroot/d2kbasic/basic/src/ncsa/d2k/modules/core/prediction/svm/SVMModel_MultiClass.java,v 1.1 2007/01/31 16:52:11 vered Exp $
  *
  * ===================================================================
  *
@@ -80,6 +80,8 @@ public final class SVMModel_MultiClass extends PredictionModelModule
 
    /** The actual SVM stored in its native class. */
    private svm_model[] models;
+   
+   public svm_model[] getModels(){return models;}
 
    //~ Constructors ************************************************************
 
