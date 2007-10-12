@@ -505,6 +505,9 @@ public class SparseMutableTable extends SparseTable
       // note: this is slightly simpler than setColumn, because we know
       // the the rows sets will never have this index
 
+    	
+    	//Vered Goren: no need to copy the column all over again if it is already sparse.
+    	//this will save run time.
       AbstractSparseColumn col ;
       if(newColumn instanceof AbstractSparseColumn){
     	  col = (AbstractSparseColumn)newColumn;
