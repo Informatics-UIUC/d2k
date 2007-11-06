@@ -54,6 +54,7 @@ public class Nfdump extends InputModule {
         Process p = rt.exec(cmd);
         
         // Stream dataObject to nfdump's stdin.
+        try{
         NfdumpStdinThread tIn = new NfdumpStdinThread(p, dataObject.getInputStream());
         
         // Stream nfdump's stdout to System.out.
@@ -61,8 +62,13 @@ public class Nfdump extends InputModule {
         
         tIn.start();
         tOut.start();
-        
+        }catch(Exception e){
+        	String msg = this.getAlias() + ": Failed to get input stream for the following data " +
+        	"object proxy:\n" + dataObject.toString();
+        	throw new Exception ( msg, e);
+        }
         int e = p.waitFor();
+        
         if (e != 0) {
             throw new Exception(getAlias() + ": nfdump execution failed.");
         }
