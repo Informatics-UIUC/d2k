@@ -644,5 +644,12 @@ public abstract class DataObjectProxy {
     * @throws Exception Description of exception Exception.
     */
    public Object searchMeta() throws Exception { return null; }
+   public String toString(){
+	   String str = this.getClass().getName() + ": <URL :: " +
+	   this.getURL().toString() + " > <username :: " + this.getUsername() +
+	   " > < password :: " + this.getPassword() + " > ";
+	   
+	   return str;
+   }
 
 } // end class DataObjectProxy

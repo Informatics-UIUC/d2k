@@ -977,5 +977,5 @@ public class LocalDataObjectProxyImpl extends DataObjectProxy {
 
    } // end method uploadDir
 
-
+   
 } // end class LocalDataObjectProxyImpl
