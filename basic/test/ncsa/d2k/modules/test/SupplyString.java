@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.test;
 
-import ncsa.d2k.core.modules.*;
+import ncsa.d2k.core.modules.InputModule;
+import ncsa.d2k.core.modules.PropertyDescription;
 
 public class SupplyString extends InputModule {
 
