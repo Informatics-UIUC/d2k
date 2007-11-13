@@ -3,8 +3,11 @@
    <property file="build.properties" />    
    <property name="CLASSES" value="modules" />
    <property name="SOURCE" value="src" />
+	<property name="TEST" value="test" />
    <property name="LIB" value="lib" />
     <property name="BUILD" value="build" />
+	<property name="RESOURCES" value = "resources" />
+	<property name="MODULES" value = "modules" />
     <property name="_version" value="4.1.2" />
 
     <path id="compile.classpath">
@@ -40,13 +43,16 @@
    
    <target name="compile">
       <mkdir dir="${CLASSES}" />
-      <javac srcdir="${SOURCE}" destdir="${CLASSES}" source="1.4" target="1.4" debug="off" optimize="on" fork="true" memoryMaximumSize="128M">
+      <javac srcdir="${SOURCE}" destdir="${CLASSES}" source="1.5" target="1.5" debug="off" optimize="on" fork="true" memoryMaximumSize="128M">
          <classpath refid="compile.classpath"/>
       </javac>
+   	<javac srcdir="${TEST}" destdir="${CLASSES}" source="1.5" target="1.5" debug="off" optimize="on" fork="true" memoryMaximumSize="128M">
+   	         <classpath refid="compile.classpath"/>
+   	      </javac>
    </target>   
    
     <target name="rund2k" depends="compile">
-        <java classname="ncsa.d2k.gui.ToolKit" fork="yes" maxmemory="512m">
+        <java classname="ncsa.d2k.gui.ToolKit" fork="yes" maxmemory="1024m">
             <classpath refid="run.classpath"/>
         </java>
     </target>   
@@ -60,44 +66,28 @@
     </copy>
     </target>
 
+	
+	  <target name="copy-modules" depends="copy-resources">
+	     
+	     <copy todir="${D2K_HOME}/${MODULES}">
+	        <fileset dir="${CLASSES}" /> 
+	     </copy>
+	  	<mkdir dir="${D2K_HOME}/${MODULES}/${RESOURCES}" />
+	  	<copy todir="${MODULES}/${RESOURCES}">
+	  		<fileset dir="${RESOURCES}" />
+	  	</copy>
+	  </target>
+
     <target name="jar-modules" depends="compile">
        <mkdir dir="${BUILD}" /> 
        <jar destfile="${BUILD}/d2kbasic-${_version}.jar" duplicate="fail">
-          <fileset dir="${CLASSES}" />
+          <fileset dir="${CLASSES}" >
+          	<exclude name="**/test/*.class" />
+       	</fileset>
           <fileset dir="${SOURCE}" includes="**/images/**" />
-          <!--
-          <fileset dir="${SOURCE}/${_basic}/lib">
-             <include name="colt.jar" />
-             <include name="commons-collections-3.0.jar" />
-             <include name="dstpclient.jar" />
-             <include name="Jama-1.0.1.jar" />
-             <include name="jdom.jar" />
-             <include name="jung.jar" />
-             <include name="libsvm.jar" />
-             <include name="piccolo.jar" />
-             <include name="piccolox.jar" />
-             <include name="trove.jar" />
-          </fileset>
-          <fileset dir="${SOURCE}/${_t2k}/lib">
-             <include name="commons-cli-1.0.jar" />
-             <include name="commons-httpclient-3.0-alpha2.jar" />
-             <include name="commons-logging-1.0.4.jar" />
-             <include name="commons-pool-1.1.jar" />
-             <include name="heritrix-1.2.0.jar" />
-             <include name="htmlparser.jar" />
-             <include name="lucene-1.4-final.jar" />
-             <include name="xerces.jar" />
-          </fileset>
-          -->
+         
        </jar>
     </target>
 
    
-   <!--<target name="build" depends="compile">
-      <mkdir dir="${BUILD}" />
-      <jar destfile="${BUILD}/infrastructure.jar" duplicate="fail">
-         <fileset dir="${CLASSES}" />
-         <fileset dir="${SOURCE}" includes="**/*.xsd"/>
-      </jar>
-   </target>    -->
 </project>
