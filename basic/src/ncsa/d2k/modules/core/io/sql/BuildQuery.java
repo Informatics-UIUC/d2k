@@ -47,6 +47,10 @@ package ncsa.d2k.modules.core.io.sql;
 /**
  * <p>Title: BuildQuery </p> <p>Description: User interface to build a SQL
  * query. </p> @author Hong Cheng, Dora Cai @version 1.0
+ * 
+ * 11-12-2007: Vered Goren removed toUpperCase() calls when dealing with column types.
+ * There is no good excuse for that, especially as later on these strings are 
+ * compared to others after being lower cased.
  */
 
 import ncsa.d2k.core.gui.JD2KFrame;
@@ -105,6 +109,8 @@ import java.util.Vector;
 import ncsa.d2k.modules.core.util.*;//using D2KModuleLogger and Factory
 
 
+
+
 public class BuildQuery extends HeadlessUIModule {
 
    //~ Static fields/initializers **********************************************
@@ -123,15 +129,49 @@ public class BuildQuery extends HeadlessUIModule {
    private String _lastExpression = "";
 
    /** ArrayList for column names. */
-   private ArrayList colNames;
+   private ArrayList<String> colNames;
 
    /** ArrayList for column types. */
-   private ArrayList colTypes;
+   private ArrayList<String> colTypes;
+   
+   
+   /**
+    * this will be the output (pushed out to first pipe) of the doit method
+    * when running headless.
+    */
+   private String _selectedTable;
+   /**
+    * this will be the output (pushed out to second pipe) of hte doit method
+    * when running headless
+    */
+   private String[] _selectedAttributes;
 
    /**
     * ExampleTable to keep the meta data for selected columns of joined tables.
     */
    private ExampleTable meta;
+   
+   
+   
+   //// setters and getters for properties that are not to be set via
+   //the properties editor, but rather via running the itn once with gui.
+   
+   public void setMeta(Object tbl){
+	   meta = (ExampleTable) tbl;
+   }
+   
+   public Object setMeta(){
+	   return meta ;
+   }
+   
+   public Object getSelectedAttributes(){return _selectedAttributes;}
+   public void getSelectedAttributes(Object atts){
+	   _selectedAttributes = (String[]) atts;
+	   }
+   
+   public void setSelectedTable(String str){
+	   _selectedTable = str;}
+   public String getSelectedTable(){return _selectedTable ;}
 
    /**
     * ExampleTable to keep the meta data for all columns of joined tables. This
@@ -154,7 +194,7 @@ public class BuildQuery extends HeadlessUIModule {
    /** Description of field dataTableOnly. */
    protected boolean dataTableOnly = true;
 
-   /** Description of field tableList. */
+   /** Available tables in the data base */
    protected Vector tableList;
 
    //~ Methods *****************************************************************
@@ -309,17 +349,25 @@ public class BuildQuery extends HeadlessUIModule {
     */
    public String getOutputInfo(int index) {
 
-      if (index == 0) {
-         return "A list of the tables to be joined";
-      } else if (index == 1) {
-         return "A list of the attributes selected";
-      } else if (index == 2) {
-         return "The query condition";
-      } else if (index == 3) {
-         return "The meta table";
-      }
+	   
+	   switch(index){
 
-      return "No such output.";
+	   case BuildQuery.OUT_TBL:
+		   return "A list of the tables to be joined";
+	   case BuildQuery.OUT_ATTS:
+		   return "A list of the attributes selected";
+	   case BuildQuery.OUT_QUERY:
+		   return "The query condition";
+	   case BuildQuery.OUT_META_TBL:
+		   return "The meta table";
+
+	   case OUT_CONNECTION:
+		   return "The input Database Connection";
+      default:
+
+      return "no such output";
+	   }
+       
    }
 
    /**
@@ -331,19 +379,29 @@ public class BuildQuery extends HeadlessUIModule {
     *         specified index.
     */
    public String getOutputName(int index) {
+	   switch(index){
 
-      if (index == 0) {
+	   case BuildQuery.OUT_TBL:
          return "Selected Tables";
-      } else if (index == 1) {
+	   case BuildQuery.OUT_ATTS:
          return "Selected Attributes";
-      } else if (index == 2) {
+	   case BuildQuery.OUT_QUERY:
          return "Query Condition";
-      } else if (index == 3) {
+	   case BuildQuery.OUT_META_TBL:
          return "Meta Table";
-      }
+	   case OUT_CONNECTION:
+		   return "DB Connection";
+      default:
 
-      return null;
+      return "no such output";
+	   }
    }
+   
+   public static final int OUT_TBL = 0;
+   public static final int OUT_ATTS = 1;
+   public static final int OUT_QUERY = 2;
+   public static final int OUT_META_TBL = 3;
+   public static final int OUT_CONNECTION = 4;
 
    /**
     * Method getOutputTypes.
@@ -351,13 +409,14 @@ public class BuildQuery extends HeadlessUIModule {
     * @return <code>String[]</code> of Java types.
     */
    public String[] getOutputTypes() {
-      String[] o =
-      {
-         "java.lang.String", "[Ljava.lang.String;", "java.lang.String",
-         "ncsa.d2k.modules.core.datatype.table.ExampleTable"
-      };
+      String[] types = new String[5];
+      types[OUT_TBL] =          "java.lang.String";
+      types[OUT_ATTS] = "[Ljava.lang.String";
+      types[OUT_QUERY] = "java.lang.String";
+      types[OUT_META_TBL] = "ncsa.d2k.modules.core.datatype.table.ExampleTable";
+      types[OUT_CONNECTION] =  "ncsa.d2k.modules.io.input.sql.ConnectionWrapper" ;
 
-      return o;
+      return types;
    }
 
    /**
@@ -492,7 +551,7 @@ public class BuildQuery extends HeadlessUIModule {
       private JButton previousButton;
       private JTextField scalarField;
       private JComboBox selectedTableBox;
-      private JComboBox tableBox;
+      private JComboBox tableBox; //a drop down list with available tables.
       private String tableName;
 
       private JPanel topPanel;
@@ -500,6 +559,13 @@ public class BuildQuery extends HeadlessUIModule {
       JButton add = new JButton("Add");
 
       JList possibleAttributes = new JList();
+      /**
+       * this one is in a sense like a vector.
+       * Its elements are Strings with the following format:
+       * Table_name.Column_name_i
+       * where Column_name_i is the name of column i in table Table_name
+       * in the db 
+       */
       DefaultListModel possibleModel = new DefaultListModel();
       JButton remove = new JButton("Remove");
       String[] retVal;
@@ -536,7 +602,7 @@ public class BuildQuery extends HeadlessUIModule {
                while (columns.next()) {
                   String columnName = columns.getString("COLUMN_NAME");
                   String columnType =
-                     columns.getString("TYPE_NAME").toUpperCase();
+                     columns.getString("TYPE_NAME");
                   colNames.add(selTable + "." + columnName);
                   colTypes.add(columnType);
                }
@@ -1091,10 +1157,15 @@ public class BuildQuery extends HeadlessUIModule {
             }
 
             meta = createSelectedMeta();
-            pushOutput(fromTable, 0);
-            pushOutput(retVal, 1);
-            pushOutput(queryCondition, 2);
-            pushOutput(meta, 3);
+            pushOutput(fromTable, BuildQuery.OUT_TBL);
+           
+            _selectedTable = fromTable;
+            _selectedAttributes = retVal;
+            pushOutput(retVal, BuildQuery.OUT_ATTS);
+            pushOutput(queryCondition, BuildQuery.OUT_QUERY);
+            pushOutput(meta, BuildQuery.OUT_META_TBL);
+            pushOutput(cw, BuildQuery.OUT_CONNECTION);
+           
             viewDone("Done");
          }
       } // end method expressionChanged
@@ -1110,14 +1181,19 @@ public class BuildQuery extends HeadlessUIModule {
 
             String[] types = { "TABLE" };
             ResultSet tableNames = metadata.getTables(null, "%", "%", types);
-
+            int selectedTableIdx = 0;
+            
             while (tableNames.next()) {
                String aTable = tableNames.getString("TABLE_NAME");
+               
 
                if (dataTableOnly) {
 
                   if (aTable.toUpperCase().indexOf("CUBE") < 0) {
                      tableList.addElement(aTable);
+                     if(aTable.equals(_selectedTable)){
+                  	   selectedTableIdx = tableList.size()-1;
+                     }
                   }
                }
 
@@ -1125,8 +1201,12 @@ public class BuildQuery extends HeadlessUIModule {
 
                   if (aTable.toUpperCase().indexOf("CUBE") >= 0) {
                      tableList.addElement(aTable);
+                     if(aTable.equals(_selectedTable)){
+                  	   selectedTableIdx = tableList.size()-1;
+                     }
                   }
                }
+               
             }
 
             // ComboBox for table list
@@ -1136,13 +1216,16 @@ public class BuildQuery extends HeadlessUIModule {
                tableBox.addItem((String) tableList.elementAt(i));
             }
 
-            tableBox.setSelectedIndex(0);
+            tableBox.setSelectedIndex(selectedTableIdx);
 
             try {
+            	//getting the columns in the first table, since this is the table 
+            	//that is *selected* upon initialization
                con = cw.getConnection();
 
                DatabaseMetaData dbmd = con.getMetaData();
-               tableName = (String) tableList.elementAt(0);
+               
+               tableName = (String) tableList.elementAt(tableBox.getSelectedIndex());
 
                ResultSet tableSet = dbmd.getColumns(null, null, tableName, "%");
                possibleModel.removeAllElements();
@@ -1159,7 +1242,10 @@ public class BuildQuery extends HeadlessUIModule {
             }
 
             tableBox.addActionListener(new AbstractAction() {
+            	//this handles change in selection
                   public void actionPerformed(ActionEvent e) {
+                	  //getting the name of the new selected table.
+                	  
                      int index = tableBox.getSelectedIndex();
                      tableName = (String) tableList.elementAt(index);
 
@@ -1174,7 +1260,8 @@ public class BuildQuery extends HeadlessUIModule {
                            ResultSet tableSet =
                               dbmd.getColumns(null, null, tableName, "%");
                            possibleModel.removeAllElements();
-
+                         //getting all columns of that table and adding them to the
+                     	  //possible model
                            while (tableSet.next()) {
                               possibleModel.addElement(tableName.concat(".")
                                                                 .concat(tableSet
@@ -1722,5 +1809,16 @@ public class BuildQuery extends HeadlessUIModule {
          }
       }
    } // end class BuildQueryView
+   
+   public void doit(){
+	   pushOutput(pullInput(0), OUT_CONNECTION);
+	   pushOutput(meta, OUT_META_TBL);
+	   pushOutput(queryCondition, OUT_QUERY);
+	   pushOutput(_selectedAttributes, OUT_ATTS);
+	   pushOutput(_selectedTable, OUT_TBL);
+	   
+   }
+   
+   
 
 } // end class BuildQuery

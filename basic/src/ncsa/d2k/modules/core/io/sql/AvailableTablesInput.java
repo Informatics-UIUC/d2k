@@ -56,6 +56,7 @@ import java.util.Vector;
 
 
 public class AvailableTablesInput extends InputModule {
+	
 
    //~ Instance fields *********************************************************
 

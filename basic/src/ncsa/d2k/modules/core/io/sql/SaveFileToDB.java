@@ -853,7 +853,9 @@ public class SaveFileToDB extends HeadlessUIModule
         Connection con = cw.getConnection ();
         DatabaseMetaData metadata = con.getMetaData();
         String[] names = {"TABLE"};
-        ResultSet tableNames = metadata.getTables(null,"%",chosenTableName.getText().toUpperCase(),names);
+        //Vered: removed upper casing. to allow this module to use db instances 
+        //that are case sensitive.
+        ResultSet tableNames = metadata.getTables(null,"%",chosenTableName.getText()/*.toUpperCase()*/,names);
         while (tableNames.next()) {
           ResultSet columns = metadata.getColumns(null,"%",tableNames.getString("TABLE_NAME"),"%");
           int rIdx = 0;
@@ -1402,7 +1404,9 @@ public class SaveFileToDB extends HeadlessUIModule
      dbTableDef = new JTable(dbModel);
 
      String[] names = {"TABLE"};
-     ResultSet tableNames = metadata.getTables(null,"%",tableName.toUpperCase(),names);
+     //removed upper casing. this allows this module to connect to db instancs
+     //that are case sensitive.
+     ResultSet tableNames = metadata.getTables(null,"%",tableName/*.toUpperCase()*/,names);
       int rIdx = 0;
 
       while (tableNames.next()) {
