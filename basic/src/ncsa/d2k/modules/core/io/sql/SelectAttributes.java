@@ -319,8 +319,11 @@ public class SelectAttributes extends ncsa.d2k.core.modules.HeadlessUIModule {
 
     //headless conversion support
     private String[] selectedAttributes;
-    public void setSelectedAttributes(Object[] att){selectedAttributes = (String[])att;}
-    public Object[] getSelectedAttributes( ){return selectedAttributes;}
+    public void setSelectedAttributes(String[] att){
+    	
+    	selectedAttributes = att;
+    	}
+    public String[] getSelectedAttributes( ){return selectedAttributes;}
 		
 	/**
 	 * Performs the main work of the module.
