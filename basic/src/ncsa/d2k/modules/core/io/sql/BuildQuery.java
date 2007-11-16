@@ -165,7 +165,7 @@ public class BuildQuery extends HeadlessUIModule {
    }
    
    public Object getSelectedAttributes(){return _selectedAttributes;}
-   public void getSelectedAttributes(Object atts){
+   public void setSelectedAttributes(Object atts){
 	   _selectedAttributes = (String[]) atts;
 	   }
    
@@ -355,7 +355,7 @@ public class BuildQuery extends HeadlessUIModule {
 	   case BuildQuery.OUT_TBL:
 		   return "A list of the tables to be joined";
 	   case BuildQuery.OUT_ATTS:
-		   return "A list of the attributes selected";
+		   return "A list of the attributes selected packed as a String array.";
 	   case BuildQuery.OUT_QUERY:
 		   return "The query condition";
 	   case BuildQuery.OUT_META_TBL:
@@ -411,7 +411,7 @@ public class BuildQuery extends HeadlessUIModule {
    public String[] getOutputTypes() {
       String[] types = new String[5];
       types[OUT_TBL] =          "java.lang.String";
-      types[OUT_ATTS] = "[Ljava.lang.String";
+      types[OUT_ATTS] = "java.lang.Object";
       types[OUT_QUERY] = "java.lang.String";
       types[OUT_META_TBL] = "ncsa.d2k.modules.core.datatype.table.ExampleTable";
       types[OUT_CONNECTION] =  "ncsa.d2k.modules.io.input.sql.ConnectionWrapper" ;
