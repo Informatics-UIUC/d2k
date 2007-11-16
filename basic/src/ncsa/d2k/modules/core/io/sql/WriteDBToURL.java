@@ -288,7 +288,8 @@ public class WriteDBToURL extends OutputModule {
          case 0:
             return "      This manages the sql database connection object.   ";
          case 1:
-            return "      The names of the fields needed from within the table.   ";
+            return "      The names of the fields needed from within the table. " +
+            "The fields are represented via a String array.";
          case 2:
             return "      The name of the table containing the fields.   ";
          case 3:
@@ -335,7 +336,7 @@ public class WriteDBToURL extends OutputModule {
       String[] types =
       {
          "ncsa.d2k.modules.core.io.sql.ConnectionWrapper",
-         "[Ljava.lang.String;", "java.lang.String",
+         "java.lang.Object;", "java.lang.String",
          "java.lang.String", "ncsa.d2k.modules.core.io.proxy.DataObjectProxy"
       };
       return types;
