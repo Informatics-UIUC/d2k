@@ -144,9 +144,14 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      *         the corresponding index.
      */
     public String[] getOutputTypes() {
-        String[] o = {"java.lang.String"};
+        String[] o =new String[2];
+        o[OUT_QUERY]= "java.lang.String";
+        o[OUT_CONN_WRAP] = "ncsa.d2k.modules.io.input.sql.ConnectionWrapper";
         return o;
     }
+    
+    public static final int OUT_CONN_WRAP = 1;
+    public static final int OUT_QUERY = 0;
 
     /**
      * Returns the name of the output at the specified index.
@@ -155,9 +160,11 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      * @return <code>String</code> containing the name of the output at the specified index.
      */
     public String getOutputName(int index) {
-        if (index == 0)
-            return "Query Condition";
-        return null;
+       switch(index){
+       case OUT_QUERY: return "Query Condition";
+       case OUT_CONN_WRAP : return "Connection Wraper";
+       default: return "no such output.";
+       }
     }
 
     /**
@@ -167,9 +174,12 @@ public class SQLFilterConstruction extends HeadlessUIModule {
      * @return <code>String</code> describing the output at the specified index.
      */
     public String getOutputInfo(int index) {
-        if (index == 0)
-            return "The query condition for the search. If the string is blank there will be no where clause, all records will be retrieved.";
-        return "SQLFilterConstruction has no such output.";
+        
+        switch(index){
+        case OUT_QUERY: return "The query condition for the search. If the string is blank there will be no where clause, all records will be retrieved.";
+        case OUT_CONN_WRAP : return "The input DB Connection Wrapper";
+        default: return "no such output.";
+        }
     }
 
     /**
@@ -691,6 +701,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
             //headless conversion support
 
             pushOutput(queryCondition, 0);
+            pushOutput(cw, OUT_CONN_WRAP);
             viewDone("Done");
         }
    }
@@ -811,6 +822,7 @@ public class SQLFilterConstruction extends HeadlessUIModule {
 
 
         pushOutput(queryCondition, 0);
+        pushOutput(this.cw, OUT_CONN_WRAP);
 
 
     }//doit
