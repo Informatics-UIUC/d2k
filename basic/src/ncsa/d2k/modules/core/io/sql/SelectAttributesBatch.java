@@ -1,45 +1,32 @@
 package ncsa.d2k.modules.core.io.sql;
 
 import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.modules.core.util.StringUtils;
 
 public class SelectAttributesBatch extends SelectAttributes {
 	
 	private String _selectedAtts = "";
 	public void setSelectedAtts(String atts){
 		if(atts == null || atts.trim().length() == 0){
-			String[] temp = super.getSelectedAttributes();
-			atts = "";
-			if(temp!= null && temp.length > 0){
-				for(int i=0; i<temp.length; i++){
-					atts += temp[i] + ",";
-				}
-				
-				_selectedAtts = atts.substring(0, atts.length()-1);
+			String[] temp = super.getSelectedAttributes();			
+			if(temp!= null && temp.length > 0){				
+				_selectedAtts = StringUtils.stringArrayToString(temp);
 			}
 			
 			return;
 		}
 		
 		_selectedAtts = atts;
-		String[] temp = _selectedAtts.split(", ", 0);
-		/*Object[] objArr  = new Object[temp.length];
-		for(int i=0; i<temp.length; i++){
-			objArr[i] = temp[i];
-		}*/
+		String[] temp = StringUtils.stringToStringArray(_selectedAtts, ",");		
 		super.setSelectedAttributes(temp);
 		
 	}
 	
 	public String getSelectedAtts(){
 		if(_selectedAtts == null || _selectedAtts.trim().length() == 0){
-			String[] temp = super.getSelectedAttributes();
-			String atts = "";
-			if(temp!= null && temp.length > 0){
-				for(int i=0; i<temp.length; i++){
-					atts += temp[i] + ",";
-				}
-				
-				_selectedAtts = atts.substring(0, atts.length()-1);
+			String[] temp = super.getSelectedAttributes();			
+			if(temp!= null && temp.length > 0){				
+				_selectedAtts = StringUtils.stringArrayToString(temp);
 			}
 		}
 		return _selectedAtts;
@@ -72,6 +59,21 @@ public class SelectAttributesBatch extends SelectAttributes {
 		"sure the labels are valid, otherwise the run of the itinerary will be " +
 		"aborted due to an Exception.<BR>Please note that the comma separated list" +
 		" will be processed only if the UI is suppressed.";
+	}
+	
+	public void endExecution(){
+		if(!this.suppressGui){
+			String[] temp = super.getSelectedAttributes();
+			String atts = "";
+			if(temp!= null && temp.length > 0){
+				for(int i=0; i<temp.length; i++){
+					atts += temp[i] + ",";
+				}
+				
+				_selectedAtts = atts.substring(0, atts.length()-1);
+			}
+		}
+		super.endExecution();
 	}
 
 }
