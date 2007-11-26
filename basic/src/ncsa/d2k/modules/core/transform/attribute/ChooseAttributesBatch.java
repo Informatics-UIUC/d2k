@@ -2,6 +2,7 @@ package ncsa.d2k.modules.core.transform.attribute;
 
 import ncsa.d2k.core.modules.PropertyDescription;
 import ncsa.d2k.modules.core.datatype.table.Table;
+import ncsa.d2k.modules.core.util.StringUtils;
 
 public class ChooseAttributesBatch extends ChooseAttributes {
 	private String _inputs = "";
@@ -10,76 +11,46 @@ public class ChooseAttributesBatch extends ChooseAttributes {
 	
 	public void setInputs(String ins){
 		if(ins == null || ins.trim().length() == 0){
-			Object[] temp = super.getSelectedInputs();
-			ins = "";
-			if(temp!= null && temp.length > 0){
-				for(int i=0; i<temp.length; i++){
-					ins += (String)temp[i] + ",";
-				}
-				
-				_inputs = ins.substring(0, ins.length()-1);
-			}
-			
+			Object[] temp = super.getSelectedInputs();			
+			if(temp!= null && temp.length > 0){				
+				_inputs = StringUtils.objectArrayToString(temp);
+			}			
 			return;
-		}
-		
-		_inputs = ins;
-		String[] temp = _inputs.split(", ", 0);
-		Object[] inArr  = new Object[temp.length];
-		for(int i=0; i<temp.length; i++){
-			inArr[i] = temp[i];
-		}
+		}		
+		_inputs = ins;		
+		Object[] inArr  = StringUtils.stringToObjectArray(_inputs,",");			
 		this.setSelectedInputs(inArr);
 	}
 	
 	public void setOutputs(String outs){
 		
 		if(outs == null || outs.trim().length() == 0){
-			Object[] temp = super.getSelectedOutputs();
-			outs = "";
-			if(temp!= null && temp.length > 0){
-				for(int i=0; i<temp.length; i++){
-					outs += (String)temp[i] + ",";
-				}
-				
-				_outputs = outs.substring(0, outs.length()-1);
+			Object[] temp = super.getSelectedOutputs();			
+			if(temp!= null && temp.length > 0){				
+				_outputs = StringUtils.objectArrayToString(temp);
 			}
 			
 			return;
 		}
-		_outputs = outs;
-		String[] temp = _outputs.split(", ", 0);
-		Object[] outArr  = new Object[temp.length];
-		for(int i=0; i<temp.length; i++){
-			outArr[i] = temp[i];
-		}
+		_outputs = outs;		
+		Object[] outArr  = StringUtils.stringToObjectArray(_outputs,",");		
 		this.setSelectedOutputs(outArr);
 	}
 	
 	public String getInputs(){
 		if(_inputs == null || _inputs.trim().length() == 0){
-			Object[] temp = super.getSelectedInputs();
-			String ins = "";
-			if(temp!= null && temp.length > 0){
-				for(int i=0; i<temp.length; i++){
-					ins += (String)temp[i] + ",";
-				}
-				
-				_inputs = ins.substring(0, ins.length()-1);
+			Object[] temp = super.getSelectedInputs();			
+			if(temp!= null && temp.length > 0){			
+				_inputs = StringUtils.objectArrayToString(temp);
 			}
 		}
 		return _inputs;
 		}
 	public String getOutputs(){
 		if(_outputs == null || _outputs.trim().length() == 0){
-			Object[] temp = super.getSelectedOutputs();
-			String outs = "";
-			if(temp!= null && temp.length > 0){
-				for(int i=0; i<temp.length; i++){
-					outs += (String)temp[i] + ",";
-				}
-				
-				_outputs = outs.substring(0, outs.length()-1);
+			Object[] temp = super.getSelectedOutputs();			
+			if(temp!= null && temp.length > 0){				
+				_outputs = StringUtils.objectArrayToString(temp);
 			}
 		}
 		return _outputs;
@@ -114,6 +85,22 @@ public class ChooseAttributesBatch extends ChooseAttributes {
 		"aborted due to an Exception." +
 		"<BR>Please note that the comma separated lists" +
 		" will be processed only if the UI is suppressed.";
+	}
+	
+	public void endExecution(){
+		//if ran with gui
+		if(!this.suppressGui){
+			//copy the new settings over here.
+			Object[] temp = super.getSelectedOutputs();			
+			if(temp!= null && temp.length > 0){				
+				_outputs = StringUtils.objectArrayToString(temp);
+			}
+			 temp = super.getSelectedInputs();			
+			if(temp!= null && temp.length > 0){				
+				_inputs = StringUtils.objectArrayToString(temp);
+			}
+		}
+		super.endExecution();
 	}
 
 }
