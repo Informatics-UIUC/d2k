@@ -1,6 +1,7 @@
 package ncsa.d2k.modules.core.io.sql;
 
 import ncsa.d2k.core.modules.PropertyDescription;
+import ncsa.d2k.modules.core.util.StringUtils;
 
 public class BuildQueryBatch extends BuildQuery {
 	
@@ -25,14 +26,10 @@ public class BuildQueryBatch extends BuildQuery {
 	private String attList = "";
 	public String getAttList(){
 		if(attList == null || attList.trim().length() == 0){
-			String[] temp = (String[])super.getSelectedAttributes();
-			String atts = "";
+			String[] temp = (String[])super.getSelectedAttributes();			
+			
 			if(temp!= null && temp.length > 0){
-				for(int i=0; i<temp.length; i++){
-					atts += (String)temp[i] + ",";
-				}
-				
-				attList = atts.substring(0, atts.length()-1);
+				attList = StringUtils.stringArrayToString(temp);				
 			}
 		}
 		return attList;
@@ -43,25 +40,16 @@ public class BuildQueryBatch extends BuildQuery {
 	public void setAttList(String atts){
 		if(atts == null || atts.trim().length() == 0){
 			String[] temp =(String[]) super.getSelectedAttributes();
-			atts = "";
+			
 			if(temp!= null && temp.length > 0){
-				for(int i=0; i<temp.length; i++){
-					atts += temp[i] + ",";
-				}
-				
-				attList = atts.substring(0, atts.length()-1);
+				attList = StringUtils.stringArrayToString(temp);
 			}
 			
 			return;
 		}
 		
 		attList = atts;
-		String[] temp = attList.split(", ", 0);
-		String[] objArr  = new String[temp.length];
-		for(int i=0; i<temp.length; i++){
-			objArr[i] = temp[i];
-		}
-		
+		String[] objArr = StringUtils.stringToStringArray(attList, ",");
 		super.setSelectedAttributes(objArr);
 	}
 	
@@ -96,6 +84,23 @@ public class BuildQueryBatch extends BuildQuery {
 		"itinerary will be " +
 		"aborted due to an Exception.<BR>Please note those extra 2 properties "+
 		" will be processed only if the UI is suppressed.";
+	}
+	
+	public void endExecution(){
+		if(!this.suppressGui){
+			//copying over the properties from the super class
+			this.tbl = super.getSelectedTable();
+			String[] temp =(String[]) super.getSelectedAttributes();
+			String atts = "";
+			if(temp!= null && temp.length > 0){				
+				attList = StringUtils.stringArrayToString(temp);
+			}
+			
+			
+			
+			
+		}
+		super.endExecution();
 	}
 	
 
